@@ -37,10 +37,10 @@ const categoryStats = [
 
 export default function NotificationsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 md:py-8 px-3 md:px-4">
-      <div className="container mx-auto space-y-6 md:space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 md:py-8 px-0 overflow-x-hidden">
+      <div className="container mx-auto w-full max-w-full space-y-6 md:space-y-8 px-0 sm:px-4">
         {/* Header */}
-        <div className="text-center space-y-3 md:space-y-4 px-2">
+        <div className="text-center space-y-3 md:space-y-4 px-0 sm:px-2">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold flex items-center justify-center gap-2 md:gap-3">
             <Bell className="h-6 w-6 md:h-8 md:w-8 text-primary" />
             Notification Center
@@ -52,8 +52,8 @@ export default function NotificationsPage() {
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 px-1">
-          <Card className="shadow-soft">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 px-0 sm:px-1 w-full max-w-full">
+          <Card className="shadow-soft w-full max-w-full">
             <CardContent className="p-4 md:p-6 text-center">
               <div className="flex items-center justify-center mb-2">
                 <Bell className="h-6 w-6 md:h-8 md:w-8 text-primary" />
@@ -63,7 +63,7 @@ export default function NotificationsPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-soft">
+          <Card className="shadow-soft w-full max-w-full">
             <CardContent className="p-4 md:p-6 text-center">
               <div className="flex items-center justify-center mb-2">
                 <Clock className="h-6 w-6 md:h-8 md:w-8 text-yellow-500" />
@@ -73,7 +73,7 @@ export default function NotificationsPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-soft">
+          <Card className="shadow-soft w-full max-w-full">
             <CardContent className="p-4 md:p-6 text-center">
               <div className="flex items-center justify-center mb-2">
                 <AlertTriangle className="h-6 w-6 md:h-8 md:w-8 text-red-500" />
@@ -83,7 +83,7 @@ export default function NotificationsPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-soft">
+          <Card className="shadow-soft w-full max-w-full">
             <CardContent className="p-4 md:p-6 text-center">
               <div className="flex items-center justify-center mb-2">
                 <CheckCircle className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
@@ -95,14 +95,14 @@ export default function NotificationsPage() {
         </div>
 
         {/* Main Notification Component */}
-        <div className="px-1">
+        <div className="px-0 sm:px-1 w-full max-w-full">
           <NotificationCenter />
         </div>
 
         {/* Analytics Dashboard */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 px-1">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 px-0 sm:px-1 w-full max-w-full">
           {/* Delivery Methods */}
-          <Card className="shadow-soft">
+          <Card className="shadow-soft w-full max-w-full">
             <CardHeader className="p-4 md:p-6">
               <CardTitle className="text-lg md:text-xl flex items-center gap-2">
                 <Settings className="h-4 w-4 md:h-5 md:w-5" />
@@ -127,7 +127,7 @@ export default function NotificationsPage() {
           </Card>
 
           {/* Category Breakdown */}
-          <Card className="shadow-soft">
+          <Card className="shadow-soft w-full max-w-full">
             <CardHeader className="p-4 md:p-6">
               <CardTitle className="text-lg md:text-xl flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 md:h-5 md:w-5" />
@@ -160,7 +160,7 @@ export default function NotificationsPage() {
         </div>
 
         {/* Notification Preferences */}
-        <Card className="shadow-soft mx-1">
+        <Card className="shadow-soft mx-1 w-full max-w-full">
           <CardHeader className="p-4 md:p-6">
             <CardTitle className="text-lg md:text-xl">Notification Best Practices</CardTitle>
             <CardDescription className="text-sm md:text-base">Tips for managing your notifications effectively</CardDescription>
