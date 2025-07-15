@@ -97,10 +97,10 @@ const quickActions = [
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-4">
-      <div className="container mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-0 overflow-x-hidden">
+      <div className="container mx-auto w-full max-w-full space-y-8 px-0 sm:px-4">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full max-w-full">
           <div>
             <h1 className="text-3xl font-bold">Farmer Intelligence Hub</h1>
             <p className="text-muted-foreground">Welcome back, John! Here's your farm overview.</p>
@@ -124,9 +124,9 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-full">
           <Link to="/agrigpt">
-            <Card className="cursor-pointer hover:shadow-soft transition-all duration-300 h-full">
+            <Card className="cursor-pointer hover:shadow-soft transition-all duration-300 h-full w-full max-w-full">
               <CardContent className="flex items-center p-4 sm:p-6">
                 <Bot className="h-6 w-6 sm:h-8 sm:w-8 text-primary mr-3 sm:mr-4 flex-shrink-0" />
                 <span className="font-medium text-sm sm:text-base">Chat with AgriGPT</span>
@@ -135,7 +135,7 @@ export default function Dashboard() {
           </Link>
 
           <Link to="/crop-disease-detection">
-            <Card className="cursor-pointer hover:shadow-soft transition-all duration-300 h-full">
+            <Card className="cursor-pointer hover:shadow-soft transition-all duration-300 h-full w-full max-w-full">
               <CardContent className="flex items-center p-4 sm:p-6">
                 <Camera className="h-6 w-6 sm:h-8 sm:w-8 text-primary mr-3 sm:mr-4 flex-shrink-0" />
                 <span className="font-medium text-sm sm:text-base">Crop Disease Detection</span>
@@ -144,7 +144,7 @@ export default function Dashboard() {
           </Link>
 
           <Link to="/voice-commands">
-            <Card className="cursor-pointer hover:shadow-soft transition-all duration-300 h-full">
+            <Card className="cursor-pointer hover:shadow-soft transition-all duration-300 h-full w-full max-w-full">
               <CardContent className="flex items-center p-4 sm:p-6">
                 <Mic className="h-6 w-6 sm:h-8 sm:w-8 text-primary mr-3 sm:mr-4 flex-shrink-0" />
                 <span className="font-medium text-sm sm:text-base">Voice Commands</span>
@@ -153,7 +153,7 @@ export default function Dashboard() {
           </Link>
 
           <Link to="/marketplace">
-            <Card className="cursor-pointer hover:shadow-soft transition-all duration-300 h-full">
+            <Card className="cursor-pointer hover:shadow-soft transition-all duration-300 h-full w-full max-w-full">
               <CardContent className="flex items-center p-4 sm:p-6">
                 <ShoppingCart className="h-6 w-6 sm:h-8 sm:w-8 text-primary mr-3 sm:mr-4 flex-shrink-0" />
                 <span className="font-medium text-sm sm:text-base">Live Marketplace</span>
@@ -163,13 +163,13 @@ export default function Dashboard() {
         </div>
 
         {/* AI Features Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 w-full max-w-full">
           <CropDiseaseDetection />
           <VoiceCommands />
         </div>
 
         {/* Analytics Dashboard */}
-        <Card className="shadow-soft">
+        <Card className="shadow-soft w-full max-w-full">
           <CardHeader>
             <CardTitle>Farm Analytics Overview</CardTitle>
             <CardDescription>Real-time insights into your farm performance</CardDescription>
@@ -183,11 +183,11 @@ export default function Dashboard() {
         <NotificationCenter />
 
         {/* Main Dashboard Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 w-full max-w-full">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Weather Card */}
-            <Card className="shadow-soft">
+            <Card className="shadow-soft w-full max-w-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Cloud className="h-5 w-5" />
@@ -242,7 +242,7 @@ export default function Dashboard() {
             </Card>
 
             {/* Farm Health Score */}
-            <Card className="shadow-soft">
+            <Card className="shadow-soft w-full max-w-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Sprout className="h-5 w-5" />
@@ -293,7 +293,7 @@ export default function Dashboard() {
             </Card>
 
             {/* Market Trends */}
-            <Card className="shadow-soft">
+            <Card className="shadow-soft w-full max-w-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
@@ -337,7 +337,7 @@ export default function Dashboard() {
           {/* Right Column */}
           <div className="space-y-6">
             {/* Alerts */}
-            <Card className="shadow-soft">
+            <Card className="shadow-soft w-full max-w-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5" />
@@ -373,7 +373,7 @@ export default function Dashboard() {
             </Card>
 
             {/* Today's Tasks */}
-            <Card className="shadow-soft">
+            <Card className="shadow-soft w-full max-w-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5" />
@@ -408,7 +408,7 @@ export default function Dashboard() {
             </Card>
 
             {/* AgriGPT Quick Chat */}
-            <Card className="shadow-soft">
+            <Card className="shadow-soft w-full max-w-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Bot className="h-5 w-5" />

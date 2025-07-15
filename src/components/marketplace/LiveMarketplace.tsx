@@ -49,7 +49,7 @@ const mockProducts: Product[] = [
     unit: 'kg',
     quantity: 500,
     rating: 4.8,
-    image: '/placeholder.svg',
+    image: 'https://i.pinimg.com/736x/4e/d6/fe/4ed6feb64a7f21255f3f9d9174509cd9.jpg',
     category: 'Vegetables',
     isOrganic: true,
     harvestDate: '2024-01-15',
@@ -65,7 +65,7 @@ const mockProducts: Product[] = [
     unit: 'kg',
     quantity: 200,
     rating: 4.6,
-    image: '/placeholder.svg',
+    image: 'https://i.pinimg.com/736x/16/5e/6f/165e6f24df657daecce50dde8fcd0037.jpg',
     category: 'Vegetables',
     isOrganic: false,
     harvestDate: '2024-01-12',
@@ -81,7 +81,7 @@ const mockProducts: Product[] = [
     unit: 'kg',
     quantity: 1000,
     rating: 4.9,
-    image: '/placeholder.svg',
+    image: 'https://i.pinimg.com/736x/45/7d/f3/457df3e0fc340a8eef6a52e4e8964a31.jpg',
     category: 'Grains',
     isOrganic: true,
     harvestDate: '2024-01-10',
@@ -89,22 +89,27 @@ const mockProducts: Product[] = [
   }
 ];
 
-export function LiveMarketplace() {
-  const [products, setProducts] = useState<Product[]>([]);
+interface LiveMarketplaceProps {
+  products: Product[];
+  searchFilters: any;
+}
+
+export function LiveMarketplace({ products, searchFilters }: LiveMarketplaceProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [priceUpdates, setPriceUpdates] = useState<{ [key: string]: number }>({});
 
-  // Simulate real-time price updates
-  useEffect(() => {
-    getProducts().then(setProducts).catch(() => setProducts([]));
-  }, []);
+  // Remove useEffect that fetches from backend
+  // useEffect(() => {
+  //   getProducts().then(setProducts).catch(() => setProducts([]));
+  // }, []);
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.farmer.toLowerCase().includes(searchTerm.toLowerCase());
+                         product.farmer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     const matchesLocation = selectedLocation === 'all' || product.location.includes(selectedLocation);
     

@@ -70,7 +70,11 @@ const sortOptions = [
   { value: 'distance', label: 'Nearest First' }
 ];
 
-export function AdvancedSearch() {
+interface AdvancedSearchProps {
+  onSearch: (filters: any) => void;
+}
+
+export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<SearchFilters>({
     query: '',
