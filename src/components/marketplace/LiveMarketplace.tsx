@@ -90,17 +90,17 @@ const mockProducts: Product[] = [
 ];
 
 export function LiveMarketplace() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(mockProducts);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [priceUpdates, setPriceUpdates] = useState<{ [key: string]: number }>({});
 
-  // Simulate real-time price updates
-  useEffect(() => {
-    getProducts().then(setProducts).catch(() => setProducts([]));
-  }, []);
+  // Remove useEffect that fetches from backend
+  // useEffect(() => {
+  //   getProducts().then(setProducts).catch(() => setProducts([]));
+  // }, []);
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
