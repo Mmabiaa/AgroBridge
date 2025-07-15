@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,6 +19,7 @@ import {
   Heart,
   Star
 } from 'lucide-react';
+import { getHello } from '@/lib/api';
 
 const userRoles = [
   {
@@ -115,6 +116,11 @@ const testimonials = [
 
 export default function Home() {
   const [selectedRole, setSelectedRole] = useState('');
+  const [backendMessage, setBackendMessage] = useState('');
+
+  useEffect(() => {
+    getHello().then(data => setBackendMessage(data.message)).catch(() => setBackendMessage('Backend unavailable'));
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
@@ -178,7 +184,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12 px-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12 px-0 sm:px-2">
             {userRoles.map((role) => {
               const Icon = role.icon;
               const isSelected = selectedRole === role.title;
@@ -239,7 +245,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-16 px-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-16 px-0 md:px-2">
             {benefits.map((benefit, index) => {
               const Icon = benefit.icon;
               return (
@@ -270,7 +276,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 px-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 px-0 sm:px-2">
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
@@ -297,7 +303,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 px-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 px-0 md:px-2">
             {testimonials.map((testimonial, index) => (
               <Card key={index} className="shadow-soft hover:shadow-strong transition-all duration-300 touch-manipulation">
                 <CardContent className="pt-4 md:pt-6 p-4 md:p-6">
@@ -345,6 +351,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <div style={{margin: '1rem 0', padding: '1rem', background: '#e6ffe6', borderRadius: '8px', color: '#1a7f37'}}>
+        Backend says: {backendMessage}
+      </div>
     </div>
   );
 }

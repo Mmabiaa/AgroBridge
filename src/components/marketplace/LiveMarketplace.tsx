@@ -19,6 +19,7 @@ import {
   Clock,
   Truck
 } from 'lucide-react';
+import { getProducts } from '@/lib/api';
 
 interface Product {
   id: string;
@@ -89,7 +90,7 @@ const mockProducts: Product[] = [
 ];
 
 export function LiveMarketplace() {
-  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
@@ -98,33 +99,8 @@ export function LiveMarketplace() {
 
   // Simulate real-time price updates
   useEffect(() => {
-    const interval = setInterval(() => {
-      const randomProduct = products[Math.floor(Math.random() * products.length)];
-      const priceChange = (Math.random() - 0.5) * 20; // ±10
-      const newPrice = Math.max(50, randomProduct.price + priceChange);
-      
-      setProducts(prev => 
-        prev.map(p => 
-          p.id === randomProduct.id 
-            ? { ...p, previousPrice: p.price, price: Math.round(newPrice) }
-            : p
-        )
-      );
-      
-      setPriceUpdates(prev => ({ ...prev, [randomProduct.id]: Date.now() }));
-      
-      // Clear the update indicator after 3 seconds
-      setTimeout(() => {
-        setPriceUpdates(prev => {
-          const updated = { ...prev };
-          delete updated[randomProduct.id];
-          return updated;
-        });
-      }, 3000);
-    }, 8000);
-
-    return () => clearInterval(interval);
-  }, [products]);
+    getProducts().then(setProducts).catch(() => setProducts([]));
+  }, []);
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
