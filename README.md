@@ -243,10 +243,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support & Contact
 
-- **Documentation**: [docs.agrobridge.com](https://docs.agrobridge.com)
-- **Community Forum**: [community.agrobridge.com](https://community.agrobridge.com)
-- **Support Email**: support@agrobridge.com
-- **Bug Reports**: [GitHub Issues](https://github.com/your-org/agrobridge/issues)
+- **Documentation**: [BOATENG PRINCE AGYENIM](https://mmabiaa.vercel.app)
+- **Community Forum**: [TECH-BY-MMABIAA](https://techbymmabiaa.vercel.app)
+- **Support Email**: mmaabiaa@gmail.com
+- **Bug Reports**: [GitHub Issues](https://github.com/Mmabiaa/agrobridge/issues)
 
 ---
 
