@@ -6,4 +6,18 @@ export async function getHello() {
   return res.json();
 }
 
-// Add more functions for other endpoints as you build them 
+export async function getProducts() {
+  const res = await fetch(`${API_URL}/products/`);
+  if (!res.ok) throw new Error("Failed to fetch products");
+  return res.json();
+}
+
+export async function createProduct(product: any) {
+  const res = await fetch(`${API_URL}/products/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(product),
+  });
+  if (!res.ok) throw new Error("Failed to create product");
+  return res.json();
+} 
