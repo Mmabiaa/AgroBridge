@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,6 +19,7 @@ import {
   Heart,
   Star
 } from 'lucide-react';
+import { getHello } from '@/lib/api';
 
 const userRoles = [
   {
@@ -115,6 +116,11 @@ const testimonials = [
 
 export default function Home() {
   const [selectedRole, setSelectedRole] = useState('');
+  const [backendMessage, setBackendMessage] = useState('');
+
+  useEffect(() => {
+    getHello().then(data => setBackendMessage(data.message)).catch(() => setBackendMessage('Backend unavailable'));
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
@@ -345,6 +351,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <div style={{margin: '1rem 0', padding: '1rem', background: '#e6ffe6', borderRadius: '8px', color: '#1a7f37'}}>
+        Backend says: {backendMessage}
+      </div>
     </div>
   );
 }
