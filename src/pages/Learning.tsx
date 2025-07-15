@@ -120,10 +120,10 @@ export default function Learning() {
   const [selectedCategory, setSelectedCategory] = useState('All');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 md:py-8 px-3 md:px-4">
-      <div className="container mx-auto space-y-6 md:space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 md:py-8 px-0 overflow-x-hidden">
+      <div className="container mx-auto w-full max-w-full space-y-6 md:space-y-8 px-0 sm:px-4">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 px-2">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 px-0 sm:px-2 w-full max-w-full">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2 md:gap-3 mb-2">
               <GraduationCap className="h-6 w-6 md:h-8 md:w-8 text-primary" />
@@ -144,7 +144,7 @@ export default function Learning() {
         </div>
 
         {/* Progress Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 px-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 px-0 sm:px-1 w-full max-w-full">
           <Card className="shadow-soft">
             <CardContent className="flex items-center p-3 md:p-6">
               <Book className="h-6 w-6 md:h-8 md:w-8 text-primary mr-2 md:mr-4 flex-shrink-0" />

@@ -91,10 +91,10 @@ export default function Monitoring() {
   const [selectedTab, setSelectedTab] = useState('sensors');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 px-4">
-      <div className="container mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 px-0 overflow-x-hidden">
+      <div className="container mx-auto w-full max-w-full space-y-6 px-0 sm:px-4">
         {/* Header */}
-        <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-start md:space-y-0 gap-4">
+        <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-start md:space-y-0 gap-4 w-full max-w-full">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
               <Monitor className="h-6 w-6 md:h-8 md:w-8 text-primary" />
@@ -115,7 +115,7 @@ export default function Monitoring() {
         </div>
 
         {/* Status Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full max-w-full">
           <Card className="shadow-soft">
             <CardContent className="flex items-center p-4 md:p-6">
               <Thermometer className="h-6 w-6 md:h-8 md:w-8 text-warning mr-3 md:mr-4" />
