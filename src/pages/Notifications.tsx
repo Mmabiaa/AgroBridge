@@ -37,87 +37,89 @@ const categoryStats = [
 
 export default function NotificationsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-4">
-      <div className="container mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 md:py-8 px-3 md:px-4">
+      <div className="container mx-auto space-y-6 md:space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold flex items-center justify-center gap-3">
-            <Bell className="h-8 w-8 text-primary" />
+        <div className="text-center space-y-3 md:space-y-4 px-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold flex items-center justify-center gap-2 md:gap-3">
+            <Bell className="h-6 w-6 md:h-8 md:w-8 text-primary" />
             Notification Center
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
             Stay informed with real-time alerts, updates, and important information 
             about your farm, weather, and market conditions.
           </p>
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 px-1">
           <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
+            <CardContent className="p-4 md:p-6 text-center">
               <div className="flex items-center justify-center mb-2">
-                <Bell className="h-8 w-8 text-primary" />
+                <Bell className="h-6 w-6 md:h-8 md:w-8 text-primary" />
               </div>
-              <div className="text-2xl font-bold">{notificationStats.total}</div>
-              <p className="text-sm text-muted-foreground">Total Notifications</p>
+              <div className="text-xl md:text-2xl font-bold">{notificationStats.total}</div>
+              <p className="text-xs md:text-sm text-muted-foreground">Total Notifications</p>
             </CardContent>
           </Card>
 
           <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
+            <CardContent className="p-4 md:p-6 text-center">
               <div className="flex items-center justify-center mb-2">
-                <Clock className="h-8 w-8 text-yellow-500" />
+                <Clock className="h-6 w-6 md:h-8 md:w-8 text-yellow-500" />
               </div>
-              <div className="text-2xl font-bold text-yellow-600">{notificationStats.unread}</div>
-              <p className="text-sm text-muted-foreground">Unread</p>
+              <div className="text-xl md:text-2xl font-bold text-yellow-600">{notificationStats.unread}</div>
+              <p className="text-xs md:text-sm text-muted-foreground">Unread</p>
             </CardContent>
           </Card>
 
           <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
+            <CardContent className="p-4 md:p-6 text-center">
               <div className="flex items-center justify-center mb-2">
-                <AlertTriangle className="h-8 w-8 text-red-500" />
+                <AlertTriangle className="h-6 w-6 md:h-8 md:w-8 text-red-500" />
               </div>
-              <div className="text-2xl font-bold text-red-600">{notificationStats.alerts}</div>
-              <p className="text-sm text-muted-foreground">Urgent Alerts</p>
+              <div className="text-xl md:text-2xl font-bold text-red-600">{notificationStats.alerts}</div>
+              <p className="text-xs md:text-sm text-muted-foreground">Urgent Alerts</p>
             </CardContent>
           </Card>
 
           <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
+            <CardContent className="p-4 md:p-6 text-center">
               <div className="flex items-center justify-center mb-2">
-                <CheckCircle className="h-8 w-8 text-green-500" />
+                <CheckCircle className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
               </div>
-              <div className="text-2xl font-bold text-green-600">{notificationStats.delivered}</div>
-              <p className="text-sm text-muted-foreground">Delivered</p>
+              <div className="text-xl md:text-2xl font-bold text-green-600">{notificationStats.delivered}</div>
+              <p className="text-xs md:text-sm text-muted-foreground">Delivered</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Main Notification Component */}
-        <NotificationCenter />
+        <div className="px-1">
+          <NotificationCenter />
+        </div>
 
         {/* Analytics Dashboard */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 px-1">
           {/* Delivery Methods */}
           <Card className="shadow-soft">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
+            <CardHeader className="p-4 md:p-6">
+              <CardTitle className="text-lg md:text-xl flex items-center gap-2">
+                <Settings className="h-4 w-4 md:h-5 md:w-5" />
                 Delivery Methods
               </CardTitle>
-              <CardDescription>How notifications are being delivered</CardDescription>
+              <CardDescription className="text-sm md:text-base">How notifications are being delivered</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6 pt-0">
               {deliveryMethods.map((method, index) => {
                 const Icon = method.icon;
                 return (
                   <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Icon className={`h-5 w-5 ${method.color}`} />
-                      <span className="font-medium">{method.name}</span>
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                      <Icon className={`h-4 w-4 md:h-5 md:w-5 ${method.color} flex-shrink-0`} />
+                      <span className="text-sm md:text-base font-medium truncate">{method.name}</span>
                     </div>
-                    <Badge variant="outline">{method.count} sent</Badge>
+                    <Badge variant="outline" className="text-xs md:text-sm flex-shrink-0">{method.count} sent</Badge>
                   </div>
                 );
               })}
@@ -126,20 +128,20 @@ export default function NotificationsPage() {
 
           {/* Category Breakdown */}
           <Card className="shadow-soft">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
+            <CardHeader className="p-4 md:p-6">
+              <CardTitle className="text-lg md:text-xl flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 md:h-5 md:w-5" />
                 Notification Categories
               </CardTitle>
-              <CardDescription>Breakdown by notification type</CardDescription>
+              <CardDescription className="text-sm md:text-base">Breakdown by notification type</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6 pt-0">
               {categoryStats.map((category, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{category.name}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">{category.count}</span>
+                    <span className="text-sm md:text-base font-medium truncate mr-2">{category.name}</span>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className="text-xs md:text-sm text-muted-foreground">{category.count}</span>
                       <Badge variant="outline" className="text-xs">
                         {category.percentage}%
                       </Badge>
@@ -158,16 +160,16 @@ export default function NotificationsPage() {
         </div>
 
         {/* Notification Preferences */}
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle>Notification Best Practices</CardTitle>
-            <CardDescription>Tips for managing your notifications effectively</CardDescription>
+        <Card className="shadow-soft mx-1">
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="text-lg md:text-xl">Notification Best Practices</CardTitle>
+            <CardDescription className="text-sm md:text-base">Tips for managing your notifications effectively</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <CardContent className="p-4 md:p-6 pt-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               <div className="space-y-3">
-                <h4 className="font-medium">Stay Organized:</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
+                <h4 className="text-sm md:text-base font-medium">Stay Organized:</h4>
+                <ul className="space-y-2 text-xs md:text-sm text-muted-foreground">
                   <li>• Mark notifications as read after viewing</li>
                   <li>• Set priority levels for different alert types</li>
                   <li>• Use categories to filter important messages</li>
@@ -175,8 +177,8 @@ export default function NotificationsPage() {
                 </ul>
               </div>
               <div className="space-y-3">
-                <h4 className="font-medium">Customize Settings:</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
+                <h4 className="text-sm md:text-base font-medium">Customize Settings:</h4>
+                <ul className="space-y-2 text-xs md:text-sm text-muted-foreground">
                   <li>• Choose your preferred delivery methods</li>
                   <li>• Set quiet hours for non-urgent alerts</li>
                   <li>• Enable location-based weather alerts</li>
