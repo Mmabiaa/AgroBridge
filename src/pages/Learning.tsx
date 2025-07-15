@@ -226,7 +226,7 @@ export default function Learning() {
             </Card>
 
             {/* Course Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-0 md:px-1">
               {courses.map((course) => (
                 <Card key={course.id} className="shadow-soft hover:shadow-strong transition-all duration-300 touch-manipulation">
                   <div className="relative">
@@ -293,7 +293,7 @@ export default function Learning() {
 
           {/* PDF Guides Tab */}
           <TabsContent value="guides" className="space-y-4 md:space-y-6 mt-4 md:mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-0 md:px-1">
               {guides.map((guide) => (
                 <Card key={guide.id} className="shadow-soft touch-manipulation">
                   <CardHeader className="p-4 md:p-6">
@@ -332,7 +332,7 @@ export default function Learning() {
 
           {/* Achievements Tab */}
           <TabsContent value="achievements" className="space-y-4 md:space-y-6 mt-4 md:mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 px-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 px-0 md:px-1">
               {achievements.map((achievement) => (
                 <Card key={achievement.id} className={`shadow-soft touch-manipulation ${achievement.unlocked ? '' : 'opacity-60'}`}>
                   <CardContent className="flex items-center p-4 md:p-6">

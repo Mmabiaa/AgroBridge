@@ -10,7 +10,7 @@ const Card = React.forwardRef<
     ref={ref}
     className={cn(
       // Larger border radius and shadow for mobile, default for desktop
-      "rounded-2xl shadow-md border bg-card text-card-foreground sm:rounded-lg sm:shadow-sm",
+      "w-full max-w-full rounded-2xl shadow-md border bg-card text-card-foreground sm:rounded-lg sm:shadow-sm",
       className
     )}
     {...props}
