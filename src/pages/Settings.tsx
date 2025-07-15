@@ -10,8 +10,8 @@ import { ProfileSetupSection } from '@/components/ProfileSetupSection';
 
 export default function Settings() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-4">
-      <div className="container mx-auto max-w-4xl space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-0 overflow-x-hidden">
+      <div className="container mx-auto w-full max-w-full space-y-8 px-0 sm:px-4">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <SettingsIcon className="h-8 w-8 text-primary" />
