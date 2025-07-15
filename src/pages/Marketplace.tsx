@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ShoppingCart, Upload, Search, TrendingUp } from 'lucide-react';
 
 
-
 export default function Marketplace() {
   const initialMockProducts = [
     {

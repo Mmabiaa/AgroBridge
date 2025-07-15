@@ -89,8 +89,12 @@ const mockProducts: Product[] = [
   }
 ];
 
-export function LiveMarketplace() {
-  const [products, setProducts] = useState<Product[]>(mockProducts);
+interface LiveMarketplaceProps {
+  products: Product[];
+  searchFilters: any;
+}
+
+export function LiveMarketplace({ products, searchFilters }: LiveMarketplaceProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
