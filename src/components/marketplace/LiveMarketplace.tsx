@@ -104,7 +104,8 @@ export function LiveMarketplace() {
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.farmer.toLowerCase().includes(searchTerm.toLowerCase());
+                         product.farmer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     const matchesLocation = selectedLocation === 'all' || product.location.includes(selectedLocation);
     
