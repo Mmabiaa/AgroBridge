@@ -55,20 +55,76 @@ export function VoiceCommands() {
 
   // Navigation command mapping (English only)
   const navigationCommands: { [key: string]: string } = {
+    // Dashboard
     'go to dashboard': '/dashboard',
     'open dashboard': '/dashboard',
-    'show me the weather': '/dashboard', // or '/weather' if you have a weather page
+    'show me the dashboard': '/dashboard',
+    'take me home': '/dashboard',
+    'home screen': '/dashboard',
+  
+    // Weather
+    'show me the weather': '/weather',
+    'check weather forecast': '/weather',
+    'what is the weather': '/weather',
+    'weather update': '/weather',
+    'today\'s weather': '/weather',
+    'how is the weather': '/weather',
+  
+    // Crop Disease
     'open crop disease page': '/crop-disease-detection',
+    'check crop health': '/crop-disease-detection',
+    'scan my crops': '/crop-disease-detection',
+    'detect crop disease': '/crop-disease-detection',
+  
+    // Community
     'open community': '/community',
-    'log me out': '/logout',
+    'go to community page': '/community',
+    'join the community': '/community',
+    'see community updates': '/community',
+  
+    // Market
     'take me to the market': '/marketplace',
     'open market': '/marketplace',
     'go to market': '/marketplace',
-    'open voice commands': '/voice-commands',
+    'market prices today': '/marketplace',
+    'show me the market': '/marketplace',
+    'check crop prices': '/marketplace',
+    'how much is maize': '/marketplace',
+  
+    // AgriGPT Chat
     'open chat': '/agrigpt',
     'open agrigpt': '/agrigpt',
-    // Add more as needed
+    'talk to the bot': '/agrigpt',
+    'ask a question': '/agrigpt',
+    'agriculture advice': '/agrigpt',
+  
+    // Voice Commands
+    'open voice commands': '/voice-commands',
+    'show voice options': '/voice-commands',
+    'help with voice commands': '/voice-commands',
+  
+    // New: Tips & Training
+    'show me farming tips': '/training',
+    'open training': '/training',
+    'access learning center': '/training',
+  
+    // New: Support
+    'open support': '/support',
+    'need help': '/support',
+    'contact support': '/support',
+    'report a problem': '/support',
+  
+    // New: NGO or Aid Info
+    'find ngo help': '/ngo',
+    'open ngo programs': '/ngo',
+    'any farming support': '/ngo',
+  
+    // Logout
+    'log me out': '/logout',
+    'logout': '/logout',
+    'sign me out': '/logout'
   };
+  
 
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
