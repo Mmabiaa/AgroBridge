@@ -45,14 +45,84 @@ const voiceCommands = {
   ]
 };
 
+const englishIntents = [
+  {
+    route: '/dashboard',
+    phrases: [
+      'dashboard', 'go to dashboard', 'open dashboard', 'show dashboard', 'main page', 'home', 'main screen'
+    ]
+  },
+  {
+    route: '/marketplace',
+    phrases: [
+      'market', 'marketplace', 'go to market', 'open market', 'show market', 'market prices', 'market page', 'market price'
+    ]
+  },
+  {
+    route: '/agrigpt',
+    phrases: [
+      'chat', 'chatbot', 'agri gpt', 'agri bot', 'open chat', 'ask question', 'open agrigpt', 'agri gpt chat'
+    ]
+  },
+  {
+    route: '/crop-disease-detection',
+    phrases: [
+      'crop disease', 'detect disease', 'scan crops', 'scan my crops', 'disease detection', 'crop health', 'diagnose crops', 'diagnose my crops'
+    ]
+  },
+  {
+    route: '/community',
+    phrases: [
+      'community', 'open community', 'farmer community', 'ask community', 'join community'
+    ]
+  },
+  {
+    route: '/voice-commands',
+    phrases: [
+      'voice', 'voice commands', 'open voice', 'voice control', 'voice navigation'
+    ]
+  },
+  {
+    route: '/support',
+    phrases: [
+      'support', 'help', 'open support', 'open help', 'show help', 'show support', 'get help'
+    ]
+  },
+  {
+    route: '/settings',
+    phrases: [
+      'settings', 'open settings', 'show settings', 'preferences', 'account settings'
+    ]
+  },
+  {
+    route: '/notifications',
+    phrases: [
+      'notifications', 'show notifications', 'open notifications', 'alerts', 'show alerts'
+    ]
+  }
+];
+
+const englishSuggestions = [
+  'Open Support',
+  'Open Market',
+  'Chat',
+  'Scan crops',
+  'Open Community',
+  'Show Help',
+  'Open Settings',
+  'Show Notifications'
+];
+
 export function VoiceCommands() {
   const [isListening, setIsListening] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [transcript, setTranscript] = useState('');
   const [response, setResponse] = useState('');
   const [interimTranscript, setInterimTranscript] = useState('');
+  const [commandHistory, setCommandHistory] = useState<{cmd: string, result: string}[]>([]);
   const recognitionRef = useRef<any>(null);
   const navigate = useNavigate();
+  const listeningTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Navigation command mapping (English only)
   const navigationCommands: { [key: string]: string } = {
@@ -137,7 +207,7 @@ export function VoiceCommands() {
     const recognitionInstance = new SpeechRecognition();
     recognitionInstance.continuous = false;
     recognitionInstance.interimResults = true;
-    recognitionInstance.lang = getLanguageCode(selectedLanguage);
+    recognitionInstance.lang = 'en-US';
 
     recognitionInstance.onresult = (event: any) => {
       let interim = '';
@@ -163,7 +233,20 @@ export function VoiceCommands() {
     };
 
     recognitionRef.current = recognitionInstance;
-  }, [selectedLanguage]);
+  }, []);
+
+  // Keyboard shortcut (spacebar) to start/stop listening
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.code === 'Space' && !isListening) {
+        startListening();
+      } else if (e.code === 'Space' && isListening) {
+        stopListening();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isListening]);
 
   const getLanguageCode = (lang: string) => {
     const codes: { [key: string]: string } = {
@@ -182,6 +265,7 @@ export function VoiceCommands() {
       setInterimTranscript('');
       setResponse('');
       recognitionRef.current.start();
+      if (listeningTimeout.current) clearTimeout(listeningTimeout.current);
     }
   };
 
@@ -194,66 +278,52 @@ export function VoiceCommands() {
       } else {
         setResponse('No command detected. Please try again.');
       }
+      // Start continuous listening after a short delay
+      listeningTimeout.current = setTimeout(() => {
+        startListening();
+      }, 3000); // 3 seconds pause before listening again
     }
   };
 
+  function findIntent(text: string) {
+    const norm = text.trim().toLowerCase();
+    for (const intent of englishIntents) {
+      for (const phrase of intent.phrases) {
+        if (norm === phrase || norm.includes(phrase) || phrase.includes(norm)) {
+          return intent;
+        }
+      }
+    }
+    // Fuzzy/keyword match
+    for (const intent of englishIntents) {
+      for (const phrase of intent.phrases) {
+        const phraseWords = phrase.split(/\s+/).filter(w => w.length > 2);
+        const normWords = norm.split(/\s+/).filter(w => w.length > 2);
+        if (phraseWords.some(w => normWords.includes(w))) {
+          return intent;
+        }
+      }
+    }
+    return null;
+  }
+
   const processVoiceCommand = (command: string) => {
-    if (selectedLanguage === 'en') {
-      const normalized = command.trim().toLowerCase();
-      let matchedRoute = null;
-      for (const phrase in navigationCommands) {
-        if (normalized.includes(phrase)) {
-          matchedRoute = navigationCommands[phrase];
-          break;
-        }
-      }
-      if (matchedRoute) {
-        setResponse(`Navigating to ${matchedRoute.replace('/', '').replace('-', ' ')}`);
-        if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance(`Navigating to ${matchedRoute.replace('/', '').replace('-', ' ')}`);
-          utterance.lang = 'en-US';
-          speechSynthesis.speak(utterance);
-        }
-        setTimeout(() => navigate(matchedRoute), 1200); // Give time for TTS feedback
-      } else {
-        setResponse("Sorry, I didn't understand that command.");
-        if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance("Sorry, I didn't understand that command.");
-          utterance.lang = 'en-US';
-          speechSynthesis.speak(utterance);
-        }
-      }
-    } else {
-      // Fallback: keep your previous logic for other languages
-      const responses: { [key: string]: string[] } = {
-        tw: [
-          'Wiem: Owia hyerɛn, 28°C. Tebea pa ma duadi.',
-          'Afuo Tebea: Nneɛma nyinaa rekɔ yiye. Asase nsuo yɛ 65%.',
-          'Aguadi Bo: Ntomato ₦450/kg, Gyeene ₦280/kg.',
-          'Mmoawa Kɔkɔbɔ: Asiane kakraa bi wɔ hɔ. Kɔ so hwɛ.',
-          'Nsu Gu: Nsu gu a edi hɔ no bɛyɛ ɔkyena anɔpa 6.'
-        ],
-        ha: [
-          'Yanayi: Rana, 28°C. Yanayi mai kyau don shuki.',
-          'Halin Gona: Komai yana tafiya da kyau. Ruwan ƙasa 65%.',
-          'Farashin Kasuwa: Tumatur ₦450/kg, Albasa ₦280/kg.',
-          'Faɗakarwar Kwari: Ƙaramin hadari. Ci gaba da kiyayewa.',
-          'Ban Ruwa: Ana shirin ban ruwa gobe da safe 6.'
-        ],
-        yo: [
-          'Oju-ọjọ: Oorun, 28°C. Ipo to dara fun gbingbin.',
-          'Ipo Oko: Gbogbo nkan n lo daradara. Omi ile ni 65%.',
-          'Idiyele Oja: Tomato ₦450/kg, Alubosa ₦280/kg.',
-          'Ikilọ Kokoro: Ewu kekere. Tẹsiwaju lati ṣayẹwo.',
-          'Irin Omi: Irin omi to kan wa ni ọla ni 6 owuro.'
-        ]
-      };
-      const langResponses = responses[selectedLanguage] || responses.en;
-      const randomResponse = langResponses[Math.floor(Math.random() * langResponses.length)];
-      setResponse(randomResponse);
+    const intent = findIntent(command);
+    if (intent) {
+      setResponse(`Navigating to ${intent.route.replace('/', '').replace('-', ' ')}`);
+      setCommandHistory(prev => [{cmd: command, result: `Navigated to ${intent.route}`} , ...prev.slice(0, 9)]);
       if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(randomResponse);
-        utterance.lang = getLanguageCode(selectedLanguage);
+        const utterance = new SpeechSynthesisUtterance(`Navigating to ${intent.route.replace('/', '').replace('-', ' ')}`);
+        utterance.lang = 'en-US';
+        speechSynthesis.speak(utterance);
+      }
+      setTimeout(() => navigate(intent.route), 1200);
+    } else {
+      setResponse("Command not recognized. Try: " + englishSuggestions.join(', '));
+      setCommandHistory(prev => [{cmd: command, result: 'Not recognized'}, ...prev.slice(0, 9)]);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance("Command not recognized. Please try again.");
+        utterance.lang = 'en-US';
         speechSynthesis.speak(utterance);
       }
     }
@@ -262,7 +332,7 @@ export function VoiceCommands() {
   const speakCommand = (command: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(command);
-      utterance.lang = getLanguageCode(selectedLanguage);
+      utterance.lang = 'en-US';
       speechSynthesis.speak(utterance);
     }
   };
@@ -303,13 +373,9 @@ export function VoiceCommands() {
               size="lg"
               variant={isListening ? "destructive" : "default"}
               onClick={isListening ? stopListening : startListening}
-              className="h-20 w-20 rounded-full"
+              className="h-20 w-20 rounded-full text-2xl"
             >
-              {isListening ? (
-                <MicOff className="h-8 w-8" />
-              ) : (
-                <Mic className="h-8 w-8" />
-              )}
+              {isListening ? '🎤' : '🎙️'}
             </Button>
             {isListening && (
               <Button
@@ -326,7 +392,7 @@ export function VoiceCommands() {
             {isListening ? (
               <Badge variant="destructive">Listening...</Badge>
             ) : (
-              <Badge variant="outline">Tap to speak</Badge>
+              <Badge variant="outline">Tap or press Space to speak</Badge>
             )}
           </div>
         </div>
@@ -335,7 +401,13 @@ export function VoiceCommands() {
         {isListening && (
           <div className="p-3 bg-muted/50 rounded-lg text-center">
             <h4 className="font-medium mb-2">You are saying:</h4>
-            <p className="text-lg font-mono">{interimTranscript || transcript || '...'}</p>
+            <p className="text-lg font-mono">
+              {interimTranscript || transcript || '...'}
+            </p>
+            {/* Highlight recognized intent if any */}
+            {findIntent(interimTranscript || transcript) && (
+              <p className="text-green-700 font-semibold mt-2">Intent: {findIntent(interimTranscript || transcript)?.route.replace('/', '').replace('-', ' ')}</p>
+            )}
           </div>
         )}
 
@@ -355,7 +427,7 @@ export function VoiceCommands() {
                     variant="ghost"
                     onClick={() => speakCommand(response)}
                   >
-                    <Volume2 className="h-4 w-4" />
+                    🔊
                   </Button>
                 </div>
                 <p className="text-sm">{response}</p>
@@ -364,19 +436,27 @@ export function VoiceCommands() {
           </div>
         )}
 
-        {/* Sample Commands */}
+        {/* Command History */}
         <div className="space-y-3">
-          <h4 className="font-medium">Sample Commands:</h4>
-          <div className="space-y-2">
-            {voiceCommands[selectedLanguage as keyof typeof voiceCommands]?.map((command, index) => (
-              <div 
-                key={index}
-                className="flex items-center justify-between p-2 bg-muted/30 rounded cursor-pointer hover:bg-muted/50 transition-colors"
-                onClick={() => speakCommand(command)}
-              >
-                <span className="text-sm">{command}</span>
-                <Volume2 className="h-4 w-4 text-muted-foreground" />
+          <h4 className="font-medium">Recent Voice Commands:</h4>
+          <div className="space-y-1">
+            {commandHistory.length === 0 && <p className="text-xs text-muted-foreground">No commands yet.</p>}
+            {commandHistory.map((item, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-xs">
+                <span className="font-mono bg-muted/30 px-2 py-1 rounded">{item.cmd}</span>
+                <span className="text-muted-foreground">→</span>
+                <span className="font-semibold">{item.result}</span>
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Suggestions */}
+        <div className="space-y-3">
+          <h4 className="font-medium">Try Saying:</h4>
+          <div className="flex flex-wrap gap-2">
+            {englishSuggestions.map((s, i) => (
+              <span key={i} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs cursor-pointer" onClick={() => speakCommand(s)}>{s}</span>
             ))}
           </div>
         </div>
