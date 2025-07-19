@@ -51,6 +51,7 @@ export function VoiceCommands() {
   const [transcript, setTranscript] = useState('');
   const [response, setResponse] = useState('');
   const [recognition, setRecognition] = useState<any>(null);
+  const [interimTranscript, setInterimTranscript] = useState('');
   const navigate = useNavigate();
 
   // Navigation command mapping (English only)
@@ -132,13 +133,21 @@ export function VoiceCommands() {
       const recognitionInstance = new SpeechRecognition();
       
       recognitionInstance.continuous = false;
-      recognitionInstance.interimResults = false;
+      recognitionInstance.interimResults = true;
       recognitionInstance.lang = getLanguageCode(selectedLanguage);
       
       recognitionInstance.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setTranscript(transcript);
-        processVoiceCommand(transcript);
+        let interim = '';
+        let final = '';
+        for (let i = 0; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            final += event.results[i][0].transcript;
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+        setInterimTranscript(interim);
+        if (final) setTranscript(final);
       };
       
       recognitionInstance.onend = () => {
@@ -163,6 +172,7 @@ export function VoiceCommands() {
     if (recognition) {
       setIsListening(true);
       setTranscript('');
+      setInterimTranscript('');
       setResponse('');
       recognition.start();
     }
@@ -172,6 +182,12 @@ export function VoiceCommands() {
     if (recognition) {
       recognition.stop();
       setIsListening(false);
+      // Only process the command after stop
+      if (transcript.trim()) {
+        processVoiceCommand(transcript);
+      } else {
+        setResponse('No command detected. Please try again.');
+      }
     }
   };
 
@@ -276,7 +292,7 @@ export function VoiceCommands() {
 
         {/* Voice Control */}
         <div className="space-y-4">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center gap-4">
             <Button
               size="lg"
               variant={isListening ? "destructive" : "default"}
@@ -289,8 +305,17 @@ export function VoiceCommands() {
                 <Mic className="h-8 w-8" />
               )}
             </Button>
+            {isListening && (
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={stopListening}
+                className="h-12 w-24 rounded"
+              >
+                Stop
+              </Button>
+            )}
           </div>
-          
           <div className="text-center">
             {isListening ? (
               <Badge variant="destructive">Listening...</Badge>
@@ -300,14 +325,21 @@ export function VoiceCommands() {
           </div>
         </div>
 
+        {/* Live Transcript Preview */}
+        {isListening && (
+          <div className="p-3 bg-muted/50 rounded-lg text-center">
+            <h4 className="font-medium mb-2">You are saying:</h4>
+            <p className="text-lg font-mono">{interimTranscript || transcript || '...'}</p>
+          </div>
+        )}
+
         {/* Transcript and Response */}
-        {transcript && (
+        {!isListening && transcript && (
           <div className="space-y-3">
             <div className="p-3 bg-muted/50 rounded-lg">
               <h4 className="font-medium mb-2">You said:</h4>
               <p className="text-sm">{transcript}</p>
             </div>
-            
             {response && (
               <div className="p-3 bg-primary/10 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
