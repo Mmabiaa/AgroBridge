@@ -32,30 +32,6 @@ const sampleAnswers: Record<string, string> = {
 };
 
 const chatHistory = [
-  {
-    id: 1,
-    type: 'user' as const,
-    message: "What's the best time to plant tomatoes in Northern Ghana?",
-    time: '10:30 AM'
-  },
-  {
-    id: 2,
-    type: 'bot' as const,
-    message: "For Northern Ghana, the best time to plant tomatoes is during the dry season from November to February. The weather is cooler and there's less rainfall, which reduces disease pressure. Make sure to have irrigation available as rainfall is minimal during this period.",
-    time: '10:31 AM'
-  },
-  {
-    id: 3,
-    type: 'user' as const,
-    message: "What about fertilizer recommendations?",
-    time: '10:32 AM'
-  },
-  {
-    id: 4,
-    type: 'bot' as const,
-    message: "For tomatoes, I recommend:\n\n1. **Base application**: NPK 15-15-15 at 200kg/hectare during planting\n2. **Side dressing**: Urea (46-0-0) at 50kg/hectare 3-4 weeks after transplanting\n3. **Organic option**: Well-decomposed compost or poultry manure at 5-10 tons/hectare\n\nApply fertilizers when soil is moist and water immediately after application.",
-    time: '10:32 AM'
-  }
 ];
 
 const preloadedQA = [
