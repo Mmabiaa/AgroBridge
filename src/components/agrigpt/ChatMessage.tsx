@@ -1,14 +1,40 @@
 
+// Guidance for Twi Audio Replies:
+// 1. Record clear .wav files for each common Twi response.
+// 2. Name files consistently, e.g., 001_tomato_leaf_curl.wav, 002_maize_fertilizer.wav, etc.
+// 3. Place all files in /public/audio/twi/.
+// 4. Map English answer text to audio file path in twiAudioMap in AgriGPT.tsx.
+// 5. To add more, record new clips, save in /public/audio/twi/, and update the mapping.
+
 import { Bot, User } from 'lucide-react';
+import { useRef } from 'react';
 
 interface ChatMessageProps {
   id: number;
   type: 'user' | 'bot';
   message: string;
   time: string;
+  audio?: string; // Add optional audio prop
+  image?: string; // Add optional image prop
 }
 
-export function ChatMessage({ type, message, time }: ChatMessageProps) {
+function speakEnglish(text: string) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    window.speechSynthesis.speak(utter);
+  }
+}
+
+export function ChatMessage({ type, message, time, audio, image }: ChatMessageProps) {
+  // Show TTS play button for all bot messages without pre-recorded audio
+  const canSpeak = type === 'bot' && !audio;
+
+  const handleSpeak = () => {
+    speakEnglish(message);
+  };
+
   return (
     <div className={`flex ${type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
       <div className={`flex items-start gap-3 max-w-[85%] ${type === 'user' ? 'flex-row-reverse' : ''}`}>
@@ -28,12 +54,31 @@ export function ChatMessage({ type, message, time }: ChatMessageProps) {
             : 'bg-card text-card-foreground border rounded-tl-sm'
         }`}>
           <p className="text-sm leading-relaxed whitespace-pre-line">{message}</p>
+          {/* Audio player for bot messages with audio */}
+          {type === 'bot' && audio && (
+            <audio controls src={audio} className="mt-2 w-full">
+              Your browser does not support the audio element.
+            </audio>
+          )}
+          {/* TTS play button for all bot messages without pre-recorded audio */}
+          {canSpeak && (
+            <button
+              onClick={handleSpeak}
+              className="mt-2 px-3 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20 transition"
+              title="Play audio"
+            >
+              🔊 Play
+            </button>
+          )}
+          {/* Image preview for user or bot messages */}
+          {image && (
+            <img src={image} alt="attachment" className="mt-2 max-h-40 rounded shadow border" />
+          )}
           <p className={`text-xs mt-2 ${
             type === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
           }`}>
             {time}
           </p>
-          
           {/* Message tail */}
           <div className={`absolute top-4 w-0 h-0 ${
             type === 'user' 

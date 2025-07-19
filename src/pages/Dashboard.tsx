@@ -22,9 +22,12 @@ import {
   MessageSquare,
   Camera,
   Mic,
-  Settings
+  Settings,
+  CloudRain,
+  Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { CropDiseaseDetection } from '@/components/ai/CropDiseaseDetection';
 import { VoiceCommands } from '@/components/ai/VoiceCommands';
 import { InteractiveDashboard } from '@/components/analytics/InteractiveDashboard';
@@ -96,6 +99,73 @@ const quickActions = [
 ];
 
 export default function Dashboard() {
+  // Weather state
+  const [weather, setWeather] = useState({
+    temp: '--',
+    desc: 'Loading...',
+    humidity: '--',
+    wind: '--',
+    icon: 'sun',
+    bg: 'from-yellow-100 to-blue-200',
+    forecast: [] as { day: string; temp: string; icon: string; rain: string }[],
+    error: '' as string | null
+  });
+
+  useEffect(() => {
+    // Use Weatherbit.io API for current weather
+    const fetchWeather = async (lat: number, lon: number) => {
+      try {
+        const apiKey = import.meta.env.VITE_WEATHERBIT_API_KEY;
+        const url = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${apiKey}`;
+        const res = await fetch(url);
+        if (!res.ok) {
+          const text = await res.text();
+          console.error('Weatherbit API error:', res.status, text);
+          setWeather(w => ({ ...w, desc: 'Weather unavailable', error: `API error: ${res.status} ${text}` }));
+          return;
+        }
+        const data = await res.json();
+        const weatherData = data.data[0];
+        // Map Weatherbit codes to UI
+        const sky = weatherData.weather.description.toLowerCase();
+        let icon = 'sun', bg = 'from-yellow-100 to-blue-200';
+        if (sky.includes('cloud')) { icon = 'cloud'; bg = 'from-gray-300 to-blue-200'; }
+        if (sky.includes('rain')) { icon = 'cloud-rain'; bg = 'from-blue-400 to-gray-500'; }
+        if (sky.includes('clear')) { icon = 'sun'; bg = 'from-yellow-100 to-blue-200'; }
+        if (sky.includes('thunder')) { icon = 'zap'; bg = 'from-gray-400 to-yellow-200'; }
+        setWeather({
+          temp: Math.round(weatherData.temp) + '°C',
+          desc: weatherData.weather.description.replace(/\b\w/g, l => l.toUpperCase()),
+          humidity: weatherData.rh + '%',
+          wind: Math.round(weatherData.wind_spd) + ' km/h',
+          icon,
+          bg,
+          forecast: [],
+          error: null
+        });
+      } catch (e: any) {
+        console.error('Weatherbit fetch error:', e);
+        setWeather(w => ({ ...w, desc: 'Weather unavailable', error: e?.message || String(e) }));
+      }
+    };
+    // Try to get user location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          fetchWeather(pos.coords.latitude, pos.coords.longitude);
+        },
+        (err) => {
+          // Fallback to Accra, GH
+          fetchWeather(5.6037, -0.1870);
+        },
+        { timeout: 10000 }
+      );
+    } else {
+      // Fallback to Accra, GH
+      fetchWeather(5.6037, -0.1870);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-0 overflow-x-hidden">
       <div className="container mx-auto w-full max-w-full space-y-8 px-0 sm:px-4">
@@ -154,7 +224,7 @@ export default function Dashboard() {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Weather Card */}
-            <Card className="shadow-soft w-full max-w-full">
+            <Card className={`shadow-soft w-full max-w-full bg-gradient-to-br ${weather.bg}`}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Cloud className="h-5 w-5" />
@@ -167,40 +237,26 @@ export default function Dashboard() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-2xl sm:text-3xl font-bold">28°C</p>
-                        <p className="text-muted-foreground text-sm sm:text-base">Partly Cloudy</p>
+                        <p className="text-2xl sm:text-3xl font-bold">{weather.temp}</p>
+                        <p className="text-muted-foreground text-sm sm:text-base">{weather.desc}</p>
+                        {weather.error && (
+                          <p className="text-xs text-red-500 break-all mt-2">{weather.error}</p>
+                        )}
                       </div>
-                      <Sun className="h-10 w-10 sm:h-12 sm:w-12 text-warning" />
+                      {weather.icon === 'sun' && <Sun className="h-10 w-10 sm:h-12 sm:w-12 text-warning" />}
+                      {weather.icon === 'cloud' && <Cloud className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground" />}
+                      {weather.icon === 'cloud-rain' && <CloudRain className="h-10 w-10 sm:h-12 sm:w-12 text-sky" />}
+                      {weather.icon === 'zap' && <Zap className="h-10 w-10 sm:h-12 sm:w-12 text-yellow-500" />}
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className="flex items-center gap-2">
                         <Droplets className="h-4 w-4 text-sky" />
-                        <span>Humidity: 65%</span>
+                        <span>Humidity: {weather.humidity}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Wind className="h-4 w-4 text-muted-foreground" />
-                        <span>Wind: 12 km/h</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Forecast */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Today</span>
-                      <div className="flex items-center gap-2">
-                        <Sun className="h-4 w-4" />
-                        <span className="text-sm">28°C</span>
-                        <span className="text-xs text-sky">10%</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Tomorrow</span>
-                      <div className="flex items-center gap-2">
-                        <Cloud className="h-4 w-4" />
-                        <span className="text-sm">26°C</span>
-                        <span className="text-xs text-sky">40%</span>
+                        <span>Wind: {weather.wind}</span>
                       </div>
                     </div>
                   </div>
