@@ -107,56 +107,63 @@ export default function Dashboard() {
     wind: '--',
     icon: 'sun',
     bg: 'from-yellow-100 to-blue-200',
-    forecast: [
-      { day: 'Today', temp: '--', icon: 'sun', rain: '--' },
-      { day: 'Tomorrow', temp: '--', icon: 'cloud', rain: '--' }
-    ]
+    forecast: [] as { day: string; temp: string; icon: string; rain: string }[],
+    error: '' as string | null
   });
 
   useEffect(() => {
-    // Example: OpenWeatherMap API (replace with your API key and location logic)
-    const fetchWeather = async () => {
+    // Use Weatherbit.io API for current weather
+    const fetchWeather = async (lat: number, lon: number) => {
       try {
-        const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
-        // Use geolocation or default to Accra, GH
-        const lat = 5.6037, lon = -0.1870;
-        const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${apiKey}`;
+        const apiKey = import.meta.env.VITE_WEATHERBIT_API_KEY;
+        const url = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${apiKey}`;
         const res = await fetch(url);
+        if (!res.ok) {
+          const text = await res.text();
+          console.error('Weatherbit API error:', res.status, text);
+          setWeather(w => ({ ...w, desc: 'Weather unavailable', error: `API error: ${res.status} ${text}` }));
+          return;
+        }
         const data = await res.json();
-        // Map OpenWeatherMap codes to UI
-        const sky = data.current.weather[0].main.toLowerCase();
+        const weatherData = data.data[0];
+        // Map Weatherbit codes to UI
+        const sky = weatherData.weather.description.toLowerCase();
         let icon = 'sun', bg = 'from-yellow-100 to-blue-200';
         if (sky.includes('cloud')) { icon = 'cloud'; bg = 'from-gray-300 to-blue-200'; }
         if (sky.includes('rain')) { icon = 'cloud-rain'; bg = 'from-blue-400 to-gray-500'; }
         if (sky.includes('clear')) { icon = 'sun'; bg = 'from-yellow-100 to-blue-200'; }
         if (sky.includes('thunder')) { icon = 'zap'; bg = 'from-gray-400 to-yellow-200'; }
         setWeather({
-          temp: Math.round(data.current.temp) + '°C',
-          desc: data.current.weather[0].description.replace(/\b\w/g, l => l.toUpperCase()),
-          humidity: data.current.humidity + '%',
-          wind: Math.round(data.current.wind_speed) + ' km/h',
+          temp: Math.round(weatherData.temp) + '°C',
+          desc: weatherData.weather.description.replace(/\b\w/g, l => l.toUpperCase()),
+          humidity: weatherData.rh + '%',
+          wind: Math.round(weatherData.wind_spd) + ' km/h',
           icon,
           bg,
-          forecast: [
-            {
-              day: 'Today',
-              temp: Math.round(data.daily[0].temp.day) + '°C',
-              icon: data.daily[0].weather[0].main.toLowerCase().includes('cloud') ? 'cloud' : data.daily[0].weather[0].main.toLowerCase().includes('rain') ? 'cloud-rain' : 'sun',
-              rain: (data.daily[0].pop * 100).toFixed(0) + '%'
-            },
-            {
-              day: 'Tomorrow',
-              temp: Math.round(data.daily[1].temp.day) + '°C',
-              icon: data.daily[1].weather[0].main.toLowerCase().includes('cloud') ? 'cloud' : data.daily[1].weather[0].main.toLowerCase().includes('rain') ? 'cloud-rain' : 'sun',
-              rain: (data.daily[1].pop * 100).toFixed(0) + '%'
-            }
-          ]
+          forecast: [],
+          error: null
         });
-      } catch (e) {
-        setWeather(w => ({ ...w, desc: 'Weather unavailable' }));
+      } catch (e: any) {
+        console.error('Weatherbit fetch error:', e);
+        setWeather(w => ({ ...w, desc: 'Weather unavailable', error: e?.message || String(e) }));
       }
     };
-    fetchWeather();
+    // Try to get user location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          fetchWeather(pos.coords.latitude, pos.coords.longitude);
+        },
+        (err) => {
+          // Fallback to Accra, GH
+          fetchWeather(5.6037, -0.1870);
+        },
+        { timeout: 10000 }
+      );
+    } else {
+      // Fallback to Accra, GH
+      fetchWeather(5.6037, -0.1870);
+    }
   }, []);
 
   return (
@@ -232,6 +239,9 @@ export default function Dashboard() {
                       <div>
                         <p className="text-2xl sm:text-3xl font-bold">{weather.temp}</p>
                         <p className="text-muted-foreground text-sm sm:text-base">{weather.desc}</p>
+                        {weather.error && (
+                          <p className="text-xs text-red-500 break-all mt-2">{weather.error}</p>
+                        )}
                       </div>
                       {weather.icon === 'sun' && <Sun className="h-10 w-10 sm:h-12 sm:w-12 text-warning" />}
                       {weather.icon === 'cloud' && <Cloud className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground" />}
@@ -249,22 +259,6 @@ export default function Dashboard() {
                         <span>Wind: {weather.wind}</span>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Forecast */}
-                  <div className="space-y-3">
-                    {weather.forecast.map((f, i) => (
-                      <div className="flex items-center justify-between" key={f.day}>
-                        <span className="text-sm font-medium">{f.day}</span>
-                        <div className="flex items-center gap-2">
-                          {f.icon === 'sun' && <Sun className="h-4 w-4" />}
-                          {f.icon === 'cloud' && <Cloud className="h-4 w-4" />}
-                          {f.icon === 'cloud-rain' && <CloudRain className="h-4 w-4" />}
-                          <span className="text-sm">{f.temp}</span>
-                          <span className="text-xs text-sky">{f.rain}</span>
-                        </div>
-                      </div>
-                    ))}
                   </div>
                 </div>
               </CardContent>
