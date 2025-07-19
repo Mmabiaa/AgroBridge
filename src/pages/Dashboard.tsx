@@ -99,29 +99,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-0 overflow-x-hidden">
       <div className="container mx-auto w-full max-w-full space-y-8 px-0 sm:px-4">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full max-w-full">
-          <div>
-            <h1 className="text-3xl font-bold">Farmer Intelligence Hub</h1>
-            <p className="text-muted-foreground">Welcome back, John! Here's your farm overview.</p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Calendar className="h-4 w-4 mr-2" />
-              Schedule
-            </Button>
-            <Link to="/notifications">
-              <Button variant="outline" size="sm">
-                <Bell className="h-4 w-4 mr-2" />
-                Notifications
-              </Button>
-            </Link>
-            <Button variant="outline" size="sm">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
-          </div>
-        </div>
+        
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-full">
@@ -168,19 +146,8 @@ export default function Dashboard() {
           <VoiceCommands />
         </div>
 
-        {/* Analytics Dashboard */}
-        <Card className="shadow-soft w-full max-w-full">
-          <CardHeader>
-            <CardTitle>Farm Analytics Overview</CardTitle>
-            <CardDescription>Real-time insights into your farm performance</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <InteractiveDashboard />
-          </CardContent>
-        </Card>
-
-        {/* Notifications */}
-        <NotificationCenter />
+      
+        
 
         {/* Main Dashboard Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 w-full max-w-full">
@@ -334,78 +301,9 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Right Column */}
-          <div className="space-y-6">
-            {/* Alerts */}
-            <Card className="shadow-soft w-full max-w-full">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5" />
-                  Smart Alerts
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <div className="w-2 h-2 rounded-full mt-2 bg-red-500 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-sm text-red-800">Pest Alert: Fall Armyworm</h4>
-                    <p className="text-xs text-red-600 mb-2">High risk detected in maize field</p>
-                    <p className="text-xs text-red-500">2 hours ago</p>
-                  </div>
-                </div>
-                
-                <div className="flex gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <div className="w-2 h-2 rounded-full mt-2 bg-yellow-500 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-sm text-yellow-800">Weather Warning</h4>
-                    <p className="text-xs text-yellow-600 mb-2">Heavy rainfall expected in 48 hours</p>
-                    <p className="text-xs text-yellow-500">6 hours ago</p>
-                  </div>
-                </div>
-                
-                <Link to="/notifications">
-                  <Button variant="outline" size="sm" className="w-full">
-                    <Eye className="h-4 w-4 mr-2" />
-                    View All Alerts
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+          
 
-            {/* Today's Tasks */}
-            <Card className="shadow-soft w-full max-w-full">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5" />
-                  Smart Recommendations
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <input type="checkbox" className="mt-1 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm">Apply organic pesticide to maize field</p>
-                    <Badge variant="destructive" className="mt-1 text-xs">AI Recommended</Badge>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <input type="checkbox" className="mt-1 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm">Harvest tomatoes - optimal ripeness detected</p>
-                    <Badge variant="default" className="mt-1 text-xs">Camera Analysis</Badge>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <input type="checkbox" className="mt-1 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm">Prepare drainage for expected rainfall</p>
-                    <Badge variant="secondary" className="mt-1 text-xs">Weather Based</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+           
 
             {/* AgriGPT Quick Chat */}
             <Card className="shadow-soft w-full max-w-full">
@@ -440,6 +338,5 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
