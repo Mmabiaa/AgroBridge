@@ -134,44 +134,50 @@ export default function AgriGPT() {
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const [chat, setChat] = useState(chatHistory);
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      const userMsg = {
-        id: chat.length + 1,
-        type: 'user' as const,
-        message: message,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setChat(prev => [...prev, userMsg]);
-      const agriAnswer = findAgriGPTAnswer(message);
-      if (agriAnswer) {
-        const audio = twiAudioMap[agriAnswer];
+  // New: handle sending message with attachments
+  const handleSendMessage = (attachments?: { audio?: Blob; image?: File }) => {
+    if (!message.trim() && !attachments?.audio && !attachments?.image) return;
+    const userMsg: any = {
+      id: chat.length + 1,
+      type: 'user' as const,
+      message: message,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    if (attachments?.audio) {
+      userMsg.audio = URL.createObjectURL(attachments.audio);
+    }
+    if (attachments?.image) {
+      userMsg.image = URL.createObjectURL(attachments.image);
+    }
+    setChat(prev => [...prev, userMsg]);
+    // Bot reply logic remains unchanged
+    const agriAnswer = findAgriGPTAnswer(message);
+    if (agriAnswer) {
+      const audio = twiAudioMap[agriAnswer];
+      setChat(prev => [
+        ...prev,
+        {
+          id: prev.length + 1,
+          type: 'bot' as const,
+          message: agriAnswer,
+          audio: audio || undefined,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+    } else {
+      setTimeout(() => {
         setChat(prev => [
           ...prev,
           {
             id: prev.length + 1,
             type: 'bot' as const,
-            message: agriAnswer,
-            audio: audio || undefined,
+            message: "Sorry, I don’t know that yet. Can you ask another way?",
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
-      } else {
-        // Fallback: simulate backend call (replace with real API call)
-        setTimeout(() => {
-          setChat(prev => [
-            ...prev,
-            {
-              id: prev.length + 1,
-              type: 'bot' as const,
-              message: "Sorry, I don’t know that yet. Can you ask another way?",
-              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            }
-          ]);
-        }, 1000);
-      }
-      setMessage('');
+      }, 1000);
     }
+    setMessage('');
   };
 
   const handleVoiceToggle = () => {
@@ -283,6 +289,7 @@ export default function AgriGPT() {
                         message={msg.message}
                         time={msg.time}
                         audio={msg.audio}
+                        image={msg.image}
                       />
                     ))}
                   </div>

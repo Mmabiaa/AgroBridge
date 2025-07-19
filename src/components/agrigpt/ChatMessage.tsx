@@ -7,6 +7,7 @@
 // 5. To add more, record new clips, save in /public/audio/twi/, and update the mapping.
 
 import { Bot, User } from 'lucide-react';
+import { useRef } from 'react';
 
 interface ChatMessageProps {
   id: number;
@@ -14,9 +15,27 @@ interface ChatMessageProps {
   message: string;
   time: string;
   audio?: string; // Add optional audio prop
+  image?: string; // Add optional image prop
 }
 
-export function ChatMessage({ type, message, time, audio }: ChatMessageProps) {
+export function ChatMessage({ type, message, time, audio, image }: ChatMessageProps) {
+  const synthRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  // Simple language check: only allow TTS for English (no Twi audio, no audio prop)
+  const isEnglish = !audio && /^[a-zA-Z0-9\s.,'"!?-]+$/.test(message);
+
+  const handleSpeak = () => {
+    if ('speechSynthesis' in window) {
+      if (synthRef.current) {
+        window.speechSynthesis.cancel();
+      }
+      const utter = new window.SpeechSynthesisUtterance(message);
+      utter.lang = 'en-US';
+      synthRef.current = utter;
+      window.speechSynthesis.speak(utter);
+    }
+  };
+
   return (
     <div className={`flex ${type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
       <div className={`flex items-start gap-3 max-w-[85%] ${type === 'user' ? 'flex-row-reverse' : ''}`}>
@@ -42,12 +61,25 @@ export function ChatMessage({ type, message, time, audio }: ChatMessageProps) {
               Your browser does not support the audio element.
             </audio>
           )}
+          {/* English TTS play button for bot messages */}
+          {type === 'bot' && isEnglish && (
+            <button
+              onClick={handleSpeak}
+              className="mt-2 px-3 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20 transition"
+              title="Play English audio"
+            >
+              🔊 Play
+            </button>
+          )}
+          {/* Image preview for user or bot messages */}
+          {image && (
+            <img src={image} alt="attachment" className="mt-2 max-h-40 rounded shadow border" />
+          )}
           <p className={`text-xs mt-2 ${
             type === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
           }`}>
             {time}
           </p>
-          
           {/* Message tail */}
           <div className={`absolute top-4 w-0 h-0 ${
             type === 'user' 
