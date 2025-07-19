@@ -17,7 +17,9 @@ import {
   Star,
   Phone,
   Clock,
-  Truck
+  Truck,
+  Minus,
+  Plus
 } from 'lucide-react';
 import { getProducts } from '@/lib/api';
 
@@ -36,6 +38,10 @@ interface Product {
   isOrganic: boolean;
   harvestDate: string;
   deliveryOptions: string[];
+  description?: string;
+  minOrder?: number;
+  maxOrder?: number;
+  stockStatus?: string;
 }
 
 const mockProducts: Product[] = [
@@ -92,14 +98,17 @@ const mockProducts: Product[] = [
 interface LiveMarketplaceProps {
   products: Product[];
   searchFilters: any;
+  onBuyProduct: (product: Product, quantity: number) => void;
+  userBalance: number;
 }
 
-export function LiveMarketplace({ products, searchFilters }: LiveMarketplaceProps) {
+export function LiveMarketplace({ products, searchFilters, onBuyProduct, userBalance }: LiveMarketplaceProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [priceUpdates, setPriceUpdates] = useState<{ [key: string]: number }>({});
+  const [selectedQuantities, setSelectedQuantities] = useState<{ [key: string]: number }>({});
 
   // Remove useEffect that fetches from backend
   // useEffect(() => {
@@ -142,6 +151,30 @@ export function LiveMarketplace({ products, searchFilters }: LiveMarketplaceProp
   const startChat = (farmerId: string, farmerName: string) => {
     // This would open a chat interface
     console.log(`Starting chat with ${farmerName} (${farmerId})`);
+  };
+
+  const handleQuantityChange = (productId: string, change: number) => {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    const currentQty = selectedQuantities[productId] || product.minOrder || 1;
+    const newQty = Math.max(product.minOrder || 1, Math.min(product.maxOrder || product.quantity, currentQty + change));
+    
+    setSelectedQuantities(prev => ({
+      ...prev,
+      [productId]: newQty
+    }));
+  };
+
+  const handleBuyNow = (product: Product) => {
+    const quantity = selectedQuantities[product.id] || product.minOrder || 1;
+    onBuyProduct(product, quantity);
+    // Reset quantity after purchase
+    setSelectedQuantities(prev => {
+      const newState = { ...prev };
+      delete newState[product.id];
+      return newState;
+    });
   };
 
   return (
@@ -235,6 +268,12 @@ export function LiveMarketplace({ products, searchFilters }: LiveMarketplaceProp
                   <span className="text-sm font-medium">{product.rating}</span>
                   <span className="text-sm text-muted-foreground">• by {product.farmer}</span>
                 </div>
+
+                {product.description && (
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {product.description}
+                  </p>
+                )}
               </div>
             </CardHeader>
             
@@ -242,7 +281,7 @@ export function LiveMarketplace({ products, searchFilters }: LiveMarketplaceProp
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-bold text-primary">
-                    ₦{product.price}
+                    ₵{product.price}
                   </span>
                   <span className="text-sm text-muted-foreground">/{product.unit}</span>
                   {getPriceTrend(product)}
@@ -255,7 +294,7 @@ export function LiveMarketplace({ products, searchFilters }: LiveMarketplaceProp
                 
                 {product.price !== product.previousPrice && (
                   <span className="text-sm text-muted-foreground line-through">
-                    ₦{product.previousPrice}
+                    ₵{product.previousPrice}
                   </span>
                 )}
               </div>
@@ -271,10 +310,22 @@ export function LiveMarketplace({ products, searchFilters }: LiveMarketplaceProp
                   <span className="font-medium">{new Date(product.harvestDate).toLocaleDateString()}</span>
                 </div>
                 
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Min/Max Order:</span>
+                  <span className="font-medium">{product.minOrder || 1} - {product.maxOrder || product.quantity} {product.unit}</span>
+                </div>
+                
                 <div className="flex items-center gap-1">
                   <Truck className="h-4 w-4 text-muted-foreground" />
                   <span className="text-xs text-muted-foreground">
                     {product.deliveryOptions.join(', ')}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center pt-2 border-t">
+                  <span className="text-muted-foreground">Total for {selectedQuantities[product.id] || product.minOrder || 1} {product.unit}:</span>
+                  <span className="text-lg font-bold text-primary">
+                    ₵{(product.price * (selectedQuantities[product.id] || product.minOrder || 1)).toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -282,9 +333,32 @@ export function LiveMarketplace({ products, searchFilters }: LiveMarketplaceProp
               <Separator />
               
               <div className="flex gap-2">
+                <div className="flex items-center gap-2 border rounded-md px-2 py-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleQuantityChange(product.id, -1)}
+                    disabled={!selectedQuantities[product.id] || selectedQuantities[product.id] <= (product.minOrder || 1)}
+                  >
+                    <Minus className="h-3 w-3" />
+                  </Button>
+                  <span className="text-sm font-medium min-w-[2rem] text-center">
+                    {selectedQuantities[product.id] || product.minOrder || 1}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleQuantityChange(product.id, 1)}
+                    disabled={selectedQuantities[product.id] >= (product.maxOrder || product.quantity)}
+                  >
+                    <Plus className="h-3 w-3" />
+                  </Button>
+                </div>
+                
                 <Button 
                   className="flex-1"
-                  onClick={() => console.log(`Buying ${product.name}`)}
+                  onClick={() => handleBuyNow(product)}
+                  disabled={userBalance < (product.price * (selectedQuantities[product.id] || product.minOrder || 1))}
                 >
                   <ShoppingCart className="h-4 w-4 mr-2" />
                   Buy Now
