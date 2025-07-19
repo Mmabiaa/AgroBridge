@@ -346,18 +346,11 @@ export default function AgriGPT() {
                   onQuestionClick={handleQuestionClick}
                 />
 
-                <ImageUpload />
+                
 
                 <ExpertContact />
 
-                <VoiceControls
-                  isListening={isListening}
-                  isSpeaking={isSpeaking}
-                  onVoiceToggle={handleVoiceToggle}
-                  onSpeakToggle={handleSpeakToggle}
-                  currentLanguage={currentLanguage}
-                  onLanguageChange={handleLanguageChange}
-                />
+                
               </div>
             </ScrollArea>
           </div>
