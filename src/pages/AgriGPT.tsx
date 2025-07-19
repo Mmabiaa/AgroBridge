@@ -200,14 +200,13 @@ export default function AgriGPT() {
     // Use sampleAnswers for quick questions, fallback to agriGPT knowledge base for others
     const quickAnswer = sampleAnswers[question];
     if (quickAnswer) {
-      const audio = twiAudioMap[quickAnswer];
+      // Do NOT set audio for quick questions, so TTS is always used
       setChat(prev => [
         ...prev,
         {
           id: prev.length + 1,
           type: 'bot' as const,
           message: quickAnswer,
-          audio: audio || undefined,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);

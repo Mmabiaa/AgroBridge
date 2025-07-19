@@ -18,22 +18,21 @@ interface ChatMessageProps {
   image?: string; // Add optional image prop
 }
 
-export function ChatMessage({ type, message, time, audio, image }: ChatMessageProps) {
-  const synthRef = useRef<SpeechSynthesisUtterance | null>(null);
+function speakEnglish(text: string) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    window.speechSynthesis.speak(utter);
+  }
+}
 
-  // Simple language check: only allow TTS for English (no Twi audio, no audio prop)
-  const isEnglish = !audio && /^[a-zA-Z0-9\s.,'"!?-]+$/.test(message);
+export function ChatMessage({ type, message, time, audio, image }: ChatMessageProps) {
+  // Show TTS play button for all bot messages without pre-recorded audio
+  const canSpeak = type === 'bot' && !audio;
 
   const handleSpeak = () => {
-    if ('speechSynthesis' in window) {
-      if (synthRef.current) {
-        window.speechSynthesis.cancel();
-      }
-      const utter = new window.SpeechSynthesisUtterance(message);
-      utter.lang = 'en-US';
-      synthRef.current = utter;
-      window.speechSynthesis.speak(utter);
-    }
+    speakEnglish(message);
   };
 
   return (
@@ -61,12 +60,12 @@ export function ChatMessage({ type, message, time, audio, image }: ChatMessagePr
               Your browser does not support the audio element.
             </audio>
           )}
-          {/* English TTS play button for bot messages */}
-          {type === 'bot' && isEnglish && (
+          {/* TTS play button for all bot messages without pre-recorded audio */}
+          {canSpeak && (
             <button
               onClick={handleSpeak}
               className="mt-2 px-3 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20 transition"
-              title="Play English audio"
+              title="Play audio"
             >
               🔊 Play
             </button>
