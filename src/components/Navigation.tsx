@@ -40,6 +40,7 @@ const languages = ['English', 'Twi', 'Hausa', 'Yoruba'];
 export const Navigation = () => {
   const location = useLocation();
   const [currentLang, setCurrentLang] = useState('English');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -53,7 +54,7 @@ export const Navigation = () => {
           <Link
             key={item.href}
             to={item.href}
-            onClick={onItemClick}
+            onClick={() => { onItemClick(); }}
             className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
               active 
                 ? 'bg-primary text-primary-foreground shadow-soft' 
@@ -131,7 +132,7 @@ export const Navigation = () => {
           <div className="lg:hidden flex items-center gap-2">
             <ThemeToggle />
             <LanguageSelector />
-            <Sheet>
+            <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <Menu size={20} />
@@ -139,7 +140,7 @@ export const Navigation = () => {
               </SheetTrigger>
               <SheetContent side="right" className="w-72">
                 <div className="flex flex-col gap-4 mt-8">
-                  <NavItems mobile onItemClick={() => {}} />
+                  <NavItems mobile onItemClick={() => setMobileNavOpen(false)} />
                   
                   <div className="border-t pt-4 space-y-2">
                     <Link to="/search" className="w-full">

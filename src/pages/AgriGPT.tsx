@@ -11,7 +11,7 @@ import { QuickQuestions } from '@/components/agrigpt/QuickQuestions';
 import { ImageUpload } from '@/components/agrigpt/ImageUpload';
 import { ExpertContact } from '@/components/agrigpt/ExpertContact';
 import { VoiceControls } from '@/components/agrigpt/VoiceControls';
-import { greetings, agriQA } from '@/data/agrigpt_knowledge';
+import { getAgriQAAnswer, greetings } from '@/data/agrigpt_knowledge';
 
 const sampleQuestions = [
   "How do I treat tomato leaf curl disease?",
@@ -24,7 +24,7 @@ const sampleQuestions = [
 
 const sampleAnswers: Record<string, string> = {
   "How do I treat tomato leaf curl disease?": "Spray neem oil and remove infected leaves.",
-  "What's the best fertilizer for maize?": "Use NPK 15:15:15 and apply urea later.",
+  "What's the best fertilizer for maize?": "For maize, use NPK 15-15-15 at planting (200kg/hectare) and Urea (46-0-0) as a top dressing (50kg/hectare) 3-4 weeks after planting.",
   "When should I plant onions in Ghana?": "Plant from October to January during dry season.",
   "How to prevent pest attacks naturally?": "Use neem spray, garlic-chili mix, or marigolds.",
   "What crops grow well in dry season?": "Tomatoes, okra, cowpeas, and leafy greens.",
@@ -99,17 +99,6 @@ const preloadedQA = [
   }
 ];
 
-const twiAudioMap: Record<string, string> = {
-  // English answer: Twi audio file path
-  "Spray neem oil and remove infected leaves.": "/audio/twi/001_tomato_leaf_curl.wav",
-  "Use NPK 15:15:15 and apply urea later.": "/audio/twi/002_maize_fertilizer.wav",
-  "Plant from October to January during dry season.": "/audio/twi/003_onion_planting.wav",
-  "Use neem spray, garlic-chili mix, or marigolds.": "/audio/twi/004_pest_prevention.wav",
-  "Tomatoes, okra, cowpeas, and leafy greens.": "/audio/twi/005_dry_season_crops.wav",
-  "Add compost, rotate crops, and plant legumes.": "/audio/twi/006_soil_fertility.wav",
-  // Add more mappings as you record more audio files
-};
-
 function findPreloadedAnswer(userQuestion: string) {
   const normalized = userQuestion.trim().toLowerCase();
   return preloadedQA.find(qa => normalized === qa.question.trim().toLowerCase())?.answer;
@@ -121,10 +110,41 @@ function findAgriGPTAnswer(userInput: string) {
   const greet = greetings.find(g => normalized.includes(g.q));
   if (greet) return greet.a;
   // Check Q&A (partial match)
-  const qa = agriQA.find(qa => normalized.includes(qa.q));
-  if (qa) return qa.a;
+  const qa = preloadedQA.find(qa => normalized.includes(qa.question.trim().toLowerCase()));
+  if (qa) return qa.answer;
   // Fallback
   return null;
+}
+
+// Helper for case-insensitive question matching, ignoring trailing ?
+function getSampleAnswer(question: string) {
+  const normalized = question.trim().toLowerCase().replace(/\?+$/, '');
+  // Try exact match (ignoring ?)
+  for (const key in sampleAnswers) {
+    const keyNorm = key.trim().toLowerCase().replace(/\?+$/, '');
+    if (keyNorm === normalized) {
+      return sampleAnswers[key];
+    }
+  }
+  // Try keyword/partial match
+  for (const key in sampleAnswers) {
+    const keyNorm = key.trim().toLowerCase().replace(/\?+$/, '');
+    if (normalized.includes(keyNorm) || keyNorm.includes(normalized)) {
+      return sampleAnswers[key];
+    }
+    // Try matching on main keywords (split by space, ignore stopwords)
+    const keyWords = keyNorm.split(/\s+/).filter(w => w.length > 2);
+    const qWords = normalized.split(/\s+/).filter(w => w.length > 2);
+    if (keyWords.some(kw => qWords.includes(kw))) {
+      return sampleAnswers[key];
+    }
+  }
+  return undefined;
+}
+
+function getPreloadedAnswer(question: string) {
+  const normalized = question.trim().toLowerCase().replace(/\?+$/, '');
+  return preloadedQA.find(qa => qa.question.trim().toLowerCase().replace(/\?+$/, '') === normalized)?.answer;
 }
 
 export default function AgriGPT() {
@@ -150,17 +170,15 @@ export default function AgriGPT() {
       userMsg.image = URL.createObjectURL(attachments.image);
     }
     setChat(prev => [...prev, userMsg]);
-    // Bot reply logic remains unchanged
-    const agriAnswer = findAgriGPTAnswer(message);
-    if (agriAnswer) {
-      const audio = twiAudioMap[agriAnswer];
+    // Use getAgriQAAnswer for robust answer matching
+    const answer = getAgriQAAnswer(message);
+    if (answer) {
       setChat(prev => [
         ...prev,
         {
           id: prev.length + 1,
           type: 'bot' as const,
-          message: agriAnswer,
-          audio: audio || undefined,
+          message: answer,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
@@ -197,46 +215,30 @@ export default function AgriGPT() {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setChat(prev => [...prev, userMsg]);
-    // Use sampleAnswers for quick questions, fallback to agriGPT knowledge base for others
-    const quickAnswer = sampleAnswers[question];
-    if (quickAnswer) {
-      // Do NOT set audio for quick questions, so TTS is always used
+    // Use getAgriQAAnswer for robust answer matching
+    const answer = getAgriQAAnswer(question);
+    if (answer) {
       setChat(prev => [
         ...prev,
         {
           id: prev.length + 1,
           type: 'bot' as const,
-          message: quickAnswer,
+          message: answer,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
     } else {
-      const agriAnswer = findAgriGPTAnswer(question);
-      if (agriAnswer) {
-        const audio = twiAudioMap[agriAnswer];
+      setTimeout(() => {
         setChat(prev => [
           ...prev,
           {
             id: prev.length + 1,
             type: 'bot' as const,
-            message: agriAnswer,
-            audio: audio || undefined,
+            message: "Sorry, I don’t know that yet. Can you ask another way?",
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
-      } else {
-        setTimeout(() => {
-          setChat(prev => [
-            ...prev,
-            {
-              id: prev.length + 1,
-              type: 'bot' as const,
-              message: "Sorry, I don’t know that yet. Can you ask another way?",
-              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            }
-          ]);
-        }, 1000);
-      }
+      }, 1000);
     }
   };
 
@@ -318,18 +320,11 @@ export default function AgriGPT() {
                   onQuestionClick={handleQuestionClick}
                 />
 
-                <ImageUpload />
+                
 
                 <ExpertContact />
 
-                <VoiceControls
-                  isListening={isListening}
-                  isSpeaking={isSpeaking}
-                  onVoiceToggle={handleVoiceToggle}
-                  onSpeakToggle={handleSpeakToggle}
-                  currentLanguage={currentLanguage}
-                  onLanguageChange={handleLanguageChange}
-                />
+                
               </div>
             </ScrollArea>
           </div>

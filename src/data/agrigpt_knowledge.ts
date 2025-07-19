@@ -46,7 +46,7 @@ export const greetings = [
 ];
 
 // Remove numbering from agriQA questions
-const rawAgriQA = [
+export const rawAgriQA = [
   { q: "why are my tomato leaves turning yellow", a: "It may be due to lack of nitrogen or overwatering. Try using a nitrogen-rich fertilizer and avoid waterlogging." },
   { q: "what is the best fertilizer for maize", a: "Use NPK 15:15:15 during early growth, and apply urea when the plant starts forming tassels." },
   { q: "how do I control aphids on vegetables", a: "Spray with neem oil or soapy water. Encourage ladybugs, which eat aphids." },
@@ -116,4015 +116,1917 @@ const rawAgriQA = [
   { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
   { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
   { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  {
-    q: "how can I improve clay soil for farming",
-    a: "Mix in organic matter like compost or manure, and avoid over-tilling."
-  },
-  {
-    q: "what is the best time to transplant tomatoes",
-    a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress."
-  },
-  {
-    q: "how do I control armyworms in maize",
-    a: "Use biological control like neem or Bt, or apply recommended insecticides early."
-  },
-  {
-    q: "how do I protect poultry from predators",
-    a: "Use secure housing with wire mesh and lockable doors, especially at night."
-  },
-  {
-    q: "how do I compost farm waste",
-    a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition."
-  },
-  {
-    q: "how do I control thrips on onions",
-    a: "Use blue sticky traps, neem oil, and remove infested plants."
-  },
-  {
-    q: "what is the best feed for layers",
-    a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production."
-  },
-  {
-    q: "how do I stop maize from lodging",
-    a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction."
-  },
-  {
-    q: "when is the best time to plant groundnuts in West Africa",
-    a: "Start planting at the beginning of the rainy season, usually between April and June."
-  },
-  {
-    q: "how can I boost cassava yield",
-    a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early."
-  },
-  {
-    q: "how do I prevent coccidiosis in poultry",
-    a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water."
-  },
-  {
-    q: "what causes yellowing in banana leaves",
-    a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants."
-  },
-  {
-    q: "how often should I vaccinate my chickens",
-    a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised."
-  },
-  {
-    q: "which fertilizer is best for vegetables",
-    a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition."
-  },
-  {
-    q: "what are signs of heat stress in poultry",
-    a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
-  },
-  { q: "How do I treat tomato leaf curl disease?", a: "Spray neem oil and remove infected leaves." },
-  { q: "What's the best fertilizer for maize?", a: "Use NPK 15:15:15 and apply urea later." },
-  { q: "When should I plant onions in Ghana?", a: "Plant from October to January during dry season." },
-  { q: "How to prevent pest attacks naturally?", a: "Use neem spray, garlic-chili mix, or marigolds." },
-  { q: "What crops grow well in dry season?", a: "Tomatoes, okra, cowpeas, and leafy greens." },
-  { q: "How to improve soil fertility?", a: "Add compost, rotate crops, and plant legumes." }
-];
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
+  { q: "how do I stop maize from lodging", a: "Avoid over-fertilizing with nitrogen and plant maize in rows against the wind direction." },
+  { q: "when is the best time to plant groundnuts in West Africa", a: "Start planting at the beginning of the rainy season, usually between April and June." },
+  { q: "how can I boost cassava yield", a: "Use improved cassava varieties, space properly, apply NPK fertilizer, and control weeds early." },
+  { q: "how do I prevent coccidiosis in poultry", a: "Keep the pen dry and clean, and use anticoccidial drugs in feed or water." },
+  { q: "what causes yellowing in banana leaves", a: "It can be caused by nutrient deficiency or Panama disease. Improve soil fertility and remove infected plants." },
+  { q: "how often should I vaccinate my chickens", a: "Follow a poultry vaccination schedule usually starting at 1 day old with Newcastle vaccine and continuing as advised." },
+  { q: "which fertilizer is best for vegetables", a: "Use NPK 15:15:15 or organic compost, depending on the vegetable type and soil condition." },
+  { q: "what are signs of heat stress in poultry", a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water." },
+  { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
+  { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
+  { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
+  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
+  { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+]
 
-export const agriQA = rawAgriQA.map(qa => ({
-  ...qa,
-  q: qa.q.replace(/\s*\(\d+\)$/, '').trim()
-})); 
+export function getAgriQAAnswer(query: string) {
+  const normalized = query.trim().toLowerCase().replace(/\?+$/, '');
+  for (const qa of rawAgriQA) {
+    const keyNorm = qa.q.trim().toLowerCase().replace(/\?+$/, '');
+    if (keyNorm === normalized) {
+      return qa.a;
+    }
+  }
+  for (const qa of rawAgriQA) {
+    const keyNorm = qa.q.trim().toLowerCase().replace(/\?+$/, '');
+    if (normalized.includes(keyNorm) || keyNorm.includes(normalized)) {
+      return qa.a;
+    }
+    const keyWords = keyNorm.split(/\s+/).filter(w => w.length > 2);
+    const qWords = normalized.split(/\s+/).filter(w => w.length > 2);
+    if (keyWords.some(kw => qWords.includes(kw))) {
+      return qa.a;
+    }
+  }
+  return undefined;
+}

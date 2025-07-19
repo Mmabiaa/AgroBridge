@@ -36,7 +36,7 @@ export default function Marketplace() {
       unit: 'kg',
       quantity: 200,
       rating: 4.6,
-      image: 'https://i.pinimg.com/736x/16/5e/6f/165e6f24df657daecce50dde8fcd0037.jpg',
+      image: 'https://i.pinimg.com/736x/6b/16/fa/6b16fafc2ea41361f16126aeb56ec888.jpg',
       category: 'Vegetables',
       isOrganic: false,
       harvestDate: '2024-01-12',

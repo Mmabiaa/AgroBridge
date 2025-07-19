@@ -15,19 +15,11 @@ import {
 } from 'lucide-react';
 
 const languageStats = [
-  { name: 'English', usage: 45, speakers: '2.1M', flag: '🇬🇧' },
-  { name: 'Twi', usage: 25, speakers: '1.2M', flag: '🇬🇭' },
-  { name: 'Hausa', usage: 20, speakers: '800K', flag: '🇳🇬' },
-  { name: 'Yoruba', usage: 10, speakers: '600K', flag: '🇳🇬' }
+
 ];
 
 const commandCategories = [
-  { name: 'Weather', commands: 15, icon: '🌤️' },
-  { name: 'Farm Status', commands: 12, icon: '🚜' },
-  { name: 'Market Prices', commands: 18, icon: '💰' },
-  { name: 'Pest Control', commands: 10, icon: '🐛' },
-  { name: 'Irrigation', commands: 8, icon: '💧' },
-  { name: 'Crop Health', commands: 14, icon: '🌱' }
+  
 ];
 
 const recentCommands = [
@@ -186,8 +178,8 @@ export default function VoiceCommandsPage() {
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>• "What's the weather today?"</li>
                   <li>• "Show me market prices"</li>
-                  <li>• "Check my farm status"</li>
-                  <li>• "Any pest alerts?"</li>
+                  <li>• "Scan my crop"</li>
+                  <li>• "Open community"</li>
                 </ul>
               </div>
             </div>
