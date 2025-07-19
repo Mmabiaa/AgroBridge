@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mic, MicOff, Volume2, Languages, MessageSquare } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -50,6 +51,80 @@ export function VoiceCommands() {
   const [transcript, setTranscript] = useState('');
   const [response, setResponse] = useState('');
   const [recognition, setRecognition] = useState<any>(null);
+  const navigate = useNavigate();
+
+  // Navigation command mapping (English only)
+  const navigationCommands: { [key: string]: string } = {
+    // Dashboard
+    'go to dashboard': '/dashboard',
+    'open dashboard': '/dashboard',
+    'show me the dashboard': '/dashboard',
+    'take me home': '/dashboard',
+    'home screen': '/dashboard',
+  
+    // Weather
+    'show me the weather': '/weather',
+    'check weather forecast': '/weather',
+    'what is the weather': '/weather',
+    'weather update': '/weather',
+    'today\'s weather': '/weather',
+    'how is the weather': '/weather',
+  
+    // Crop Disease
+    'open crop disease page': '/crop-disease-detection',
+    'check crop health': '/crop-disease-detection',
+    'scan my crops': '/crop-disease-detection',
+    'detect crop disease': '/crop-disease-detection',
+  
+    // Community
+    'open community': '/community',
+    'go to community page': '/community',
+    'join the community': '/community',
+    'see community updates': '/community',
+  
+    // Market
+    'take me to the market': '/marketplace',
+    'open market': '/marketplace',
+    'go to market': '/marketplace',
+    'market prices today': '/marketplace',
+    'show me the market': '/marketplace',
+    'check crop prices': '/marketplace',
+    'how much is maize': '/marketplace',
+  
+    // AgriGPT Chat
+    'open chat': '/agrigpt',
+    'open agrigpt': '/agrigpt',
+    'talk to the bot': '/agrigpt',
+    'ask a question': '/agrigpt',
+    'agriculture advice': '/agrigpt',
+  
+    // Voice Commands
+    'open voice commands': '/voice-commands',
+    'show voice options': '/voice-commands',
+    'help with voice commands': '/voice-commands',
+  
+    // New: Tips & Training
+    'show me farming tips': '/training',
+    'open training': '/training',
+    'access learning center': '/training',
+  
+    // New: Support
+    'open support': '/support',
+    'need help': '/support',
+    'contact support': '/support',
+    'report a problem': '/support',
+  
+    // New: NGO or Aid Info
+    'find ngo help': '/ngo',
+    'open ngo programs': '/ngo',
+    'any farming support': '/ngo',
+  
+    // Logout
+    'log me out': '/logout',
+    'logout': '/logout',
+    'sign me out': '/logout'
+  };
+  
 
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -100,49 +175,65 @@ export function VoiceCommands() {
     }
   };
 
-  const processVoiceCommand = async (command: string) => {
-    // Simulate AI processing
-    const responses: { [key: string]: string[] } = {
-      en: [
-        'Weather: Sunny, 28°C. Good conditions for planting.',
-        'Farm Status: All systems running well. Soil moisture at 65%.',
-        'Market Prices: Tomatoes ₦450/kg, Onions ₦280/kg.',
-        'Pest Alert: Low risk detected. Continue monitoring.',
-        'Irrigation: Next watering scheduled for tomorrow 6 AM.'
-      ],
-      tw: [
-        'Wiem: Owia hyerɛn, 28°C. Tebea pa ma duadi.',
-        'Afuo Tebea: Nneɛma nyinaa rekɔ yiye. Asase nsuo yɛ 65%.',
-        'Aguadi Bo: Ntomato ₦450/kg, Gyeene ₦280/kg.',
-        'Mmoawa Kɔkɔbɔ: Asiane kakraa bi wɔ hɔ. Kɔ so hwɛ.',
-        'Nsu Gu: Nsu gu a edi hɔ no bɛyɛ ɔkyena anɔpa 6.'
-      ],
-      ha: [
-        'Yanayi: Rana, 28°C. Yanayi mai kyau don shuki.',
-        'Halin Gona: Komai yana tafiya da kyau. Ruwan ƙasa 65%.',
-        'Farashin Kasuwa: Tumatur ₦450/kg, Albasa ₦280/kg.',
-        'Faɗakarwar Kwari: Ƙaramin hadari. Ci gaba da kiyayewa.',
-        'Ban Ruwa: Ana shirin ban ruwa gobe da safe 6.'
-      ],
-      yo: [
-        'Oju-ọjọ: Oorun, 28°C. Ipo to dara fun gbingbin.',
-        'Ipo Oko: Gbogbo nkan n lo daradara. Omi ile ni 65%.',
-        'Idiyele Oja: Tomato ₦450/kg, Alubosa ₦280/kg.',
-        'Ikilọ Kokoro: Ewu kekere. Tẹsiwaju lati ṣayẹwo.',
-        'Irin Omi: Irin omi to kan wa ni ọla ni 6 owuro.'
-      ]
-    };
-
-    const langResponses = responses[selectedLanguage] || responses.en;
-    const randomResponse = langResponses[Math.floor(Math.random() * langResponses.length)];
-    
-    setResponse(randomResponse);
-    
-    // Text-to-speech
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(randomResponse);
-      utterance.lang = getLanguageCode(selectedLanguage);
-      speechSynthesis.speak(utterance);
+  const processVoiceCommand = (command: string) => {
+    if (selectedLanguage === 'en') {
+      const normalized = command.trim().toLowerCase();
+      let matchedRoute = null;
+      for (const phrase in navigationCommands) {
+        if (normalized.includes(phrase)) {
+          matchedRoute = navigationCommands[phrase];
+          break;
+        }
+      }
+      if (matchedRoute) {
+        setResponse(`Navigating to ${matchedRoute.replace('/', '').replace('-', ' ')}`);
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(`Navigating to ${matchedRoute.replace('/', '').replace('-', ' ')}`);
+          utterance.lang = 'en-US';
+          speechSynthesis.speak(utterance);
+        }
+        setTimeout(() => navigate(matchedRoute), 1200); // Give time for TTS feedback
+      } else {
+        setResponse("Sorry, I didn't understand that command.");
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance("Sorry, I didn't understand that command.");
+          utterance.lang = 'en-US';
+          speechSynthesis.speak(utterance);
+        }
+      }
+    } else {
+      // Fallback: keep your previous logic for other languages
+      const responses: { [key: string]: string[] } = {
+        tw: [
+          'Wiem: Owia hyerɛn, 28°C. Tebea pa ma duadi.',
+          'Afuo Tebea: Nneɛma nyinaa rekɔ yiye. Asase nsuo yɛ 65%.',
+          'Aguadi Bo: Ntomato ₦450/kg, Gyeene ₦280/kg.',
+          'Mmoawa Kɔkɔbɔ: Asiane kakraa bi wɔ hɔ. Kɔ so hwɛ.',
+          'Nsu Gu: Nsu gu a edi hɔ no bɛyɛ ɔkyena anɔpa 6.'
+        ],
+        ha: [
+          'Yanayi: Rana, 28°C. Yanayi mai kyau don shuki.',
+          'Halin Gona: Komai yana tafiya da kyau. Ruwan ƙasa 65%.',
+          'Farashin Kasuwa: Tumatur ₦450/kg, Albasa ₦280/kg.',
+          'Faɗakarwar Kwari: Ƙaramin hadari. Ci gaba da kiyayewa.',
+          'Ban Ruwa: Ana shirin ban ruwa gobe da safe 6.'
+        ],
+        yo: [
+          'Oju-ọjọ: Oorun, 28°C. Ipo to dara fun gbingbin.',
+          'Ipo Oko: Gbogbo nkan n lo daradara. Omi ile ni 65%.',
+          'Idiyele Oja: Tomato ₦450/kg, Alubosa ₦280/kg.',
+          'Ikilọ Kokoro: Ewu kekere. Tẹsiwaju lati ṣayẹwo.',
+          'Irin Omi: Irin omi to kan wa ni ọla ni 6 owuro.'
+        ]
+      };
+      const langResponses = responses[selectedLanguage] || responses.en;
+      const randomResponse = langResponses[Math.floor(Math.random() * langResponses.length)];
+      setResponse(randomResponse);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(randomResponse);
+        utterance.lang = getLanguageCode(selectedLanguage);
+        speechSynthesis.speak(utterance);
+      }
     }
   };
 
