@@ -32,7 +32,7 @@ const navigationItems = [
   { href: '/learning', label: 'Learning Center', icon: GraduationCap },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/settings', label: 'Settings', icon: Settings },
-  { href: '/admin', label: 'Admin Portal', icon: Shield },
+  { href: '/support', label: 'Support & Help', icon: Shield },
 ];
 
 const languages = ['English', 'Twi', 'Hausa', 'Yoruba'];
