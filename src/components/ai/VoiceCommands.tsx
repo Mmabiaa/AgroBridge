@@ -55,7 +55,7 @@ const englishIntents = [
   {
     route: '/marketplace',
     phrases: [
-      'market', 'marketplace', 'go to market', 'open market', 'show market', 'market prices', 'market page', 'market price'
+      'markets','market', 'marketplace', 'go to market', 'open market', 'show market', 'market prices', 'market page', 'market price'
     ]
   },
   {
