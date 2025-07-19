@@ -176,8 +176,8 @@ export default function VoiceCommandsPage() {
               <div className="space-y-3">
                 <h4 className="font-medium">Common Commands:</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• "What's the weather today?"</li>
-                  <li>• "Show me market prices"</li>
+                  <li>• "Help"</li>
+                  <li>• "Open Market"</li>
                   <li>• "Scan my crop"</li>
                   <li>• "Open community"</li>
                 </ul>
