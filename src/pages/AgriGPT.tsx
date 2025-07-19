@@ -13,24 +13,6 @@ import { ExpertContact } from '@/components/agrigpt/ExpertContact';
 import { VoiceControls } from '@/components/agrigpt/VoiceControls';
 import { getAgriQAAnswer, greetings } from '@/data/agrigpt_knowledge';
 
-const sampleQuestions = [
-  "How do I treat tomato leaf curl disease?",
-  "What's the best fertilizer for maize?",
-  "When should I plant onions in Ghana?",
-  "How to prevent pest attacks naturally?",
-  "What crops grow well in dry season?",
-  "How to improve soil fertility?"
-];
-
-const sampleAnswers: Record<string, string> = {
-  "How do I treat tomato leaf curl disease?": "Spray neem oil and remove infected leaves.",
-  "What's the best fertilizer for maize?": "For maize, use NPK 15-15-15 at planting (200kg/hectare) and Urea (46-0-0) as a top dressing (50kg/hectare) 3-4 weeks after planting.",
-  "When should I plant onions in Ghana?": "Plant from October to January during dry season.",
-  "How to prevent pest attacks naturally?": "Use neem spray, garlic-chili mix, or marigolds.",
-  "What crops grow well in dry season?": "Tomatoes, okra, cowpeas, and leafy greens.",
-  "How to improve soil fertility?": "Add compost, rotate crops, and plant legumes."
-};
-
 const chatHistory = [
   
  
@@ -99,6 +81,8 @@ const preloadedQA = [
   }
 ];
 
+const quickQuestions = preloadedQA.map(qa => qa.question);
+
 function findPreloadedAnswer(userQuestion: string) {
   const norm = userQuestion.trim().toLowerCase();
   for (const qa of preloadedQA) {
@@ -117,32 +101,6 @@ function findAgriGPTAnswer(userInput: string) {
     }
   }
   return null;
-}
-
-// Helper for case-insensitive question matching, ignoring trailing ?
-function getSampleAnswer(question: string) {
-  const normalized = question.trim().toLowerCase().replace(/\?+$/, '');
-  // Try exact match (ignoring ?)
-  for (const key in sampleAnswers) {
-    const keyNorm = key.trim().toLowerCase().replace(/\?+$/, '');
-    if (keyNorm === normalized) {
-      return sampleAnswers[key];
-    }
-  }
-  // Try keyword/partial match
-  for (const key in sampleAnswers) {
-    const keyNorm = key.trim().toLowerCase().replace(/\?+$/, '');
-    if (normalized.includes(keyNorm) || keyNorm.includes(normalized)) {
-      return sampleAnswers[key];
-    }
-    // Try matching on main keywords (split by space, ignore stopwords)
-    const keyWords = keyNorm.split(/\s+/).filter(w => w.length > 2);
-    const qWords = normalized.split(/\s+/).filter(w => w.length > 2);
-    if (keyWords.some(kw => qWords.includes(kw))) {
-      return sampleAnswers[key];
-    }
-  }
-  return undefined;
 }
 
 function getPreloadedAnswer(question: string) {
@@ -218,8 +176,8 @@ export default function AgriGPT() {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setChat(prev => [...prev, userMsg]);
-    // Use getAgriQAAnswer for robust answer matching
-    const answer = getAgriQAAnswer(question);
+    // Use findPreloadedAnswer for exact answer matching from preloadedQA
+    const answer = findPreloadedAnswer(question);
     if (answer) {
       setChat(prev => [
         ...prev,
@@ -237,7 +195,7 @@ export default function AgriGPT() {
           {
             id: prev.length + 1,
             type: 'bot' as const,
-            message: "Sorry, I don’t know that yet. Can you ask another way?",
+            message: "Sorry, I don't have an exact answer for that question. Please ask a different question.",
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
@@ -319,7 +277,7 @@ export default function AgriGPT() {
             <ScrollArea className="h-full">
               <div className="space-y-6 pr-2">
                 <QuickQuestions
-                  questions={sampleQuestions}
+                  questions={quickQuestions}
                   onQuestionClick={handleQuestionClick}
                 />
 

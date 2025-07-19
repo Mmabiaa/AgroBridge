@@ -2,25 +2,25 @@ export const greetings = [
  
 ];
 
-// Remove numbering from agriQA questions
+// Remove numbering from agriQA  qs
 export const rawAgriQA = [
   { q: "hi", a: "Hello! How can I help you with your farm today?" },
   { q: "hello", a: "Hi there! Need any farming advice?" },
   { q: "good morning", a: "Good morning! How can I assist you today?" },
   { q: "good afternoon", a: "Good afternoon! How can I help you with your crops or livestock?" },
-  { q: "good evening", a: "Good evening! Do you have any farming questions?" },
+  { q: "good evening", a: "Good evening! Do you have any farming  qs?" },
   { q: "how are you", a: "I'm doing well, thank you! How can I help your farm?" },
   { q: "how are you doing", a: "I'm great! Ready to help with any farming issue you have." },
-  { q: "thanks", a: "You're welcome! Let me know if you have more questions." },
+  { q: "thanks", a: "You're welcome! Let me know if you have more  qs." },
   { q: "thank you", a: "You're welcome! Happy to help." },
   { q: "bye", a: "Goodbye! Wishing you a bountiful harvest!" },
   { q: "okay", a: "Alright! Let me know if you need anything else." },
-  { q: "ok", a: "Okay! Feel free to ask more questions anytime." },
+  { q: "ok", a: "Okay! Feel free to ask more  qs anytime." },
   { q: "yo", a: "Hey there! Do you need help with crops or poultry today?" },
   { q: "what's up", a: "All good here! How can I help you on the farm?" },
   { q: "good day", a: "Good day! How's the farm doing today?" },
   { q: "I need help", a: "Sure! Tell me what you're facing on your farm." },
-  { q: "are you there", a: "Yes, I'm right here to help with any agricultural question!" },
+  { q: "are you there", a: "Yes, I'm right here to help with any agricultural  q!" },
   { q: "can you assist me", a: "Absolutely! Let me know your farming issue." },
   { q: "hello bot", a: "Hello! This is AgriGPT — ready to support your farming journey." },
   { q: "hey", a: "Hey there! Need advice on farming or livestock?" },
@@ -39,13 +39,13 @@ export const rawAgriQA = [
   { q: "i appreciate it", a: "It's my pleasure! Let's keep your farm growing strong." },
   { q: "thanks a lot", a: "No problem! I'm glad I could help." },
   { q: "yo bot", a: "Hi! How can I support your agriculture work today?" },
-  { q: "howdy", a: "Howdy! Got any farming questions for me today?" },
+  { q: "howdy", a: "Howdy! Got any farming  qs for me today?" },
   { q: "you there", a: "I'm right here, ready to help with crops, poultry, or anything else." },
   { q: "can we talk", a: "Of course! What would you like to ask about farming?" },
   { q: "do you understand farming", a: "Yes! I'm trained to support agriculture and farming-related topics." },
   { q: "can you help", a: "Yes, I can! What do you need help with on your farm?" },
   { q: "need advice", a: "Sure thing! What farming challenge are you facing?" },
-  { q: "i have a question", a: "Great! Ask away — I'm here to help." },
+  { q: "i have a  q", a: "Great! Ask away — I'm here to help." },
   { q: "farm problems", a: "Let me know what the issue is, and I'll help you find a solution." },
   { q: "livestock issue", a: "Please describe it — I'll try my best to help." },
   { q: "why are my tomato leaves turning yellow", a: "It may be due to lack of nitrogen or overwatering. Try using a nitrogen-rich fertilizer and avoid waterlogging." },
@@ -2008,26 +2008,77 @@ export const rawAgriQA = [
   { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
   { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
   { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
+  {
+     q: "How do I treat tomato leaf curl disease?",
+     a: "Tomato leaf curl is best managed by removing infected plants, controlling whiteflies, and using resistant varieties. Avoid planting tomatoes near cotton or tobacco."
+  },
+  {
+     q: "What's the best fertilizer for maize?",
+     a: "For maize, use NPK 15-15-15 at planting (200kg/hectare) and Urea (46-0-0) as a top dressing (50kg/hectare) 3-4 weeks after planting."
+  },
+  {
+     q: "When should I plant onions in Ghana?",
+     a: "The best time to plant onions in Ghana is at the start of the dry season, typically from November to January."
+  },
+  {
+     q: "How to prevent pest attacks naturally?",
+     a: "Use neem oil spray, encourage beneficial insects, rotate crops, and remove plant debris to prevent pest attacks naturally."
+  },
+  {
+     q: "What crops grow well in dry season?",
+     a: "Crops like tomatoes, onions, okra, pepper, and leafy greens can be grown in the dry season with irrigation."
+  },
+  {
+     q: "How to improve soil fertility?",
+     a: "Add organic matter (compost, manure), practice crop rotation, and use cover crops to improve soil fertility."
+  },
+  {
+     q: "How do I control armyworms in maize?",
+     a: "Scout fields regularly, use recommended insecticides early, and encourage natural predators to control armyworms in maize."
+  },
+  {
+     q: "What is the best way to irrigate tomatoes?",
+     a: "Drip irrigation is best for tomatoes as it delivers water directly to the roots and reduces disease risk."
+  },
+  {
+     q: "How can I tell if my soil is acidic?",
+     a: "Test your soil with a pH kit. Acidic soils have a pH below 6.0. Yellowing leaves and poor growth can also be signs."
+  },
+  {
+     q: "Are organic fertilizers better than chemical ones?",
+     a: "Organic fertilizers improve soil health over time, while chemical fertilizers provide quick nutrients. A balanced approach is often best."
+  },
+  {
+     q: "How do I store harvested maize to prevent spoilage?",
+     a: "Dry maize thoroughly, store in airtight containers or bags, and keep in a cool, dry place to prevent spoilage."
+  },
+  {
+     q: "What are the signs of cassava mosaic disease?",
+     a: "Look for yellow or green mosaic patterns on leaves, leaf distortion, and stunted growth. Remove infected plants promptly."
+  },
+  {
+     q: "How do I access government loans for farmers?",
+     a: "Contact your local Ministry of Food and Agriculture office for information on available government loan schemes and requirements."
+  },
+  {
+     q: "How can I increase my poultry egg production?",
+     a: "Provide balanced feed, clean water, proper lighting, and good housing. Regularly check for diseases and parasites."
+  },
+  {
+     q: "What is the best way to control weeds in rice fields?",
+     a: "Use pre-emergence herbicides, hand weeding, and maintain proper water levels to control weeds in rice fields."
+  }
 ]
 
 export function getAgriQAAnswer(query: string) {
   const normalized = query.trim().toLowerCase().replace(/\?+$/, '');
+
   for (const qa of rawAgriQA) {
     const keyNorm = qa.q.trim().toLowerCase().replace(/\?+$/, '');
     if (keyNorm === normalized) {
       return qa.a;
     }
   }
-  for (const qa of rawAgriQA) {
-    const keyNorm = qa.q.trim().toLowerCase().replace(/\?+$/, '');
-    if (normalized.includes(keyNorm) || keyNorm.includes(normalized)) {
-      return qa.a;
-    }
-    const keyWords = keyNorm.split(/\s+/).filter(w => w.length > 2);
-    const qWords = normalized.split(/\s+/).filter(w => w.length > 2);
-    if (keyWords.some(kw => qWords.includes(kw))) {
-      return qa.a;
-    }
-  }
-  return undefined;
+
+  return undefined; // No exact match
 }
