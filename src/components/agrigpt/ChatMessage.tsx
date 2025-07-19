@@ -1,4 +1,11 @@
 
+// Guidance for Twi Audio Replies:
+// 1. Record clear .wav files for each common Twi response.
+// 2. Name files consistently, e.g., 001_tomato_leaf_curl.wav, 002_maize_fertilizer.wav, etc.
+// 3. Place all files in /public/audio/twi/.
+// 4. Map English answer text to audio file path in twiAudioMap in AgriGPT.tsx.
+// 5. To add more, record new clips, save in /public/audio/twi/, and update the mapping.
+
 import { Bot, User } from 'lucide-react';
 
 interface ChatMessageProps {
@@ -6,9 +13,10 @@ interface ChatMessageProps {
   type: 'user' | 'bot';
   message: string;
   time: string;
+  audio?: string; // Add optional audio prop
 }
 
-export function ChatMessage({ type, message, time }: ChatMessageProps) {
+export function ChatMessage({ type, message, time, audio }: ChatMessageProps) {
   return (
     <div className={`flex ${type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
       <div className={`flex items-start gap-3 max-w-[85%] ${type === 'user' ? 'flex-row-reverse' : ''}`}>
@@ -28,6 +36,12 @@ export function ChatMessage({ type, message, time }: ChatMessageProps) {
             : 'bg-card text-card-foreground border rounded-tl-sm'
         }`}>
           <p className="text-sm leading-relaxed whitespace-pre-line">{message}</p>
+          {/* Audio player for bot messages with audio */}
+          {type === 'bot' && audio && (
+            <audio controls src={audio} className="mt-2 w-full">
+              Your browser does not support the audio element.
+            </audio>
+          )}
           <p className={`text-xs mt-2 ${
             type === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
           }`}>

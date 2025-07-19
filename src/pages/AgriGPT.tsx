@@ -32,6 +32,8 @@ const sampleAnswers: Record<string, string> = {
 };
 
 const chatHistory = [
+  
+ 
 ];
 
 const preloadedQA = [
@@ -97,6 +99,17 @@ const preloadedQA = [
   }
 ];
 
+const twiAudioMap: Record<string, string> = {
+  // English answer: Twi audio file path
+  "Spray neem oil and remove infected leaves.": "/audio/twi/001_tomato_leaf_curl.wav",
+  "Use NPK 15:15:15 and apply urea later.": "/audio/twi/002_maize_fertilizer.wav",
+  "Plant from October to January during dry season.": "/audio/twi/003_onion_planting.wav",
+  "Use neem spray, garlic-chili mix, or marigolds.": "/audio/twi/004_pest_prevention.wav",
+  "Tomatoes, okra, cowpeas, and leafy greens.": "/audio/twi/005_dry_season_crops.wav",
+  "Add compost, rotate crops, and plant legumes.": "/audio/twi/006_soil_fertility.wav",
+  // Add more mappings as you record more audio files
+};
+
 function findPreloadedAnswer(userQuestion: string) {
   const normalized = userQuestion.trim().toLowerCase();
   return preloadedQA.find(qa => normalized === qa.question.trim().toLowerCase())?.answer;
@@ -132,12 +145,14 @@ export default function AgriGPT() {
       setChat(prev => [...prev, userMsg]);
       const agriAnswer = findAgriGPTAnswer(message);
       if (agriAnswer) {
+        const audio = twiAudioMap[agriAnswer];
         setChat(prev => [
           ...prev,
           {
             id: prev.length + 1,
             type: 'bot' as const,
             message: agriAnswer,
+            audio: audio || undefined,
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
@@ -179,24 +194,28 @@ export default function AgriGPT() {
     // Use sampleAnswers for quick questions, fallback to agriGPT knowledge base for others
     const quickAnswer = sampleAnswers[question];
     if (quickAnswer) {
+      const audio = twiAudioMap[quickAnswer];
       setChat(prev => [
         ...prev,
         {
           id: prev.length + 1,
           type: 'bot' as const,
           message: quickAnswer,
+          audio: audio || undefined,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
     } else {
       const agriAnswer = findAgriGPTAnswer(question);
       if (agriAnswer) {
+        const audio = twiAudioMap[agriAnswer];
         setChat(prev => [
           ...prev,
           {
             id: prev.length + 1,
             type: 'bot' as const,
             message: agriAnswer,
+            audio: audio || undefined,
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
@@ -256,13 +275,14 @@ export default function AgriGPT() {
               <CardContent className="flex-1 p-0">
                 <div className="p-6 bg-gradient-to-b from-background to-muted/10 max-h-96 overflow-y-auto">
                   <div className="space-y-4">
-                    {chat.map((chat) => (
+                    {chat.map((msg) => (
                       <ChatMessage
-                        key={chat.id}
-                        id={chat.id}
-                        type={chat.type}
-                        message={chat.message}
-                        time={chat.time}
+                        key={msg.id}
+                        id={msg.id}
+                        type={msg.type}
+                        message={msg.message}
+                        time={msg.time}
+                        audio={msg.audio}
                       />
                     ))}
                   </div>
