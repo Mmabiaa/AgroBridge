@@ -11,7 +11,7 @@ import { QuickQuestions } from '@/components/agrigpt/QuickQuestions';
 import { ImageUpload } from '@/components/agrigpt/ImageUpload';
 import { ExpertContact } from '@/components/agrigpt/ExpertContact';
 import { VoiceControls } from '@/components/agrigpt/VoiceControls';
-import { greetings, agriQA } from '@/data/agrigpt_knowledge';
+import { getAgriQAAnswer, greetings } from '@/data/agrigpt_knowledge';
 
 const sampleQuestions = [
   "How do I treat tomato leaf curl disease?",
@@ -110,8 +110,8 @@ function findAgriGPTAnswer(userInput: string) {
   const greet = greetings.find(g => normalized.includes(g.q));
   if (greet) return greet.a;
   // Check Q&A (partial match)
-  const qa = agriQA.find(qa => normalized.includes(qa.q));
-  if (qa) return qa.a;
+  const qa = preloadedQA.find(qa => normalized.includes(qa.question.trim().toLowerCase()));
+  if (qa) return qa.answer;
   // Fallback
   return null;
 }
@@ -170,43 +170,30 @@ export default function AgriGPT() {
       userMsg.image = URL.createObjectURL(attachments.image);
     }
     setChat(prev => [...prev, userMsg]);
-    // Case-insensitive answer matching
-    const quickAnswer = getSampleAnswer(message);
-    if (quickAnswer) {
+    // Use getAgriQAAnswer for robust answer matching
+    const answer = getAgriQAAnswer(message);
+    if (answer) {
       setChat(prev => [
         ...prev,
         {
           id: prev.length + 1,
           type: 'bot' as const,
-          message: quickAnswer,
+          message: answer,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
     } else {
-      const agriAnswer = findAgriGPTAnswer(message);
-      if (agriAnswer) {
+      setTimeout(() => {
         setChat(prev => [
           ...prev,
           {
             id: prev.length + 1,
             type: 'bot' as const,
-            message: agriAnswer,
+            message: "Sorry, I don’t know that yet. Can you ask another way?",
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
-      } else {
-        setTimeout(() => {
-          setChat(prev => [
-            ...prev,
-            {
-              id: prev.length + 1,
-              type: 'bot' as const,
-              message: "Sorry, I don’t know that yet. Can you ask another way?",
-              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            }
-          ]);
-        }, 1000);
-      }
+      }, 1000);
     }
     setMessage('');
   };
@@ -228,43 +215,30 @@ export default function AgriGPT() {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setChat(prev => [...prev, userMsg]);
-    // Case-insensitive answer matching for quick questions
-    const quickAnswer = getSampleAnswer(question);
-    if (quickAnswer) {
+    // Use getAgriQAAnswer for robust answer matching
+    const answer = getAgriQAAnswer(question);
+    if (answer) {
       setChat(prev => [
         ...prev,
         {
           id: prev.length + 1,
           type: 'bot' as const,
-          message: quickAnswer,
+          message: answer,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
     } else {
-      const agriAnswer = findAgriGPTAnswer(question);
-      if (agriAnswer) {
+      setTimeout(() => {
         setChat(prev => [
           ...prev,
           {
             id: prev.length + 1,
             type: 'bot' as const,
-            message: agriAnswer,
+            message: "Sorry, I don’t know that yet. Can you ask another way?",
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
-      } else {
-        setTimeout(() => {
-          setChat(prev => [
-            ...prev,
-            {
-              id: prev.length + 1,
-              type: 'bot' as const,
-              message: "Sorry, I don’t know that yet. Can you ask another way?",
-              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            }
-          ]);
-        }, 1000);
-      }
+      }, 1000);
     }
   };
 
