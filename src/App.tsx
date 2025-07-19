@@ -36,6 +36,7 @@ import FinancialPlanning from "./pages/FinancialPlanning";
 import EmergencyResponse from "./pages/EmergencyResponse";
 import DroneIntegration from "./pages/DroneIntegration";
 import ExportDocumentation from "./pages/ExportDocumentation";
+import Support from "./pages/Support";
 
 const queryClient = new QueryClient();
 
@@ -88,6 +89,7 @@ const App = () => (
                     <Route path="/emergency-response" element={<EmergencyResponse />} />
                     <Route path="/drone-integration" element={<DroneIntegration />} />
                     <Route path="/export-documentation" element={<ExportDocumentation />} />
+                    <Route path="/support" element={<Support />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </ProtectedRoute>
