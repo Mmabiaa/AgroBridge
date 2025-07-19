@@ -1,4 +1,9 @@
 export const greetings = [
+ 
+];
+
+// Remove numbering from agriQA questions
+export const rawAgriQA = [
   { q: "hi", a: "Hello! How can I help you with your farm today?" },
   { q: "hello", a: "Hi there! Need any farming advice?" },
   { q: "good morning", a: "Good morning! How can I assist you today?" },
@@ -42,11 +47,7 @@ export const greetings = [
   { q: "need advice", a: "Sure thing! What farming challenge are you facing?" },
   { q: "i have a question", a: "Great! Ask away — I'm here to help." },
   { q: "farm problems", a: "Let me know what the issue is, and I'll help you find a solution." },
-  { q: "livestock issue", a: "Please describe it — I'll try my best to help." }
-];
-
-// Remove numbering from agriQA questions
-export const rawAgriQA = [
+  { q: "livestock issue", a: "Please describe it — I'll try my best to help." },
   { q: "why are my tomato leaves turning yellow", a: "It may be due to lack of nitrogen or overwatering. Try using a nitrogen-rich fertilizer and avoid waterlogging." },
   { q: "what is the best fertilizer for maize", a: "Use NPK 15:15:15 during early growth, and apply urea when the plant starts forming tassels." },
   { q: "how do I control aphids on vegetables", a: "Spray with neem oil or soapy water. Encourage ladybugs, which eat aphids." },
