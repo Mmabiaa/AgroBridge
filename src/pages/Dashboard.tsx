@@ -22,9 +22,12 @@ import {
   MessageSquare,
   Camera,
   Mic,
-  Settings
+  Settings,
+  CloudRain,
+  Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { CropDiseaseDetection } from '@/components/ai/CropDiseaseDetection';
 import { VoiceCommands } from '@/components/ai/VoiceCommands';
 import { InteractiveDashboard } from '@/components/analytics/InteractiveDashboard';
@@ -96,6 +99,66 @@ const quickActions = [
 ];
 
 export default function Dashboard() {
+  // Weather state
+  const [weather, setWeather] = useState({
+    temp: '--',
+    desc: 'Loading...',
+    humidity: '--',
+    wind: '--',
+    icon: 'sun',
+    bg: 'from-yellow-100 to-blue-200',
+    forecast: [
+      { day: 'Today', temp: '--', icon: 'sun', rain: '--' },
+      { day: 'Tomorrow', temp: '--', icon: 'cloud', rain: '--' }
+    ]
+  });
+
+  useEffect(() => {
+    // Example: OpenWeatherMap API (replace with your API key and location logic)
+    const fetchWeather = async () => {
+      try {
+        const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+        // Use geolocation or default to Accra, GH
+        const lat = 5.6037, lon = -0.1870;
+        const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${apiKey}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        // Map OpenWeatherMap codes to UI
+        const sky = data.current.weather[0].main.toLowerCase();
+        let icon = 'sun', bg = 'from-yellow-100 to-blue-200';
+        if (sky.includes('cloud')) { icon = 'cloud'; bg = 'from-gray-300 to-blue-200'; }
+        if (sky.includes('rain')) { icon = 'cloud-rain'; bg = 'from-blue-400 to-gray-500'; }
+        if (sky.includes('clear')) { icon = 'sun'; bg = 'from-yellow-100 to-blue-200'; }
+        if (sky.includes('thunder')) { icon = 'zap'; bg = 'from-gray-400 to-yellow-200'; }
+        setWeather({
+          temp: Math.round(data.current.temp) + '°C',
+          desc: data.current.weather[0].description.replace(/\b\w/g, l => l.toUpperCase()),
+          humidity: data.current.humidity + '%',
+          wind: Math.round(data.current.wind_speed) + ' km/h',
+          icon,
+          bg,
+          forecast: [
+            {
+              day: 'Today',
+              temp: Math.round(data.daily[0].temp.day) + '°C',
+              icon: data.daily[0].weather[0].main.toLowerCase().includes('cloud') ? 'cloud' : data.daily[0].weather[0].main.toLowerCase().includes('rain') ? 'cloud-rain' : 'sun',
+              rain: (data.daily[0].pop * 100).toFixed(0) + '%'
+            },
+            {
+              day: 'Tomorrow',
+              temp: Math.round(data.daily[1].temp.day) + '°C',
+              icon: data.daily[1].weather[0].main.toLowerCase().includes('cloud') ? 'cloud' : data.daily[1].weather[0].main.toLowerCase().includes('rain') ? 'cloud-rain' : 'sun',
+              rain: (data.daily[1].pop * 100).toFixed(0) + '%'
+            }
+          ]
+        });
+      } catch (e) {
+        setWeather(w => ({ ...w, desc: 'Weather unavailable' }));
+      }
+    };
+    fetchWeather();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-0 overflow-x-hidden">
       <div className="container mx-auto w-full max-w-full space-y-8 px-0 sm:px-4">
@@ -154,7 +217,7 @@ export default function Dashboard() {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Weather Card */}
-            <Card className="shadow-soft w-full max-w-full">
+            <Card className={`shadow-soft w-full max-w-full bg-gradient-to-br ${weather.bg}`}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Cloud className="h-5 w-5" />
@@ -167,42 +230,41 @@ export default function Dashboard() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-2xl sm:text-3xl font-bold">28°C</p>
-                        <p className="text-muted-foreground text-sm sm:text-base">Partly Cloudy</p>
+                        <p className="text-2xl sm:text-3xl font-bold">{weather.temp}</p>
+                        <p className="text-muted-foreground text-sm sm:text-base">{weather.desc}</p>
                       </div>
-                      <Sun className="h-10 w-10 sm:h-12 sm:w-12 text-warning" />
+                      {weather.icon === 'sun' && <Sun className="h-10 w-10 sm:h-12 sm:w-12 text-warning" />}
+                      {weather.icon === 'cloud' && <Cloud className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground" />}
+                      {weather.icon === 'cloud-rain' && <CloudRain className="h-10 w-10 sm:h-12 sm:w-12 text-sky" />}
+                      {weather.icon === 'zap' && <Zap className="h-10 w-10 sm:h-12 sm:w-12 text-yellow-500" />}
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className="flex items-center gap-2">
                         <Droplets className="h-4 w-4 text-sky" />
-                        <span>Humidity: 65%</span>
+                        <span>Humidity: {weather.humidity}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Wind className="h-4 w-4 text-muted-foreground" />
-                        <span>Wind: 12 km/h</span>
+                        <span>Wind: {weather.wind}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Forecast */}
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Today</span>
-                      <div className="flex items-center gap-2">
-                        <Sun className="h-4 w-4" />
-                        <span className="text-sm">28°C</span>
-                        <span className="text-xs text-sky">10%</span>
+                    {weather.forecast.map((f, i) => (
+                      <div className="flex items-center justify-between" key={f.day}>
+                        <span className="text-sm font-medium">{f.day}</span>
+                        <div className="flex items-center gap-2">
+                          {f.icon === 'sun' && <Sun className="h-4 w-4" />}
+                          {f.icon === 'cloud' && <Cloud className="h-4 w-4" />}
+                          {f.icon === 'cloud-rain' && <CloudRain className="h-4 w-4" />}
+                          <span className="text-sm">{f.temp}</span>
+                          <span className="text-xs text-sky">{f.rain}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Tomorrow</span>
-                      <div className="flex items-center gap-2">
-                        <Cloud className="h-4 w-4" />
-                        <span className="text-sm">26°C</span>
-                        <span className="text-xs text-sky">40%</span>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>
