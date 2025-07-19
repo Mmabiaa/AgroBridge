@@ -204,13 +204,13 @@ export function VoiceCommands() {
       setResponse('Sorry, your browser does not support speech recognition. Try Chrome or Edge.');
       return;
     }
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const recognitionInstance = new SpeechRecognition();
-    recognitionInstance.continuous = false;
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = false;
     recognitionInstance.interimResults = true;
     recognitionInstance.lang = 'en-US';
-
-    recognitionInstance.onresult = (event: any) => {
+      
+      recognitionInstance.onresult = (event: any) => {
       let interim = '';
       let final = '';
       for (let i = 0; i < event.results.length; ++i) {
@@ -227,12 +227,12 @@ export function VoiceCommands() {
     recognitionInstance.onerror = (event: any) => {
       setIsListening(false);
       setResponse('Microphone error or permission denied. Please check your browser settings and allow mic access.');
-    };
-
+      };
+      
     recognitionInstance.onaudioend = () => {
-      setIsListening(false);
-    };
-
+        setIsListening(false);
+      };
+      
     recognitionRef.current = recognitionInstance;
   }, []);
 
@@ -243,7 +243,7 @@ export function VoiceCommands() {
         startListening();
       } else if (e.code === 'Space' && isListening) {
         stopListening();
-      }
+    }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
@@ -340,10 +340,10 @@ export function VoiceCommands() {
     } else {
       setResponse("Command not recognized. Try: " + englishSuggestions.join(', '));
       setCommandHistory(prev => [{cmd: command, result: 'Not recognized'}, ...prev.slice(0, 9)]);
-      if ('speechSynthesis' in window) {
+    if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance("Command not recognized. Please try again.");
         utterance.lang = 'en-US';
-        speechSynthesis.speak(utterance);
+      speechSynthesis.speak(utterance);
       }
     }
   };

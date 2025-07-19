@@ -206,8 +206,8 @@ export function FileUpload({ onProductUpload }) {
                 <input name="name" value={form.name} onChange={handleFormChange} placeholder="Product Name" className="input input-bordered w-full" required />
                 <input name="farmer" value={form.farmer} onChange={handleFormChange} placeholder="Your Name" className="input input-bordered w-full" required />
                 <input name="location" value={form.location} onChange={handleFormChange} placeholder="Location" className="input input-bordered w-full" required />
-                <input name="price" value={form.price} onChange={handleFormChange} placeholder="Price (₦)" type="number" min="0" className="input input-bordered w-full" required />
-                <input name="previousPrice" value={form.previousPrice} onChange={handleFormChange} placeholder="Previous Price (₦)" type="number" min="0" className="input input-bordered w-full" />
+                <input name="price" value={form.price} onChange={handleFormChange} placeholder="Price (₵)" type="number" min="0" className="input input-bordered w-full" required />
+                <input name="previousPrice" value={form.previousPrice} onChange={handleFormChange} placeholder="Previous Price (₵)" type="number" min="0" className="input input-bordered w-full" />
                 <input name="quantity" value={form.quantity} onChange={handleFormChange} placeholder="Quantity" type="number" min="1" className="input input-bordered w-full" required />
                 <input name="harvestDate" value={form.harvestDate} onChange={handleFormChange} placeholder="Harvest Date" type="date" className="input input-bordered w-full" required />
                 <select name="category" value={form.category} onChange={handleFormChange} className="input input-bordered w-full">
