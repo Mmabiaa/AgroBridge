@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -50,8 +50,8 @@ export function VoiceCommands() {
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [transcript, setTranscript] = useState('');
   const [response, setResponse] = useState('');
-  const [recognition, setRecognition] = useState<any>(null);
   const [interimTranscript, setInterimTranscript] = useState('');
+  const recognitionRef = useRef<any>(null);
   const navigate = useNavigate();
 
   // Navigation command mapping (English only)
@@ -68,7 +68,7 @@ export function VoiceCommands() {
     'check weather forecast': '/weather',
     'what is the weather': '/weather',
     'weather update': '/weather',
-    'today\'s weather': '/weather',
+    "today's weather": '/weather',
     'how is the weather': '/weather',
   
     // Crop Disease
@@ -76,6 +76,7 @@ export function VoiceCommands() {
     'check crop health': '/crop-disease-detection',
     'scan my crops': '/crop-disease-detection',
     'detect crop disease': '/crop-disease-detection',
+    'scan my crop': '/crop-disease-detection',
   
     // Community
     'open community': '/community',
@@ -128,34 +129,40 @@ export function VoiceCommands() {
   
 
   useEffect(() => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      const recognitionInstance = new SpeechRecognition();
-      
-      recognitionInstance.continuous = false;
-      recognitionInstance.interimResults = true;
-      recognitionInstance.lang = getLanguageCode(selectedLanguage);
-      
-      recognitionInstance.onresult = (event: any) => {
-        let interim = '';
-        let final = '';
-        for (let i = 0; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            final += event.results[i][0].transcript;
-          } else {
-            interim += event.results[i][0].transcript;
-          }
-        }
-        setInterimTranscript(interim);
-        if (final) setTranscript(final);
-      };
-      
-      recognitionInstance.onend = () => {
-        setIsListening(false);
-      };
-      
-      setRecognition(recognitionInstance);
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      setResponse('Sorry, your browser does not support speech recognition. Try Chrome or Edge.');
+      return;
     }
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognitionInstance = new SpeechRecognition();
+    recognitionInstance.continuous = false;
+    recognitionInstance.interimResults = true;
+    recognitionInstance.lang = getLanguageCode(selectedLanguage);
+
+    recognitionInstance.onresult = (event: any) => {
+      let interim = '';
+      let final = '';
+      for (let i = 0; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          final += event.results[i][0].transcript;
+        } else {
+          interim += event.results[i][0].transcript;
+        }
+      }
+      setInterimTranscript(interim);
+      if (final) setTranscript(final);
+    };
+
+    recognitionInstance.onerror = (event: any) => {
+      setIsListening(false);
+      setResponse('Microphone error or permission denied. Please check your browser settings and allow mic access.');
+    };
+
+    recognitionInstance.onaudioend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognitionInstance;
   }, [selectedLanguage]);
 
   const getLanguageCode = (lang: string) => {
@@ -169,20 +176,19 @@ export function VoiceCommands() {
   };
 
   const startListening = () => {
-    if (recognition) {
+    if (recognitionRef.current) {
       setIsListening(true);
       setTranscript('');
       setInterimTranscript('');
       setResponse('');
-      recognition.start();
+      recognitionRef.current.start();
     }
   };
 
   const stopListening = () => {
-    if (recognition) {
-      recognition.stop();
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
       setIsListening(false);
-      // Only process the command after stop
       if (transcript.trim()) {
         processVoiceCommand(transcript);
       } else {
