@@ -11,6 +11,7 @@ import { QuickQuestions } from '@/components/agrigpt/QuickQuestions';
 import { ImageUpload } from '@/components/agrigpt/ImageUpload';
 import { ExpertContact } from '@/components/agrigpt/ExpertContact';
 import { VoiceControls } from '@/components/agrigpt/VoiceControls';
+import { greetings, agriQA } from '@/data/agrigpt_knowledge';
 
 const sampleQuestions = [
   "How do I treat tomato leaf curl disease?",
@@ -20,6 +21,15 @@ const sampleQuestions = [
   "What crops grow well in dry season?",
   "How to improve soil fertility?"
 ];
+
+const sampleAnswers: Record<string, string> = {
+  "How do I treat tomato leaf curl disease?": "Spray neem oil and remove infected leaves.",
+  "What's the best fertilizer for maize?": "Use NPK 15:15:15 and apply urea later.",
+  "When should I plant onions in Ghana?": "Plant from October to January during dry season.",
+  "How to prevent pest attacks naturally?": "Use neem spray, garlic-chili mix, or marigolds.",
+  "What crops grow well in dry season?": "Tomatoes, okra, cowpeas, and leafy greens.",
+  "How to improve soil fertility?": "Add compost, rotate crops, and plant legumes."
+};
 
 const chatHistory = [
   {
@@ -116,6 +126,18 @@ function findPreloadedAnswer(userQuestion: string) {
   return preloadedQA.find(qa => normalized === qa.question.trim().toLowerCase())?.answer;
 }
 
+function findAgriGPTAnswer(userInput: string) {
+  const normalized = userInput.trim().toLowerCase();
+  // Check greetings (partial match)
+  const greet = greetings.find(g => normalized.includes(g.q));
+  if (greet) return greet.a;
+  // Check Q&A (partial match)
+  const qa = agriQA.find(qa => normalized.includes(qa.q));
+  if (qa) return qa.a;
+  // Fallback
+  return null;
+}
+
 export default function AgriGPT() {
   const [message, setMessage] = useState('');
   const [isListening, setIsListening] = useState(false);
@@ -132,14 +154,14 @@ export default function AgriGPT() {
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setChat(prev => [...prev, userMsg]);
-      const preloaded = findPreloadedAnswer(message);
-      if (preloaded) {
+      const agriAnswer = findAgriGPTAnswer(message);
+      if (agriAnswer) {
         setChat(prev => [
           ...prev,
           {
             id: prev.length + 1,
             type: 'bot' as const,
-            message: preloaded,
+            message: agriAnswer,
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
@@ -151,7 +173,7 @@ export default function AgriGPT() {
             {
               id: prev.length + 1,
               type: 'bot' as const,
-              message: "[AgriGPT] Sorry, I don't have an instant answer for that. Let me check...",
+              message: "Sorry, I don’t know that yet. Can you ask another way?",
               time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             }
           ]);
@@ -170,7 +192,52 @@ export default function AgriGPT() {
   };
 
   const handleQuestionClick = (question: string) => {
-    setMessage(question);
+    setMessage("");
+    const userMsg = {
+      id: chat.length + 1,
+      type: 'user' as const,
+      message: question,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setChat(prev => [...prev, userMsg]);
+    // Use sampleAnswers for quick questions, fallback to agriGPT knowledge base for others
+    const quickAnswer = sampleAnswers[question];
+    if (quickAnswer) {
+      setChat(prev => [
+        ...prev,
+        {
+          id: prev.length + 1,
+          type: 'bot' as const,
+          message: quickAnswer,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+    } else {
+      const agriAnswer = findAgriGPTAnswer(question);
+      if (agriAnswer) {
+        setChat(prev => [
+          ...prev,
+          {
+            id: prev.length + 1,
+            type: 'bot' as const,
+            message: agriAnswer,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+      } else {
+        setTimeout(() => {
+          setChat(prev => [
+            ...prev,
+            {
+              id: prev.length + 1,
+              type: 'bot' as const,
+              message: "Sorry, I don’t know that yet. Can you ask another way?",
+              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+        }, 1000);
+      }
+    }
   };
 
   const handleLanguageChange = (language: string) => {
