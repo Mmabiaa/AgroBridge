@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Camera, Upload, Scan, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
+import { Camera, Upload, Scan, AlertTriangle, CheckCircle, RefreshCw, RotateCw } from 'lucide-react';
 
 interface DetectionResult {
   disease: string;
@@ -21,13 +21,14 @@ export function CropDiseaseDetection() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cameraActive, setCameraActive] = useState(true);
+  const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
 
   // Always start camera on mount unless an image is selected
   useEffect(() => {
     if (cameraActive && !selectedImage) {
       (async () => {
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
           if (videoRef.current) {
             videoRef.current.srcObject = stream;
           }
@@ -43,7 +44,7 @@ export function CropDiseaseDetection() {
         stream.getTracks().forEach(track => track.stop());
       }
     };
-  }, [cameraActive, selectedImage]);
+  }, [cameraActive, selectedImage, facingMode]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -124,13 +125,23 @@ export function CropDiseaseDetection() {
         </CardHeader>
         <CardContent className="space-y-4">
           {cameraActive && !selectedImage && (
-            <div className="space-y-4">
+            <div className="space-y-4 relative">
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
                 className="w-full rounded-lg"
               />
+              {/* Camera switch button */}
+              <button
+                type="button"
+                aria-label="Switch camera"
+                onClick={() => setFacingMode(facingMode === 'environment' ? 'user' : 'environment')}
+                className="absolute top-2 right-2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md border border-gray-200"
+                style={{ touchAction: 'manipulation' }}
+              >
+                <RotateCw className="h-5 w-5 text-primary" />
+              </button>
               <div className="flex gap-3">
                 <Button onClick={capturePhoto} className="flex-1">
                   <Camera className="h-4 w-4 mr-2" />
