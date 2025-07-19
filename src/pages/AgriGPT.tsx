@@ -100,19 +100,22 @@ const preloadedQA = [
 ];
 
 function findPreloadedAnswer(userQuestion: string) {
-  const normalized = userQuestion.trim().toLowerCase();
-  return preloadedQA.find(qa => normalized === qa.question.trim().toLowerCase())?.answer;
+  const norm = userQuestion.trim().toLowerCase();
+  for (const qa of preloadedQA) {
+    if (qa.question.trim().toLowerCase() === norm) {
+      return qa.answer;
+    }
+  }
+  return null;
 }
 
 function findAgriGPTAnswer(userInput: string) {
-  const normalized = userInput.trim().toLowerCase();
-  // Check greetings (partial match)
-  const greet = greetings.find(g => normalized.includes(g.q));
-  if (greet) return greet.a;
-  // Check Q&A (partial match)
-  const qa = preloadedQA.find(qa => normalized.includes(qa.question.trim().toLowerCase()));
-  if (qa) return qa.answer;
-  // Fallback
+  const norm = userInput.trim().toLowerCase();
+  for (const qa of preloadedQA) {
+    if (qa.question.trim().toLowerCase() === norm) {
+      return qa.answer;
+    }
+  }
   return null;
 }
 
