@@ -24,7 +24,7 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import Search from "./pages/Search";
 import CropDiseaseDetection from "./pages/CropDiseaseDetection";
-import VoiceCommands from "./pages/VoiceCommands";
+import VoiceCommandsPage from "./pages/VoiceCommands";
 import Notifications from "./pages/Notifications";
 import SmartScheduling from "./pages/SmartScheduling";
 import BlockchainCertificates from "./pages/BlockchainCertificates";
@@ -77,7 +77,7 @@ const App = () => (
                     <Route path="/profile-setup" element={<ProfileSetup />} />
                     <Route path="/search" element={<Search />} />
                     <Route path="/crop-disease-detection" element={<CropDiseaseDetection />} />
-                    <Route path="/voice-commands" element={<VoiceCommands />} />
+                    <Route path="/voice-commands" element={<VoiceCommandsPage />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/smart-scheduling" element={<SmartScheduling />} />
                     <Route path="/blockchain-certificates" element={<BlockchainCertificates />} />

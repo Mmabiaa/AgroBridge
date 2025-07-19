@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mic, MicOff, Volume2, Languages, MessageSquare } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -122,6 +122,7 @@ export function VoiceCommands() {
   const [commandHistory, setCommandHistory] = useState<{cmd: string, result: string}[]>([]);
   const recognitionRef = useRef<any>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const listeningTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Navigation command mapping (English only)
@@ -285,30 +286,46 @@ export function VoiceCommands() {
     }
   };
 
+  function normalizeText(text: string) {
+    return text.trim().toLowerCase().replace(/[.,!?;:()\[\]{}'"-]/g, '');
+  }
+
   function findIntent(text: string) {
-    const norm = text.trim().toLowerCase();
+    const norm = normalizeText(text);
+    // 1. Direct phrase match
     for (const intent of englishIntents) {
       for (const phrase of intent.phrases) {
-        if (norm === phrase || norm.includes(phrase) || phrase.includes(norm)) {
+        const phraseNorm = normalizeText(phrase);
+        if (norm === phraseNorm || norm.includes(phraseNorm) || phraseNorm.includes(norm)) {
           return intent;
         }
       }
     }
-    // Fuzzy/keyword match
+    // 2. Fuzzy/keyword match (case-insensitive, any keyword in any order, ignoring punctuation)
     for (const intent of englishIntents) {
       for (const phrase of intent.phrases) {
-        const phraseWords = phrase.split(/\s+/).filter(w => w.length > 2);
+        const phraseWords = normalizeText(phrase).split(/\s+/).filter(w => w.length > 2);
         const normWords = norm.split(/\s+/).filter(w => w.length > 2);
         if (phraseWords.some(w => normWords.includes(w))) {
           return intent;
         }
       }
     }
+    // 3. Fallback: direct route match (e.g., user says 'support' or 'marketplace')
+    for (const intent of englishIntents) {
+      const routeName = intent.route.replace('/', '').replace('-', ' ');
+      if (norm === routeName || norm.includes(routeName) || routeName.includes(norm)) {
+        return intent;
+      }
+    }
     return null;
   }
 
   const processVoiceCommand = (command: string) => {
+    console.log('Raw transcript:', command);
+    console.log('Normalized:', normalizeText(command));
     const intent = findIntent(command);
+    setTranscript(command); // Always show what the user said
     if (intent) {
       setResponse(`Navigating to ${intent.route.replace('/', '').replace('-', ' ')}`);
       setCommandHistory(prev => [{cmd: command, result: `Navigated to ${intent.route}`} , ...prev.slice(0, 9)]);
@@ -317,7 +334,9 @@ export function VoiceCommands() {
         utterance.lang = 'en-US';
         speechSynthesis.speak(utterance);
       }
-      setTimeout(() => navigate(intent.route), 1200);
+      if (location.pathname !== intent.route) {
+        setTimeout(() => navigate(intent.route), 500);
+      }
     } else {
       setResponse("Command not recognized. Try: " + englishSuggestions.join(', '));
       setCommandHistory(prev => [{cmd: command, result: 'Not recognized'}, ...prev.slice(0, 9)]);
