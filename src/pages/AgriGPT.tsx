@@ -48,15 +48,115 @@ const chatHistory = [
   }
 ];
 
+const preloadedQA = [
+  {
+    question: "How do I treat tomato leaf curl disease?",
+    answer: "Tomato leaf curl is best managed by removing infected plants, controlling whiteflies, and using resistant varieties. Avoid planting tomatoes near cotton or tobacco."
+  },
+  {
+    question: "What's the best fertilizer for maize?",
+    answer: "For maize, use NPK 15-15-15 at planting (200kg/hectare) and Urea (46-0-0) as a top dressing (50kg/hectare) 3-4 weeks after planting."
+  },
+  {
+    question: "When should I plant onions in Ghana?",
+    answer: "The best time to plant onions in Ghana is at the start of the dry season, typically from November to January."
+  },
+  {
+    question: "How to prevent pest attacks naturally?",
+    answer: "Use neem oil spray, encourage beneficial insects, rotate crops, and remove plant debris to prevent pest attacks naturally."
+  },
+  {
+    question: "What crops grow well in dry season?",
+    answer: "Crops like tomatoes, onions, okra, pepper, and leafy greens can be grown in the dry season with irrigation."
+  },
+  {
+    question: "How to improve soil fertility?",
+    answer: "Add organic matter (compost, manure), practice crop rotation, and use cover crops to improve soil fertility."
+  },
+  {
+    question: "How do I control armyworms in maize?",
+    answer: "Scout fields regularly, use recommended insecticides early, and encourage natural predators to control armyworms in maize."
+  },
+  {
+    question: "What is the best way to irrigate tomatoes?",
+    answer: "Drip irrigation is best for tomatoes as it delivers water directly to the roots and reduces disease risk."
+  },
+  {
+    question: "How can I tell if my soil is acidic?",
+    answer: "Test your soil with a pH kit. Acidic soils have a pH below 6.0. Yellowing leaves and poor growth can also be signs."
+  },
+  {
+    question: "Are organic fertilizers better than chemical ones?",
+    answer: "Organic fertilizers improve soil health over time, while chemical fertilizers provide quick nutrients. A balanced approach is often best."
+  },
+  {
+    question: "How do I store harvested maize to prevent spoilage?",
+    answer: "Dry maize thoroughly, store in airtight containers or bags, and keep in a cool, dry place to prevent spoilage."
+  },
+  {
+    question: "What are the signs of cassava mosaic disease?",
+    answer: "Look for yellow or green mosaic patterns on leaves, leaf distortion, and stunted growth. Remove infected plants promptly."
+  },
+  {
+    question: "How do I access government loans for farmers?",
+    answer: "Contact your local Ministry of Food and Agriculture office for information on available government loan schemes and requirements."
+  },
+  {
+    question: "How can I increase my poultry egg production?",
+    answer: "Provide balanced feed, clean water, proper lighting, and good housing. Regularly check for diseases and parasites."
+  },
+  {
+    question: "What is the best way to control weeds in rice fields?",
+    answer: "Use pre-emergence herbicides, hand weeding, and maintain proper water levels to control weeds in rice fields."
+  }
+];
+
+function findPreloadedAnswer(userQuestion: string) {
+  const normalized = userQuestion.trim().toLowerCase();
+  return preloadedQA.find(qa => normalized === qa.question.trim().toLowerCase())?.answer;
+}
+
 export default function AgriGPT() {
   const [message, setMessage] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('en');
+  const [chat, setChat] = useState(chatHistory);
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      console.log('Sending message:', message);
+      const userMsg = {
+        id: chat.length + 1,
+        type: 'user' as const,
+        message: message,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setChat(prev => [...prev, userMsg]);
+      const preloaded = findPreloadedAnswer(message);
+      if (preloaded) {
+        setChat(prev => [
+          ...prev,
+          {
+            id: prev.length + 1,
+            type: 'bot' as const,
+            message: preloaded,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+      } else {
+        // Fallback: simulate backend call (replace with real API call)
+        setTimeout(() => {
+          setChat(prev => [
+            ...prev,
+            {
+              id: prev.length + 1,
+              type: 'bot' as const,
+              message: "[AgriGPT] Sorry, I don't have an instant answer for that. Let me check...",
+              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+        }, 1000);
+      }
       setMessage('');
     }
   };
@@ -113,7 +213,7 @@ export default function AgriGPT() {
               <CardContent className="flex-1 p-0">
                 <div className="p-6 bg-gradient-to-b from-background to-muted/10 max-h-96 overflow-y-auto">
                   <div className="space-y-4">
-                    {chatHistory.map((chat) => (
+                    {chat.map((chat) => (
                       <ChatMessage
                         key={chat.id}
                         id={chat.id}

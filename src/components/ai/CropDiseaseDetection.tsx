@@ -1,5 +1,5 @@
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -20,7 +20,30 @@ export function CropDiseaseDetection() {
   const [result, setResult] = useState<DetectionResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isCamera, setIsCamera] = useState(false);
+  const [cameraActive, setCameraActive] = useState(true);
+
+  // Always start camera on mount unless an image is selected
+  useEffect(() => {
+    if (cameraActive && !selectedImage) {
+      (async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        } catch (error) {
+          setCameraActive(false);
+        }
+      })();
+    }
+    // Stop camera when not active
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [cameraActive, selectedImage]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -29,20 +52,9 @@ export function CropDiseaseDetection() {
       reader.onload = (e) => {
         setSelectedImage(e.target?.result as string);
         setResult(null);
+        setCameraActive(false);
       };
       reader.readAsDataURL(file);
-    }
-  };
-
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        setIsCamera(true);
-      }
-    } catch (error) {
-      console.error('Error accessing camera:', error);
     }
   };
 
@@ -55,12 +67,14 @@ export function CropDiseaseDetection() {
       ctx?.drawImage(videoRef.current, 0, 0);
       const imageData = canvas.toDataURL('image/jpeg');
       setSelectedImage(imageData);
-      setIsCamera(false);
-      
-      // Stop camera stream
-      const stream = videoRef.current.srcObject as MediaStream;
-      stream?.getTracks().forEach(track => track.stop());
+      setCameraActive(false);
     }
+  };
+
+  const retakePhoto = () => {
+    setSelectedImage(null);
+    setResult(null);
+    setCameraActive(true);
   };
 
   const analyzeImage = async () => {
@@ -109,46 +123,7 @@ export function CropDiseaseDetection() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {!selectedImage && !isCamera && (
-            <div className="space-y-4">
-              <div className="border-2 border-dashed border-primary/30 rounded-xl p-8 text-center bg-gradient-to-br from-muted/20 to-transparent">
-                <div className="flex flex-col items-center gap-3">
-                  <Upload className="h-12 w-12 text-primary" />
-                  <div>
-                    <p className="text-lg font-medium mb-2">Upload or Capture Plant Image</p>
-                    <p className="text-sm text-muted-foreground">
-                      Get instant AI-powered disease analysis
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex gap-3">
-                <Button onClick={startCamera} className="flex-1">
-                  <Camera className="h-4 w-4 mr-2" />
-                  Use Camera
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex-1"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Image
-                </Button>
-              </div>
-              
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-            </div>
-          )}
-
-          {isCamera && (
+          {cameraActive && !selectedImage && (
             <div className="space-y-4">
               <video
                 ref={videoRef}
@@ -161,21 +136,32 @@ export function CropDiseaseDetection() {
                   <Camera className="h-4 w-4 mr-2" />
                   Capture Photo
                 </Button>
-                <Button variant="outline" onClick={() => setIsCamera(false)}>
-                  Cancel
+                <Button 
+                  variant="outline" 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex-1"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload Image
                 </Button>
               </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
             </div>
           )}
 
-          {selectedImage && !isCamera && (
+          {selectedImage && !isAnalyzing && (
             <div className="space-y-4">
               <img 
                 src={selectedImage} 
                 alt="Crop analysis" 
                 className="w-full rounded-lg max-h-64 object-cover"
               />
-              
               <div className="flex gap-3">
                 <Button 
                   onClick={analyzeImage} 
@@ -196,12 +182,9 @@ export function CropDiseaseDetection() {
                 </Button>
                 <Button 
                   variant="outline" 
-                  onClick={() => {
-                    setSelectedImage(null);
-                    setResult(null);
-                  }}
+                  onClick={retakePhoto}
                 >
-                  Reset
+                  Retake
                 </Button>
               </div>
             </div>
