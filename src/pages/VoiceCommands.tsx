@@ -178,8 +178,8 @@ export default function VoiceCommandsPage() {
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>• "What's the weather today?"</li>
                   <li>• "Show me market prices"</li>
-                  <li>• "Check my farm status"</li>
-                  <li>• "Any pest alerts?"</li>
+                  <li>• "Scan my crop"</li>
+                  <li>• "Open community"</li>
                 </ul>
               </div>
             </div>
