@@ -375,7 +375,21 @@ export function CropDiseaseDetection() {
       result: analysisResult.disease.includes('Healthy') ? 'Healthy' : analysisResult.disease,
       confidence: analysisResult.confidence,
       timestamp: new Date().toISOString(),
-      severity: analysisResult.severity
+      severity: analysisResult.severity,
+      diseaseDetails: {
+        disease: analysisResult.disease,
+        treatment: analysisResult.treatment,
+        prevention: analysisResult.prevention,
+        symptoms: analysisResult.symptoms,
+        causes: analysisResult.causes,
+        affectedCrops: analysisResult.affectedCrops,
+        spreadRate: analysisResult.spreadRate,
+        recoveryTime: analysisResult.recoveryTime,
+        cost: analysisResult.cost,
+        riskLevel: analysisResult.riskLevel,
+        environmentalFactors: analysisResult.environmentalFactors,
+        recommendedProducts: analysisResult.recommendedProducts
+      }
     };
 
     // Get existing scans from localStorage
