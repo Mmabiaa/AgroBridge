@@ -561,7 +561,7 @@ export function CropDiseaseDetection() {
                             result.severity === 'high' ? 'bg-orange-500' :
                             result.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
                           }`}></div>
-                          {result.severity} severity
+                    {result.severity} severity
                         </div>
                       </Badge>
                       <Badge variant="outline" className={`${getRiskColor(result.riskLevel)} text-sm lg:text-base font-bold px-3 lg:px-4 py-1 lg:py-2 border-2 w-fit`}>
@@ -569,8 +569,8 @@ export function CropDiseaseDetection() {
                           <AlertTriangle className="h-3 w-3 lg:h-4 lg:w-4" />
                           Risk: {result.riskLevel}
                         </div>
-                      </Badge>
-                    </div>
+                  </Badge>
+                </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4 lg:space-y-6 p-4 lg:p-6">
@@ -588,7 +588,7 @@ export function CropDiseaseDetection() {
                       <span>Low</span>
                       <span>Medium</span>
                       <span>High</span>
-                    </div>
+                </div>
                   </div>
                   
                   {/* Enhanced Quick Info Grid */}
@@ -794,7 +794,7 @@ export function CropDiseaseDetection() {
                         {factor}
                       </Badge>
                     ))}
-                  </div>
+                </div>
                 </CardContent>
               </Card>
             </div>

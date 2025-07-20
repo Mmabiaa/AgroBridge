@@ -210,16 +210,16 @@ export function NotificationCenter() {
       case 'stories':
         return Users;
       default:
-        switch (type) {
-          case 'alert':
-            return AlertTriangle;
-          case 'warning':
-            return AlertTriangle;
-          case 'success':
-            return CheckCircle;
-          case 'info':
-          default:
-            return Info;
+    switch (type) {
+      case 'alert':
+        return AlertTriangle;
+      case 'warning':
+        return AlertTriangle;
+      case 'success':
+        return CheckCircle;
+      case 'info':
+      default:
+        return Info;
         }
     }
   };
@@ -255,9 +255,9 @@ export function NotificationCenter() {
 
   const markAsRead = (id: string) => {
     const updatedNotifications = notifications.map(notification => 
-      notification.id === id 
-        ? { ...notification, isRead: true }
-        : notification
+        notification.id === id 
+          ? { ...notification, isRead: true }
+          : notification
     );
     setNotifications(updatedNotifications);
     localStorage.setItem('agroBridgeNotifications', JSON.stringify(updatedNotifications));
@@ -378,9 +378,9 @@ export function NotificationCenter() {
                         </p>
                         
                         <div className="flex items-center justify-between">
-                          <Badge variant="outline" className="text-xs">
-                            {notification.category}
-                          </Badge>
+                            <Badge variant="outline" className="text-xs">
+                              {notification.category}
+                            </Badge>
                           
                           <Button
                             variant="ghost"
@@ -441,82 +441,82 @@ export function NotificationCenter() {
                       }
                     />
                   </div>
-                  
-                  <div className="flex items-center justify-between">
+                
+                <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-purple-500" />
                       <span className="text-sm">Calendar Events</span>
                     </div>
-                    <Switch
+                  <Switch
                       checked={notificationSettings.calendar}
-                      onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) => 
                         updateNotificationSettings({ ...notificationSettings, calendar: checked })
-                      }
-                    />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
+                    }
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Users className="h-4 w-4 text-orange-500" />
                       <span className="text-sm">Farmer Stories</span>
                     </div>
-                    <Switch
+                  <Switch
                       checked={notificationSettings.stories}
-                      onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) => 
                         updateNotificationSettings({ ...notificationSettings, stories: checked })
-                      }
-                    />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
+                    }
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Leaf className="h-4 w-4 text-emerald-500" />
                       <span className="text-sm">System Updates</span>
                     </div>
-                    <Switch
+                  <Switch
                       checked={notificationSettings.system}
-                      onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) => 
                         updateNotificationSettings({ ...notificationSettings, system: checked })
-                      }
-                    />
+                    }
+                  />
                   </div>
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div className="space-y-3">
                 <h4 className="font-medium text-sm">Delivery Methods</h4>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between">
                     <span className="text-sm">Push Notifications</span>
-                    <Switch
+                  <Switch
                       checked={notificationSettings.push}
-                      onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) => 
                         updateNotificationSettings({ ...notificationSettings, push: checked })
-                      }
-                    />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
+                    }
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
                     <span className="text-sm">Email</span>
-                    <Switch
+                  <Switch
                       checked={notificationSettings.email}
-                      onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) => 
                         updateNotificationSettings({ ...notificationSettings, email: checked })
-                      }
-                    />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
+                    }
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
                     <span className="text-sm">SMS</span>
-                    <Switch
+                  <Switch
                       checked={notificationSettings.sms}
-                      onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) => 
                         updateNotificationSettings({ ...notificationSettings, sms: checked })
-                      }
-                    />
-                  </div>
+                    }
+                  />
+                </div>
                 </div>
               </div>
             </CardContent>

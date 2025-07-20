@@ -242,7 +242,7 @@ export default function CropDiseaseDetectionPage() {
           {/* Main Detection Component */}
           <div className="lg:col-span-3">
             <CropDiseaseDetection />
-          </div>
+              </div>
 
           {/* Sidebar */}
           <div className="lg:col-span-1 h-[calc(100vh-200px)]">
@@ -267,7 +267,7 @@ export default function CropDiseaseDetectionPage() {
                             <div className="flex items-center gap-2">
                               <div className={`w-3 h-3 rounded-full ${getResultColor(scan.result)}`} />
                               <span className="font-semibold text-sm">{scan.crop}</span>
-                            </div>
+              </div>
                             {scan.severity && scan.result !== 'Healthy' && (
                               <Badge 
                                 variant={
@@ -279,7 +279,7 @@ export default function CropDiseaseDetectionPage() {
                                 {scan.severity}
                               </Badge>
                             )}
-                          </div>
+              </div>
                           
                           <div className="space-y-2 mb-3">
                             <div className="flex items-center justify-between">
@@ -289,20 +289,20 @@ export default function CropDiseaseDetectionPage() {
                               }`}>
                                 {scan.result}
                               </span>
-                            </div>
-                            
+        </div>
+
                             <div className="flex items-center justify-between">
                               <span className="text-xs text-muted-foreground">Confidence:</span>
                               <span className="text-xs font-semibold">{scan.confidence}%</span>
                             </div>
                             
-                            <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between">
                               <span className="text-xs text-muted-foreground">Time:</span>
                               <span className="text-xs text-muted-foreground">
                                 {formatTimeAgo(scan.timestamp)}
                               </span>
-                            </div>
-                          </div>
+                    </div>
+                  </div>
 
                           {/* Action Buttons */}
                           <div className="flex gap-2 pt-3 border-t border-border/50">
@@ -327,8 +327,8 @@ export default function CropDiseaseDetectionPage() {
                               <Download className="h-3 w-3" />
                             </Button>
                           </div>
-                        </div>
-                      ))}
+                </div>
+              ))}
                     </div>
                     
                     {userScans.length > 5 && (
@@ -336,51 +336,51 @@ export default function CropDiseaseDetectionPage() {
                         <p className="text-xs text-muted-foreground">
                           Showing 5 of {userScans.length} scans
                         </p>
-                      </div>
+                  </div>
                     )}
-                  </CardContent>
-                </Card>
+            </CardContent>
+          </Card>
               )}
 
-              {/* How It Works */}
+        {/* How It Works */}
               <Card className="shadow-soft w-full">
-                <CardHeader>
+          <CardHeader>
                   <CardTitle className="text-xl">How AI Detection Works</CardTitle>
                   <CardDescription className="text-base">Understanding our disease detection process</CardDescription>
-                </CardHeader>
+          </CardHeader>
                 <CardContent className="p-6">
                   <div className="space-y-6">
                     <div className="text-center space-y-4">
                       <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
                         <Camera className="h-8 w-8 text-primary" />
-                      </div>
+                </div>
                       <h3 className="font-semibold text-lg">1. Capture Image</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Take a clear photo of your crop leaves or upload an existing image
-                      </p>
-                    </div>
+                <p className="text-sm text-muted-foreground">
+                  Take a clear photo of your crop leaves or upload an existing image
+                </p>
+              </div>
                     <div className="text-center space-y-4">
                       <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
                         <Brain className="h-8 w-8 text-primary" />
-                      </div>
+                </div>
                       <h3 className="font-semibold text-lg">2. AI Analysis</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Our AI model analyzes the image using machine learning algorithms
-                      </p>
-                    </div>
+                <p className="text-sm text-muted-foreground">
+                  Our AI model analyzes the image using machine learning algorithms
+                </p>
+              </div>
                     <div className="text-center space-y-4">
                       <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
                         <Shield className="h-8 w-8 text-primary" />
-                      </div>
+                </div>
                       <h3 className="font-semibold text-lg">3. Get Results</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Receive instant diagnosis with treatment recommendations
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                <p className="text-sm text-muted-foreground">
+                  Receive instant diagnosis with treatment recommendations
+                </p>
+              </div>
             </div>
+          </CardContent>
+        </Card>
+      </div>
           </div>
         </div>
       </div>

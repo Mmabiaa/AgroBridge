@@ -114,14 +114,14 @@ export function ChatInput({
                 onChange={handleImageChange}
               />
               <Button variant="ghost" size="sm" className="hover:text-primary" asChild>
-                <Camera className="h-4 w-4" />
-              </Button>
+              <Camera className="h-4 w-4" />
+            </Button>
             </label>
           </div>
         </div>
-        <Button
+        <Button 
           onClick={handleSend}
-          variant="farmer"
+          variant="farmer" 
           size="lg"
           disabled={!message.trim() && !audioBlob && !imageFile}
           className="px-6 shadow-strong hover:shadow-glow transition-all duration-300"

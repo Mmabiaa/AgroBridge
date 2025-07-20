@@ -53,9 +53,9 @@ const englishIntents = [
     ]
   },
   {
-    route: '/crop-calender',
+    route: '/crop-calendar',
     phrases: [
-      'calend', 'go to calender', 'open calender', 'show calender', 'main calender', 'crop calender'
+      'calendar', 'go to calender', 'open calender', 'show calender', 'main calender', 'crop calender'
     ]
   },
   {

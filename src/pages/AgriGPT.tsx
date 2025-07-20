@@ -11,11 +11,25 @@ import { QuickQuestions } from '@/components/agrigpt/QuickQuestions';
 import { ImageUpload } from '@/components/agrigpt/ImageUpload';
 import { ExpertContact } from '@/components/agrigpt/ExpertContact';
 import { VoiceControls } from '@/components/agrigpt/VoiceControls';
-import { getAgriQAAnswer, greetings } from '@/data/agrigpt_knowledge';
+import { getAgriQAAnswer } from '@/data/agrigpt_knowledge';
 
-const chatHistory = [
-  
- 
+// Add ChatMessage type
+interface ChatMessage {
+  id: number;
+  type: 'user' | 'bot';
+  message: string;
+  time: string;
+  audio?: string;
+  image?: string;
+}
+
+const chatHistory: ChatMessage[] = [
+  {
+    id: 1,
+    type: 'bot',
+    message: "Hi there, I'm AgriGPT of AgroBridge. How can I help you today?",
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }
 ];
 
 const preloadedQA = [
@@ -113,14 +127,15 @@ export default function AgriGPT() {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('en');
-  const [chat, setChat] = useState(chatHistory);
+  const [chat, setChat] = useState<ChatMessage[]>(chatHistory);
 
   // New: handle sending message with attachments
-  const handleSendMessage = (attachments?: { audio?: Blob; image?: File }) => {
+  const handleSendMessage = async (attachments?: { audio?: Blob; image?: File }) => {
     if (!message.trim() && !attachments?.audio && !attachments?.image) return;
-    const userMsg: any = {
+  
+    const userMsg: ChatMessage = {
       id: chat.length + 1,
-      type: 'user' as const,
+      type: 'user',
       message: message,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
@@ -131,33 +146,29 @@ export default function AgriGPT() {
       userMsg.image = URL.createObjectURL(attachments.image);
     }
     setChat(prev => [...prev, userMsg]);
-    // Use getAgriQAAnswer for robust answer matching
-    const answer = getAgriQAAnswer(message);
-    if (answer) {
-      setChat(prev => [
-        ...prev,
-        {
-          id: prev.length + 1,
-          type: 'bot' as const,
-          message: answer,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
-    } else {
-      setTimeout(() => {
-        setChat(prev => [
-          ...prev,
-          {
-            id: prev.length + 1,
-            type: 'bot' as const,
-            message: "Sorry, I don’t know that yet. Can you ask another way?",
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          }
-        ]);
-      }, 1000);
+  
+    // Step 1: Try to match with local preloaded answers
+    let answer = findPreloadedAnswer(message);
+  
+    // Step 2: If no match, call Chatbase for answer
+    if (!answer) {
+      answer = await getAgriQAAnswer(message);
     }
+  
+    // Step 3: Display answer in chat
+    setChat(prev => [
+      ...prev,
+      {
+        id: prev.length + 1,
+        type: 'bot',
+        message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    ]);
+  
     setMessage('');
   };
+  
 
   const handleVoiceToggle = () => {
     setIsListening(!isListening);
@@ -169,9 +180,9 @@ export default function AgriGPT() {
 
   const handleQuestionClick = (question: string) => {
     setMessage("");
-    const userMsg = {
+    const userMsg: ChatMessage = {
       id: chat.length + 1,
-      type: 'user' as const,
+      type: 'user',
       message: question,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
@@ -183,7 +194,7 @@ export default function AgriGPT() {
         ...prev,
         {
           id: prev.length + 1,
-          type: 'bot' as const,
+          type: 'bot',
           message: answer,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
@@ -194,7 +205,7 @@ export default function AgriGPT() {
           ...prev,
           {
             id: prev.length + 1,
-            type: 'bot' as const,
+            type: 'bot',
             message: "Sorry, I don't have an exact answer for that question. Please ask a different question.",
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
