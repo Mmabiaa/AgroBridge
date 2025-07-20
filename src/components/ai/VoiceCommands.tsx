@@ -53,6 +53,18 @@ const englishIntents = [
     ]
   },
   {
+    route: '/crop-calender',
+    phrases: [
+      'calend', 'go to calender', 'open calender', 'show calender', 'main calender', 'crop calender'
+    ]
+  },
+  {
+    route: '/farmer-stories',
+    phrases: [
+      'stories', 'go to stories', 'farmer-stories', 'show stories', 'farmer stories', 'story'
+    ]
+  },
+  {
     route: '/marketplace',
     phrases: [
       'markets','market', 'marketplace', 'go to market', 'open market', 'show market', 'market prices', 'market page', 'market price'
@@ -110,7 +122,9 @@ const englishSuggestions = [
   'Open Community',
   'Show Help',
   'Open Settings',
-  'Show Notifications'
+  'Show Notifications',
+  'Farmer story',
+  'Crop Calender'
 ];
 
 export function VoiceCommands() {
@@ -180,6 +194,14 @@ export function VoiceCommands() {
     'show me farming tips': '/training',
     'open training': '/training',
     'access learning center': '/training',
+
+    // Crop Calender
+    'calender': '/crop-calender',
+    'open calender': '/crop-calender',
+    
+    // Farmer Stories
+    'Open Farmer stories':'/farmer-stories',
+    'Stories': '/farmer-stories',
   
     // New: Support
     'open support': '/support',

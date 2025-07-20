@@ -516,47 +516,146 @@ export function CropDiseaseDetection() {
           {result && (
             <div className="space-y-6">
               {/* Main Result Card */}
-              <Card className="shadow-soft">
-                <CardHeader>
+              <Card className="shadow-soft border-l-4 border-l-orange-400">
+                <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-xl font-semibold">{result.disease}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        AI Confidence: {result.confidence}%
-                      </p>
+                      <h3 className="text-2xl font-bold text-gray-800">{result.disease}</h3>
+                      <div className="flex items-center gap-3 mt-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                          <span className="text-sm font-semibold text-orange-700">
+                            AI Confidence: {result.confidence}%
+                          </span>
+                        </div>
+                        <div className="w-px h-4 bg-gray-300"></div>
+                        <span className="text-sm text-gray-600">
+                          Analysis completed at {new Date().toLocaleTimeString()}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <Badge className={getSeverityColor(result.severity)}>
-                        {result.severity} severity
+                    <div className="flex flex-col gap-3">
+                      <Badge className={`${getSeverityColor(result.severity)} text-sm font-bold px-4 py-2`}>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full ${
+                            result.severity === 'critical' ? 'bg-red-500' :
+                            result.severity === 'high' ? 'bg-orange-500' :
+                            result.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                          }`}></div>
+                          {result.severity} severity
+                        </div>
                       </Badge>
-                      <Badge variant="outline" className={getRiskColor(result.riskLevel)}>
-                        Risk: {result.riskLevel}
+                      <Badge variant="outline" className={`${getRiskColor(result.riskLevel)} text-sm font-bold px-4 py-2 border-2`}>
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="h-3 w-3" />
+                          Risk: {result.riskLevel}
+                        </div>
                       </Badge>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <Progress value={result.confidence} className="h-2" />
-                  
-                  {/* Quick Info */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div className="text-center p-3 bg-blue-50 rounded-lg">
-                      <div className="font-semibold text-blue-600">Spread Rate</div>
-                      <div className="capitalize">{result.spreadRate}</div>
+                <CardContent className="space-y-6 p-6">
+                  {/* Enhanced Confidence Bar */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-semibold text-gray-700">Analysis Confidence</span>
+                      <span className="font-bold text-orange-600">{result.confidence}%</span>
                     </div>
-                    <div className="text-center p-3 bg-green-50 rounded-lg">
-                      <div className="font-semibold text-green-600">Recovery Time</div>
-                      <div>{result.recoveryTime}</div>
+                    <div className="relative">
+                      <Progress value={result.confidence} className="h-3 bg-gray-100" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-full opacity-20"></div>
                     </div>
-                    <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                      <div className="font-semibold text-yellow-600">Treatment Cost</div>
-                      <div className="capitalize">{result.cost}</div>
-                    </div>
-                    <div className="text-center p-3 bg-purple-50 rounded-lg">
-                      <div className="font-semibold text-purple-600">Affected Crops</div>
-                      <div className="text-xs">{result.affectedCrops.length} crops</div>
+                    <div className="flex justify-between text-xs text-gray-500">
+                      <span>Low</span>
+                      <span>Medium</span>
+                      <span>High</span>
                     </div>
                   </div>
+                  
+                  {/* Enhanced Quick Info Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 p-4 border border-blue-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-blue-200 rounded-full -translate-y-8 translate-x-8 opacity-20"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-2 bg-blue-500 rounded-lg">
+                            <Leaf className="h-4 w-4 text-white" />
+                          </div>
+                          <span className="font-bold text-blue-700 text-sm">Spread Rate</span>
+                        </div>
+                        <div className="text-lg font-bold text-blue-800 capitalize">{result.spreadRate}</div>
+                        <div className="text-xs text-blue-600 mt-1">
+                          {result.spreadRate === 'fast' ? 'Rapid transmission' :
+                           result.spreadRate === 'moderate' ? 'Medium transmission' : 'Slow transmission'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-green-50 to-green-100 p-4 border border-green-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-green-200 rounded-full -translate-y-8 translate-x-8 opacity-20"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-2 bg-green-500 rounded-lg">
+                            <Calendar className="h-4 w-4 text-white" />
+                          </div>
+                          <span className="font-bold text-green-700 text-sm">Recovery Time</span>
+                        </div>
+                        <div className="text-lg font-bold text-green-800">{result.recoveryTime}</div>
+                        <div className="text-xs text-green-600 mt-1">
+                          {result.recoveryTime.includes('No recovery') ? 'Immediate action needed' :
+                           result.recoveryTime.includes('weeks') ? 'With proper treatment' : 'Standard timeline'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 border border-yellow-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-yellow-200 rounded-full -translate-y-8 translate-x-8 opacity-20"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-2 bg-yellow-500 rounded-lg">
+                            <span className="text-white font-bold text-sm">₵</span>
+                          </div>
+                          <span className="font-bold text-yellow-700 text-sm">Treatment Cost</span>
+                        </div>
+                        <div className="text-lg font-bold text-yellow-800 capitalize">{result.cost}</div>
+                        <div className="text-xs text-yellow-600 mt-1">
+                          {result.cost === 'low' ? 'Affordable treatment' :
+                           result.cost === 'medium' ? 'Moderate investment' : 'High investment required'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 p-4 border border-purple-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-purple-200 rounded-full -translate-y-8 translate-x-8 opacity-20"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-2 bg-purple-500 rounded-lg">
+                            <AlertCircle className="h-4 w-4 text-white" />
+                          </div>
+                          <span className="font-bold text-purple-700 text-sm">Affected Crops</span>
+                        </div>
+                        <div className="text-lg font-bold text-purple-800">{result.affectedCrops.length} crops</div>
+                        <div className="text-xs text-purple-600 mt-1">
+                          {result.affectedCrops.length === 1 ? 'Single crop affected' :
+                           result.affectedCrops.length <= 3 ? 'Few crops affected' : 'Multiple crops at risk'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Crop List Preview */}
+                  {result.affectedCrops.length > 0 && (
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h4 className="font-semibold text-gray-700 mb-3">Crops at Risk:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {result.affectedCrops.map((crop, index) => (
+                          <Badge key={index} variant="outline" className="bg-white border-gray-300 text-gray-700 hover:bg-gray-100">
+                            {crop}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
