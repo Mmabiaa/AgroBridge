@@ -122,6 +122,16 @@ function getPreloadedAnswer(question: string) {
   return preloadedQA.find(qa => qa.question.trim().toLowerCase().replace(/\?+$/, '') === normalized)?.answer;
 }
 
+// Add TTS helper
+function speakText(text: string) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    window.speechSynthesis.speak(utter);
+  }
+}
+
 export default function AgriGPT() {
   const [message, setMessage] = useState('');
   const [isListening, setIsListening] = useState(false);
@@ -150,21 +160,23 @@ export default function AgriGPT() {
     // Step 1: Try to match with local preloaded answers
     let answer = findPreloadedAnswer(message);
   
-    // Step 2: If no match, call Chatbase for answer
+    // Step 2: If no match, call local knowledge base for answer
     if (!answer) {
-      answer = await getAgriQAAnswer(message);
+      answer = getAgriQAAnswer(message);
     }
   
-    // Step 3: Display answer in chat
-    setChat(prev => [
-      ...prev,
-      {
+    // Step 3: Display answer in chat and speak it
+    setChat(prev => {
+      const botMsg = {
         id: prev.length + 1,
-        type: 'bot',
+        type: 'bot' as const,
         message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }
-    ]);
+      };
+      // Speak the bot's reply
+      speakText(botMsg.message);
+      return [...prev, botMsg];
+    });
   
     setMessage('');
   };
