@@ -19,6 +19,7 @@ import {
   AlertCircle,
   Info
 } from 'lucide-react';
+import { notifyScanCompleted } from '@/components/notifications/NotificationCenter';
 
 interface DetectionResult {
   disease: string;
@@ -404,6 +405,8 @@ export function CropDiseaseDetection() {
     
     // Save back to localStorage
     localStorage.setItem('userCropScans', JSON.stringify(limitedScans));
+
+    notifyScanCompleted(newScan.result, newScan.confidence);
   };
 
   const getSeverityColor = (severity: string) => {

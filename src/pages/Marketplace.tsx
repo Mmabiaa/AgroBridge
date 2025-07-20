@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ShoppingCart, Upload, Search, TrendingUp, Package, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { notifyMarketplaceActivity } from '@/components/notifications/NotificationCenter';
 
 // Mock user data
 const mockUser = {
@@ -170,6 +171,7 @@ export default function Marketplace() {
     };
     setProducts(prev => [newProduct, ...prev]);
     setActiveTab('marketplace');
+    notifyMarketplaceActivity('listing', product.name);
   };
 
   // Handler to update filters (from AdvancedSearch)
@@ -234,6 +236,7 @@ export default function Marketplace() {
     ));
 
     alert(`Order placed successfully! Order ID: ${newOrder.id}`);
+    notifyMarketplaceActivity('purchase', product.name, totalCost);
   };
 
   // Handler for order status updates
