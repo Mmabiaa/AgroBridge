@@ -121,15 +121,15 @@ export const Navigation = () => {
   );
 
   const UserMenu = ({ mobile = false }) => (
-    <div className={`flex ${mobile ? 'flex-col space-y-2' : 'flex-row items-center gap-2'}`}>
+    <div className={`flex ${mobile ? 'flex-col space-y-4' : 'flex-row items-center gap-2'}`}>
       {/* User Info */}
-      <div className={`flex items-center gap-2 ${mobile ? 'p-2' : ''}`}>
-        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-          <User className="h-4 w-4 text-primary" />
+      <div className={`flex items-center gap-3 ${mobile ? 'p-3 bg-muted/50 rounded-lg' : ''}`}>
+        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+          <User className="h-5 w-5 text-primary" />
         </div>
         {mobile && (
           <div className="text-sm">
-            <div className="font-medium">{currentUser.name}</div>
+            <div className="font-semibold text-foreground">{currentUser.name}</div>
             <div className="text-muted-foreground">{currentUser.email}</div>
           </div>
         )}
@@ -137,11 +137,11 @@ export const Navigation = () => {
       
       {/* Logout Button */}
       <Button
-        variant={mobile ? "ghost" : "outline"}
+        variant={mobile ? "destructive" : "outline"}
         size={mobile ? "default" : "sm"}
         onClick={handleLogout}
         disabled={isLoggingOut}
-        className={`${mobile ? 'w-full justify-start' : ''} text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200`}
+        className={`${mobile ? 'w-full justify-center font-medium' : ''} text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200`}
         title="Logout from AgroBridge"
       >
         {isLoggingOut ? (
@@ -210,36 +210,56 @@ export const Navigation = () => {
                   <Menu size={20} />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-72">
-                <div className="flex flex-col gap-4 mt-8">
-                  <NavItems mobile onItemClick={() => setMobileNavOpen(false)} />
-                  
-                  <div className="border-t pt-4 space-y-2">
-              
-                    <Link to="/crop-disease-detection" className="w-full">
-                      <Button variant="ghost" className="w-full justify-start">
-                        <Camera className="h-4 w-4 mr-2" />
-                        Disease Detection
-                      </Button>
-                    </Link>
-                    <Link to="/voice-commands" className="w-full">
-                      <Button variant="ghost" className="w-full justify-start">
-                        <Mic className="h-4 w-4 mr-2" />
-                        Voice Commands
-                      </Button>
-                    </Link>
-                    <Link to="/notifications" className="w-full">
-                      <Button variant="ghost" className="w-full justify-start relative">
-                        <Bell className="h-4 w-4 mr-2" />
-                        Notifications
-                        <span className="absolute right-4 h-2 w-2 bg-red-500 rounded-full"></span>
-                      </Button>
-                    </Link>
+              <SheetContent side="right" className="w-80 p-0">
+                {/* Scrollable Mobile Menu Container */}
+                <div className="h-full flex flex-col">
+                  {/* Header */}
+                  <div className="p-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                    <h2 className="text-lg font-semibold">Menu</h2>
+                    <p className="text-sm text-muted-foreground">Navigate and manage your account</p>
                   </div>
+                  
+                  {/* Scrollable Content */}
+                  <div className="flex-1 overflow-y-auto">
+                    <div className="p-6 space-y-6">
+                      {/* Navigation Items */}
+                      <div>
+                        <h3 className="text-sm font-semibold text-muted-foreground mb-3">Navigation</h3>
+                        <NavItems mobile onItemClick={() => setMobileNavOpen(false)} />
+                      </div>
+                      
+                      {/* Quick Actions */}
+                      <div className="border-t pt-6">
+                        <h3 className="text-sm font-semibold text-muted-foreground mb-3">Quick Actions</h3>
+                        <div className="space-y-2">
+                          <Link to="/crop-disease-detection" className="w-full">
+                            <Button variant="ghost" className="w-full justify-start">
+                              <Camera className="h-4 w-4 mr-2" />
+                              Disease Detection
+                            </Button>
+                          </Link>
+                          <Link to="/voice-commands" className="w-full">
+                            <Button variant="ghost" className="w-full justify-start">
+                              <Mic className="h-4 w-4 mr-2" />
+                              Voice Commands
+                            </Button>
+                          </Link>
+                          <Link to="/notifications" className="w-full">
+                            <Button variant="ghost" className="w-full justify-start relative">
+                              <Bell className="h-4 w-4 mr-2" />
+                              Notifications
+                              <span className="absolute right-4 h-2 w-2 bg-red-500 rounded-full"></span>
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
 
-                  {/* User Menu for Mobile */}
-                  <div className="border-t pt-4">
-                    <UserMenu mobile />
+                      {/* User Menu for Mobile */}
+                      <div className="border-t pt-6">
+                        <h3 className="text-sm font-semibold text-muted-foreground mb-3">Account</h3>
+                        <UserMenu mobile />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </SheetContent>
