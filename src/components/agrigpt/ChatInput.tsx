@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Mic, MicOff, Camera, Paperclip } from 'lucide-react';
 import { useRef } from 'react';
+import { useEffect } from 'react';
 
 interface ChatInputProps {
   message: string;
@@ -28,6 +29,40 @@ export function ChatInput({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
+
+  // Add type definitions for browser speech recognition
+  // @ts-ignore
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  // Add speech recognition
+  useEffect(() => {
+    let recognition: any = null;
+    if (isListening && SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.lang = currentLanguage === 'en' ? 'en-US' : 'en-US'; // Add more language support if needed
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setMessage(transcript);
+        // Auto-send the transcribed message
+        setTimeout(() => {
+          onSendMessage();
+          setMessage('');
+        }, 100);
+      };
+      recognition.onerror = (event: any) => {
+        // Optionally handle errors
+      };
+      recognition.onend = () => {
+        // Optionally auto-stop listening
+      };
+      recognition.start();
+    }
+    return () => {
+      if (recognition) recognition.stop();
+    };
+  }, [isListening, setMessage, currentLanguage, onSendMessage]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
