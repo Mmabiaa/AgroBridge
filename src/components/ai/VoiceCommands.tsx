@@ -53,7 +53,7 @@ const englishIntents = [
     ]
   },
   {
-    route: '/crop-calender',
+    route: '/crop-calendar',
     phrases: [
       'calend', 'go to calender', 'open calender', 'show calender', 'main calender', 'crop calender'
     ]
@@ -196,8 +196,8 @@ export function VoiceCommands() {
     'access learning center': '/training',
 
     // Crop Calender
-    'calender': '/crop-calender',
-    'open calender': '/crop-calender',
+    'calender': '/crop-calendar',
+    'open calender': '/crop-calendar',
     
     // Farmer Stories
     'Open Farmer stories':'/farmer-stories',
