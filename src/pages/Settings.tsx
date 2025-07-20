@@ -1,213 +1,408 @@
 
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings as SettingsIcon, User, Bell, Globe, Download, Shield, Database, Smartphone } from 'lucide-react';
-import { ProfileSetupSection } from '@/components/ProfileSetupSection';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Settings as SettingsIcon, 
+  User, 
+  Bell, 
+  Shield, 
+  Download, 
+  MapPin,
+  Smartphone,
+  Globe,
+  Save,
+  CheckCircle,
+  AlertCircle
+} from 'lucide-react';
+
+// Mock user data
+const mockUserData = {
+  id: 'user123',
+  fullName: 'Kwame Addo',
+  email: 'kwame.addo@email.com',
+  phone: '+233 24 123 4567',
+  location: 'Kumasi, Ashanti Region',
+  farmSize: 'Medium (1-5 acres)',
+  experience: 'intermediate',
+  crops: ['Tomatoes', 'Maize', 'Yam'],
+  language: 'en',
+  timezone: 'Africa/Accra'
+};
+
+// Mock settings data
+const mockSettings = {
+  notifications: {
+    push: true,
+    email: true,
+    sms: false,
+    weather: true,
+    market: true,
+    disease: true
+  },
+  app: {
+    offlineMode: false,
+    autoSync: true,
+    locationServices: true,
+    darkMode: false
+  },
+  privacy: {
+    shareData: true,
+    analytics: true,
+    marketing: false
+  }
+};
 
 export default function Settings() {
+  const [userData, setUserData] = useState(mockUserData);
+  const [settings, setSettings] = useState(mockSettings);
+  const [isLoading, setIsLoading] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
+  // Simulate loading user data
+  useEffect(() => {
+    const loadUserData = async () => {
+      setIsLoading(true);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setIsLoading(false);
+    };
+    loadUserData();
+  }, []);
+
+  const handleSaveProfile = async () => {
+    setSaveStatus('saving');
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setSaveStatus('saved');
+    setTimeout(() => setSaveStatus('idle'), 3000);
+  };
+
+  const handleSaveSettings = async () => {
+    setSaveStatus('saving');
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setSaveStatus('saved');
+    setTimeout(() => setSaveStatus('idle'), 3000);
+  };
+
+  const exportData = async (format: 'csv' | 'pdf') => {
+    setIsLoading(true);
+    // Simulate export process
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setIsLoading(false);
+    
+    // Simulate file download
+    const link = document.createElement('a');
+    link.href = `data:text/${format === 'csv' ? 'csv' : 'pdf'};charset=utf-8,${encodeURIComponent('Mock farm data export')}`;
+    link.download = `agrobridge-data.${format}`;
+    link.click();
+  };
+
+  const getSaveButtonContent = () => {
+    switch (saveStatus) {
+      case 'saving':
+        return (
+          <>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+            Saving...
+          </>
+        );
+      case 'saved':
+        return (
+          <>
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Saved!
+          </>
+        );
+      case 'error':
+        return (
+          <>
+            <AlertCircle className="h-4 w-4 mr-2" />
+            Error
+          </>
+        );
+      default:
+        return (
+          <>
+            <Save className="h-4 w-4 mr-2" />
+            Save Changes
+          </>
+        );
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-0 overflow-x-hidden">
-      <div className="container mx-auto w-full max-w-full space-y-8 px-0 sm:px-4">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-4">
+      <div className="container mx-auto max-w-4xl space-y-6">
+        {/* Header */}
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-bold flex items-center justify-center gap-3">
             <SettingsIcon className="h-8 w-8 text-primary" />
-            Settings & Profile
+            Settings
           </h1>
-          <p className="text-muted-foreground">Manage your account, profile, and app preferences</p>
+          <p className="text-muted-foreground">Manage your account and preferences</p>
         </div>
 
-        <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="account">Account</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="security">Security & Data</TabsTrigger>
-          </TabsList>
+        {/* Profile Settings */}
+        <Card className="shadow-soft">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              Profile Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="fullName">Full Name</Label>
+                <Input
+                  id="fullName"
+                  value={userData.fullName}
+                  onChange={(e) => setUserData(prev => ({ ...prev, fullName: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={userData.email}
+                  onChange={(e) => setUserData(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+            </div>
 
-          <TabsContent value="profile" className="space-y-6">
-            <ProfileSetupSection />
-          </TabsContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={userData.phone}
+                  onChange={(e) => setUserData(prev => ({ ...prev, phone: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="farmSize">Farm Size</Label>
+                <Select value={userData.farmSize} onValueChange={(value) => setUserData(prev => ({ ...prev, farmSize: value }))}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Small (< 1 acre)">Small (&lt; 1 acre)</SelectItem>
+                    <SelectItem value="Medium (1-5 acres)">Medium (1-5 acres)</SelectItem>
+                    <SelectItem value="Large (5+ acres)">Large (5+ acres)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-          <TabsContent value="account" className="space-y-6">
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Account Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" defaultValue="john@example.com" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" type="tel" defaultValue="+233 24 123 4567" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="language">Preferred Language</Label>
-                  <select className="w-full border border-border rounded-md px-3 py-2 bg-background">
-                    <option value="en">English</option>
-                    <option value="tw">Twi</option>
-                    <option value="ha">Hausa</option>
-                    <option value="yo">Yoruba</option>
-                  </select>
-                </div>
-                <Button variant="farmer">Update Account</Button>
-              </CardContent>
-            </Card>
+            <div className="space-y-2">
+              <Label htmlFor="location">Location</Label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="location"
+                  value={userData.location}
+                  onChange={(e) => setUserData(prev => ({ ...prev, location: e.target.value }))}
+                  className="pl-10"
+                />
+              </div>
+            </div>
 
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Smartphone className="h-5 w-5" />
-                  Mobile App Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="offline-mode">Offline Mode</Label>
-                  <Switch id="offline-mode" />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="auto-sync">Auto Sync Data</Label>
-                  <Switch id="auto-sync" defaultChecked />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="location-services">Location Services</Label>
-                  <Switch id="location-services" defaultChecked />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+            <div className="flex items-center gap-2">
+              <Label>Crops:</Label>
+              <div className="flex flex-wrap gap-1">
+                {userData.crops.map((crop) => (
+                  <Badge key={crop} variant="secondary" className="text-xs">
+                    {crop}
+                  </Badge>
+                ))}
+              </div>
+            </div>
 
-          <TabsContent value="notifications" className="space-y-6">
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="h-5 w-5" />
-                  Notification Preferences
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="sms">SMS Notifications</Label>
-                    <p className="text-sm text-muted-foreground">Receive SMS alerts for important updates</p>
-                  </div>
-                  <Switch id="sms" defaultChecked />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="email-notif">Email Notifications</Label>
-                    <p className="text-sm text-muted-foreground">Get email updates about your account</p>
-                  </div>
-                  <Switch id="email-notif" defaultChecked />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="push">Push Notifications</Label>
-                    <p className="text-sm text-muted-foreground">Receive push notifications on mobile</p>
-                  </div>
-                  <Switch id="push" defaultChecked />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="weather">Weather Alerts</Label>
-                    <p className="text-sm text-muted-foreground">Get notified about weather changes</p>
-                  </div>
-                  <Switch id="weather" defaultChecked />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="market">Market Price Updates</Label>
-                    <p className="text-sm text-muted-foreground">Receive notifications about crop prices</p>
-                  </div>
-                  <Switch id="market" defaultChecked />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+            <Button 
+              onClick={handleSaveProfile}
+              disabled={saveStatus === 'saving'}
+              className="w-full md:w-auto"
+            >
+              {getSaveButtonContent()}
+            </Button>
+          </CardContent>
+        </Card>
 
-          <TabsContent value="security" className="space-y-6">
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  Security Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="current-password">Current Password</Label>
-                  <Input id="current-password" type="password" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="new-password">New Password</Label>
-                  <Input id="new-password" type="password" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirm New Password</Label>
-                  <Input id="confirm-password" type="password" />
-                </div>
-                <Button variant="outline">Change Password</Button>
-                
-                <div className="pt-4 border-t">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="two-factor">Two-Factor Authentication</Label>
-                      <p className="text-sm text-muted-foreground">Add an extra layer of security</p>
-                    </div>
-                    <Switch id="two-factor" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {/* App Settings */}
+        <Card className="shadow-soft">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Smartphone className="h-5 w-5" />
+              App Settings
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="offline-mode">Offline Mode</Label>
+                <p className="text-sm text-muted-foreground">Use app without internet connection</p>
+              </div>
+              <Switch
+                id="offline-mode"
+                checked={settings.app.offlineMode}
+                onCheckedChange={(checked) => setSettings(prev => ({ 
+                  ...prev, 
+                  app: { ...prev.app, offlineMode: checked } 
+                }))}
+              />
+            </div>
 
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Database className="h-5 w-5" />
-                  Data Management
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-semibold mb-2">Export Your Data</h4>
-                  <p className="text-muted-foreground text-sm mb-4">Download your farm data for external analysis or backup</p>
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1">
-                      <Download className="h-4 w-4 mr-2" />
-                      Export as CSV
-                    </Button>
-                    <Button variant="outline" className="flex-1">
-                      <Download className="h-4 w-4 mr-2" />
-                      Export as PDF
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="pt-4 border-t">
-                  <h4 className="font-semibold mb-2 text-destructive">Danger Zone</h4>
-                  <p className="text-muted-foreground text-sm mb-4">These actions cannot be undone</p>
-                  <div className="space-y-2">
-                    <Button variant="outline" className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground">
-                      Delete All Farm Data
-                    </Button>
-                    <Button variant="outline" className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground">
-                      Delete Account
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="auto-sync">Auto Sync</Label>
+                <p className="text-sm text-muted-foreground">Automatically sync data when online</p>
+              </div>
+              <Switch
+                id="auto-sync"
+                checked={settings.app.autoSync}
+                onCheckedChange={(checked) => setSettings(prev => ({ 
+                  ...prev, 
+                  app: { ...prev.app, autoSync: checked } 
+                }))}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="location-services">Location Services</Label>
+                <p className="text-sm text-muted-foreground">Use your location for weather and market data</p>
+              </div>
+              <Switch
+                id="location-services"
+                checked={settings.app.locationServices}
+                onCheckedChange={(checked) => setSettings(prev => ({ 
+                  ...prev, 
+                  app: { ...prev.app, locationServices: checked } 
+                }))}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="language">Language</Label>
+              <Select value={userData.language} onValueChange={(value) => setUserData(prev => ({ ...prev, language: value }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="tw">Twi</SelectItem>
+                  <SelectItem value="ha">Hausa</SelectItem>
+                  <SelectItem value="yo">Yoruba</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+
+        {/* Data Management */}
+        <Card className="shadow-soft">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Download className="h-5 w-5" />
+              Data Management
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <h4 className="font-semibold mb-2">Export Your Data</h4>
+              <p className="text-muted-foreground text-sm mb-4">Download your farm data for backup or analysis</p>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => exportData('csv')}
+                  disabled={isLoading}
+                  className="flex-1"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Export as CSV
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => exportData('pdf')}
+                  disabled={isLoading}
+                  className="flex-1"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Export as PDF
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Privacy Settings */}
+        <Card className="shadow-soft">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5" />
+              Privacy & Security
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="share-data">Share Data for Research</Label>
+                <p className="text-sm text-muted-foreground">Help improve farming practices (anonymous)</p>
+              </div>
+              <Switch
+                id="share-data"
+                checked={settings.privacy.shareData}
+                onCheckedChange={(checked) => setSettings(prev => ({ 
+                  ...prev, 
+                  privacy: { ...prev.privacy, shareData: checked } 
+                }))}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="analytics">Analytics</Label>
+                <p className="text-sm text-muted-foreground">Help us improve the app</p>
+              </div>
+              <Switch
+                id="analytics"
+                checked={settings.privacy.analytics}
+                onCheckedChange={(checked) => setSettings(prev => ({ 
+                  ...prev, 
+                  privacy: { ...prev.privacy, analytics: checked } 
+                }))}
+              />
+            </div>
+
+            <div className="pt-4 border-t">
+              <Button variant="outline" className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground">
+                Delete Account
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
