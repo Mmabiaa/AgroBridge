@@ -236,98 +236,186 @@ export function FarmerStories() {
 
       {/* Full Story Modal */}
       {selectedStory && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <CardHeader>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <Card className="max-w-4xl w-full max-h-[95vh] overflow-hidden shadow-2xl border-0">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-blue-50 border-b border-green-100">
               <div className="flex items-center justify-between">
-                <CardTitle>Success Story: {selectedStory.farmerName}</CardTitle>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-100 rounded-full">
+                    <Users className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl font-bold text-gray-800">
+                      {selectedStory.farmerName}
+                    </CardTitle>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Success Story • {new Date(selectedStory.date).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setSelectedStory(null)}
+                  className="h-10 w-10 rounded-full hover:bg-white/80 transition-colors"
                 >
-                  ✕
+                  <span className="text-xl">×</span>
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-                <img 
-                  src={selectedStory.image} 
-                  alt={selectedStory.crop}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={selectedStory.avatar} />
-                  <AvatarFallback>{selectedStory.farmerName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="text-xl font-semibold">{selectedStory.farmerName}</h3>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <MapPin className="h-4 w-4" />
-                    <span>{selectedStory.location}</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm mt-1">
-                    <span>⭐ {selectedStory.rating}</span>
-                    <span>👥 {selectedStory.followers} followers</span>
-                    <span>📅 {selectedStory.experience} experience</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="font-semibold mb-2">The Story</h4>
-                <p className="text-muted-foreground leading-relaxed">{selectedStory.story}</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-green-50 rounded-lg">
-                  <h5 className="font-semibold text-green-800 mb-2">Earnings Growth</h5>
-                  <div className="space-y-1">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Before:</span>
-                      <span className="font-medium">{formatEarnings(selectedStory.beforeEarnings)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Now:</span>
-                      <span className="font-bold text-green-600">{formatEarnings(selectedStory.earnings)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Growth:</span>
-                      <span className="font-semibold text-green-600">
-                        +{calculateGrowth(selectedStory.earnings, selectedStory.beforeEarnings)}%
-                      </span>
+            
+            <div className="overflow-y-auto max-h-[calc(95vh-120px)]">
+              <CardContent className="p-0">
+                {/* Hero Section */}
+                <div className="relative">
+                  <div className="aspect-video bg-gradient-to-br from-green-400 to-blue-500 relative overflow-hidden">
+                    <img 
+                      src={selectedStory.image} 
+                      alt={selectedStory.crop}
+                      className="w-full h-full object-cover opacity-90"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <Badge className="bg-white/90 text-gray-800 border-0 px-3 py-1 text-sm font-semibold">
+                        🌱 {selectedStory.crop} Farmer
+                      </Badge>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <h5 className="font-semibold text-blue-800 mb-2">Key Tips</h5>
-                  <ul className="space-y-1 text-sm">
-                    {selectedStory.tips.map((tip, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-blue-600 mt-1">•</span>
-                        <span>{tip}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+                <div className="p-6 space-y-8">
+                  {/* Farmer Profile Section */}
+                  <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                    <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
+                      <AvatarImage src={selectedStory.avatar} />
+                      <AvatarFallback className="text-lg font-bold bg-gradient-to-br from-green-400 to-blue-500 text-white">
+                        {selectedStory.farmerName.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-gray-800 mb-2">{selectedStory.farmerName}</h3>
+                      <div className="flex items-center gap-2 text-gray-600 mb-3">
+                        <MapPin className="h-4 w-4 text-green-500" />
+                        <span className="font-medium">{selectedStory.location}</span>
+                      </div>
+                      <div className="flex items-center gap-6 text-sm">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="font-semibold text-gray-700">{selectedStory.rating}</span>
+                          <span className="text-gray-500">rating</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Users className="h-4 w-4 text-blue-500" />
+                          <span className="font-semibold text-gray-700">{selectedStory.followers}</span>
+                          <span className="text-gray-500">followers</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-4 w-4 text-purple-500" />
+                          <span className="font-semibold text-gray-700">{selectedStory.experience}</span>
+                          <span className="text-gray-500">experience</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-              <div className="flex gap-2 pt-4 border-t">
-                <Button className="flex-1">
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Contact Farmer
-                </Button>
-                <Button variant="outline">
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Share Story
-                </Button>
-              </div>
-            </CardContent>
+                  {/* Story Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1 h-6 bg-gradient-to-b from-green-400 to-blue-500 rounded-full"></div>
+                      <h4 className="text-xl font-bold text-gray-800">The Success Journey</h4>
+                    </div>
+                    <div className="p-4 bg-gray-50 rounded-lg border-l-4 border-green-400">
+                      <p className="text-gray-700 leading-relaxed text-base">
+                        {selectedStory.story}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Earnings & Tips Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Earnings Growth */}
+                    <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-green-100 rounded-lg">
+                          <TrendingUp className="h-5 w-5 text-green-600" />
+                        </div>
+                        <h5 className="text-lg font-bold text-green-800">Earnings Growth</h5>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center p-3 bg-white rounded-lg border border-green-100">
+                          <span className="text-sm font-medium text-gray-600">Before:</span>
+                          <span className="font-bold text-gray-700">{formatEarnings(selectedStory.beforeEarnings)}</span>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-green-100 rounded-lg border border-green-200">
+                          <span className="text-sm font-medium text-green-700">Now:</span>
+                          <span className="font-bold text-green-800 text-lg">{formatEarnings(selectedStory.earnings)}</span>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg border border-green-300">
+                          <span className="text-sm font-medium text-green-700">Growth:</span>
+                          <span className="font-bold text-green-800 text-lg">
+                            +{calculateGrowth(selectedStory.earnings, selectedStory.beforeEarnings)}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Key Tips */}
+                    <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                          <Star className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <h5 className="text-lg font-bold text-blue-800">Key Success Tips</h5>
+                      </div>
+                      <ul className="space-y-3">
+                        {selectedStory.tips.map((tip, index) => (
+                          <li key={index} className="flex items-start gap-3 p-3 bg-white rounded-lg border border-blue-100">
+                            <div className="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
+                              <span className="text-blue-600 font-bold text-sm">{index + 1}</span>
+                            </div>
+                            <span className="text-gray-700 leading-relaxed">{tip}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
+                    <Button className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3">
+                      <MessageCircle className="h-5 w-5 mr-2" />
+                      Contact Farmer
+                    </Button>
+                    <Button variant="outline" className="flex-1 border-2 border-blue-200 hover:bg-blue-50 text-blue-700 font-semibold py-3">
+                      <Share2 className="h-5 w-5 mr-2" />
+                      Share Story
+                    </Button>
+                  </div>
+
+                  {/* Social Stats */}
+                  <div className="flex items-center justify-center gap-8 py-4 bg-gray-50 rounded-lg">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-gray-800">{selectedStory.likes}</div>
+                      <div className="text-sm text-gray-600">Likes</div>
+                    </div>
+                    <div className="w-px h-8 bg-gray-300"></div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-gray-800">{selectedStory.comments}</div>
+                      <div className="text-sm text-gray-600">Comments</div>
+                    </div>
+                    <div className="w-px h-8 bg-gray-300"></div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-gray-800">{selectedStory.followers}</div>
+                      <div className="text-sm text-gray-600">Followers</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </div>
           </Card>
         </div>
       )}
