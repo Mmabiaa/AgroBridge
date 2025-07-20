@@ -6,38 +6,74 @@ import { Progress } from '@/components/ui/progress';
 import { 
   Camera, 
   Scan, 
-  TrendingUp, 
-  AlertTriangle, 
-  CheckCircle, 
   Clock,
   Leaf,
   Shield,
-  Brain
+  Brain,
+  History
 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
-const detectionStats = {
-  totalScans: 1247,
-  healthyPlants: 892,
-  diseasesDetected: 355,
-  accuracyRate: 94.2
-};
-
-const commonDiseases = [
-  { name: 'Late Blight', frequency: 23, severity: 'high', color: 'text-red-500' },
-  { name: 'Early Blight', frequency: 18, severity: 'medium', color: 'text-yellow-500' },
-  { name: 'Leaf Spot', frequency: 15, severity: 'low', color: 'text-green-500' },
-  { name: 'Powdery Mildew', frequency: 12, severity: 'medium', color: 'text-yellow-500' },
-  { name: 'Rust', frequency: 10, severity: 'high', color: 'text-red-500' }
-];
-
-const recentScans = [
-  { crop: 'Tomato', result: 'Healthy', confidence: 95, time: '2 hours ago' },
-  { crop: 'Maize', result: 'Late Blight', confidence: 89, time: '5 hours ago' },
-  { crop: 'Potato', result: 'Healthy', confidence: 97, time: '1 day ago' },
-  { crop: 'Beans', result: 'Leaf Spot', confidence: 76, time: '2 days ago' }
-];
+interface UserScan {
+  id: string;
+  crop: string;
+  result: string;
+  confidence: number;
+  timestamp: Date;
+  imageUrl?: string;
+  severity?: 'low' | 'medium' | 'high' | 'critical';
+}
 
 export default function CropDiseaseDetectionPage() {
+  const [userScans, setUserScans] = useState<UserScan[]>([]);
+
+  // Load user scans from localStorage or initialize empty
+  useEffect(() => {
+    const savedScans = localStorage.getItem('userCropScans');
+    if (savedScans) {
+      try {
+        const scans = JSON.parse(savedScans).map((scan: any) => ({
+          ...scan,
+          timestamp: new Date(scan.timestamp)
+        }));
+        setUserScans(scans);
+      } catch (error) {
+        console.error('Error loading user scans:', error);
+        setUserScans([]);
+      }
+    }
+  }, []);
+
+  const formatTimeAgo = (timestamp: Date) => {
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - timestamp.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Just now';
+    if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours} hours ago`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays} days ago`;
+    
+    return timestamp.toLocaleDateString();
+  };
+
+  const getSeverityColor = (severity?: string) => {
+    switch (severity) {
+      case 'critical': return 'bg-red-500';
+      case 'high': return 'bg-orange-500';
+      case 'medium': return 'bg-yellow-500';
+      case 'low': return 'bg-green-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const getResultColor = (result: string) => {
+    return result === 'Healthy' ? 'bg-green-500' : 'bg-red-500';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-4">
       <div className="container mx-auto space-y-8">
@@ -53,114 +89,79 @@ export default function CropDiseaseDetectionPage() {
           </p>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <Camera className="h-8 w-8 text-primary" />
-              </div>
-              <div className="text-2xl font-bold">{detectionStats.totalScans}</div>
-              <p className="text-sm text-muted-foreground">Total Scans</p>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <CheckCircle className="h-8 w-8 text-green-500" />
-              </div>
-              <div className="text-2xl font-bold text-green-600">{detectionStats.healthyPlants}</div>
-              <p className="text-sm text-muted-foreground">Healthy Plants</p>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <AlertTriangle className="h-8 w-8 text-yellow-500" />
-              </div>
-              <div className="text-2xl font-bold text-yellow-600">{detectionStats.diseasesDetected}</div>
-              <p className="text-sm text-muted-foreground">Diseases Found</p>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <Brain className="h-8 w-8 text-primary" />
-              </div>
-              <div className="text-2xl font-bold text-primary">{detectionStats.accuracyRate}%</div>
-              <p className="text-sm text-muted-foreground">AI Accuracy</p>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Main Detection Component */}
         <CropDiseaseDetection />
 
-        {/* Analytics Dashboard */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Common Diseases */}
+        {/* User Scan History */}
+        {userScans.length > 0 && (
           <Card className="shadow-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Common Diseases Detected
+                <History className="h-5 w-5" />
+                Your Scan History
               </CardTitle>
-              <CardDescription>Most frequently identified diseases in your area</CardDescription>
+              <CardDescription>
+                Recent crop health assessments from your scans
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {commonDiseases.map((disease, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{disease.name}</span>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={
-                        disease.severity === 'high' ? 'destructive' : 
-                        disease.severity === 'medium' ? 'default' : 'secondary'
-                      } className="text-xs">
-                        {disease.severity}
-                      </Badge>
-                      <span className="text-sm text-muted-foreground">{disease.frequency}%</span>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {userScans.slice(0, 6).map((scan) => (
+                  <div key={scan.id} className="p-4 bg-muted/30 rounded-lg border border-border hover:border-primary/50 transition-colors">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full ${getResultColor(scan.result)}`} />
+                        <span className="font-semibold text-sm">{scan.crop}</span>
+                      </div>
+                      {scan.severity && scan.result !== 'Healthy' && (
+                        <Badge 
+                          variant={
+                            scan.severity === 'critical' ? 'destructive' : 
+                            scan.severity === 'high' ? 'default' : 'secondary'
+                          } 
+                          className="text-xs"
+                        >
+                          {scan.severity}
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Result:</span>
+                        <span className={`text-sm font-medium ${
+                          scan.result === 'Healthy' ? 'text-green-600' : 'text-red-600'
+                        }`}>
+                          {scan.result}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Confidence:</span>
+                        <span className="text-sm font-medium">{scan.confidence}%</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Time:</span>
+                        <span className="text-sm text-muted-foreground">
+                          {formatTimeAgo(scan.timestamp)}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <Progress value={disease.frequency} className="h-2" />
+                ))}
+              </div>
+              
+              {userScans.length > 6 && (
+                <div className="text-center mt-4">
+                  <p className="text-sm text-muted-foreground">
+                    Showing 6 of {userScans.length} scans
+                  </p>
                 </div>
-              ))}
+              )}
             </CardContent>
           </Card>
-
-          {/* Recent Scans */}
-          <Card className="shadow-soft">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
-                Recent Scans
-              </CardTitle>
-              <CardDescription>Your latest crop health assessments</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {recentScans.map((scan, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      scan.result === 'Healthy' ? 'bg-green-500' : 'bg-red-500'
-                    }`} />
-                    <div>
-                      <p className="font-medium text-sm">{scan.crop}</p>
-                      <p className="text-xs text-muted-foreground">{scan.time}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium">{scan.result}</p>
-                    <p className="text-xs text-muted-foreground">{scan.confidence}% confidence</p>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
+        )}
 
         {/* How It Works */}
         <Card className="shadow-soft">
