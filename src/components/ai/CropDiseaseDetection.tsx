@@ -430,46 +430,46 @@ export function CropDiseaseDetection() {
   };
 
   return (
-    <div className="space-y-8 w-full">
+    <div className="space-y-6 w-full">
       <Card className="shadow-soft w-full">
-        <CardHeader className="p-6">
-          <CardTitle className="flex items-center gap-3 text-2xl">
-            <Scan className="h-6 w-6 text-primary" />
+        <CardHeader className="p-4 lg:p-6">
+          <CardTitle className="flex items-center gap-2 lg:gap-3 text-lg lg:text-2xl">
+            <Scan className="h-5 w-5 lg:h-6 lg:w-6 text-primary" />
             Advanced Crop Disease Detection
           </CardTitle>
-          <p className="text-base text-muted-foreground">
+          <p className="text-sm lg:text-base text-muted-foreground">
             AI-powered disease detection with comprehensive analysis and treatment recommendations
           </p>
         </CardHeader>
-        <CardContent className="p-6 space-y-6">
+        <CardContent className="p-4 lg:p-6 space-y-4 lg:space-y-6">
           {cameraActive && !selectedImage && (
-            <div className="space-y-6 relative">
+            <div className="space-y-4 lg:space-y-6 relative">
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
-                className="w-full rounded-xl max-h-96 object-cover"
+                className="w-full rounded-lg lg:rounded-xl max-h-64 lg:max-h-96 object-cover"
               />
               <button
                 type="button"
                 aria-label="Switch camera"
                 onClick={() => setFacingMode(facingMode === 'environment' ? 'user' : 'environment')}
-                className="absolute top-4 right-4 z-10 bg-white/80 hover:bg-white rounded-full p-3 shadow-lg border border-gray-200"
+                className="absolute top-2 lg:top-4 right-2 lg:right-4 z-10 bg-white/80 hover:bg-white rounded-full p-2 lg:p-3 shadow-lg border border-gray-200"
                 style={{ touchAction: 'manipulation' }}
               >
-                <RotateCw className="h-6 w-6 text-primary" />
+                <RotateCw className="h-4 w-4 lg:h-6 lg:w-6 text-primary" />
               </button>
-              <div className="flex gap-4">
-                <Button onClick={capturePhoto} className="flex-1 h-12 text-base">
-                  <Camera className="h-5 w-5 mr-3" />
+              <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
+                <Button onClick={capturePhoto} className="flex-1 h-10 lg:h-12 text-sm lg:text-base">
+                  <Camera className="h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3" />
                   Capture Photo
                 </Button>
                 <Button 
                   variant="outline" 
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex-1 h-12 text-base"
+                  className="flex-1 h-10 lg:h-12 text-sm lg:text-base"
                 >
-                  <Upload className="h-5 w-5 mr-3" />
+                  <Upload className="h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3" />
                   Upload Image
                 </Button>
               </div>
@@ -484,26 +484,26 @@ export function CropDiseaseDetection() {
           )}
 
           {selectedImage && !isAnalyzing && (
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
               <img 
                 src={selectedImage} 
                 alt="Crop analysis" 
-                className="w-full rounded-xl max-h-96 object-cover"
+                className="w-full rounded-lg lg:rounded-xl max-h-64 lg:max-h-96 object-cover"
               />
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
                 <Button 
                   onClick={analyzeImage} 
                   disabled={isAnalyzing}
-                  className="flex-1 h-12 text-base"
+                  className="flex-1 h-10 lg:h-12 text-sm lg:text-base"
                 >
                   {isAnalyzing ? (
                     <>
-                      <RefreshCw className="h-5 w-5 mr-3 animate-spin" />
+                      <RefreshCw className="h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3 animate-spin" />
                       Analyzing...
                     </>
                   ) : (
                     <>
-                      <Scan className="h-5 w-5 mr-3" />
+                      <Scan className="h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3" />
                       Analyze Disease
                     </>
                   )}
@@ -511,7 +511,7 @@ export function CropDiseaseDetection() {
                 <Button 
                   variant="outline" 
                   onClick={retakePhoto}
-                  className="h-12 text-base"
+                  className="h-10 lg:h-12 text-sm lg:text-base"
                 >
                   Retake
                 </Button>
@@ -520,28 +520,28 @@ export function CropDiseaseDetection() {
           )}
 
           {isAnalyzing && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <RefreshCw className="h-5 w-5 animate-spin text-primary" />
-                <span className="text-base font-medium">AI Analysis in Progress...</span>
+            <div className="space-y-4 lg:space-y-6">
+              <div className="flex items-center gap-2 lg:gap-3">
+                <RefreshCw className="h-4 w-4 lg:h-5 lg:w-5 animate-spin text-primary" />
+                <span className="text-sm lg:text-base font-medium">AI Analysis in Progress...</span>
               </div>
-              <Progress value={analysisProgress} className="h-3" />
-              <div className="text-sm text-muted-foreground">
+              <Progress value={analysisProgress} className="h-2 lg:h-3" />
+              <div className="text-xs lg:text-sm text-muted-foreground">
                 Processing image data and comparing with disease database...
               </div>
             </div>
           )}
 
           {result && (
-            <div className="space-y-8">
+            <div className="space-y-6 lg:space-y-8">
               {/* Main Result Card */}
               <Card className="shadow-soft border-l-4 border-l-orange-400 w-full">
-                <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50 p-6">
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50 p-4 lg:p-6">
+                  <div className="flex flex-col gap-3 lg:gap-4">
                     <div className="flex-1">
-                      <h3 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-3">{result.disease}</h3>
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                        <div className="flex items-center gap-3">
+                      <h3 className="text-xl lg:text-2xl xl:text-3xl font-bold text-gray-800 mb-2 lg:mb-3">{result.disease}</h3>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 lg:gap-3">
+                        <div className="flex items-center gap-2 lg:gap-3">
                           <div className="w-3 h-3 lg:w-4 lg:h-4 bg-orange-500 rounded-full animate-pulse"></div>
                           <span className="text-sm lg:text-base font-semibold text-orange-700">
                             AI Confidence: {result.confidence}%
@@ -553,8 +553,8 @@ export function CropDiseaseDetection() {
                         </span>
                       </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row lg:flex-col gap-3">
-                      <Badge className={`${getSeverityColor(result.severity)} text-sm lg:text-base font-bold px-4 lg:px-6 py-2 lg:py-3 w-fit`}>
+                    <div className="flex flex-col sm:flex-row gap-2 lg:gap-3">
+                      <Badge className={`${getSeverityColor(result.severity)} text-sm lg:text-base font-bold px-3 lg:px-4 py-1 lg:py-2 w-fit`}>
                         <div className="flex items-center gap-2 lg:gap-3">
                           <div className={`w-2 h-2 lg:w-3 lg:h-3 rounded-full ${
                             result.severity === 'critical' ? 'bg-red-500' :
@@ -564,7 +564,7 @@ export function CropDiseaseDetection() {
                           {result.severity} severity
                         </div>
                       </Badge>
-                      <Badge variant="outline" className={`${getRiskColor(result.riskLevel)} text-sm lg:text-base font-bold px-4 lg:px-6 py-2 lg:py-3 border-2 w-fit`}>
+                      <Badge variant="outline" className={`${getRiskColor(result.riskLevel)} text-sm lg:text-base font-bold px-3 lg:px-4 py-1 lg:py-2 border-2 w-fit`}>
                         <div className="flex items-center gap-2 lg:gap-3">
                           <AlertTriangle className="h-3 w-3 lg:h-4 lg:w-4" />
                           Risk: {result.riskLevel}
@@ -573,15 +573,15 @@ export function CropDiseaseDetection() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-6 lg:space-y-8 p-4 lg:p-8">
+                <CardContent className="space-y-4 lg:space-y-6 p-4 lg:p-6">
                   {/* Enhanced Confidence Bar */}
-                  <div className="space-y-3 lg:space-y-4">
+                  <div className="space-y-2 lg:space-y-3">
                     <div className="flex items-center justify-between text-sm lg:text-base">
                       <span className="font-semibold text-gray-700">Analysis Confidence</span>
                       <span className="font-bold text-orange-600 text-base lg:text-lg">{result.confidence}%</span>
                     </div>
                     <div className="relative">
-                      <Progress value={result.confidence} className="h-3 lg:h-4 bg-gray-100" />
+                      <Progress value={result.confidence} className="h-2 lg:h-3 bg-gray-100" />
                       <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-full opacity-20"></div>
                     </div>
                     <div className="flex justify-between text-xs lg:text-sm text-gray-500">
@@ -592,68 +592,68 @@ export function CropDiseaseDetection() {
                   </div>
                   
                   {/* Enhanced Quick Info Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                    <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 p-4 lg:p-6 border border-blue-200 hover:shadow-lg transition-all duration-300">
-                      <div className="absolute top-0 right-0 w-12 h-12 lg:w-20 lg:h-20 bg-blue-200 rounded-full -translate-y-6 lg:-translate-y-10 translate-x-6 lg:translate-x-10 opacity-20"></div>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                    <div className="group relative overflow-hidden rounded-lg lg:rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 p-3 lg:p-4 border border-blue-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-8 h-8 lg:w-12 lg:h-12 bg-blue-200 rounded-full -translate-y-4 lg:-translate-y-6 translate-x-4 lg:translate-x-6 opacity-20"></div>
                       <div className="relative z-10">
-                        <div className="flex items-center gap-2 lg:gap-3 mb-2 lg:mb-3">
-                          <div className="p-2 lg:p-3 bg-blue-500 rounded-lg">
-                            <Leaf className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-1.5 lg:p-2 bg-blue-500 rounded-lg">
+                            <Leaf className="h-3 w-3 lg:h-4 lg:w-4 text-white" />
                           </div>
-                          <span className="font-bold text-blue-700 text-sm lg:text-base">Spread Rate</span>
+                          <span className="font-bold text-blue-700 text-xs lg:text-sm">Spread Rate</span>
                         </div>
-                        <div className="text-lg lg:text-xl font-bold text-blue-800 capitalize">{result.spreadRate}</div>
-                        <div className="text-xs lg:text-sm text-blue-600 mt-1 lg:mt-2">
+                        <div className="text-sm lg:text-lg font-bold text-blue-800 capitalize">{result.spreadRate}</div>
+                        <div className="text-xs text-blue-600 mt-1">
                           {result.spreadRate === 'fast' ? 'Rapid transmission' :
                            result.spreadRate === 'moderate' ? 'Medium transmission' : 'Slow transmission'}
                         </div>
                       </div>
                     </div>
 
-                    <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-green-50 to-green-100 p-4 lg:p-6 border border-green-200 hover:shadow-lg transition-all duration-300">
-                      <div className="absolute top-0 right-0 w-12 h-12 lg:w-20 lg:h-20 bg-green-200 rounded-full -translate-y-6 lg:-translate-y-10 translate-x-6 lg:translate-x-10 opacity-20"></div>
+                    <div className="group relative overflow-hidden rounded-lg lg:rounded-xl bg-gradient-to-br from-green-50 to-green-100 p-3 lg:p-4 border border-green-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-8 h-8 lg:w-12 lg:h-12 bg-green-200 rounded-full -translate-y-4 lg:-translate-y-6 translate-x-4 lg:translate-x-6 opacity-20"></div>
                       <div className="relative z-10">
-                        <div className="flex items-center gap-2 lg:gap-3 mb-2 lg:mb-3">
-                          <div className="p-2 lg:p-3 bg-green-500 rounded-lg">
-                            <Calendar className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-1.5 lg:p-2 bg-green-500 rounded-lg">
+                            <Calendar className="h-3 w-3 lg:h-4 lg:w-4 text-white" />
                           </div>
-                          <span className="font-bold text-green-700 text-sm lg:text-base">Recovery Time</span>
+                          <span className="font-bold text-green-700 text-xs lg:text-sm">Recovery Time</span>
                         </div>
-                        <div className="text-lg lg:text-xl font-bold text-green-800">{result.recoveryTime}</div>
-                        <div className="text-xs lg:text-sm text-green-600 mt-1 lg:mt-2">
+                        <div className="text-sm lg:text-lg font-bold text-green-800">{result.recoveryTime}</div>
+                        <div className="text-xs text-green-600 mt-1">
                           Estimated recovery period
                         </div>
                       </div>
                     </div>
 
-                    <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 p-4 lg:p-6 border border-purple-200 hover:shadow-lg transition-all duration-300">
-                      <div className="absolute top-0 right-0 w-12 h-12 lg:w-20 lg:h-20 bg-purple-200 rounded-full -translate-y-6 lg:-translate-y-10 translate-x-6 lg:translate-x-10 opacity-20"></div>
+                    <div className="group relative overflow-hidden rounded-lg lg:rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 p-3 lg:p-4 border border-purple-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-8 h-8 lg:w-12 lg:h-12 bg-purple-200 rounded-full -translate-y-4 lg:-translate-y-6 translate-x-4 lg:translate-x-6 opacity-20"></div>
                       <div className="relative z-10">
-                        <div className="flex items-center gap-2 lg:gap-3 mb-2 lg:mb-3">
-                          <div className="p-2 lg:p-3 bg-purple-500 rounded-lg">
-                            <Thermometer className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-1.5 lg:p-2 bg-purple-500 rounded-lg">
+                            <Thermometer className="h-3 w-3 lg:h-4 lg:w-4 text-white" />
                           </div>
-                          <span className="font-bold text-purple-700 text-sm lg:text-base">Treatment Cost</span>
+                          <span className="font-bold text-purple-700 text-xs lg:text-sm">Treatment Cost</span>
                         </div>
-                        <div className="text-lg lg:text-xl font-bold text-purple-800 capitalize">{result.cost}</div>
-                        <div className="text-xs lg:text-sm text-purple-600 mt-1 lg:mt-2">
+                        <div className="text-sm lg:text-lg font-bold text-purple-800 capitalize">{result.cost}</div>
+                        <div className="text-xs text-purple-600 mt-1">
                           {result.cost === 'high' ? 'Expensive treatment' :
                            result.cost === 'medium' ? 'Moderate cost' : 'Low cost treatment'}
                         </div>
                       </div>
                     </div>
 
-                    <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 p-4 lg:p-6 border border-orange-200 hover:shadow-lg transition-all duration-300">
-                      <div className="absolute top-0 right-0 w-12 h-12 lg:w-20 lg:h-20 bg-orange-200 rounded-full -translate-y-6 lg:-translate-y-10 translate-x-6 lg:translate-x-10 opacity-20"></div>
+                    <div className="group relative overflow-hidden rounded-lg lg:rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 p-3 lg:p-4 border border-orange-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-8 h-8 lg:w-12 lg:h-12 bg-orange-200 rounded-full -translate-y-4 lg:-translate-y-6 translate-x-4 lg:translate-x-6 opacity-20"></div>
                       <div className="relative z-10">
-                        <div className="flex items-center gap-2 lg:gap-3 mb-2 lg:mb-3">
-                          <div className="p-2 lg:p-3 bg-orange-500 rounded-lg">
-                            <AlertCircle className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-1.5 lg:p-2 bg-orange-500 rounded-lg">
+                            <AlertCircle className="h-3 w-3 lg:h-4 lg:w-4 text-white" />
                           </div>
-                          <span className="font-bold text-orange-700 text-sm lg:text-base">Affected Crops</span>
+                          <span className="font-bold text-orange-700 text-xs lg:text-sm">Affected Crops</span>
                         </div>
-                        <div className="text-lg lg:text-xl font-bold text-orange-800">{result.affectedCrops.length} crops</div>
-                        <div className="text-xs lg:text-sm text-orange-600 mt-1 lg:mt-2">
+                        <div className="text-sm lg:text-lg font-bold text-orange-800">{result.affectedCrops.length} crops</div>
+                        <div className="text-xs text-orange-600 mt-1">
                           {result.affectedCrops.length === 1 ? 'Single crop affected' :
                            result.affectedCrops.length <= 3 ? 'Few crops affected' : 'Multiple crops at risk'}
                         </div>
@@ -663,11 +663,11 @@ export function CropDiseaseDetection() {
 
                   {/* Crop List Preview */}
                   {result.affectedCrops.length > 0 && (
-                    <div className="bg-gray-50 rounded-xl p-4 lg:p-6">
-                      <h4 className="font-semibold text-gray-700 mb-3 lg:mb-4 text-base lg:text-lg">Crops at Risk:</h4>
-                      <div className="flex flex-wrap gap-2 lg:gap-3">
+                    <div className="bg-gray-50 rounded-lg lg:rounded-xl p-3 lg:p-4">
+                      <h4 className="font-semibold text-gray-700 mb-2 lg:mb-3 text-sm lg:text-base">Crops at Risk:</h4>
+                      <div className="flex flex-wrap gap-2">
                         {result.affectedCrops.map((crop, index) => (
-                          <Badge key={index} variant="outline" className="bg-white border-gray-300 text-gray-700 hover:bg-gray-100 text-xs lg:text-sm px-3 lg:px-4 py-1 lg:py-2">
+                          <Badge key={index} variant="outline" className="bg-white border-gray-300 text-gray-700 hover:bg-gray-100 text-xs px-2 lg:px-3 py-1">
                             {crop}
                           </Badge>
                         ))}
@@ -678,19 +678,19 @@ export function CropDiseaseDetection() {
               </Card>
 
               {/* Detailed Analysis */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                 {/* Symptoms */}
                 <Card className="shadow-soft">
-                  <CardHeader className="p-4 lg:p-6">
-                    <CardTitle className="flex items-center gap-2 lg:gap-3 text-lg lg:text-xl">
-                      <AlertTriangle className="h-5 w-5 lg:h-6 lg:w-6 text-red-500" />
+                  <CardHeader className="p-3 lg:p-4">
+                    <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                      <AlertTriangle className="h-4 w-4 lg:h-5 lg:w-5 text-red-500" />
                       Symptoms
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-4 lg:p-6">
-                    <ul className="space-y-2 lg:space-y-3">
+                  <CardContent className="p-3 lg:p-4">
+                    <ul className="space-y-2">
                       {result.symptoms.map((symptom, index) => (
-                        <li key={index} className="flex items-start gap-2 lg:gap-3 text-sm lg:text-base">
+                        <li key={index} className="flex items-start gap-2 text-sm">
                           <span className="text-red-500 mt-1">•</span>
                           <span>{symptom}</span>
                         </li>
@@ -701,16 +701,16 @@ export function CropDiseaseDetection() {
 
                 {/* Causes */}
                 <Card className="shadow-soft">
-                  <CardHeader className="p-4 lg:p-6">
-                    <CardTitle className="flex items-center gap-2 lg:gap-3 text-lg lg:text-xl">
-                      <Info className="h-5 w-5 lg:h-6 lg:w-6 text-blue-500" />
+                  <CardHeader className="p-3 lg:p-4">
+                    <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                      <Info className="h-4 w-4 lg:h-5 lg:w-5 text-blue-500" />
                       Causes
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-4 lg:p-6">
-                    <ul className="space-y-2 lg:space-y-3">
+                  <CardContent className="p-3 lg:p-4">
+                    <ul className="space-y-2">
                       {result.causes.map((cause, index) => (
-                        <li key={index} className="flex items-start gap-2 lg:gap-3 text-sm lg:text-base">
+                        <li key={index} className="flex items-start gap-2 text-sm">
                           <span className="text-blue-500 mt-1">•</span>
                           <span>{cause}</span>
                         </li>
@@ -721,16 +721,16 @@ export function CropDiseaseDetection() {
 
                 {/* Treatment */}
                 <Card className="shadow-soft">
-                  <CardHeader className="p-4 lg:p-6">
-                    <CardTitle className="flex items-center gap-2 lg:gap-3 text-lg lg:text-xl">
-                      <Leaf className="h-5 w-5 lg:h-6 lg:w-6 text-green-500" />
+                  <CardHeader className="p-3 lg:p-4">
+                    <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                      <Leaf className="h-4 w-4 lg:h-5 lg:w-5 text-green-500" />
                       Treatment
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-4 lg:p-6">
-                    <ul className="space-y-2 lg:space-y-3">
+                  <CardContent className="p-3 lg:p-4">
+                    <ul className="space-y-2">
                       {result.treatment.map((treatment, index) => (
-                        <li key={index} className="flex items-start gap-2 lg:gap-3 text-sm lg:text-base">
+                        <li key={index} className="flex items-start gap-2 text-sm">
                           <span className="text-green-500 mt-1">•</span>
                           <span>{treatment}</span>
                         </li>
@@ -741,16 +741,16 @@ export function CropDiseaseDetection() {
 
                 {/* Prevention */}
                 <Card className="shadow-soft">
-                  <CardHeader className="p-4 lg:p-6">
-                    <CardTitle className="flex items-center gap-2 lg:gap-3 text-lg lg:text-xl">
-                      <Shield className="h-5 w-5 lg:h-6 lg:w-6 text-blue-500" />
+                  <CardHeader className="p-3 lg:p-4">
+                    <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                      <Shield className="h-4 w-4 lg:h-5 lg:w-5 text-blue-500" />
                       Prevention
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-4 lg:p-6">
-                    <ul className="space-y-2 lg:space-y-3">
+                  <CardContent className="p-3 lg:p-4">
+                    <ul className="space-y-2">
                       {result.prevention.map((prevention, index) => (
-                        <li key={index} className="flex items-start gap-2 lg:gap-3 text-sm lg:text-base">
+                        <li key={index} className="flex items-start gap-2 text-sm">
                           <span className="text-blue-500 mt-1">•</span>
                           <span>{prevention}</span>
                         </li>
@@ -762,16 +762,16 @@ export function CropDiseaseDetection() {
 
               {/* Recommended Products */}
               <Card className="shadow-soft">
-                <CardHeader className="p-4 lg:p-6">
-                  <CardTitle className="flex items-center gap-2 lg:gap-3 text-lg lg:text-xl">
-                    <Leaf className="h-5 w-5 lg:h-6 lg:w-6" />
+                <CardHeader className="p-3 lg:p-4">
+                  <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                    <Leaf className="h-4 w-4 lg:h-5 lg:w-5" />
                     Recommended Products
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-4 lg:p-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4">
+                <CardContent className="p-3 lg:p-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 lg:gap-3">
                     {result.recommendedProducts.map((product, index) => (
-                      <Badge key={index} variant="outline" className="text-sm lg:text-base p-3 lg:p-4 text-center">
+                      <Badge key={index} variant="outline" className="text-xs lg:text-sm p-2 lg:p-3 text-center">
                         {product}
                       </Badge>
                     ))}
@@ -781,16 +781,16 @@ export function CropDiseaseDetection() {
 
               {/* Environmental Factors */}
               <Card className="shadow-soft">
-                <CardHeader className="p-4 lg:p-6">
-                  <CardTitle className="flex items-center gap-2 lg:gap-3 text-lg lg:text-xl">
-                    <Thermometer className="h-5 w-5 lg:h-6 lg:w-6" />
+                <CardHeader className="p-3 lg:p-4">
+                  <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                    <Thermometer className="h-4 w-4 lg:h-5 lg:w-5" />
                     Environmental Factors
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-4 lg:p-6">
-                  <div className="flex flex-wrap gap-2 lg:gap-3">
+                <CardContent className="p-3 lg:p-4">
+                  <div className="flex flex-wrap gap-2">
                     {result.environmentalFactors.map((factor, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs lg:text-sm px-3 lg:px-4 py-1 lg:py-2">
+                      <Badge key={index} variant="secondary" className="text-xs px-2 lg:px-3 py-1">
                         {factor}
                       </Badge>
                     ))}
