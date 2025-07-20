@@ -114,13 +114,11 @@ export default function Dashboard() {
 
   // Speech functionality
   const [speechEnabled, setSpeechEnabled] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     // Check if user has seen welcome message
     const hasSeenWelcome = localStorage.getItem('agrobridge_welcome_seen');
     if (!hasSeenWelcome) {
-      setShowWelcome(true);
       localStorage.setItem('agrobridge_welcome_seen', 'true');
       
       // Welcome speech on first visit
@@ -212,59 +210,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-0 overflow-x-hidden">
       <div className="container mx-auto w-full max-w-full space-y-8 px-0 sm:px-4">
         
-        {/* Welcome Message - Only shows once after login */}
-        {showWelcome && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 lg:p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-soft border border-white/20 animate-in slide-in-from-top-2 duration-500">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl flex items-center justify-center">
-                <Sprout className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl lg:text-2xl font-bold text-gray-800">Welcome to AgroBridge!</h1>
-                <p className="text-sm lg:text-base text-gray-600">Your AI-powered agriculture connections</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(
-                      "Welcome to AgroBridge, your AI powered agriculture connections"
-                    );
-                    utterance.rate = 0.9;
-                    utterance.pitch = 1;
-                    utterance.volume = 0.8;
-                    
-                    const voices = speechSynthesis.getVoices();
-                    const preferredVoice = voices.find(voice => 
-                      voice.lang.includes('en') && (voice.name.includes('Google') || voice.name.includes('Natural'))
-                    );
-                    if (preferredVoice) {
-                      utterance.voice = preferredVoice;
-                    }
-                    
-                    speechSynthesis.speak(utterance);
-                  }
-                }}
-                className="flex items-center gap-2 bg-green-50 hover:bg-green-100 border-green-200 text-green-700"
-              >
-                <Volume2 className="h-4 w-4" />
-                <span className="hidden sm:inline">Replay Welcome</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowWelcome(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </Button>
-            </div>
-          </div>
-        )}
+        
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-full">
