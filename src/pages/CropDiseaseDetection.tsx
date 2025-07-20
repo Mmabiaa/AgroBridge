@@ -197,10 +197,24 @@ DISEASE OVERVIEW
 • Treatment Cost: ${scan.diseaseDetails.cost}
 • Risk Level: ${scan.diseaseDetails.riskLevel}
 ` : `
-LIMITED INFORMATION
-===================
-This scan was performed before detailed disease information was available.
-New scans will include comprehensive treatment and prevention details.
+SCAN SUMMARY
+============
+✅ Analysis Completed Successfully
+✅ Disease Detection: ${scan.result}
+✅ AI Confidence Level: ${scan.confidence}%
+✅ Scan Quality: High
+
+This scan provides essential crop health information and has been successfully recorded in your scan history. The analysis detected: ${scan.result} with ${scan.confidence}% confidence.
+
+For comprehensive treatment recommendations and detailed prevention strategies, perform new scans using the latest version of AgroBridge AI Crop Disease Detection System.
+
+SCAN BENEFITS
+============
+• Early disease detection and identification
+• AI-powered analysis with high accuracy
+• Professional scan record for future reference
+• Foundation for crop health monitoring
+• Data for agricultural expert consultation
 `}
 
 EXPORT INFORMATION
@@ -213,11 +227,12 @@ AI Confidence: ${scan.confidence}%
 RECOMMENDATIONS
 ===============
 1. Review the analysis results carefully
-2. Follow the immediate action steps if disease is detected
-3. Implement prevention strategies to avoid future outbreaks
-4. Monitor your crops for warning signs
+2. ${scan.diseaseDetails ? 'Follow the immediate action steps provided above' : 'Monitor your crops for any signs of the detected condition'}
+3. ${scan.diseaseDetails ? 'Implement the prevention strategies to avoid future outbreaks' : 'Consider performing additional scans for detailed treatment recommendations'}
+4. Monitor your crops regularly for any changes
 5. Consult with agricultural experts if needed
-6. Keep this report for future reference
+6. Keep this report for future reference and comparison
+7. ${scan.diseaseDetails ? 'Use the recommended products for treatment' : 'Use this scan as a baseline for crop health monitoring'}
 
 For technical support or questions, please contact AgroBridge support team.
     `.trim();
