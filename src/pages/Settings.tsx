@@ -182,8 +182,8 @@ export default function Settings() {
                       onChange={(e) => setUserData(prev => ({ ...prev, fullName: e.target.value }))}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
                     <Input
                       id="email"
                       type="email"
@@ -194,8 +194,8 @@ export default function Settings() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
                     <Input
                       id="phone"
                       type="tel"
@@ -397,11 +397,11 @@ export default function Settings() {
                     }))}
                   />
                 </div>
-
+                
                 <div className="pt-4 border-t">
-                  <Button variant="outline" className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground">
-                    Delete Account
-                  </Button>
+                    <Button variant="outline" className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground">
+                      Delete Account
+                    </Button>
                 </div>
               </CardContent>
             </Card>
