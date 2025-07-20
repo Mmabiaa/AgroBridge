@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
@@ -20,8 +20,11 @@ import {
   Search,
   Camera,
   Mic,
-  Calendar
+  Calendar,
+  LogOut,
+  User
 } from 'lucide-react';
+import { notifySystemUpdate } from '@/components/notifications/NotificationCenter';
 
 const navigationItems = [
   { href: '/dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -39,12 +42,53 @@ const navigationItems = [
 
 const languages = ['English', 'Twi', 'Hausa', 'Yoruba'];
 
+// Mock user data
+const mockUser = {
+  name: 'Kwame Addo',
+  email: 'kwame.addo@email.com',
+  avatar: null
+};
+
 export const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [currentLang, setCurrentLang] = useState('English');
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleLogout = async () => {
+    // Show confirmation dialog
+    const confirmed = window.confirm('Are you sure you want to logout? All unsaved data will be lost.');
+    if (!confirmed) return;
+
+    setIsLoggingOut(true);
+    
+    try {
+      // Simulate logout process
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Clear user data from localStorage
+      localStorage.removeItem('agroBridgeUser');
+      localStorage.removeItem('agroBridgeNotifications');
+      localStorage.removeItem('agroBridgeNotificationSettings');
+      localStorage.removeItem('userCropScans');
+      localStorage.removeItem('agroBridgeSettings');
+      
+      // Show success notification
+      notifySystemUpdate('Successfully logged out. Thank you for using AgroBridge!', 'success');
+      
+      // Navigate to home page
+      navigate('/');
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+      notifySystemUpdate('Error during logout. Please try again.', 'warning');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   const NavItems = ({ mobile = false, onItemClick = () => {} }) => (
     <div className={`flex ${mobile ? 'flex-col space-y-2' : 'flex-row space-x-1'} items-start`}>
@@ -86,6 +130,45 @@ export const Navigation = () => {
     </div>
   );
 
+  const UserMenu = ({ mobile = false }) => (
+    <div className={`flex ${mobile ? 'flex-col space-y-2' : 'flex-row items-center gap-2'}`}>
+      {/* User Info */}
+      <div className={`flex items-center gap-2 ${mobile ? 'p-2' : ''}`}>
+        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+          <User className="h-4 w-4 text-primary" />
+        </div>
+        {mobile && (
+          <div className="text-sm">
+            <div className="font-medium">{mockUser.name}</div>
+            <div className="text-muted-foreground">{mockUser.email}</div>
+          </div>
+        )}
+      </div>
+      
+      {/* Logout Button */}
+      <Button
+        variant={mobile ? "ghost" : "outline"}
+        size={mobile ? "default" : "sm"}
+        onClick={handleLogout}
+        disabled={isLoggingOut}
+        className={`${mobile ? 'w-full justify-start' : ''} text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200`}
+        title="Logout from AgroBridge"
+      >
+        {isLoggingOut ? (
+          <>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600 mr-2"></div>
+            Logging out...
+          </>
+        ) : (
+          <>
+            <LogOut className="h-4 w-4 mr-2" />
+            {mobile ? 'Logout' : ''}
+          </>
+        )}
+      </Button>
+    </div>
+  );
+
   return (
     <nav className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -123,6 +206,7 @@ export const Navigation = () => {
               </Link>
               <LanguageSelector />
               <ThemeToggle />
+              <UserMenu />
             </div>
           </div>
 
@@ -161,6 +245,11 @@ export const Navigation = () => {
                         <span className="absolute right-4 h-2 w-2 bg-red-500 rounded-full"></span>
                       </Button>
                     </Link>
+                  </div>
+
+                  {/* User Menu for Mobile */}
+                  <div className="border-t pt-4">
+                    <UserMenu mobile />
                   </div>
                 </div>
               </SheetContent>
