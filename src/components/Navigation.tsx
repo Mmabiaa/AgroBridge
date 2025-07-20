@@ -102,11 +102,7 @@ export const Navigation = () => {
           <div className="hidden lg:flex items-center space-x-4">
             <NavItems />
             <div className="border-l pl-4 flex items-center gap-2">
-              <Link to="/search">
-                <Button variant="ghost" size="icon" className="relative">
-                  <Search className="h-4 w-4" />
-                </Button>
-              </Link>
+            
               <Link to="/crop-disease-detection">
                 <Button variant="ghost" size="icon" className="relative">
                   <Camera className="h-4 w-4" />
@@ -145,12 +141,7 @@ export const Navigation = () => {
                   <NavItems mobile onItemClick={() => setMobileNavOpen(false)} />
                   
                   <div className="border-t pt-4 space-y-2">
-                    <Link to="/search" className="w-full">
-                      <Button variant="ghost" className="w-full justify-start">
-                        <Search className="h-4 w-4 mr-2" />
-                        Advanced Search
-                      </Button>
-                    </Link>
+              
                     <Link to="/crop-disease-detection" className="w-full">
                       <Button variant="ghost" className="w-full justify-start">
                         <Camera className="h-4 w-4 mr-2" />
