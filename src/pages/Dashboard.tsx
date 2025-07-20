@@ -116,39 +116,33 @@ export default function Dashboard() {
   const [speechEnabled, setSpeechEnabled] = useState(false);
 
   useEffect(() => {
-    // Check if user has seen welcome message
-    const hasSeenWelcome = localStorage.getItem('agrobridge_welcome_seen');
-    if (!hasSeenWelcome) {
-      localStorage.setItem('agrobridge_welcome_seen', 'true');
-      
-      // Welcome speech on first visit
-      const speakWelcome = () => {
-        if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance(
-            "Welcome to AgroBridge, your AI powered agriculture connections"
-          );
-          utterance.rate = 0.9;
-          utterance.pitch = 1;
-          utterance.volume = 0.8;
-          
-          // Try to use a more natural voice if available
-          const voices = speechSynthesis.getVoices();
-          const preferredVoice = voices.find(voice => 
-            voice.lang.includes('en') && (voice.name.includes('Google') || voice.name.includes('Natural'))
-          );
-          if (preferredVoice) {
-            utterance.voice = preferredVoice;
-          }
-          
-          speechSynthesis.speak(utterance);
-          setSpeechEnabled(true);
+    // Welcome speech on every dashboard visit
+    const speakWelcome = () => {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(
+          "Welcome to AgroBridge, your AI powered agriculture connections"
+        );
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 0.8;
+        
+        // Try to use a more natural voice if available
+        const voices = speechSynthesis.getVoices();
+        const preferredVoice = voices.find(voice => 
+          voice.lang.includes('en') && (voice.name.includes('Google') || voice.name.includes('Natural'))
+        );
+        if (preferredVoice) {
+          utterance.voice = preferredVoice;
         }
-      };
+        
+        speechSynthesis.speak(utterance);
+        setSpeechEnabled(true);
+      }
+    };
 
-      // Delay speech slightly to ensure page is loaded
-      const timer = setTimeout(speakWelcome, 1000);
-      return () => clearTimeout(timer);
-    }
+    // Delay speech slightly to ensure page is loaded
+    const timer = setTimeout(speakWelcome, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
