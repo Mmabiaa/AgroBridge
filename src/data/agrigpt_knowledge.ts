@@ -2060,7 +2060,7 @@ export const rawAgriQA = [
      q: "How do I access government loans for farmers?",
      a: "Contact your local Ministry of Food and Agriculture office for information on available government loan schemes and requirements."
   },
-  {
+    {
      q: "How can I increase my poultry egg production?",
      a: "Provide balanced feed, clean water, proper lighting, and good housing. Regularly check for diseases and parasites."
   },
@@ -2069,2044 +2069,2044 @@ export const rawAgriQA = [
      a: "Use pre-emergence herbicides, hand weeding, and maintain proper water levels to control weeds in rice fields."
   },
    {
-     "q": "when is the best time to harvest cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cabbage plants",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cabbage plants",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in maize plants",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in maize plants",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best way to compost",
-     "a": "Mix green and brown materials, keep moist, and turn the pile regularly."
+     q: "what is the best way to compost",
+     a: "Mix green and brown materials, keep moist, and turn the pile regularly."
    },
    {
-     "q": "is rice profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is rice profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow rice in dry season",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow rice in dry season",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in pepper plants",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in pepper plants",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow tomatoes in dry season",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow tomatoes in dry season",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is cabbage profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cabbage profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does tomatoes need per day",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does tomatoes need per day",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does tomatoes need per day",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does tomatoes need per day",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cabbage need per day",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cabbage need per day",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cassava plants",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cassava plants",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cabbage need per day",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cabbage need per day",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in pepper plants",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in pepper plants",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in pepper plants",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in pepper plants",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is cabbage profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cabbage profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is pepper profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is pepper profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does plantain need per day",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does plantain need per day",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does pepper need per day",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does pepper need per day",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does rice need per day",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does rice need per day",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is cabbage profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cabbage profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in onions plants",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in onions plants",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow rice in dry season",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow rice in dry season",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is rice profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is rice profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cocoa plants",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cocoa plants",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow plantain in dry season",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow plantain in dry season",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is cocoa profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cocoa profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow sorghum in dry season",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow sorghum in dry season",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is tomatoes profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is tomatoes profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does plantain need per day",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does plantain need per day",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is onions profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is onions profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow maize in dry season",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow maize in dry season",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does maize need per day",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does maize need per day",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is tomatoes profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is tomatoes profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow pepper in dry season",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow pepper in dry season",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does rice need per day",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does rice need per day",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in rice plants",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in rice plants",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is pepper profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is pepper profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does pepper need per day",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does pepper need per day",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is cabbage profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cabbage profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow rice in dry season",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow rice in dry season",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is sorghum profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is sorghum profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does tomatoes need per day",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does tomatoes need per day",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cassava need per day",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cassava need per day",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does onions need per day",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does onions need per day",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in plantain plants",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in plantain plants",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow pepper in dry season",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow pepper in dry season",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is plantain profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is plantain profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow plantain in dry season",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow plantain in dry season",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow onions in dry season",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow onions in dry season",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in tomatoes plants",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in tomatoes plants",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is plantain profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is plantain profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow tomatoes in dry season",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow tomatoes in dry season",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in onions plants",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in onions plants",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow sorghum in dry season",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow sorghum in dry season",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cassava in dry season",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cassava in dry season",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is tomatoes profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is tomatoes profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow pepper in dry season",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow pepper in dry season",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cocoa in dry season",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cocoa in dry season",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does rice need per day",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does rice need per day",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in tomatoes plants",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in tomatoes plants",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cocoa plants",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cocoa plants",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does plantain need per day",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does plantain need per day",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow onions in dry season",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow onions in dry season",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is maize profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is maize profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is plantain profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is plantain profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow sorghum in dry season",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow sorghum in dry season",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does plantain need per day",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does plantain need per day",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in pepper plants",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in pepper plants",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does rice need per day",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does rice need per day",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is tomatoes profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is tomatoes profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cocoa need per day",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cocoa need per day",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in tomatoes plants",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in tomatoes plants",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is rice profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is rice profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does tomatoes need per day",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does tomatoes need per day",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow pepper in dry season",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow pepper in dry season",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in sorghum plants",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in sorghum plants",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cabbage in dry season",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cabbage in dry season",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is onions profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is onions profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is maize profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is maize profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in onions plants",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in onions plants",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in tomatoes plants",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in tomatoes plants",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is sorghum profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is sorghum profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is tomatoes profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is tomatoes profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is plantain profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is plantain profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is rice profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is rice profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cabbage need per day",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cabbage need per day",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cocoa need per day",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cocoa need per day",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does onions need per day",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does onions need per day",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does sorghum need per day",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does sorghum need per day",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can chickens eat watermelon",
-     "a": "Yes, chickens enjoy watermelon as a treat, especially in hot weather."
+     q: "can chickens eat watermelon",
+     a: "Yes, chickens enjoy watermelon as a treat, especially in hot weather."
    },
    {
-     "q": "how much water does maize need per day",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does maize need per day",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in sorghum plants",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in sorghum plants",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is sorghum profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is sorghum profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow plantain in dry season",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow plantain in dry season",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does sorghum need per day",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does sorghum need per day",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cabbage need per day",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cabbage need per day",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is plantain profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is plantain profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow sorghum in dry season",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow sorghum in dry season",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is tomatoes profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is tomatoes profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow plantain in dry season",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow plantain in dry season",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cabbage need per day",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cabbage need per day",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in plantain plants",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in plantain plants",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "why are my chickens not laying eggs",
-     "a": "Possible reasons include age, poor diet, stress, or insufficient light exposure."
+     q: "why are my chickens not laying eggs",
+     a: "Possible reasons include age, poor diet, stress, or insufficient light exposure."
    },
    {
-     "q": "how much water does tomatoes need per day",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does tomatoes need per day",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cabbage plants",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cabbage plants",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does onions need per day",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does onions need per day",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in pepper plants",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in pepper plants",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in tomatoes plants",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in tomatoes plants",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow tomatoes in dry season",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow tomatoes in dry season",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow onions in dry season",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow onions in dry season",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in maize plants",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in maize plants",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in sorghum plants",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in sorghum plants",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cassava plants",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cassava plants",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is sorghum profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is sorghum profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in plantain plants",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in plantain plants",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is tomatoes profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is tomatoes profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow sorghum in dry season",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow sorghum in dry season",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in rice plants",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in rice plants",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does pepper need per day",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does pepper need per day",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cabbage plants",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cabbage plants",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cabbage plants",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cabbage plants",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow maize in dry season",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow maize in dry season",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does tomatoes need per day",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does tomatoes need per day",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I use human urine as fertilizer",
-     "a": "Yes, diluted human urine can be used as a nitrogen-rich fertilizer if handled safely."
+     q: "can I use human urine as fertilizer",
+     a: "Yes, diluted human urine can be used as a nitrogen-rich fertilizer if handled safely."
    },
    {
-     "q": "how long does it take to grow plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is cocoa profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cocoa profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cabbage need per day",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cabbage need per day",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cabbage in dry season",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cabbage in dry season",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is pepper profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is pepper profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is plantain profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is plantain profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is sorghum profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is sorghum profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in plantain plants",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in plantain plants",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does sorghum need per day",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does sorghum need per day",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in rice plants",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in rice plants",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does onions need per day",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does onions need per day",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow tomatoes in dry season",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow tomatoes in dry season",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow maize in dry season",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow maize in dry season",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow tomatoes in dry season",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow tomatoes in dry season",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is maize profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is maize profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in sorghum plants",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in sorghum plants",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does sorghum need per day",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does sorghum need per day",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is onions profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is onions profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does plantain need per day",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does plantain need per day",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how can I test my soil",
-     "a": "Use a soil test kit or take a sample to an agricultural extension office for analysis."
+     q: "how can I test my soil",
+     a: "Use a soil test kit or take a sample to an agricultural extension office for analysis."
    },
    {
-     "q": "is cabbage profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cabbage profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does sorghum need per day",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does sorghum need per day",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cassava need per day",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cassava need per day",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in onions plants",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in onions plants",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does onions need per day",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does onions need per day",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow tomatoes in dry season",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow tomatoes in dry season",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cabbage in dry season",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cabbage in dry season",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is pepper profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is pepper profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in tomatoes plants",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in tomatoes plants",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in plantain plants",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in plantain plants",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does cabbage need per day",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does cabbage need per day",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cabbage in dry season",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cabbage in dry season",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cocoa in dry season",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cocoa in dry season",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does plantain need per day",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does plantain need per day",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is pepper profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is pepper profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cabbage plants",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cabbage plants",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does sorghum need per day",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does sorghum need per day",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cabbage in dry season",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cabbage in dry season",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cabbage plants",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cabbage plants",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is onions profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is onions profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in onions plants",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in onions plants",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow rice in dry season",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow rice in dry season",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cabbage in dry season",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cabbage in dry season",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does rice need per day",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does rice need per day",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow plantain in dry season",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow plantain in dry season",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow onions in dry season",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow onions in dry season",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in plantain plants",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in plantain plants",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does maize need per day",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does maize need per day",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in pepper plants",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in pepper plants",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow sorghum in dry season",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow sorghum in dry season",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in maize plants",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in maize plants",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in tomatoes plants",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in tomatoes plants",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how can I keep pests away from my farm",
-     "a": "Use organic methods like neem spray, proper spacing, and pest-resistant varieties."
+     q: "how can I keep pests away from my farm",
+     a: "Use organic methods like neem spray, proper spacing, and pest-resistant varieties."
    },
    {
-     "q": "how long does it take to grow sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in rice plants",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in rice plants",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cabbage in dry season",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cabbage in dry season",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow onions in dry season",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow onions in dry season",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow tomatoes in dry season",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow tomatoes in dry season",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in rice plants",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in rice plants",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow plantain in dry season",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow plantain in dry season",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent coccidiosis in chickens",
-     "a": "Keep coop dry and clean, provide medicated feed, and avoid overcrowding."
+     q: "how do I prevent coccidiosis in chickens",
+     a: "Keep coop dry and clean, provide medicated feed, and avoid overcrowding."
    },
    {
-     "q": "when is the best time to harvest cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is rice profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is rice profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in maize plants",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in maize plants",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does pepper need per day",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does pepper need per day",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is sorghum profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is sorghum profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does pepper need per day",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does pepper need per day",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what are signs of heat stress in poultry",
-     "a": "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
+     q: "what are signs of heat stress in poultry",
+     a: "Panting, spreading wings, reduced feed intake, and lower egg production. Provide shade and cool clean water."
    },
    {
-     "q": "can I grow pepper in dry season",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow pepper in dry season",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow pepper in dry season",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow pepper in dry season",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is cabbage profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cabbage profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how often should I feed broilers",
-     "a": "Feed broilers 3 to 5 times daily with high-protein feed for rapid growth."
+     q: "how often should I feed broilers",
+     a: "Feed broilers 3 to 5 times daily with high-protein feed for rapid growth."
    },
    {
-     "q": "what fertilizers should I use for plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does pepper need per day",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does pepper need per day",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow rice in dry season",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow rice in dry season",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does maize need per day",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does maize need per day",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is cassava profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cassava profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow maize in dry season",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow maize in dry season",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of plantain",
-     "a": "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of plantain",
+     a: "Basic care tips and timing are needed to grow plantain successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in cabbage plants",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in cabbage plants",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is pepper profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is pepper profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is cabbage profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cabbage profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest onions",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest onions",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is onions profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is onions profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow onions successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I plant cassava",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I plant cassava",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in sorghum plants",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in sorghum plants",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest cocoa",
-     "a": "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cocoa",
+     a: "Basic care tips and timing are needed to grow cocoa successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing pepper",
-     "a": "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing pepper",
+     a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is maize profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is maize profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the yield per acre of cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the yield per acre of cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "is cassava profitable for small-scale farmers",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "is cassava profitable for small-scale farmers",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest maize",
-     "a": "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest maize",
+     a: "Basic care tips and timing are needed to grow maize successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "can I grow cassava in dry season",
-     "a": "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "can I grow cassava in dry season",
+     a: "Basic care tips and timing are needed to grow cassava successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how do I prevent diseases in sorghum plants",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how do I prevent diseases in sorghum plants",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how many eggs can a layer produce in a year",
-     "a": "A healthy layer can produce around 250 to 300 eggs per year."
+     q: "how many eggs can a layer produce in a year",
+     a: "A healthy layer can produce around 250 to 300 eggs per year."
    },
    {
-     "q": "what fertilizers should I use for rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how long does it take to grow rice",
-     "a": "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how long does it take to grow rice",
+     a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what fertilizers should I use for tomatoes",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what fertilizers should I use for tomatoes",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "what is the best soil for growing sorghum",
-     "a": "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "what is the best soil for growing sorghum",
+     a: "Basic care tips and timing are needed to grow sorghum successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "when is the best time to harvest cabbage",
-     "a": "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "when is the best time to harvest cabbage",
+     a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
-     "q": "how much water does tomatoes need per day",
-     "a": "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+     q: "how much water does tomatoes need per day",
+     a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    }
 ]
 
