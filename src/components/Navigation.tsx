@@ -25,6 +25,7 @@ import {
   User
 } from 'lucide-react';
 import { notifySystemUpdate } from '@/components/notifications/NotificationCenter';
+import { logout, getCurrentUser, mockUser } from '@/utils/auth';
 
 const navigationItems = [
   { href: '/dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -42,19 +43,15 @@ const navigationItems = [
 
 const languages = ['English', 'Twi', 'Hausa', 'Yoruba'];
 
-// Mock user data
-const mockUser = {
-  name: 'Kwame Addo',
-  email: 'kwame.addo@email.com',
-  avatar: null
-};
-
 export const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [currentLang, setCurrentLang] = useState('English');
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Get current user data
+  const currentUser = getCurrentUser() || mockUser;
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -66,15 +63,8 @@ export const Navigation = () => {
     setIsLoggingOut(true);
     
     try {
-      // Simulate logout process
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Clear user data from localStorage
-      localStorage.removeItem('agroBridgeUser');
-      localStorage.removeItem('agroBridgeNotifications');
-      localStorage.removeItem('agroBridgeNotificationSettings');
-      localStorage.removeItem('userCropScans');
-      localStorage.removeItem('agroBridgeSettings');
+      // Use the auth utility logout function
+      await logout();
       
       // Show success notification
       notifySystemUpdate('Successfully logged out. Thank you for using AgroBridge!', 'success');
@@ -139,8 +129,8 @@ export const Navigation = () => {
         </div>
         {mobile && (
           <div className="text-sm">
-            <div className="font-medium">{mockUser.name}</div>
-            <div className="text-muted-foreground">{mockUser.email}</div>
+            <div className="font-medium">{currentUser.name}</div>
+            <div className="text-muted-foreground">{currentUser.email}</div>
           </div>
         )}
       </div>
