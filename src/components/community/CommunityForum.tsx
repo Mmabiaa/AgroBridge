@@ -62,7 +62,7 @@ const forumPosts: ForumPost[] = [
     likes: 15,
     replies: 8,
     views: 124,
-    createdAt: '2024-01-15T10:30:00Z',
+    createdAt: '2025-01-15T10:30:00Z',
     isPinned: false,
     tags: ['tomatoes', 'fertilizer', 'dry-season']
   },
@@ -135,7 +135,7 @@ const upcomingEvents = [
   {
     id: '1',
     title: 'Integrated Pest Management Workshop',
-    date: '2024-01-25',
+    date: '2025-07-25',
     location: 'Kumasi Agricultural College',
     attendees: 45,
     type: 'Workshop'
@@ -143,7 +143,7 @@ const upcomingEvents = [
   {
     id: '2',
     title: 'Organic Certification Seminar',
-    date: '2024-01-28',
+    date: '2025-08-28',
     location: 'Online',
     attendees: 120,
     type: 'Seminar'
@@ -151,7 +151,7 @@ const upcomingEvents = [
   {
     id: '3',
     title: 'Climate-Smart Agriculture Training',
-    date: '2024-02-02',
+    date: '2025-09-02',
     location: 'Tamale Training Center',
     attendees: 75,
     type: 'Training'

@@ -37,6 +37,8 @@ import EmergencyResponse from "./pages/EmergencyResponse";
 import DroneIntegration from "./pages/DroneIntegration";
 import ExportDocumentation from "./pages/ExportDocumentation";
 import Support from "./pages/Support";
+import CropCalendar from "./pages/CropCalendar";
+import FarmerStories from "./pages/FarmerStories";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +73,8 @@ const App = () => (
                     <Route path="/monitoring" element={<Monitoring />} />
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/marketplace" element={<Marketplace />} />
+                    <Route path="/crop-calendar" element={<CropCalendar />} />
+                    <Route path="/farmer-stories" element={<FarmerStories />} />
                     <Route path="/learning" element={<Learning />} />
                     <Route path="/community" element={<Community />} />
                     <Route path="/settings" element={<Settings />} />
