@@ -374,14 +374,14 @@ export function VoiceCommands() {
   };
 
   return (
-    <Card className="shadow-soft">
+    <Card className="shadow-soft w-full max-w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Languages className="h-5 w-5 text-primary" />
           Voice Commands
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 p-4 sm:p-6">
         {/* Language Selection */}
         <div className="space-y-2">
           <label className="text-sm font-medium">Select Language</label>

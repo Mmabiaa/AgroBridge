@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -132,10 +133,12 @@ export default function Learning() {
             <p className="text-sm md:text-base text-muted-foreground">Master modern farming techniques with expert guidance</p>
           </div>
           <div className="flex gap-2 w-full md:w-auto">
-            <Button variant="outline" size="sm" className="flex-1 md:flex-none">
-              <Bot className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
-              <span className="text-xs md:text-sm">Ask AgriGPT</span>
-            </Button>
+            <Link to="/agrigpt" className="flex-1 md:flex-none">
+              <Button variant="outline" size="sm" className="w-full">
+                <Bot className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="text-xs md:text-sm">Ask AgriGPT</span>
+              </Button>
+            </Link>
             <Button variant="farmer" size="sm" className="flex-1 md:flex-none">
               <Award className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
               <span className="text-xs md:text-sm">My Progress</span>
@@ -143,48 +146,6 @@ export default function Learning() {
           </div>
         </div>
 
-        {/* Progress Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 px-0 sm:px-1 w-full max-w-full">
-          <Card className="shadow-soft">
-            <CardContent className="flex items-center p-3 md:p-6">
-              <Book className="h-6 w-6 md:h-8 md:w-8 text-primary mr-2 md:mr-4 flex-shrink-0" />
-              <div className="min-w-0">
-                <p className="text-lg md:text-2xl font-bold">8</p>
-                <p className="text-xs md:text-sm text-muted-foreground">Courses Completed</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-soft">
-            <CardContent className="flex items-center p-3 md:p-6">
-              <Clock className="h-6 w-6 md:h-8 md:w-8 text-sky mr-2 md:mr-4 flex-shrink-0" />
-              <div className="min-w-0">
-                <p className="text-lg md:text-2xl font-bold">24h</p>
-                <p className="text-xs md:text-sm text-muted-foreground">Learning Time</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-soft">
-            <CardContent className="flex items-center p-3 md:p-6">
-              <Award className="h-6 w-6 md:h-8 md:w-8 text-harvest mr-2 md:mr-4 flex-shrink-0" />
-              <div className="min-w-0">
-                <p className="text-lg md:text-2xl font-bold">12</p>
-                <p className="text-xs md:text-sm text-muted-foreground">Certificates Earned</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-soft">
-            <CardContent className="flex items-center p-3 md:p-6">
-              <Star className="h-6 w-6 md:h-8 md:w-8 text-warning mr-2 md:mr-4 flex-shrink-0" />
-              <div className="min-w-0">
-                <p className="text-lg md:text-2xl font-bold">4.9</p>
-                <p className="text-xs md:text-sm text-muted-foreground">Average Rating</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
         <Tabs defaultValue="courses" className="w-full">
           <TabsList className="grid w-full grid-cols-3 h-12 md:h-auto p-1 bg-muted/50">
@@ -367,10 +328,12 @@ export default function Learning() {
             <p className="mb-4 text-sm md:text-base">
               Ask AgriGPT to explain any concept from your courses in simple terms or in your local language.
             </p>
-            <Button variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 text-sm md:text-base py-2 md:py-3 px-4 md:px-6">
-              <Bot className="h-3 w-3 md:h-4 md:w-4 mr-2" />
-              Chat with AgriGPT
-            </Button>
+            <Link to="/agrigpt">
+              <Button variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 text-sm md:text-base py-2 md:py-3 px-4 md:px-6 w-full">
+                <Bot className="h-3 w-3 md:h-4 md:w-4 mr-2" />
+                Chat with AgriGPT
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
