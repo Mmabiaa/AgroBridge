@@ -45,11 +45,7 @@ export function ChatInput({
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
         setMessage(transcript);
-        // Auto-send the transcribed message
-        setTimeout(() => {
-          onSendMessage();
-          setMessage('');
-        }, 100);
+        // Do NOT auto-send. User can review/edit and send manually.
       };
       recognition.onerror = (event: any) => {
         // Optionally handle errors
@@ -62,15 +58,9 @@ export function ChatInput({
     return () => {
       if (recognition) recognition.stop();
     };
-  }, [isListening, setMessage, currentLanguage, onSendMessage]);
+  }, [isListening, setMessage, currentLanguage]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
+  // --- AUDIO RECORDING LOGIC ---
   const handleStartRecording = async () => {
     if (!navigator.mediaDevices?.getUserMedia) return;
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -99,6 +89,23 @@ export function ChatInput({
     setAudioUrl(null);
   };
 
+  // --- SENDING LOGIC ---
+  const handleSend = () => {
+    if (!message.trim()) return; // Only send if there is text
+    onSendMessage({ audio: audioBlob || undefined, image: imageFile || undefined });
+    setMessage('');
+    setAudioBlob(null);
+    setAudioUrl(null);
+    setImageFile(null);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
@@ -106,15 +113,6 @@ export function ChatInput({
   };
 
   const handleRemoveImage = () => {
-    setImageFile(null);
-  };
-
-  const handleSend = () => {
-    if (!message.trim() && !audioBlob && !imageFile) return;
-    onSendMessage({ audio: audioBlob || undefined, image: imageFile || undefined });
-    setMessage('');
-    setAudioBlob(null);
-    setAudioUrl(null);
     setImageFile(null);
   };
 
@@ -158,7 +156,7 @@ export function ChatInput({
           onClick={handleSend}
           variant="farmer" 
           size="lg"
-          disabled={!message.trim() && !audioBlob && !imageFile}
+          disabled={!message.trim()}
           className="px-6 shadow-strong hover:shadow-glow transition-all duration-300"
         >
           <Send className="h-5 w-5" />
@@ -170,7 +168,7 @@ export function ChatInput({
           {audioUrl && (
             <div className="flex items-center gap-2">
               <audio controls src={audioUrl} className="h-8" />
-              <Button size="icon" variant="ghost" onClick={handleRemoveAudio}>
+              <Button size="icon" variant="ghost" onClick={handleRemoveAudio} title="Remove audio">
                 ✕
               </Button>
             </div>
