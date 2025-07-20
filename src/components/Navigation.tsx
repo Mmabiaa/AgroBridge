@@ -164,7 +164,7 @@ export const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl">
+          <Link to="" className="flex items-center gap-2 font-bold text-xl">
             <Wheat className="h-8 w-8 text-primary" />
             <span className="bg-gradient-primary bg-clip-text text-transparent">
               AgroBridge
