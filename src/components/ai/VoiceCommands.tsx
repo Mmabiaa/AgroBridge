@@ -243,7 +243,10 @@ export function VoiceCommands() {
         }
       }
       setInterimTranscript(interim);
-      if (final) setTranscript(final);
+      if (final) {
+        setTranscript(final);
+        processVoiceCommand(final); // Immediate intent processing
+      }
     };
 
     recognitionInstance.onerror = (event: any) => {
@@ -296,15 +299,7 @@ export function VoiceCommands() {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       setIsListening(false);
-      if (transcript.trim()) {
-        processVoiceCommand(transcript);
-      } else {
-        setResponse('No command detected. Please try again.');
-      }
-      // Start continuous listening after a short delay
-      listeningTimeout.current = setTimeout(() => {
-        startListening();
-      }, 3000); // 3 seconds pause before listening again
+      // No need to processVoiceCommand here, now handled in onresult
     }
   };
 
@@ -362,10 +357,10 @@ export function VoiceCommands() {
     } else {
       setResponse("Command not recognized. Try: " + englishSuggestions.join(', '));
       setCommandHistory(prev => [{cmd: command, result: 'Not recognized'}, ...prev.slice(0, 9)]);
-    if ('speechSynthesis' in window) {
+      if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance("Command not recognized. Please try again.");
         utterance.lang = 'en-US';
-      speechSynthesis.speak(utterance);
+        speechSynthesis.speak(utterance);
       }
     }
   };

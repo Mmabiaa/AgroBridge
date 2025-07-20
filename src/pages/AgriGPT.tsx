@@ -12,6 +12,7 @@ import { ImageUpload } from '@/components/agrigpt/ImageUpload';
 import { ExpertContact } from '@/components/agrigpt/ExpertContact';
 import { VoiceControls } from '@/components/agrigpt/VoiceControls';
 import { getAgriQAAnswer } from '@/data/agrigpt_knowledge';
+import { useRef } from 'react';
 
 // Add ChatMessage type
 interface ChatMessage {
@@ -138,6 +139,7 @@ export default function AgriGPT() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const [chat, setChat] = useState<ChatMessage[]>(chatHistory);
+  const lastInputWasAudio = useRef(false);
 
   // New: handle sending message with attachments
   const handleSendMessage = async (attachments?: { audio?: Blob; image?: File }) => {
@@ -151,6 +153,9 @@ export default function AgriGPT() {
     };
     if (attachments?.audio) {
       userMsg.audio = URL.createObjectURL(attachments.audio);
+      lastInputWasAudio.current = true;
+    } else {
+      lastInputWasAudio.current = false;
     }
     if (attachments?.image) {
       userMsg.image = URL.createObjectURL(attachments.image);
@@ -165,7 +170,7 @@ export default function AgriGPT() {
       answer = getAgriQAAnswer(message);
     }
   
-    // Step 3: Display answer in chat and speak it
+    // Step 3: Display answer in chat and speak it only if last input was audio
     setChat(prev => {
       const botMsg = {
         id: prev.length + 1,
@@ -173,8 +178,10 @@ export default function AgriGPT() {
         message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      // Speak the bot's reply
-      speakText(botMsg.message);
+      if (lastInputWasAudio.current) {
+        speakText(botMsg.message);
+        lastInputWasAudio.current = false;
+      }
       return [...prev, botMsg];
     });
   
