@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,8 @@ import {
   Bell,
   Search,
   Camera,
-  Mic
+  Mic,
+  Calendar
 } from 'lucide-react';
 
 const navigationItems = [
@@ -29,6 +29,8 @@ const navigationItems = [
   { href: '/monitoring', label: 'Farm Monitor', icon: Monitor },
   { href: '/analytics', label: 'Predictive Analytics', icon: TrendingUp },
   { href: '/marketplace', label: 'Marketplace', icon: ShoppingCart },
+  { href: '/crop-calendar', label: 'Crop Calendar', icon: Calendar },
+  { href: '/farmer-stories', label: 'Farmer Stories', icon: Users },
   { href: '/learning', label: 'Learning Center', icon: GraduationCap },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/settings', label: 'Settings', icon: Settings },
