@@ -363,9 +363,33 @@ export function CropDiseaseDetection() {
       }
     }
     
-    setResult(diseaseDatabase[selectedDisease]);
+    const analysisResult = diseaseDatabase[selectedDisease];
+    setResult(analysisResult);
     setIsAnalyzing(false);
     setAnalysisProgress(0);
+
+    // Save scan result to localStorage
+    const newScan = {
+      id: Date.now().toString(),
+      crop: 'Crop Analysis', // Could be enhanced to detect crop type
+      result: analysisResult.disease.includes('Healthy') ? 'Healthy' : analysisResult.disease,
+      confidence: analysisResult.confidence,
+      timestamp: new Date().toISOString(),
+      severity: analysisResult.severity
+    };
+
+    // Get existing scans from localStorage
+    const existingScans = localStorage.getItem('userCropScans');
+    const scans = existingScans ? JSON.parse(existingScans) : [];
+    
+    // Add new scan to the beginning
+    scans.unshift(newScan);
+    
+    // Keep only the last 50 scans to prevent localStorage from getting too large
+    const limitedScans = scans.slice(0, 50);
+    
+    // Save back to localStorage
+    localStorage.setItem('userCropScans', JSON.stringify(limitedScans));
   };
 
   const getSeverityColor = (severity: string) => {
