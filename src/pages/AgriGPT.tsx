@@ -149,38 +149,11 @@ export default function AgriGPT() {
     if (location.state && location.state.question) {
       const question = location.state.question;
       setMessage(question);
-      // Add user message to chat
-      setChat(prev => [
-        ...prev,
-        {
-          id: prev.length + 1,
-          type: 'user',
-          message: question,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
-      // Try to match with local preloaded answers
-      let answer = findPreloadedAnswer(question);
-      if (!answer) {
-        answer = getAgriQAAnswer(question);
-      }
-      setChat(prev => [
-        ...prev,
-        {
-          id: prev.length + 2,
-          type: 'bot',
-          message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
-      // Speak the answer if found
-      if (answer && 'speechSynthesis' in window) {
-        const utter = new window.SpeechSynthesisUtterance(answer);
-        utter.lang = 'en-US';
-        window.speechSynthesis.speak(utter);
-      }
-      // Clear the question from state so it doesn't repeat
-      window.history.replaceState({}, document.title);
+      setTimeout(() => {
+        handleSendMessage();
+        // Clear the question from state so it doesn't repeat
+        window.history.replaceState({}, document.title);
+      }, 100); // slight delay to ensure message state is set
     }
   }, [location.state]);
 
