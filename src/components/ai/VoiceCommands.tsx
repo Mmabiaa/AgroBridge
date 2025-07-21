@@ -123,6 +123,12 @@ const englishIntents = [
     phrases: [
       'Show my analytics', 'show farm analysis', 'open analytics', 'analytics', 'show analysis', 'analysis', 'analytics'
     ]
+  },
+  {
+    route: '/learning',
+    phrases: [
+      'I want to learn', 'Learning page', 'trends', 'learning', 'show learning progress', 'learn', 'study'
+    ]
   }
 ];
 
