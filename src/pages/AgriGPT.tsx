@@ -169,7 +169,7 @@ export default function AgriGPT() {
     if (!answer) {
       answer = getAgriQAAnswer(text);
     }
-    // Step 3: Display answer in chat and always speak it aloud
+    // Step 3: Display answer in chat (do NOT speak it aloud for direct text)
     setChat(prev => {
       const botMsg = {
         id: prev.length + 1,
@@ -177,7 +177,6 @@ export default function AgriGPT() {
         message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      speakText(botMsg.message);
       return [...prev, botMsg];
     });
   }
