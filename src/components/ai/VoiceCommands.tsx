@@ -368,9 +368,9 @@ export function VoiceCommands() {
     return null;
   }
 
-  const YES_VARIANTS = ['yes'];
-  const NO_VARIANTS = ['no', 'no thank you'];
-  const THANKS_VARIANTS = ['thanks', 'thank you', 'thankyou', 'thank u'];
+  const YES_VARIANTS = ['yes', 'yeah'];
+  const NO_VARIANTS = ['no', 'no thank you', 'no thanks'];
+  const THANKS_VARIANTS = ['thanks', 'thank you', 'thankyou', 'thank u', 'thanks'];
 
   function isYes(text: string) {
     const norm = normalizeText(text);
