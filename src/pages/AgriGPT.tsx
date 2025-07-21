@@ -148,14 +148,39 @@ export default function AgriGPT() {
   useEffect(() => {
     if (location.state && location.state.question) {
       const question = location.state.question;
-      setMessage(question);
-      setTimeout(() => {
-        handleSendMessage();
-        // Clear the question from state so it doesn't repeat
-        window.history.replaceState({}, document.title);
-      }, 100); // slight delay to ensure message state is set
+      handleSendMessageDirect(question);
+      window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  // Add a direct send function for navigation state
+  function handleSendMessageDirect(text: string) {
+    if (!text.trim()) return;
+    const userMsg: ChatMessage = {
+      id: chat.length + 1,
+      type: 'user',
+      message: text,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setChat(prev => [...prev, userMsg]);
+    // Step 1: Try to match with local preloaded answers
+    let answer = findPreloadedAnswer(text);
+    // Step 2: If no match, call local knowledge base for answer
+    if (!answer) {
+      answer = getAgriQAAnswer(text);
+    }
+    // Step 3: Display answer in chat and always speak it aloud
+    setChat(prev => {
+      const botMsg = {
+        id: prev.length + 1,
+        type: 'bot' as const,
+        message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      speakText(botMsg.message);
+      return [...prev, botMsg];
+    });
+  }
 
   // New: handle sending message with attachments
   const handleSendMessage = async (attachments?: { audio?: Blob; image?: File }) => {

@@ -23,12 +23,13 @@ export function ChatInput({
   onVoiceToggle,
   currentLanguage
 }: ChatInputProps) {
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  // Remove audio recording state
+  // const [isRecording, setIsRecording] = useState(false);
+  // const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  // const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunks = useRef<Blob[]>([]);
+  // const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  // const audioChunks = useRef<Blob[]>([]);
 
   // Add type definitions for browser speech recognition
   // @ts-ignore
@@ -43,7 +44,9 @@ export function ChatInput({
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
       recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
+        let transcript = event.results[0][0].transcript;
+        // Remove leading 'yes' (case-insensitive, with or without punctuation/space)
+        transcript = transcript.replace(/^yes[ ,:;.!?\-]*\s*/i, '').trim();
         setMessage(transcript);
         // Do NOT auto-send. User can review/edit and send manually.
       };
@@ -60,52 +63,7 @@ export function ChatInput({
     };
   }, [isListening, setMessage, currentLanguage]);
 
-  // --- AUDIO RECORDING LOGIC ---
-  const handleStartRecording = async () => {
-    if (!navigator.mediaDevices?.getUserMedia) return;
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mediaRecorder = new window.MediaRecorder(stream);
-    mediaRecorderRef.current = mediaRecorder;
-    audioChunks.current = [];
-    mediaRecorder.ondataavailable = (e) => {
-      if (e.data.size > 0) audioChunks.current.push(e.data);
-    };
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(audioChunks.current, { type: 'audio/webm' });
-      setAudioBlob(blob);
-      setAudioUrl(URL.createObjectURL(blob));
-    };
-    mediaRecorder.start();
-    setIsRecording(true);
-  };
-
-  const handleStopRecording = () => {
-    mediaRecorderRef.current?.stop();
-    setIsRecording(false);
-  };
-
-  const handleRemoveAudio = () => {
-    setAudioBlob(null);
-    setAudioUrl(null);
-  };
-
-  // --- SENDING LOGIC ---
-  const handleSend = () => {
-    if (!message.trim()) return; // Only send if there is text
-    onSendMessage({ audio: audioBlob || undefined, image: imageFile || undefined });
-    setMessage('');
-    setAudioBlob(null);
-    setAudioUrl(null);
-    setImageFile(null);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
+  // --- IMAGE LOGIC ---
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
@@ -114,6 +72,21 @@ export function ChatInput({
 
   const handleRemoveImage = () => {
     setImageFile(null);
+  };
+
+  // --- SENDING LOGIC ---
+  const handleSend = () => {
+    if (!message.trim()) return; // Only send if there is text
+    onSendMessage({ image: imageFile || undefined });
+    setMessage('');
+    setImageFile(null);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   return (
@@ -132,12 +105,10 @@ export function ChatInput({
             <Button
               variant="ghost"
               size="sm"
-              onClick={isRecording ? handleStopRecording : handleStartRecording}
-              className={`transition-all duration-300 ${
-                isRecording ? 'text-red-500 animate-pulse' : 'hover:text-primary'
-              }`}
+              onClick={onVoiceToggle}
+              className={`transition-all duration-300 ${isListening ? 'text-red-500 animate-pulse' : 'hover:text-primary'}`}
             >
-              {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
             </Button>
             <label>
               <input
@@ -162,25 +133,15 @@ export function ChatInput({
           <Send className="h-5 w-5" />
         </Button>
       </div>
-      {/* Preview for audio and image */}
-      {(audioUrl || imageFile) && (
+      {/* Preview for image only */}
+      {imageFile && (
         <div className="mt-2 flex gap-4 items-center">
-          {audioUrl && (
-            <div className="flex items-center gap-2">
-              <audio controls src={audioUrl} className="h-8" />
-              <Button size="icon" variant="ghost" onClick={handleRemoveAudio} title="Remove audio">
-                ✕
-              </Button>
-            </div>
-          )}
-          {imageFile && (
-            <div className="flex items-center gap-2">
-              <img src={URL.createObjectURL(imageFile)} alt="preview" className="h-12 w-12 object-cover rounded" />
-              <Button size="icon" variant="ghost" onClick={handleRemoveImage}>
-                ✕
-              </Button>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <img src={URL.createObjectURL(imageFile)} alt="preview" className="h-12 w-12 object-cover rounded" />
+            <Button size="icon" variant="ghost" onClick={handleRemoveImage}>
+              ✕
+            </Button>
+          </div>
         </div>
       )}
       {isListening && (

@@ -368,11 +368,27 @@ export function VoiceCommands() {
     return null;
   }
 
+  const YES_VARIANTS = ['yes'];
+  const NO_VARIANTS = ['no', 'no thank you'];
+  const THANKS_VARIANTS = ['thanks', 'thank you', 'thankyou', 'thank u'];
+
+  function isYes(text: string) {
+    const norm = normalizeText(text);
+    return YES_VARIANTS.some(v => norm === normalizeText(v));
+  }
+  function isNo(text: string) {
+    const norm = normalizeText(text);
+    return NO_VARIANTS.some(v => norm.includes(normalizeText(v)));
+  }
+  function isThanks(text: string) {
+    const norm = normalizeText(text);
+    return THANKS_VARIANTS.some(v => norm.includes(normalizeText(v)));
+  }
+
   const processVoiceCommand = (command: string) => {
-    const norm = normalizeText(command);
-    // Special flow: Hello, AgroBridge
+    // Always use the original command for matching
     if (agroBridgeFlowStep === 1) {
-      if (norm === 'no' || norm === 'thank you' || norm === 'no thank you') {
+      if (isNo(command) || isThanks(command)) {
         setAgroBridgeFlowStep(0);
         const msg = 'No problem! Feel free to come back anytime you need help. 🌾';
         setResponse(msg);
@@ -383,7 +399,7 @@ export function VoiceCommands() {
           speechSynthesis.speak(utterance);
         }
         return;
-      } else if (norm === 'yes') {
+      } else if (isYes(command)) {
         setAgroBridgeFlowStep(2);
         const prompt = 'Go ahead, ask your question.';
         setResponse(prompt);
@@ -395,23 +411,25 @@ export function VoiceCommands() {
         }
         return;
       }
-      // If user says something else, treat as question
-      setAgroBridgeFlowStep(0);
-      setResponse('Let me get farming advice for you...');
-      setCommandHistory(prev => [{cmd: command, result: 'Asked AgriGPT'}, ...prev.slice(0, 9)]);
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance('Let me get farming advice for you.');
-        utterance.lang = 'en-US';
-        speechSynthesis.speak(utterance);
-      }
-      setTimeout(() => navigate('/agrigpt', { state: { question: command } }), 500);
+      // Ignore any other input at this step
       return;
     }
     if (agroBridgeFlowStep === 2) {
+      if (isYes(command) || isNo(command) || isThanks(command)) {
+        setAgroBridgeFlowStep(0);
+        const msg = 'No problem! Feel free to come back anytime you need help. 🌾';
+        setResponse(msg);
+        setCommandHistory(prev => [{cmd: command, result: msg}, ...prev.slice(0, 9)]);
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(msg);
+          utterance.lang = 'en-US';
+          speechSynthesis.speak(utterance);
+        }
+        return;
+      }
       setAgroBridgeFlowStep(0);
-      // Remove leading 'yes' if present
-      let question = command.replace(/^yes[ ,:]*\s*/i, '').trim();
-      if (!question) question = command;
+      // Strictly remove leading 'yes' (case-insensitive, with or without punctuation/space)
+      let question = command.replace(/^yes[ ,:;.!?\-]*\s*/i, '').trim();
       setResponse('Let me get farming advice for you...');
       setCommandHistory(prev => [{cmd: command, result: 'Asked AgriGPT'}, ...prev.slice(0, 9)]);
       if ('speechSynthesis' in window) {
@@ -423,7 +441,7 @@ export function VoiceCommands() {
       return;
     }
     // 1. Greeting detection (Hello, AgroBridge special case)
-    if (norm === normalizeText('hello agrobridge')) {
+    if (normalizeText(command) === normalizeText('hello agrobridge')) {
       const greeting = 'Hi farmer, how can I help you today? Do you need any farming advice?';
       setResponse(greeting);
       setCommandHistory(prev => [{cmd: command, result: greeting}, ...prev.slice(0, 9)]);
@@ -436,7 +454,7 @@ export function VoiceCommands() {
       return;
     }
     // 1b. Other greetings
-    if (greetingPhrases.some(greet => norm === normalizeText(greet) || norm.includes(normalizeText(greet)))) {
+    if (greetingPhrases.some(greet => normalizeText(command) === normalizeText(greet) || normalizeText(command).includes(normalizeText(greet)))) {
       const greeting = 'Hi farmer, how can I help you today? Do you need any farming advice?';
       setResponse(greeting);
       setCommandHistory(prev => [{cmd: command, result: greeting}, ...prev.slice(0, 9)]);
