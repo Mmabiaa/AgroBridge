@@ -4126,6 +4126,10 @@ export const rawAgriQA = [
      a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
+    q:"What's fertilizer should I use for rice?",
+    a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+   },
+   {
      q: "what is the best soil for growing cabbage",
      a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
@@ -4155,11 +4159,14 @@ export const rawAgriQA = [
    }
 ]
 
+
 export function getAgriQAAnswer(query: string) {
-  const normalized = query.trim().toLowerCase().replace(/\?+$/, '');
+  // Remove all punctuation and trim
+  const normalize = (str: string) => str.trim().toLowerCase().replace(/[^\w\s]/g, '');
+  const normalized = normalize(query);
 
   for (const qa of rawAgriQA) {
-    const keyNorm = qa.q.trim().toLowerCase().replace(/\?+$/, '');
+    const keyNorm = normalize(qa.q);
     if (keyNorm === normalized) {
       return qa.a;
     }

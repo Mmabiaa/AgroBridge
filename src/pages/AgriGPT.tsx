@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -12,9 +12,8 @@ import { ImageUpload } from '@/components/agrigpt/ImageUpload';
 import { ExpertContact } from '@/components/agrigpt/ExpertContact';
 import { VoiceControls } from '@/components/agrigpt/VoiceControls';
 import { getAgriQAAnswer } from '@/data/agrigpt_knowledge';
-import { useRef } from 'react';
-import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 // Add ChatMessage type
 interface ChatMessage {
@@ -100,10 +99,15 @@ const preloadedQA = [
 
 const quickQuestions = preloadedQA.map(qa => qa.question);
 
+// Add a shared normalize function for punctuation-insensitive comparison
+function normalize(str: string) {
+  return str.trim().toLowerCase().replace(/[^\w\s]/g, '');
+}
+
 function findPreloadedAnswer(userQuestion: string) {
-  const norm = userQuestion.trim().toLowerCase();
+  const norm = normalize(userQuestion);
   for (const qa of preloadedQA) {
-    if (qa.question.trim().toLowerCase() === norm) {
+    if (normalize(qa.question) === norm) {
       return qa.answer;
     }
   }
@@ -111,9 +115,9 @@ function findPreloadedAnswer(userQuestion: string) {
 }
 
 function findAgriGPTAnswer(userInput: string) {
-  const norm = userInput.trim().toLowerCase();
+  const norm = normalize(userInput);
   for (const qa of preloadedQA) {
-    if (qa.question.trim().toLowerCase() === norm) {
+    if (normalize(qa.question) === norm) {
       return qa.answer;
     }
   }
@@ -121,8 +125,8 @@ function findAgriGPTAnswer(userInput: string) {
 }
 
 function getPreloadedAnswer(question: string) {
-  const normalized = question.trim().toLowerCase().replace(/\?+$/, '');
-  return preloadedQA.find(qa => qa.question.trim().toLowerCase().replace(/\?+$/, '') === normalized)?.answer;
+  const normalized = normalize(question);
+  return preloadedQA.find(qa => normalize(qa.question) === normalized)?.answer;
 }
 
 // Add TTS helper
@@ -142,12 +146,18 @@ export default function AgriGPT() {
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const [chat, setChat] = useState<ChatMessage[]>(chatHistory);
   const lastInputWasAudio = useRef(false);
+  const fromVoiceNav = useRef(false);
   const location = useLocation();
+  const [pendingVoiceConfirmation, setPendingVoiceConfirmation] = useState<null | { botMsgId: number, answer: string }>(null);
+  const [pendingFeedback, setPendingFeedback] = useState<null | { botMsgId: number }>(null);
+  const [feedbackGiven, setFeedbackGiven] = useState<{ [id: number]: 'yes' | 'no' }>({});
+
 
   // Auto-ask question from navigation state
   useEffect(() => {
     if (location.state && location.state.question) {
       const question = location.state.question;
+      fromVoiceNav.current = true;
       handleSendMessageDirect(question);
       window.history.replaceState({}, document.title);
     }
@@ -169,7 +179,7 @@ export default function AgriGPT() {
     if (!answer) {
       answer = getAgriQAAnswer(text);
     }
-    // Step 3: Display answer in chat (do NOT speak it aloud for direct text)
+    // Step 3: Display answer in chat and speak it aloud if from voice nav
     setChat(prev => {
       const botMsg = {
         id: prev.length + 1,
@@ -177,6 +187,13 @@ export default function AgriGPT() {
         message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
+      if (fromVoiceNav.current) {
+        speakText(botMsg.message);
+        fromVoiceNav.current = false;
+      }
+      // Voice confirmation prompt
+      setPendingVoiceConfirmation({ botMsgId: botMsg.id, answer: botMsg.message });
+      setPendingFeedback({ botMsgId: botMsg.id });
       return [...prev, botMsg];
     });
   }
@@ -218,10 +235,9 @@ export default function AgriGPT() {
         message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      if (lastInputWasAudio.current) {
-        speakText(botMsg.message);
-        lastInputWasAudio.current = false;
-      }
+      // Voice confirmation prompt
+      setPendingVoiceConfirmation({ botMsgId: botMsg.id, answer: botMsg.message });
+      setPendingFeedback({ botMsgId: botMsg.id });
       return [...prev, botMsg];
     });
   
@@ -361,6 +377,40 @@ export default function AgriGPT() {
           </div>
         </div>
       </div>
+      {pendingVoiceConfirmation && (
+  <div className="mt-2 p-3 bg-muted/50 rounded-lg flex flex-col gap-2">
+    <div>Would you like to hear more details or tips?</div>
+    <div className="flex gap-2">
+      <Button size="sm" onClick={() => {
+        setChat(prev => [...prev, {
+          id: prev.length + 1,
+          type: 'bot',
+          message: 'Here are more details and tips: ...',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }]);
+        setPendingVoiceConfirmation(null);
+      }}>Yes</Button>
+      <Button size="sm" variant="outline" onClick={() => setPendingVoiceConfirmation(null)}>No</Button>
+    </div>
+  </div>
+)}
+{pendingFeedback && !feedbackGiven[pendingFeedback.botMsgId] && (
+  <div className="mt-2 p-3 bg-muted/50 rounded-lg flex flex-col gap-2">
+    <div>Was this answer helpful?</div>
+    <div className="flex gap-2">
+      <Button size="sm" onClick={() => {
+        setFeedbackGiven(fb => ({ ...fb, [pendingFeedback.botMsgId]: 'yes' }));
+        setPendingFeedback(null);
+        speakText('Thank you for your feedback!');
+      }}>👍</Button>
+      <Button size="sm" variant="outline" onClick={() => {
+        setFeedbackGiven(fb => ({ ...fb, [pendingFeedback.botMsgId]: 'no' }));
+        setPendingFeedback(null);
+        speakText('Thanks for your feedback. We will use it to improve.');
+      }}>👎</Button>
+    </div>
+  </div>
+)}
     </div>
   );
 }
