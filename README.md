@@ -4,7 +4,7 @@ An AI-powered agricultural hub that connects farmers, buyers, NGOs, and governme
 
 ---
 
-## 🚨 What's New (2024)
+## 🚨 What's New (2025)
 - **Advanced Voice Interaction:**
   - Voice navigation, hands-free commands, and speech-to-text chat.
   - Audio-recorded questions get automatic spoken answers (TTS) plus chatbot reply.
