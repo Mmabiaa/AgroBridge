@@ -2,6 +2,27 @@
 
 An AI-powered agricultural hub that connects farmers, buyers, NGOs, and government organizations in a unified ecosystem to modernize farming practices and improve agricultural outcomes across Africa.
 
+---
+
+## 🚨 What's New (2024)
+- **Advanced Voice Interaction:**
+  - Voice navigation, hands-free commands, and speech-to-text chat.
+  - Audio-recorded questions get automatic spoken answers (TTS) plus chatbot reply.
+  - Punctuation-insensitive Q&A: "hello." and "hello" are matched the same.
+  - Local language support and large, touch-friendly UI for farmers.
+- **Robust Q&A Matching:**
+  - All user questions are matched to the knowledge base with punctuation and case ignored.
+  - If no match, fallback to smart AI chatbot.
+- **Accessibility:**
+  - Large buttons, clear text, and mobile-first design for easy use in the field.
+  - Multi-language and voice-first for non-literate users.
+- **Seamless Voice-to-Chat:**
+  - Voice navigation and chat are fully integrated.
+  - Speech-to-text lets users review/edit before sending.
+  - Only audio-recorded questions get automatic TTS answers.
+
+---
+
 ## 🚀 Project Overview
 
 AgroBridge is a comprehensive "super app" for agriculture that combines IoT, AI, blockchain, and social networking to create a complete ecosystem for modern farming. The platform is designed with mobile-first optimization and local language support, recognizing that most users will access it via smartphones.
@@ -10,7 +31,8 @@ AgroBridge is a comprehensive "super app" for agriculture that combines IoT, AI,
 
 ### 🤖 AI-Powered Assistant (AgriGPT)
 - **Multi-language support** - English, Twi, Hausa, and more
-- **Voice commands** - Speech-to-text functionality for hands-free operation
+- **Voice commands** - Speech-to-text, hands-free navigation, and audio Q&A
+- **Automatic TTS** - Audio-recorded questions get spoken answers
 - **Crop disease detection** - Camera-based analysis for instant diagnosis
 - **Real-time farming advice** - Contextual recommendations based on local conditions
 - **Expert consultation** - Direct access to agricultural specialists
@@ -51,6 +73,28 @@ AgroBridge is a comprehensive "super app" for agriculture that combines IoT, AI,
 - **Emergency response** - Crisis management systems
 - **Insurance tools** - Risk assessment and coverage
 
+## 🗣️ Voice & Accessibility Features
+- **Voice Navigation:**
+  - Say "Hello, AgroBridge" to start hands-free mode.
+  - Navigate to any page or feature by voice.
+- **Speech-to-Text Chat:**
+  - Tap the mic in chat to dictate your question, review/edit, then send.
+  - Punctuation and case are ignored for Q&A matching.
+- **Audio-Recorded Q&A:**
+  - Record a question and send as audio: bot will reply in text and speak the answer aloud.
+- **Accessibility:**
+  - Large, touch-friendly buttons and clear text.
+  - Local language support and voice-first for non-literate users.
+  - Designed for use in the field, even in bright sunlight.
+
+## 🧠 Robust Q&A Matching
+- **Punctuation-insensitive:**
+  - "How do I stop maize from lodging?", "How do I stop maize from lodging.", and "How do I stop maize from lodging" all match the same answer.
+- **Local Knowledge Base:**
+  - Fast, offline-friendly answers for common farming questions.
+- **AI Fallback:**
+  - If no match, AgriGPT provides a smart, conversational answer.
+
 ## 👥 User Roles & Access Levels
 
 | Role | Access Level | Primary Features |
@@ -85,19 +129,15 @@ AgroBridge is a comprehensive "super app" for agriculture that combines IoT, AI,
 - **AI/ML** - Predictive analytics and recommendations
 - **AR/VR** - Immersive planning and visualization
 
-## 🎨 Design System
+## 📱 Quickstart: Voice Features
 
-### Color Palette
-- **Forest Greens** - Primary brand colors representing growth
-- **Earth Browns** - Secondary colors for grounding
-- **Harvest Golds** - Accent colors for prosperity
-- **Sky Blues** - Supporting colors for clarity
-
-### Design Principles
-- **Mobile-first** - Optimized for smartphone usage
-- **Touch-friendly** - Large, accessible interactive elements
-- **Multi-language** - Seamless language switching
-- **Accessibility** - WCAG compliant interface design
+1. **Voice Navigation:**
+   - Tap the mic or say "Hello, AgroBridge" to start.
+   - Speak your command (e.g., "Go to marketplace").
+2. **Speech-to-Text Chat:**
+   - In chat, tap the mic, dictate your question, review/edit, then tap send.
+3. **Audio-Recorded Q&A:**
+   - Record and send an audio question; the bot will reply in text and speak the answer aloud.
 
 ## 📱 Key Pages & Functionality
 
