@@ -386,6 +386,41 @@ export function VoiceCommands() {
   }
 
   const processVoiceCommand = (command: string) => {
+    const norm = normalizeText(command);
+    // Special case for 'Thank you', 'No', 'Yes'
+    if (isThanks(command)) {
+      const msg = 'You’re welcome!';
+      setResponse(msg);
+      setCommandHistory(prev => [{cmd: command, result: msg}, ...prev.slice(0, 9)]);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(msg);
+        utterance.lang = 'en-US';
+        speechSynthesis.speak(utterance);
+      }
+      return;
+    }
+    if (isNo(command)) {
+      const msg = 'No problem! Feel free to come back anytime you need help.';
+      setResponse(msg);
+      setCommandHistory(prev => [{cmd: command, result: msg}, ...prev.slice(0, 9)]);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(msg);
+        utterance.lang = 'en-US';
+        speechSynthesis.speak(utterance);
+      }
+      return;
+    }
+    if (isYes(command)) {
+      const msg = 'Great! Go ahead and ask your question.';
+      setResponse(msg);
+      setCommandHistory(prev => [{cmd: command, result: msg}, ...prev.slice(0, 9)]);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(msg);
+        utterance.lang = 'en-US';
+        speechSynthesis.speak(utterance);
+      }
+      return;
+    }
     // Always use the original command for matching
     if (agroBridgeFlowStep === 1) {
       if (isNo(command) || isThanks(command)) {
@@ -484,11 +519,11 @@ export function VoiceCommands() {
     // 3. Treat as agriGPT question
     setResponse('Let me get farming advice for you...');
     setCommandHistory(prev => [{cmd: command, result: 'Asked AgriGPT'}, ...prev.slice(0, 9)]);
-    if ('speechSynthesis' in window) {
+      if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance('Let me get farming advice for you.');
-      utterance.lang = 'en-US';
-      speechSynthesis.speak(utterance);
-    }
+        utterance.lang = 'en-US';
+        speechSynthesis.speak(utterance);
+      }
     // Pass question to AgriGPT via navigation state
     setTimeout(() => navigate('/agrigpt', { state: { question: command } }), 500);
   };

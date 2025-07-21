@@ -149,6 +149,7 @@ export default function AgriGPT() {
   const fromVoiceNav = useRef(false);
   const location = useLocation();
   const [pendingVoiceConfirmation, setPendingVoiceConfirmation] = useState<null | { botMsgId: number, answer: string }>(null);
+  // Feedback state and UI should be fully isolated
   const [pendingFeedback, setPendingFeedback] = useState<null | { botMsgId: number }>(null);
   const [feedbackGiven, setFeedbackGiven] = useState<{ [id: number]: 'yes' | 'no' }>({});
 
