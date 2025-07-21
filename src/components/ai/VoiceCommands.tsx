@@ -111,6 +111,18 @@ const englishIntents = [
     phrases: [
       'notifications', 'show notifications', 'open notifications', 'alerts', 'show alerts'
     ]
+  },
+  {
+    route: '/monitoring',
+    phrases: [
+      'monitor', 'show farm monitor', 'open farm monitor', 'farm monitoring', 'show farm monitor'
+    ]
+  },
+  {
+    route: '/analytics',
+    phrases: [
+      'Show my analytics', 'show farm analysis', 'open analytics', 'analytics', 'show analysis', 'analysis', 'analytics'
+    ]
   }
 ];
 
@@ -217,7 +229,12 @@ export function VoiceCommands() {
     // Logout
     'log me out': '/logout',
     'logout': '/logout',
-    'sign me out': '/logout'
+    'sign me out': '/logout',
+
+    // Farm Monitoring
+    'farm monitoring': '/monitoring',
+    'farm monitor': '/monitoring',
+    'open farm monitor': '/monitoring'
   };
   
 
