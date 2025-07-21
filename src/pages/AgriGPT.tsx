@@ -148,41 +148,38 @@ export default function AgriGPT() {
   useEffect(() => {
     if (location.state && location.state.question) {
       const question = location.state.question;
-      setMessage(question);
-      // Add user message to chat
-      setChat(prev => [
-        ...prev,
-        {
-          id: prev.length + 1,
-          type: 'user',
-          message: question,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
-      // Try to match with local preloaded answers
-      let answer = findPreloadedAnswer(question);
-      if (!answer) {
-        answer = getAgriQAAnswer(question);
-      }
-      setChat(prev => [
-        ...prev,
-        {
-          id: prev.length + 2,
-          type: 'bot',
-          message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
-      // Speak the answer if found
-      if (answer && 'speechSynthesis' in window) {
-        const utter = new window.SpeechSynthesisUtterance(answer);
-        utter.lang = 'en-US';
-        window.speechSynthesis.speak(utter);
-      }
-      // Clear the question from state so it doesn't repeat
+      handleSendMessageDirect(question);
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  // Add a direct send function for navigation state
+  function handleSendMessageDirect(text: string) {
+    if (!text.trim()) return;
+    const userMsg: ChatMessage = {
+      id: chat.length + 1,
+      type: 'user',
+      message: text,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setChat(prev => [...prev, userMsg]);
+    // Step 1: Try to match with local preloaded answers
+    let answer = findPreloadedAnswer(text);
+    // Step 2: If no match, call local knowledge base for answer
+    if (!answer) {
+      answer = getAgriQAAnswer(text);
+    }
+    // Step 3: Display answer in chat (do NOT speak it aloud for direct text)
+    setChat(prev => {
+      const botMsg = {
+        id: prev.length + 1,
+        type: 'bot' as const,
+        message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      return [...prev, botMsg];
+    });
+  }
 
   // New: handle sending message with attachments
   const handleSendMessage = async (attachments?: { audio?: Blob; image?: File }) => {
