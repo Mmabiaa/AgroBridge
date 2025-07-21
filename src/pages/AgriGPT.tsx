@@ -100,10 +100,15 @@ const preloadedQA = [
 
 const quickQuestions = preloadedQA.map(qa => qa.question);
 
+// Add a shared normalize function for punctuation-insensitive comparison
+function normalize(str: string) {
+  return str.trim().toLowerCase().replace(/[^\w\s]/g, '');
+}
+
 function findPreloadedAnswer(userQuestion: string) {
-  const norm = userQuestion.trim().toLowerCase();
+  const norm = normalize(userQuestion);
   for (const qa of preloadedQA) {
-    if (qa.question.trim().toLowerCase() === norm) {
+    if (normalize(qa.question) === norm) {
       return qa.answer;
     }
   }
@@ -111,9 +116,9 @@ function findPreloadedAnswer(userQuestion: string) {
 }
 
 function findAgriGPTAnswer(userInput: string) {
-  const norm = userInput.trim().toLowerCase();
+  const norm = normalize(userInput);
   for (const qa of preloadedQA) {
-    if (qa.question.trim().toLowerCase() === norm) {
+    if (normalize(qa.question) === norm) {
       return qa.answer;
     }
   }
@@ -121,8 +126,8 @@ function findAgriGPTAnswer(userInput: string) {
 }
 
 function getPreloadedAnswer(question: string) {
-  const normalized = question.trim().toLowerCase().replace(/\?+$/, '');
-  return preloadedQA.find(qa => qa.question.trim().toLowerCase().replace(/\?+$/, '') === normalized)?.answer;
+  const normalized = normalize(question);
+  return preloadedQA.find(qa => normalize(qa.question) === normalized)?.answer;
 }
 
 // Add TTS helper

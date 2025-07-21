@@ -4155,11 +4155,14 @@ export const rawAgriQA = [
    }
 ]
 
+
 export function getAgriQAAnswer(query: string) {
-  const normalized = query.trim().toLowerCase().replace(/\?+$/, '');
+  // Remove all punctuation and trim
+  const normalize = (str: string) => str.trim().toLowerCase().replace(/[^\w\s]/g, '');
+  const normalized = normalize(query);
 
   for (const qa of rawAgriQA) {
-    const keyNorm = qa.q.trim().toLowerCase().replace(/\?+$/, '');
+    const keyNorm = normalize(qa.q);
     if (keyNorm === normalized) {
       return qa.a;
     }
