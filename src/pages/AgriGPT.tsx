@@ -147,12 +147,14 @@ export default function AgriGPT() {
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const [chat, setChat] = useState<ChatMessage[]>(chatHistory);
   const lastInputWasAudio = useRef(false);
+  const fromVoiceNav = useRef(false);
   const location = useLocation();
 
   // Auto-ask question from navigation state
   useEffect(() => {
     if (location.state && location.state.question) {
       const question = location.state.question;
+      fromVoiceNav.current = true;
       handleSendMessageDirect(question);
       window.history.replaceState({}, document.title);
     }
@@ -174,7 +176,7 @@ export default function AgriGPT() {
     if (!answer) {
       answer = getAgriQAAnswer(text);
     }
-    // Step 3: Display answer in chat (do NOT speak it aloud for direct text)
+    // Step 3: Display answer in chat and speak it aloud if from voice nav
     setChat(prev => {
       const botMsg = {
         id: prev.length + 1,
@@ -182,6 +184,10 @@ export default function AgriGPT() {
         message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
+      if (fromVoiceNav.current) {
+        speakText(botMsg.message);
+        fromVoiceNav.current = false;
+      }
       return [...prev, botMsg];
     });
   }

@@ -4126,6 +4126,10 @@ export const rawAgriQA = [
      a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
    {
+    q:"What's fertilizer should I use for rice?",
+    a: "Basic care tips and timing are needed to grow rice successfully. Use quality seeds, good soil, and proper watering/fertilizer."
+   },
+   {
      q: "what is the best soil for growing cabbage",
      a: "Basic care tips and timing are needed to grow cabbage successfully. Use quality seeds, good soil, and proper watering/fertilizer."
    },
