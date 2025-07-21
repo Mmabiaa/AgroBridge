@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mic, MicOff, Volume2, Languages, MessageSquare } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getAgriQAAnswer } from '@/data/agrigpt_knowledge';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -111,6 +112,24 @@ const englishIntents = [
     phrases: [
       'notifications', 'show notifications', 'open notifications', 'alerts', 'show alerts'
     ]
+  },
+  {
+    route: '/monitoring',
+    phrases: [
+      'monitor', 'show farm monitor', 'open farm monitor', 'farm monitoring', 'show farm monitor'
+    ]
+  },
+  {
+    route: '/analytics',
+    phrases: [
+      'Show my analytics', 'show farm analysis', 'open analytics', 'analytics', 'show analysis', 'analysis', 'analytics'
+    ]
+  },
+  {
+    route: '/learning',
+    phrases: [
+      'I want to learn', 'Learning page', 'trends', 'learning', 'show learning progress', 'learn', 'study'
+    ]
   }
 ];
 
@@ -127,6 +146,10 @@ const englishSuggestions = [
   'Crop Calender'
 ];
 
+const greetingPhrases = [
+  'hello agrobridge', 'hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening', 'greetings', 'yo', 'howdy', 'peace', 'shalom'
+];
+
 export function VoiceCommands() {
   const [isListening, setIsListening] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
@@ -138,6 +161,7 @@ export function VoiceCommands() {
   const navigate = useNavigate();
   const location = useLocation();
   const listeningTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [agroBridgeFlow, setAgroBridgeFlow] = useState(false);
 
   // Navigation command mapping (English only)
   const navigationCommands: { [key: string]: string } = {
@@ -217,7 +241,12 @@ export function VoiceCommands() {
     // Logout
     'log me out': '/logout',
     'logout': '/logout',
-    'sign me out': '/logout'
+    'sign me out': '/logout',
+
+    // Farm Monitoring
+    'farm monitoring': '/monitoring',
+    'farm monitor': '/monitoring',
+    'open farm monitor': '/monitoring'
   };
   
 
@@ -339,8 +368,92 @@ export function VoiceCommands() {
   }
 
   const processVoiceCommand = (command: string) => {
-    console.log('Raw transcript:', command);
-    console.log('Normalized:', normalizeText(command));
+    const norm = normalizeText(command);
+    // Special flow: Hello, AgroBridge
+    if (agroBridgeFlow) {
+      // Expecting Yes/No or question
+      if (norm.startsWith('yes')) {
+        // Extract question after 'yes'
+        const question = command.replace(/^yes[ ,:]*\s*/i, '').trim();
+        if (question) {
+          setAgroBridgeFlow(false);
+          setResponse('Let me get farming advice for you...');
+          setCommandHistory(prev => [{cmd: command, result: 'Asked AgriGPT'}, ...prev.slice(0, 9)]);
+          if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance('Let me get farming advice for you.');
+            utterance.lang = 'en-US';
+            speechSynthesis.speak(utterance);
+          }
+          setTimeout(() => navigate('/agrigpt', { state: { question } }), 500);
+          return;
+        }
+      } else if (norm === 'no') {
+        setAgroBridgeFlow(false);
+        const thankYou = 'Thank you for using AgroBridge.';
+        setResponse(thankYou);
+        setCommandHistory(prev => [{cmd: command, result: thankYou}, ...prev.slice(0, 9)]);
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(thankYou);
+          utterance.lang = 'en-US';
+          speechSynthesis.speak(utterance);
+        }
+        return;
+      } else {
+        // If it's a navigation command, handle as normal
+        const intent = findIntent(command);
+        if (intent) {
+          setAgroBridgeFlow(false);
+          setResponse(`Navigating to ${intent.route.replace('/', '').replace('-', ' ')}`);
+          setCommandHistory(prev => [{cmd: command, result: `Navigated to ${intent.route}`} , ...prev.slice(0, 9)]);
+          if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(`Navigating to ${intent.route.replace('/', '').replace('-', ' ')}`);
+            utterance.lang = 'en-US';
+            speechSynthesis.speak(utterance);
+          }
+          if (location.pathname !== intent.route) {
+            setTimeout(() => navigate(intent.route), 500);
+          }
+          return;
+        }
+        // Otherwise, treat as normal question
+        setAgroBridgeFlow(false);
+        setResponse('Let me get farming advice for you...');
+        setCommandHistory(prev => [{cmd: command, result: 'Asked AgriGPT'}, ...prev.slice(0, 9)]);
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance('Let me get farming advice for you.');
+          utterance.lang = 'en-US';
+          speechSynthesis.speak(utterance);
+        }
+        setTimeout(() => navigate('/agrigpt', { state: { question: command } }), 500);
+        return;
+      }
+    }
+    // 1. Greeting detection (Hello, AgroBridge special case)
+    if (norm === normalizeText('hello agrobridge')) {
+      const greeting = 'Hi farmer, how can I help you today? Do you need any farming advice?';
+      setResponse(greeting);
+      setCommandHistory(prev => [{cmd: command, result: greeting}, ...prev.slice(0, 9)]);
+      setAgroBridgeFlow(true);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(greeting);
+        utterance.lang = 'en-US';
+        speechSynthesis.speak(utterance);
+      }
+      return;
+    }
+    // 1b. Other greetings
+    if (greetingPhrases.some(greet => norm === normalizeText(greet) || norm.includes(normalizeText(greet)))) {
+      const greeting = 'Hi farmer, how can I help you today? Do you need any farming advice?';
+      setResponse(greeting);
+      setCommandHistory(prev => [{cmd: command, result: greeting}, ...prev.slice(0, 9)]);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(greeting);
+        utterance.lang = 'en-US';
+        speechSynthesis.speak(utterance);
+      }
+      return;
+    }
+    // 2. Navigation intent
     const intent = findIntent(command);
     setTranscript(command); // Always show what the user said
     if (intent) {
@@ -354,15 +467,18 @@ export function VoiceCommands() {
       if (location.pathname !== intent.route) {
         setTimeout(() => navigate(intent.route), 500);
       }
-    } else {
-      setResponse("Command not recognized. Try: " + englishSuggestions.join(', '));
-      setCommandHistory(prev => [{cmd: command, result: 'Not recognized'}, ...prev.slice(0, 9)]);
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance("Command not recognized. Please try again.");
-        utterance.lang = 'en-US';
-        speechSynthesis.speak(utterance);
-      }
+      return;
     }
+    // 3. Treat as agriGPT question
+    setResponse('Let me get farming advice for you...');
+    setCommandHistory(prev => [{cmd: command, result: 'Asked AgriGPT'}, ...prev.slice(0, 9)]);
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance('Let me get farming advice for you.');
+      utterance.lang = 'en-US';
+      speechSynthesis.speak(utterance);
+    }
+    // Pass question to AgriGPT via navigation state
+    setTimeout(() => navigate('/agrigpt', { state: { question: command } }), 500);
   };
 
   const speakCommand = (command: string) => {

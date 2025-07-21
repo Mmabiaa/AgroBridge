@@ -36,7 +36,7 @@ const courses = [
     category: 'Crop Management',
     description: 'Complete guide to growing healthy, profitable tomatoes',
     progress: 0,
-    thumbnail: '/placeholder.svg'
+    thumbnail: 'https://i.pinimg.com/736x/3c/52/e6/3c52e6f41397773f6bea4dd6366a5c19.jpg'
   },
   {
     id: 2,
