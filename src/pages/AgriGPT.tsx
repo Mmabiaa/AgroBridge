@@ -13,6 +13,8 @@ import { ExpertContact } from '@/components/agrigpt/ExpertContact';
 import { VoiceControls } from '@/components/agrigpt/VoiceControls';
 import { getAgriQAAnswer } from '@/data/agrigpt_knowledge';
 import { useRef } from 'react';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 // Add ChatMessage type
 interface ChatMessage {
@@ -140,6 +142,47 @@ export default function AgriGPT() {
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const [chat, setChat] = useState<ChatMessage[]>(chatHistory);
   const lastInputWasAudio = useRef(false);
+  const location = useLocation();
+
+  // Auto-ask question from navigation state
+  useEffect(() => {
+    if (location.state && location.state.question) {
+      const question = location.state.question;
+      setMessage(question);
+      // Add user message to chat
+      setChat(prev => [
+        ...prev,
+        {
+          id: prev.length + 1,
+          type: 'user',
+          message: question,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+      // Try to match with local preloaded answers
+      let answer = findPreloadedAnswer(question);
+      if (!answer) {
+        answer = getAgriQAAnswer(question);
+      }
+      setChat(prev => [
+        ...prev,
+        {
+          id: prev.length + 2,
+          type: 'bot',
+          message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+      // Speak the answer if found
+      if (answer && 'speechSynthesis' in window) {
+        const utter = new window.SpeechSynthesisUtterance(answer);
+        utter.lang = 'en-US';
+        window.speechSynthesis.speak(utter);
+      }
+      // Clear the question from state so it doesn't repeat
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // New: handle sending message with attachments
   const handleSendMessage = async (attachments?: { audio?: Blob; image?: File }) => {
