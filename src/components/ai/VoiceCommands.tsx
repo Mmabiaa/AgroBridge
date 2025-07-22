@@ -130,7 +130,13 @@ const englishIntents = [
     phrases: [
       'I want to learn', 'Learning page', 'trends', 'learning', 'show learning progress', 'learn', 'study'
     ]
-  }
+  },
+  {
+    route: '/',
+    phrases: [
+      'I want to logout', 'logout', 'log me out', 'signout', 'sign me out',
+      ]
+  },
 ];
 
 const englishSuggestions = [
@@ -371,6 +377,7 @@ export function VoiceCommands() {
   const YES_VARIANTS = ['yes', 'yeah'];
   const NO_VARIANTS = ['no', 'no thank you', 'no thanks'];
   const THANKS_VARIANTS = ['thanks', 'thank you', 'thankyou', 'thank u', 'thanks'];
+  const BYE_VARIANTS = ['bye', 'goodbye', 'bye bye', 'see you', 'see you later', 'talk to you later', 'catch you later'];
 
   function isYes(text: string) {
     const norm = normalizeText(text);
@@ -384,10 +391,14 @@ export function VoiceCommands() {
     const norm = normalizeText(text);
     return THANKS_VARIANTS.some(v => norm.includes(normalizeText(v)));
   }
+  function isBye(text: string) {
+    const norm = normalizeText(text);
+    return BYE_VARIANTS.some(v => norm.includes(normalizeText(v)));
+  }
 
   const processVoiceCommand = (command: string) => {
     const norm = normalizeText(command);
-    // Special case for 'Thank you', 'No', 'Yes'
+    // Special case for 'Thank you', 'No', 'Yes', 'Goodbye', 'Bye'
     if (isThanks(command)) {
       const msg = 'You’re welcome!';
       setResponse(msg);
@@ -412,6 +423,17 @@ export function VoiceCommands() {
     }
     if (isYes(command)) {
       const msg = 'Great! Go ahead and ask your question.';
+      setResponse(msg);
+      setCommandHistory(prev => [{cmd: command, result: msg}, ...prev.slice(0, 9)]);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(msg);
+        utterance.lang = 'en-US';
+        speechSynthesis.speak(utterance);
+      }
+      return;
+    }
+    if (isBye(command)) {
+      const msg = 'Goodbye! Wishing you a bountiful harvest and a wonderful day!';
       setResponse(msg);
       setCommandHistory(prev => [{cmd: command, result: msg}, ...prev.slice(0, 9)]);
       if ('speechSynthesis' in window) {
@@ -504,6 +526,19 @@ export function VoiceCommands() {
     const intent = findIntent(command);
     setTranscript(command); // Always show what the user said
     if (intent) {
+      // Special case for logout route (support both '/logout' and '/')
+      if (intent.route === '/logout' || intent.route === '/') {
+        const msg = 'Goodbye! Wishing you a bountiful harvest and a wonderful day!';
+        setResponse(msg);
+        setCommandHistory(prev => [{cmd: command, result: msg}, ...prev.slice(0, 9)]);
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(msg);
+          utterance.lang = 'en-US';
+          speechSynthesis.speak(utterance);
+        }
+        setTimeout(() => navigate(intent.route), 1000); // Give time for TTS
+        return;
+      }
       setResponse(`Navigating to ${intent.route.replace('/', '').replace('-', ' ')}`);
       setCommandHistory(prev => [{cmd: command, result: `Navigated to ${intent.route}`} , ...prev.slice(0, 9)]);
       if ('speechSynthesis' in window) {
