@@ -1525,7 +1525,9 @@ export const rawAgriQA = [
   { q: "how can I improve clay soil for farming", a: "Mix in organic matter like compost or manure, and avoid over-tilling." },
   { q: "what is the best time to transplant tomatoes", a: "Transplant tomatoes in the early morning or late afternoon to avoid sun stress." },
   { q: "how do I control armyworms in maize", a: "Use biological control like neem or Bt, or apply recommended insecticides early." },
-  { q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." },
+  { 
+    q: "how do I protect poultry from predators", a: "Use secure housing with wire mesh and lockable doors, especially at night." 
+  },
   { q: "how do I compost farm waste", a: "Layer green waste with dry matter, keep it moist, and turn regularly to speed up decomposition." },
   { q: "how do I control thrips on onions", a: "Use blue sticky traps, neem oil, and remove infested plants." },
   { q: "what is the best feed for layers", a: "Use layer mash containing 16-18% protein, calcium, and essential vitamins for egg production." },
