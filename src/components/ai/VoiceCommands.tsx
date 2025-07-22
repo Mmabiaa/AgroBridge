@@ -526,8 +526,8 @@ export function VoiceCommands() {
     const intent = findIntent(command);
     setTranscript(command); // Always show what the user said
     if (intent) {
-      // Special case for logout route
-      if (intent.route === '/logout') {
+      // Special case for logout route (support both '/logout' and '/')
+      if (intent.route === '/logout' || intent.route === '/') {
         const msg = 'Goodbye! Wishing you a bountiful harvest and a wonderful day!';
         setResponse(msg);
         setCommandHistory(prev => [{cmd: command, result: msg}, ...prev.slice(0, 9)]);
