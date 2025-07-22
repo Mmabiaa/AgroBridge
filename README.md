@@ -10,9 +10,15 @@ An AI-powered agricultural hub that connects farmers, buyers, NGOs, and governme
   - Audio-recorded questions get automatic spoken answers (TTS) plus chatbot reply.
   - Punctuation-insensitive Q&A: "hello." and "hello" are matched the same.
   - Local language support and large, touch-friendly UI for farmers.
-- **Robust Q&A Matching:**
-  - All user questions are matched to the knowledge base with punctuation and case ignored.
-  - If no match, fallback to smart AI chatbot.
+  - **Special voice responses:**
+    - "Thank you" → "You’re welcome!"
+    - "Yes" → "Great! Go ahead and ask your question."
+    - "No" → "No problem! Feel free to come back anytime you need help."
+    - "Bye"/"Goodbye" → "Goodbye! Wishing you a bountiful harvest and a wonderful day!"
+    - **Logout by voice** triggers a warm goodbye message before logging out.
+- **Feedback System:**
+  - After every bot answer, users can give feedback (thumbs up/down or by voice).
+  - The bot thanks users for their feedback with TTS and text.
 - **Accessibility:**
   - Large buttons, clear text, and mobile-first design for easy use in the field.
   - Multi-language and voice-first for non-literate users.
@@ -20,6 +26,7 @@ An AI-powered agricultural hub that connects farmers, buyers, NGOs, and governme
   - Voice navigation and chat are fully integrated.
   - Speech-to-text lets users review/edit before sending.
   - Only audio-recorded questions get automatic TTS answers.
+  - All common conversational phrases are handled naturally for a friendly, human-like experience.
 
 ---
 
@@ -33,6 +40,8 @@ AgroBridge is a comprehensive "super app" for agriculture that combines IoT, AI,
 - **Multi-language support** - English, Twi, Hausa, and more
 - **Voice commands** - Speech-to-text, hands-free navigation, and audio Q&A
 - **Automatic TTS** - Audio-recorded questions get spoken answers
+- **Conversational voice responses** - Friendly replies for "thank you", "yes", "no", "bye", and logout
+- **Feedback loop** - After every answer, users can give feedback and hear a thank you
 - **Crop disease detection** - Camera-based analysis for instant diagnosis
 - **Real-time farming advice** - Contextual recommendations based on local conditions
 - **Expert consultation** - Direct access to agricultural specialists
@@ -77,11 +86,16 @@ AgroBridge is a comprehensive "super app" for agriculture that combines IoT, AI,
 - **Voice Navigation:**
   - Say "Hello, AgroBridge" to start hands-free mode.
   - Navigate to any page or feature by voice.
+  - Logout by voice triggers a warm goodbye message.
 - **Speech-to-Text Chat:**
-  - Tap the mic in chat to dictate your question, review/edit, then send.
+  - In chat, tap the mic, dictate your question, review/edit, then send.
   - Punctuation and case are ignored for Q&A matching.
 - **Audio-Recorded Q&A:**
   - Record a question and send as audio: bot will reply in text and speak the answer aloud.
+- **Conversational Voice Responses:**
+  - Friendly, human-like replies for "thank you", "yes", "no", "bye", and more.
+- **Feedback System:**
+  - After every answer, users can give feedback (thumbs up/down or by voice), and the bot responds with TTS.
 - **Accessibility:**
   - Large, touch-friendly buttons and clear text.
   - Local language support and voice-first for non-literate users.
@@ -133,11 +147,13 @@ AgroBridge is a comprehensive "super app" for agriculture that combines IoT, AI,
 
 1. **Voice Navigation:**
    - Tap the mic or say "Hello, AgroBridge" to start.
-   - Speak your command (e.g., "Go to marketplace").
+   - Speak your command (e.g., "Go to marketplace", "logout").
 2. **Speech-to-Text Chat:**
    - In chat, tap the mic, dictate your question, review/edit, then tap send.
 3. **Audio-Recorded Q&A:**
    - Record and send an audio question; the bot will reply in text and speak the answer aloud.
+4. **Conversational Phrases:**
+   - Try saying "thank you", "yes", "no", "bye", or "logout" for a friendly, natural response.
 
 ## 📱 Key Pages & Functionality
 
