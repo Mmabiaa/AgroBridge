@@ -132,7 +132,7 @@ const englishIntents = [
     ]
   },
   {
-    route: '/',
+    route: '/logout',
     phrases: [
       'I want to logout', 'logout', 'log me out', 'signout', 'sign me out',
       ]
@@ -527,7 +527,7 @@ export function VoiceCommands() {
     setTranscript(command); // Always show what the user said
     if (intent) {
       // Special case for logout route (support both '/logout' and '/')
-      if (intent.route === '/logout' || intent.route === '/') {
+      if (intent.route === '/logout') {
         const msg = 'Goodbye! Wishing you a bountiful harvest and a wonderful day!';
         setResponse(msg);
         setCommandHistory(prev => [{cmd: command, result: msg}, ...prev.slice(0, 9)]);
