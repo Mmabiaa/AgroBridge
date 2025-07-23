@@ -385,7 +385,7 @@ export function VoiceCommands() {
   }
   function isNo(text: string) {
     const norm = normalizeText(text);
-    return NO_VARIANTS.some(v => norm.includes(normalizeText(v)));
+    return NO_VARIANTS.some(v => norm === normalizeText(v));
   }
   function isThanks(text: string) {
     const norm = normalizeText(text);
