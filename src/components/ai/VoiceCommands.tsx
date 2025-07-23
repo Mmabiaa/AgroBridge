@@ -110,7 +110,7 @@ const englishIntents = [
   {
     route: '/notifications',
     phrases: [
-      'notifications', 'show notifications', 'open notifications', 'alerts', 'show alerts'
+      'notification', 'notifications', 'show notifications', 'open notifications', 'alerts', 'show alerts'
     ]
   },
   {
@@ -132,7 +132,7 @@ const englishIntents = [
     ]
   },
   {
-    route: '/logout',
+    route: '/',
     phrases: [
       'I want to logout', 'logout', 'log me out', 'signout', 'sign me out',
       ]
@@ -375,7 +375,7 @@ export function VoiceCommands() {
   }
 
   const YES_VARIANTS = ['yes', 'yeah'];
-  const NO_VARIANTS = ['no', 'no thank you', 'no thanks'];
+  const NO_VARIANTS = ['nah', 'no thank you', 'no thanks', 'no'];
   const THANKS_VARIANTS = ['thanks', 'thank you', 'thankyou', 'thank u', 'thanks'];
   const BYE_VARIANTS = ['bye', 'goodbye', 'bye bye', 'see you', 'see you later', 'talk to you later', 'catch you later'];
 
@@ -385,7 +385,7 @@ export function VoiceCommands() {
   }
   function isNo(text: string) {
     const norm = normalizeText(text);
-    return NO_VARIANTS.some(v => norm.includes(normalizeText(v)));
+    return NO_VARIANTS.some(v => norm === normalizeText(v));
   }
   function isThanks(text: string) {
     const norm = normalizeText(text);
@@ -527,7 +527,7 @@ export function VoiceCommands() {
     setTranscript(command); // Always show what the user said
     if (intent) {
       // Special case for logout route (support both '/logout' and '/')
-      if (intent.route === '/logout') {
+      if (intent.route === '/') {
         const msg = 'Goodbye! Wishing you a bountiful harvest and a wonderful day!';
         setResponse(msg);
         setCommandHistory(prev => [{cmd: command, result: msg}, ...prev.slice(0, 9)]);

@@ -16,9 +16,11 @@ interface ChatMessageProps {
   time: string;
   audio?: string; // Add optional audio prop
   image?: string; // Add optional image prop
+  showPlayButton?: boolean; // NEW: show play button for TTS
+  onPlayTTS?: () => void; // NEW: handler for play button
 }
 
-function speakEnglish(text: string) {
+function speakEnglish(text: string, userInitiated = false) {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
     const utter = new window.SpeechSynthesisUtterance(text);
@@ -27,12 +29,16 @@ function speakEnglish(text: string) {
   }
 }
 
-export function ChatMessage({ type, message, time, audio, image }: ChatMessageProps) {
+export function ChatMessage({ type, message, time, audio, image, showPlayButton, onPlayTTS }: ChatMessageProps) {
   // Show TTS play button for all bot messages without pre-recorded audio
   const canSpeak = type === 'bot' && !audio;
 
   const handleSpeak = () => {
-    speakEnglish(message);
+    if (onPlayTTS) {
+      onPlayTTS();
+    } else {
+      speakEnglish(message, true);
+    }
   };
 
   return (
@@ -61,7 +67,7 @@ export function ChatMessage({ type, message, time, audio, image }: ChatMessagePr
             </audio>
           )}
           {/* TTS play button for all bot messages without pre-recorded audio */}
-          {canSpeak && (
+          {(canSpeak && (showPlayButton || showPlayButton === undefined)) && (
             <button
               onClick={handleSpeak}
               className="mt-2 px-3 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20 transition"

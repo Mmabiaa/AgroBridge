@@ -130,13 +130,28 @@ function getPreloadedAnswer(question: string) {
 }
 
 // Add TTS helper
-function speakText(text: string) {
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    const utter = new window.SpeechSynthesisUtterance(text);
-    utter.lang = 'en-US';
-    window.speechSynthesis.speak(utter);
+function isMobile() {
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+}
+
+let currentUtterance: SpeechSynthesisUtterance | null = null;
+
+function speakText(text: string, userInitiated = false, onFail?: () => void) {
+  if (!('speechSynthesis' in window)) return;
+  if (isMobile() && !userInitiated) {
+    if (onFail) onFail();
+    return;
   }
+  window.speechSynthesis.cancel();
+  const utter = new window.SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US';
+  currentUtterance = utter;
+  utter.onend = () => { currentUtterance = null; };
+  utter.onerror = () => { currentUtterance = null; if (onFail) onFail(); };
+  window.speechSynthesis.speak(utter);
+  setTimeout(() => {
+    if (!window.speechSynthesis.speaking && onFail) onFail();
+  }, 100);
 }
 
 export default function AgriGPT() {
@@ -152,6 +167,7 @@ export default function AgriGPT() {
   // Feedback state and UI should be fully isolated
   const [pendingFeedback, setPendingFeedback] = useState<null | { botMsgId: number }>(null);
   const [feedbackGiven, setFeedbackGiven] = useState<{ [id: number]: 'yes' | 'no' }>({});
+  const [showPlayButtonFor, setShowPlayButtonFor] = useState<number | null>(null);
 
 
   // Auto-ask question from navigation state
@@ -189,10 +205,9 @@ export default function AgriGPT() {
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       if (fromVoiceNav.current) {
-        speakText(botMsg.message);
+        speakText(botMsg.message, false, () => setShowPlayButtonFor(botMsg.id));
         fromVoiceNav.current = false;
       }
-      // Voice confirmation prompt
       setPendingVoiceConfirmation({ botMsgId: botMsg.id, answer: botMsg.message });
       setPendingFeedback({ botMsgId: botMsg.id });
       return [...prev, botMsg];
@@ -339,6 +354,11 @@ export default function AgriGPT() {
                         time={msg.time}
                         audio={msg.audio}
                         image={msg.image}
+                        showPlayButton={msg.type === 'bot' && showPlayButtonFor === msg.id}
+                        onPlayTTS={msg.type === 'bot' && showPlayButtonFor === msg.id ? () => {
+                          speakText(msg.message, true);
+                          setShowPlayButtonFor(null);
+                        } : undefined}
                       />
                     ))}
                   </div>
