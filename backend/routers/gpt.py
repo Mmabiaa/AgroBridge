@@ -6,9 +6,11 @@ from schemas.gpt_log import GPTLogCreate, GPTLogOut
 from database import SessionLocal
 import os
 import shutil
+from google import genai
 # from openai import OpenAI # Uncomment and configure for real OpenAI integration
 
 router = APIRouter(prefix="/agri-gpt", tags=["agri-gpt"])
+client = genai.Client("AIzaSyBT8DBKf63KRJRm_7h8Zye7S2LdqHH45oY")
 
 UPLOAD_DIR = "uploaded_images"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -25,7 +27,9 @@ def ask_gpt(log: GPTLogCreate, db: Session = Depends(get_db)):
     # --- Replace this with real OpenAI GPT integration ---
     # response = openai.ChatCompletion.create(...)
     # answer = response['choices'][0]['message']['content']
-    answer = f"[AgriGPT] This is a mock answer to: {log.query}"
+    response = client.models.generate_content(model="gemini-2.5-flash", contents= f"You are a helpful assistant specialized in agriculture, answer concisely to this prompt {log.query}")
+    answer = response.text
+    # answer = f"[AgriGPT] This is a mock answer to: {log.query}"
     db_log = GPTLog(**log.dict())
     db_log.response = answer
     db.add(db_log)
