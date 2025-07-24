@@ -1,3 +1,4 @@
+
 # AgroBridge 🌾
 
 An AI-powered agricultural hub that connects farmers, buyers, NGOs, and government organizations in a unified ecosystem to modernize farming practices and improve agricultural outcomes across Africa.
