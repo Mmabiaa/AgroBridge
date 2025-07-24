@@ -366,9 +366,12 @@ export function VoiceCommands() {
     }
     // 3. Fallback: direct route match (e.g., user says 'support' or 'marketplace')
     for (const intent of englishIntents) {
-      const routeName = intent.route.replace('/', '').replace('-', ' ');
-      if (norm === routeName || norm.includes(routeName) || routeName.includes(norm)) {
-        return intent;
+      // Only allow fallback for non-root routes
+      if (intent.route !== '/') {
+        const routeName = intent.route.replace('/', '').replace('-', ' ');
+        if (norm === routeName || norm.includes(routeName) || routeName.includes(norm)) {
+          return intent;
+        }
       }
     }
     return null;
