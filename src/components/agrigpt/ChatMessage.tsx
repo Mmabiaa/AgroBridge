@@ -66,14 +66,16 @@ export function ChatMessage({ type, message, time, audio, image, showPlayButton,
               Your browser does not support the audio element.
             </audio>
           )}
-          {/* TTS play button for all bot messages without pre-recorded audio */}
-          {(canSpeak && (showPlayButton || showPlayButton === undefined)) && (
+          {/* Speaker button for bot messages (below text, left-aligned) */}
+          {canSpeak && (
             <button
               onClick={handleSpeak}
-              className="mt-2 px-3 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20 transition"
-              title="Play audio"
+              className={`mt-2 flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20 transition focus:outline-none focus:ring-2 focus:ring-primary ${showPlayButton ? 'ring-2 ring-primary' : ''}`}
+              title="Play bot response"
+              aria-label="Play bot response"
             >
-              🔊 Play
+              <span role="img" aria-label="speaker">🔊</span>
+              <span>Play</span>
             </button>
           )}
           {/* Image preview for user or bot messages */}
