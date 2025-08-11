@@ -5,20 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Wheat, Eye, EyeOff, ArrowLeft, CheckCircle } from 'lucide-react';
-
-const userRoles = [
-  { value: 'farmer', label: 'Farmer' },
-  { value: 'poultry-keeper', label: 'Poultry Keeper' },
-  { value: 'buyer', label: 'Buyer' },
-  { value: 'ngo', label: 'NGO/Government' }
-];
+import { Wheat, Eye, EyeOff, ArrowLeft, CheckCircle, User, Shield } from 'lucide-react';
+import { RoleSelection } from '@/components/RoleSelection';
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<UserRole>('farmer');
+  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
+  const [showRoleSelection, setShowRoleSelection] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -33,6 +27,12 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!selectedRole) {
+      setShowRoleSelection(true);
+      return;
+    }
+    
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match');
       return;
@@ -75,6 +75,48 @@ export default function Register() {
     });
   };
 
+  const handleRoleSelect = (role: UserRole) => {
+    setSelectedRole(role);
+    setShowRoleSelection(false);
+  };
+
+  const handleBackToRegister = () => {
+    setShowRoleSelection(false);
+  };
+
+  // Show role selection if requested
+  if (showRoleSelection) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-12 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-8">
+            <Button
+              variant="ghost"
+              onClick={handleBackToRegister}
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Registration
+            </Button>
+            
+            <div className="flex justify-center mb-6">
+              <div className="p-3 rounded-full bg-gradient-primary shadow-glow">
+                <Wheat className="h-8 w-8 text-primary-foreground" />
+              </div>
+            </div>
+            
+          </div>
+
+          <RoleSelection 
+            onRoleSelect={handleRoleSelect}
+            selectedRole={selectedRole}
+            showDescription={true}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-md">
@@ -107,11 +149,11 @@ export default function Register() {
                   <Input 
                     id="firstName" 
                     name="firstName"
-                    placeholder="John"
+                    type="text" 
+                    placeholder="First name"
                     value={formData.firstName}
                     onChange={handleInputChange}
                     required
-                    className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
                 <div className="space-y-2">
@@ -119,56 +161,38 @@ export default function Register() {
                   <Input 
                     id="lastName" 
                     name="lastName"
-                    placeholder="Doe"
+                    type="text" 
+                    placeholder="Last name"
                     value={formData.lastName}
                     onChange={handleInputChange}
                     required
-                    className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
               </div>
-
+              
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input 
                   id="email" 
                   name="email"
                   type="email" 
-                  placeholder="john@example.com"
+                  placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
               </div>
-
+              
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
                 <Input 
                   id="phone" 
                   name="phone"
                   type="tel" 
-                  placeholder="+233 XX XXX XXXX"
+                  placeholder="Enter your phone number"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="role">Your Role</Label>
-                <Select value={selectedRole} onValueChange={(value) => setSelectedRole(value as UserRole)}>
-                  <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
-                    <SelectValue placeholder="Select your role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {userRoles.map((role) => (
-                      <SelectItem key={role.value} value={role.value}>
-                        {role.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </div>
               
               <div className="space-y-2">
@@ -178,11 +202,11 @@ export default function Register() {
                     id="password" 
                     name="password"
                     type={showPassword ? "text" : "password"} 
-                    placeholder="Create a strong password"
+                    placeholder="Create a password"
                     value={formData.password}
                     onChange={handleInputChange}
                     required
-                    className="pr-10 transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                    className="pr-12"
                   />
                   <Button
                     type="button"
@@ -199,7 +223,7 @@ export default function Register() {
                   </Button>
                 </div>
               </div>
-
+              
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <div className="relative">
@@ -211,7 +235,7 @@ export default function Register() {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     required
-                    className="pr-10 transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                    className="pr-12"
                   />
                   <Button
                     type="button"
@@ -229,49 +253,64 @@ export default function Register() {
                 </div>
               </div>
 
-              <div className="flex items-start space-x-2">
-                <input type="checkbox" id="terms" className="rounded mt-1" required />
-                <Label htmlFor="terms" className="text-sm leading-5">
-                  I agree to the{' '}
-                  <Link to="/terms" className="text-primary hover:underline">
-                    Terms of Service
-                  </Link>
-                  {' '}and{' '}
-                  <Link to="/privacy" className="text-primary hover:underline">
-                    Privacy Policy
-                  </Link>
-                </Label>
-              </div>
+              {/* Role Selection Preview */}
+              {selectedRole && (
+                <div className="p-3 bg-muted/50 rounded-lg border">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Shield className="h-4 w-4 text-primary" />
+                    <span className="font-medium">Selected Role:</span>
+                    <span className="capitalize text-primary">{selectedRole.replace('_', ' ')}</span>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowRoleSelection(true)}
+                    className="mt-2 text-xs"
+                  >
+                    Change Role
+                  </Button>
+                </div>
+              )}
 
               <Button 
                 type="submit" 
-                variant="farmer" 
-                className="w-full animate-fade-in"
-                disabled={isLoading}
+                className="w-full font-medium"
+                disabled={isLoading || !formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword}
               >
-                {isLoading ? 'Creating Account...' : 'Create Account'}
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Creating Account...
+                  </>
+                ) : (
+                  'Create Account'
+                )}
               </Button>
             </form>
 
-            <div className="text-center text-sm text-muted-foreground">
-              Already have an account?{' '}
-              <Link to="/login" className="text-primary hover:underline font-medium">
-                Sign in here
-              </Link>
+            <div className="text-center space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Already have an account?{' '}
+                <Link to="/login" className="text-primary hover:underline">
+                  Sign in here
+                </Link>
+              </p>
+              
+              {!selectedRole && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowRoleSelection(true)}
+                  className="w-full text-sm"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Choose Your Role First
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
-
-        {selectedRole && (
-          <Card className="mt-6 shadow-soft animate-fade-in">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <CheckCircle className="h-4 w-4 text-primary" />
-                After registration, you'll be guided through role-specific setup
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
   );

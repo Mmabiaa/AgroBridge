@@ -56,44 +56,134 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               
-              {/* Admin route (separate layout) */}
-              <Route path="/admin" element={
-                <ProtectedRoute requiredRole={['ngo']}>
-                  <Admin />
-                </ProtectedRoute>
-              } />
-              
               {/* Protected routes with main navigation */}
               <Route path="/*" element={
                 <ProtectedRoute>
                   <Navigation />
                   <Routes>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/agrigpt" element={<AgriGPT />} />
-                    <Route path="/monitoring" element={<Monitoring />} />
-                    <Route path="/analytics" element={<Analytics />} />
-                    <Route path="/marketplace" element={<Marketplace />} />
-                    <Route path="/crop-calendar" element={<CropCalendar />} />
-                    <Route path="/farmer-stories" element={<FarmerStories />} />
-                    <Route path="/learning" element={<Learning />} />
-                    <Route path="/community" element={<Community />} />
+                    {/* Core Dashboard - accessible to all authenticated users */}
+                    <Route path="/dashboard" element={
+                      <ProtectedRoute requiredPermission="view_dashboard">
+                        <Dashboard />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* AI and Smart Tools */}
+                    <Route path="/agrigpt" element={
+                      <ProtectedRoute requiredPermission="use_agrigpt">
+                        <AgriGPT />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/crop-disease-detection" element={
+                      <ProtectedRoute requiredPermission="use_crop_detection">
+                        <CropDiseaseDetection />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/voice-commands" element={
+                      <ProtectedRoute requiredPermission="use_voice_commands">
+                        <VoiceCommandsPage />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Monitoring and Analytics */}
+                    <Route path="/monitoring" element={
+                      <ProtectedRoute requiredPermission="view_monitoring">
+                        <Monitoring />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/analytics" element={
+                      <ProtectedRoute requiredPermission="view_analytics">
+                        <Analytics />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Marketplace and Commerce */}
+                    <Route path="/marketplace" element={
+                      <ProtectedRoute requiredPermission="view_marketplace">
+                        <Marketplace />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Planning and Management */}
+                    <Route path="/crop-calendar" element={
+                      <ProtectedRoute requiredPermission="view_smart_scheduling">
+                        <CropCalendar />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/smart-scheduling" element={
+                      <ProtectedRoute requiredPermission="view_smart_scheduling">
+                        <SmartScheduling />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/financial-planning" element={
+                      <ProtectedRoute requiredPermission="view_financial_planning">
+                        <FinancialPlanning />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Learning and Community */}
+                    <Route path="/learning" element={
+                      <ProtectedRoute requiredPermission="view_learning">
+                        <Learning />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/community" element={
+                      <ProtectedRoute requiredPermission="view_community">
+                        <Community />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/farmer-stories" element={
+                      <ProtectedRoute requiredPermission="view_community">
+                        <FarmerStories />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Advanced Technologies */}
+                    <Route path="/satellite-integration" element={
+                      <ProtectedRoute requiredPermission="use_satellite_integration">
+                        <SatelliteIntegration />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/iot-sensor-network" element={
+                      <ProtectedRoute requiredPermission="use_iot_sensors">
+                        <IoTSensorNetwork />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/drone-integration" element={
+                      <ProtectedRoute requiredPermission="use_drone_integration">
+                        <DroneIntegration />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/ar-visualization" element={
+                      <ProtectedRoute requiredPermission="use_ar_visualization">
+                        <ARVisualization />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/blockchain-certificates" element={
+                      <ProtectedRoute requiredPermission="use_blockchain">
+                        <BlockchainCertificates />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* System and Settings */}
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/notifications" element={<Notifications />} />
+                    <Route path="/support" element={<Support />} />
+                    
+                    {/* Other Features */}
                     <Route path="/profile-setup" element={<ProfileSetup />} />
                     <Route path="/search" element={<Search />} />
-                    <Route path="/crop-disease-detection" element={<CropDiseaseDetection />} />
-                    <Route path="/voice-commands" element={<VoiceCommandsPage />} />
-                    <Route path="/notifications" element={<Notifications />} />
-                    <Route path="/smart-scheduling" element={<SmartScheduling />} />
-                    <Route path="/blockchain-certificates" element={<BlockchainCertificates />} />
-                    <Route path="/ar-visualization" element={<ARVisualization />} />
-                    <Route path="/satellite-integration" element={<SatelliteIntegration />} />
-                    <Route path="/iot-sensor-network" element={<IoTSensorNetwork />} />
                     <Route path="/social-learning" element={<SocialLearningPlatform />} />
-                    <Route path="/financial-planning" element={<FinancialPlanning />} />
                     <Route path="/emergency-response" element={<EmergencyResponse />} />
-                    <Route path="/drone-integration" element={<DroneIntegration />} />
                     <Route path="/export-documentation" element={<ExportDocumentation />} />
-                    <Route path="/support" element={<Support />} />
+                    
+                    {/* Admin Panel */}
+                    <Route path="/admin" element={
+                      <ProtectedRoute requiredPermission="view_admin_dashboard">
+                        <Admin />
+                      </ProtectedRoute>
+                    } />
+                    
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </ProtectedRoute>
