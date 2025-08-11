@@ -105,10 +105,6 @@ export default function Register() {
               </div>
             </div>
             
-            <h1 className="text-2xl font-bold mb-2">Choose Your Role</h1>
-            <p className="text-muted-foreground">
-              Select the role that best describes your needs to get the right features
-            </p>
           </div>
 
           <RoleSelection 
