@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from models.user import User
+from models.permissions import get_user_permissions, get_accessible_routes
 from schemas.user import UserCreate, UserOut
 from database import SessionLocal
 from passlib.context import CryptContext
@@ -39,17 +40,41 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    
+    user = db.query(User).filter(User.id == int(user_id)).first()
+    if user is None:
+        raise credentials_exception
+    return user
+
 @router.post("/register", response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
+    
     hashed_password = get_password_hash(user.password)
     new_user = User()
     new_user.email = user.email
     new_user.hashed_password = hashed_password
     new_user.full_name = user.full_name
     new_user.role = user.role
+    
+    # Set default permissions based on role
+    new_user.permissions = list(get_user_permissions(user.role.value))
+    
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -60,5 +85,44 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
-    access_token = create_access_token(data={"sub": str(user.id), "role": user.role.value})
-    return {"access_token": access_token, "token_type": "bearer"} 
+    
+    # Get user permissions and accessible routes
+    permissions = get_user_permissions(user.role.value)
+    accessible_routes = get_accessible_routes(user.role.value)
+    
+    access_token = create_access_token(
+        data={
+            "sub": str(user.id), 
+            "role": user.role.value,
+            "permissions": list(permissions),
+            "accessible_routes": accessible_routes
+        }
+    )
+    
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "full_name": user.full_name,
+            "role": user.role.value,
+            "permissions": list(permissions),
+            "accessible_routes": accessible_routes
+        }
+    }
+
+@router.get("/me", response_model=UserOut)
+async def read_users_me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+@router.get("/permissions")
+async def get_user_permissions_endpoint(current_user: User = Depends(get_current_user)):
+    permissions = get_user_permissions(current_user.role.value)
+    accessible_routes = get_accessible_routes(current_user.role.value)
+    
+    return {
+        "role": current_user.role.value,
+        "permissions": list(permissions),
+        "accessible_routes": accessible_routes
+    } 
