@@ -63,7 +63,7 @@ export const Navigation = () => {
     const navigationItems = getFilteredNavigation();
     
     return (
-      <div className={`flex ${mobile ? 'flex-col space-y-2' : 'flex-row space-x-1'} items-start`}>
+      <div className={`flex ${mobile ? 'flex-col space-y-3' : 'flex-row space-x-1'} items-start`}>
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -73,15 +73,15 @@ export const Navigation = () => {
               key={item.href}
               to={item.href}
               onClick={() => { onItemClick(); }}
-              className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                 active 
                   ? 'bg-primary text-primary-foreground shadow-soft' 
                   : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-              }`}
+              } ${mobile ? 'w-full justify-start' : ''}`}
               title={item.description}
             >
-              <Icon size={16} />
-              {mobile && <span>{item.label}</span>}
+              <Icon size={18} />
+              {mobile && <span className="text-base">{item.label}</span>}
             </Link>
           );
         })}
@@ -106,7 +106,7 @@ export const Navigation = () => {
   const UserMenu = ({ mobile = false }) => (
     <div className={`flex ${mobile ? 'flex-col space-y-4' : 'flex-row items-center gap-2'}`}>
       {/* User Info */}
-      <div className={`flex items-center gap-3 ${mobile ? 'p-3 bg-muted/50 rounded-lg' : ''}`}>
+      <div className={`flex items-center gap-3 ${mobile ? 'p-4 bg-muted/50 rounded-lg' : ''}`}>
         <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
           <User className="h-5 w-5 text-primary" />
         </div>
@@ -126,7 +126,7 @@ export const Navigation = () => {
         size={mobile ? "default" : "sm"}
         onClick={handleLogout}
         disabled={isLoggingOut}
-        className={`${mobile ? 'w-full justify-center font-medium' : ''} text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200`}
+        className={`${mobile ? 'w-full justify-center font-medium py-3' : ''} text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200`}
         title="Logout from AgroBridge"
       >
         {isLoggingOut ? (
@@ -173,22 +173,28 @@ export const Navigation = () => {
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80">
-                <div className="flex flex-col space-y-6 py-6">
-                  <div className="flex items-center gap-2 font-bold text-xl">
+              <SheetContent side="right" className="w-80 p-0 max-h-screen">
+                <div className="flex flex-col h-full">
+                  {/* Header - Fixed */}
+                  <div className="flex items-center gap-2 font-bold text-xl p-6 border-b flex-shrink-0">
                     <span className="bg-gradient-primary bg-clip-text text-transparent">
                       AgroBridge
                     </span>
                   </div>
                   
-                  <NavItems mobile onItemClick={() => setMobileNavOpen(false)} />
-                  
-                  <div className="border-t pt-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <LanguageSelector />
-                      <ThemeToggle />
+                  {/* Scrollable Content */}
+                  <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
+                    <div className="space-y-6">
+                      <NavItems mobile onItemClick={() => setMobileNavOpen(false)} />
+                      
+                      <div className="border-t pt-6">
+                        <div className="flex items-center justify-between mb-6">
+                          <LanguageSelector />
+                          <ThemeToggle />
+                        </div>
+                        <UserMenu mobile />
+                      </div>
                     </div>
-                    <UserMenu mobile />
                   </div>
                 </div>
               </SheetContent>
