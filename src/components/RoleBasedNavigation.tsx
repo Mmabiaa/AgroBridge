@@ -185,7 +185,7 @@ export const useRoleBasedNavigation = () => {
       description: 'Digital certificates and traceability'
     },
     
-    // System and Settings
+    // System and Settings (kept universal for usability)
     { 
       href: '/settings', 
       label: 'Settings', 
@@ -221,23 +221,34 @@ export const useRoleBasedNavigation = () => {
     if (!user) return [];
 
     return allNavigationItems.filter(item => {
-      // Check if user has required permission
       if (item.permission && !hasPermission(item.permission)) {
         return false;
       }
-      
-      // Check if user has required role
       if (item.role && !item.role.includes(user.role)) {
         return false;
       }
-      
       return true;
+    });
+  };
+
+  // STRICT role-based navigation using user's accessibleRoutes whitelist
+  const getRoleNavigation = (): NavigationItem[] => {
+    if (!user) return [];
+    const filtered = getFilteredNavigation();
+    const accessible = new Set(user.accessibleRoutes || []);
+
+    // Keep some universal items regardless of accessibleRoutes for UX
+    const universalHrefs = new Set(['/settings', '/notifications', '/support']);
+
+    return filtered.filter(item => {
+      if (universalHrefs.has(item.href)) return true;
+      return accessible.has(item.href);
     });
   };
 
   // Group navigation items by category
   const getGroupedNavigation = () => {
-    const filteredItems = getFilteredNavigation();
+    const filteredItems = getRoleNavigation();
     
     const groups = {
       core: filteredItems.filter(item => 
@@ -269,6 +280,7 @@ export const useRoleBasedNavigation = () => {
   return {
     allNavigationItems,
     getFilteredNavigation,
+    getRoleNavigation,
     getGroupedNavigation,
     user
   };

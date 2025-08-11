@@ -39,6 +39,7 @@ import ExportDocumentation from "./pages/ExportDocumentation";
 import Support from "./pages/Support";
 import CropCalendar from "./pages/CropCalendar";
 import FarmerStories from "./pages/FarmerStories";
+import { VoiceFab } from '@/components/VoiceFab';
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ const App = () => (
               <Route path="/*" element={
                 <ProtectedRoute>
                   <Navigation />
+                  <VoiceFab />
                   <Routes>
                     {/* Core Dashboard - accessible to all authenticated users */}
                     <Route path="/dashboard" element={

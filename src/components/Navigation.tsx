@@ -22,7 +22,7 @@ export const Navigation = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   
   const { user: currentUser, logout } = useAuth();
-  const { getFilteredNavigation, getGroupedNavigation } = useRoleBasedNavigation();
+  const { getFilteredNavigation, getGroupedNavigation, getRoleNavigation } = useRoleBasedNavigation();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -60,7 +60,7 @@ export const Navigation = () => {
   const user = currentUser as AuthUser;
 
   const NavItems = ({ mobile = false, onItemClick = () => {} }) => {
-    const navigationItems = getFilteredNavigation();
+    const navigationItems = getRoleNavigation();
     
     return (
       <div className={`flex ${mobile ? 'flex-col space-y-3' : 'flex-row space-x-1'} items-start`}>
