@@ -2147,10 +2147,105 @@ export const rawAgriQA = [
      q: "how do I prevent diseases in pepper plants",
      a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering or fertilizer."
    },
+   { q: "how do I control aphids on vegetables", a: "Spray with neem oil or insecticidal soap, and encourage beneficial insects like ladybugs." },
+{ q: "what is the best maize spacing for high yield", a: "Use 75 cm between rows and 25 cm between plants within a row." },
+{ q: "how do I prevent fungal diseases in tomatoes", a: "Water at the base, avoid overhead irrigation, and apply fungicides when necessary." },
+{ q: "when should I harvest groundnuts", a: "Harvest when most leaves turn yellow and inner shells are brown, usually 90–120 days after planting." },
+{ q: "how can I increase egg size in layers", a: "Provide balanced feed rich in protein and calcium, and ensure access to clean water at all times." },
+{ q: "what causes leaf curling in pepper plants", a: "It can be caused by viral infection or insect damage; control pests and remove infected plants." },
+{ q: "how do I store maize after harvest", a: "Dry to below 13% moisture and store in airtight containers or bags with pest protection." },
+{ q: "what is the best time to plant rice in West Africa", a: "Plant at the onset of the rainy season, typically between May and June." },
+{ q: "how can I control weeds in cassava", a: "Weed manually or with herbicides during the first 3 months after planting." },
+{ q: "how do I prevent mastitis in dairy cows", a: "Keep udders clean, milk gently, and treat infections promptly." },
+{ q: "what is the best feed for broilers", a: "Provide starter mash for the first 3 weeks, then grower and finisher feed with high protein." },
+{ q: "how can I control fruit flies in mangoes", a: "Use pheromone traps, collect and destroy infested fruits, and apply recommended insecticides." },
+{ q: "what causes blossom end rot in tomatoes", a: "Calcium deficiency and irregular watering; maintain consistent soil moisture and calcium supply." },
+{ q: "how do I improve sandy soil for crops", a: "Incorporate organic matter and mulch to retain moisture and nutrients." },
+{ q: "what is the best time to prune cocoa trees", a: "Prune during the dry season to improve sunlight penetration and air circulation." },
    {
      q: "what is the yield per acre of pepper",
      a: "Basic care tips and timing are needed to grow pepper successfully. Use quality seeds, good soil, and proper watering or fertilizer."
    },
+   {
+    q: "what is the yield per acre of maize in Ghana",
+    a: "With improved seeds and fertilizer, maize yields in Ghana can reach 3 to 4 tonnes per hectare."
+  },
+  {
+    q: "how long does cassava take to mature",
+    a: "Cassava typically matures in 8 to 12 months depending on the variety and climate."
+  },
+  {
+    q: "what is the best season to plant tomatoes in Ghana",
+    a: "The best season to plant tomatoes in Ghana is during the dry season with irrigation or early in the rainy season."
+  },
+  {
+    q: "how much water do onions need",
+    a: "Onions require about 1 inch of water per week, especially during bulb formation."
+  },
+  {
+    q: "what is the yield per acre of groundnuts",
+    a: "Well-managed groundnut farms in Ghana can produce 800 to 1,200 kg per acre."
+  },
+  {
+    q: "how long does cocoa take to produce pods",
+    a: "Cocoa trees begin producing pods 3 to 5 years after planting."
+  },
+  {
+    q: "what fertilizer is best for maize",
+    a: "NPK 15-15-15 combined with urea is commonly used for maize in Ghana."
+  },
+  {
+    q: "what is the common pest for cassava",
+    a: "Cassava mosaic virus and mealybugs are common pests for cassava."
+  },
+  {
+    q: "how to control armyworms in maize",
+    a: "Apply recommended pesticides early and use resistant maize varieties to control armyworms."
+  },
+  {
+    q: "best soil for plantain",
+    a: "Plantain grows best in deep, well-drained loamy soils rich in organic matter."
+  },
+  {
+    q: "how to improve soil fertility",
+    a: "Add compost, manure, and practice crop rotation to improve soil fertility."
+  },
+  {
+    q: "how many eggs does a layer chicken produce per year",
+    a: "A healthy layer chicken can produce 250 to 300 eggs per year."
+  },
+  {
+    q: "best breed of chicken for meat in Ghana",
+    a: "The Sasso breed is popular in Ghana for meat production."
+  },
+  {
+    q: "what is the yield per acre of rice",
+    a: "Improved rice varieties in Ghana can yield 2 to 4 tonnes per hectare."
+  },
+  {
+    q: "how long does pepper take to mature",
+    a: "Sweet and hot peppers take about 90 to 120 days from planting to harvest."
+  },
+  {
+    q: "what is the planting distance for maize",
+    a: "Maize is usually planted at 75 cm between rows and 25 cm between plants."
+  },
+  {
+    q: "what irrigation method is best for vegetables",
+    a: "Drip irrigation is best for vegetables to conserve water and reduce diseases."
+  },
+  {
+    q: "how to store maize after harvest",
+    a: "Dry maize to below 13% moisture and store in airtight bags or silos."
+  },
+  {
+    q: "what is the yield per acre of yam",
+    a: "Yam yields range from 8 to 12 tonnes per hectare with good management."
+  },
+  {
+    q: "what is the main pest of cocoa",
+    a: "Capsid bugs are one of the main pests of cocoa in Ghana."
+  },
    {
      q: "can I grow tomatoes in dry season",
      a: "Basic care tips and timing are needed to grow tomatoes successfully. Use quality seeds, good soil, and proper watering or fertilizer."
