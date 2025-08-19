@@ -2223,6 +2223,26 @@ export const rawAgriQA = [
     a: "Improved rice varieties in Ghana can yield 2 to 4 tonnes per hectare."
   },
   {
+    q: "yes",
+    a: "Go on and ask your question"
+  },
+  {
+    q: "no",
+    a: "No problem, feel free to come back anytime"
+  },
+  {
+    q: "yeah",
+    a: "Alright, feel free to ask your question"
+  },
+  {
+    q: "nah",
+    a: "See you soon!"
+  },
+  {
+    q: "yep",
+    a: "Let's see, Go on and ask your question..."
+  },
+  {
     q: "how long does pepper take to mature",
     a: "Sweet and hot peppers take about 90 to 120 days from planting to harvest."
   },
