@@ -123,7 +123,7 @@ export default function Dashboard() {
     const speakWelcome = () => {
       if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(
-          "A kwaa baa baa AgroBridge, ye wo ha ma akuafo neeeeeeee naaaa."
+          "A kwaa baa baa AgroBridge, ye wo ha ma akuafo neeeee naaaa."
         );
         utterance.rate = 0.7;
         utterance.pitch = 0.8;
