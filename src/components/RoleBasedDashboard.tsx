@@ -192,6 +192,15 @@ export const RoleBasedDashboard = () => {
           href: '/learning',
           permission: 'view_learning',
           color: 'bg-blue-500'
+        },
+        {
+          id: 'voice-commands',
+          title: 'Voice Control',
+          description: 'Voice-activated commands',
+          icon: Mic,
+          href: '/voice-commands',
+          permission: 'use_voice_commands',
+          color: 'bg-pink-500'
         }
       );
     }

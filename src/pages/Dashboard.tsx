@@ -93,7 +93,14 @@ const farmHealth = {
   pestRisk: 25,
   weatherSuitability: 95
 };
-
+const messages = [
+  "Welcome to AgroBridge, your smart farming partner.",
+  "AgroBridge connects farmers and markets with AI.",
+  "Hello! AgroBridge is here to power your agriculture journey.",
+  "AgroBridge — smarter farming, stronger connections.",
+  "Akwaaba to AgroBridge, wo AI farming partner.",
+  "AgroBridge yɛ wo kuayo boafo — your farm helper."
+];
 const quickActions = [
   { title: 'Chat with AgriGPT', icon: Bot, href: '/agrigpt', variant: 'farmer' },
   { title: 'Check Farm Monitor', icon: Monitor, href: '/monitoring', variant: 'sky' },
@@ -120,30 +127,68 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Welcome speech on every dashboard visit
-    const speakWelcome = () => {
+    
+    const messages = [
+      "Welcome to AgroBridge, your smart farming partner.",
+      "Welcome to AgroBridge, your friend for better farming!",
+      "AgroBridge connects you to markets with smart AI help.",
+      "Hello farmer! AgroBridge makes your farming journey easier.",
+      "AgroBridge — grow more, sell smarter, succeed faster.",
+      "Hi there! AgroBridge is your AI partner for farm success.",
+      "Join AgroBridge to link with buyers and boost your farm!",
+      "AgroBridge connects farmers and markets with AI.",
+      "Hello! AgroBridge is here to power your agriculture journey.",
+      "AgroBridge — smarter farming, stronger connections.",
+      "AgroBridge, your digital farming assistant.",
+      "Welcome back to AgroBridge, supporting farmers every step.",
+      "AgroBridge helps you grow smarter and sell faster.",
+      "Discover new opportunities with AgroBridge.",
+      "AgroBridge — bridging farmers and buyers seamlessly.",
+      "Your agriculture future starts here, with AgroBridge."
+    ];
+    
+    
+    const speakWelcome = () => { 
       if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(
-          "A kwaa baa baa AgroBridge, ye wo ha ma akuafo neeee naaaa."
-        );
+        // Pick a random message
+        const text = messages[Math.floor(Math.random() * messages.length)];
+        const utterance = new SpeechSynthesisUtterance(text);
+    
         utterance.rate = 0.8;
         utterance.pitch = 0.8;
         utterance.volume = 0.8;
     
-        // Prefer Akan/Twi voice if the system has it
-        utterance.lang = "ak-GH"; // Akan (Twi) locale
-        const voices = speechSynthesis.getVoices();
-        const preferredVoice = voices.find(voice =>
-          voice.lang.toLowerCase().includes("ak") || 
-          voice.lang.toLowerCase().includes("tw")
-        );
-        if (preferredVoice) {
-          utterance.voice = preferredVoice;
-        }
+        // Wait until voices are loaded (important for Safari & mobile)
+        const setVoice = () => {
+          const voices = speechSynthesis.getVoices();
     
-        speechSynthesis.speak(utterance);
-        setSpeechEnabled(true);
+          // Pick a good voice (prefer Google/English voices)
+          const preferredVoice = voices.find(voice =>
+            voice.lang.toLowerCase().includes('en') &&
+            (voice.name.includes('Google') || voice.name.includes('Natural'))
+          );
+    
+          if (preferredVoice) {
+            utterance.voice = preferredVoice;
+          }
+    
+          speechSynthesis.speak(utterance);
+          setSpeechEnabled(true);
+        };
+    
+        // If voices are already loaded
+        if (speechSynthesis.getVoices().length > 0) {
+          setVoice();
+        } else {
+          // On Safari/iOS, voices load later
+          speechSynthesis.onvoiceschanged = setVoice;
+        }
+      } else {
+        console.warn("This browser does not support speech synthesis.");
       }
     };
+    
+
 
     // Delay speech slightly to ensure page is loaded
     const timer = setTimeout(speakWelcome, 1000);
