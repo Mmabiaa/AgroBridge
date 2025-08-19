@@ -69,6 +69,7 @@ export const useRoleBasedNavigation = () => {
       permission: 'use_crop_detection',
       description: 'Detect crop diseases using AI'
     },
+    // Voice commands and navigations
     { 
       href: '/voice-commands', 
       label: 'Voice Commands', 
