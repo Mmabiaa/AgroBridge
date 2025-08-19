@@ -123,9 +123,9 @@ export default function Dashboard() {
     const speakWelcome = () => {
       if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(
-          "A kwaa baa baa AgroBridge, ye wo ha ma akuafo neeeee naaaa."
+          "A kwaa baa baa AgroBridge, ye wo ha ma akuafo neeee naaaa."
         );
-        utterance.rate = 0.7;
+        utterance.rate = 0.8;
         utterance.pitch = 0.8;
         utterance.volume = 0.8;
     
