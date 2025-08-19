@@ -123,21 +123,23 @@ export default function Dashboard() {
     const speakWelcome = () => {
       if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(
-          "Welcome to AgroBridge, your AI powered agriculture connections"
+          "A kwaa baa baa AgroBridge, ye wo ha ma akuafo neeee naaaa."
         );
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
+        utterance.rate = 0.8;
+        utterance.pitch = 0.8;
         utterance.volume = 0.8;
-        
-        // Try to use a more natural voice if available
+    
+        // Prefer Akan/Twi voice if the system has it
+        utterance.lang = "ak-GH"; // Akan (Twi) locale
         const voices = speechSynthesis.getVoices();
-        const preferredVoice = voices.find(voice => 
-          voice.lang.includes('en') && (voice.name.includes('Google') || voice.name.includes('Natural'))
+        const preferredVoice = voices.find(voice =>
+          voice.lang.toLowerCase().includes("ak") || 
+          voice.lang.toLowerCase().includes("tw")
         );
         if (preferredVoice) {
           utterance.voice = preferredVoice;
         }
-        
+    
         speechSynthesis.speak(utterance);
         setSpeechEnabled(true);
       }

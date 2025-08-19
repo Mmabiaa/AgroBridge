@@ -13,6 +13,12 @@ import models.gpt_log
 import models.plan
 import models.reminder
 import models.blockchain_certificate
+# New models
+import models.farm
+import models.market_price
+import models.audit_log
+from routers import rbac
+from routers import voice
 
 app = FastAPI()
 
@@ -38,6 +44,8 @@ app.include_router(gpt.router)
 app.include_router(plans.router)
 app.include_router(reminders.router)
 app.include_router(blockchain.router)
+app.include_router(rbac.router)
+app.include_router(voice.router)
 
 @app.get("/")
 def read_root():

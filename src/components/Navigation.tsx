@@ -11,6 +11,8 @@ import {
 import { notifySystemUpdate } from '@/components/notifications/NotificationCenter';
 import { useRoleBasedNavigation } from './RoleBasedNavigation';
 import { useAuth, User as AuthUser } from '@/contexts/AuthContext';
+import { useFeatureFlags } from '@/contexts/FeatureFlagsContext';
+import { useServerNavigation } from '@/hooks/useServerNavigation';
 
 const languages = ['English', 'Twi', 'Hausa', 'Yoruba'];
 
@@ -23,6 +25,8 @@ export const Navigation = () => {
   
   const { user: currentUser, logout } = useAuth();
   const { getFilteredNavigation, getGroupedNavigation, getRoleNavigation } = useRoleBasedNavigation();
+  const { enableServerDrivenNav } = useFeatureFlags();
+  const serverNav = useServerNavigation();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -60,7 +64,11 @@ export const Navigation = () => {
   const user = currentUser as AuthUser;
 
   const NavItems = ({ mobile = false, onItemClick = () => {} }) => {
-    const navigationItems = getRoleNavigation();
+    let navigationItems = getRoleNavigation();
+    if (enableServerDrivenNav && serverNav.items) {
+      const allowed = new Set(serverNav.items.map(i => i.href));
+      navigationItems = navigationItems.filter(item => allowed.has(item.href));
+    }
     
     return (
       <div className={`flex ${mobile ? 'flex-col space-y-3' : 'flex-row space-x-1'} items-start`}>
