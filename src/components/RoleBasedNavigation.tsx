@@ -239,12 +239,12 @@ export const useRoleBasedNavigation = () => {
 
     // Special case: Admins should only see admin-related items in the navbar
     if (user.role === 'admin') {
-      const adminOnly = new Set(['/admin', '/settings', '/notifications', '/support']);
+      const adminOnly = new Set(['/admin', '/settings', '/notifications', '/support' ]);
       return filtered.filter(item => adminOnly.has(item.href));
     }
 
     // Keep some universal items regardless of accessibleRoutes for UX
-    const universalHrefs = new Set(['/settings', '/notifications', '/support']);
+    const universalHrefs = new Set(['/settings', '/notifications', '/support','/voice-commands']);
 
     return filtered.filter(item => {
       if (universalHrefs.has(item.href)) return true;

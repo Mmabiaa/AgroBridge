@@ -130,6 +130,12 @@ export default function Dashboard() {
     
     const messages = [
       "Welcome to AgroBridge, your smart farming partner.",
+      "Welcome to AgroBridge, your friend for better farming!",
+      "AgroBridge connects you to markets with smart AI help.",
+      "Hello farmer! AgroBridge makes your farming journey easier.",
+      "AgroBridge — grow more, sell smarter, succeed faster.",
+      "Hi there! AgroBridge is your AI partner for farm success.",
+      "Join AgroBridge to link with buyers and boost your farm!",
       "AgroBridge connects farmers and markets with AI.",
       "Hello! AgroBridge is here to power your agriculture journey.",
       "AgroBridge — smarter farming, stronger connections.",
