@@ -123,10 +123,10 @@ export default function Dashboard() {
     const speakWelcome = () => {
       if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(
-          "Okuani, yefrɛ me AgroBridge. Wo kuayo ho boafo."
+          "A kwaa baa baa AgroBridge, ye wo ha ma akuafo neeeeeeee naaaa."
         );
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
+        utterance.rate = 0.7;
+        utterance.pitch = 0.8;
         utterance.volume = 0.8;
     
         // Prefer Akan/Twi voice if the system has it
