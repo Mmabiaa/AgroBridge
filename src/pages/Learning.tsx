@@ -18,8 +18,10 @@ import {
   Star,
   Download,
   CheckCircle,
-  Bot
+  Bot,
+  Mic
 } from 'lucide-react';
+import { VoiceCommands } from '@/components/ai/VoiceCommands';
 
 const categories = ['All', 'Crop Management', 'Poultry Care', 'Soil Health', 'Pest Control', 'Equipment'];
 
@@ -148,10 +150,11 @@ export default function Learning() {
 
 
         <Tabs defaultValue="courses" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 h-12 md:h-auto p-1 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-4 h-12 md:h-auto p-1 bg-muted/50">
             <TabsTrigger value="courses" className="text-xs md:text-sm py-2 md:py-3">Video Courses</TabsTrigger>
             <TabsTrigger value="guides" className="text-xs md:text-sm py-2 md:py-3">PDF Guides</TabsTrigger>
             <TabsTrigger value="achievements" className="text-xs md:text-sm py-2 md:py-3">Achievements</TabsTrigger>
+            <TabsTrigger value="voice-commands" className="text-xs md:text-sm py-2 md:py-3">Voice Commands</TabsTrigger>
           </TabsList>
 
           {/* Video Courses Tab */}
@@ -317,6 +320,56 @@ export default function Learning() {
                 </Card>
               ))}
             </div>
+          </TabsContent>
+
+          {/* Voice Commands Tab */}
+          <TabsContent value="voice-commands" className="space-y-4 md:space-y-6 mt-4 md:mt-6">
+            <Card className="shadow-soft mx-1">
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="text-lg md:text-xl flex items-center gap-2">
+                  <Mic className="h-4 w-4 md:h-5 md:w-5" />
+                  Voice Commands
+                </CardTitle>
+                <CardDescription>
+                  Use voice commands to navigate learning materials and access educational content
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-4 md:p-6 pt-0">
+                <div className="space-y-6">
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">Learning Voice Commands</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Control your learning experience with voice commands for hands-free navigation.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <h5 className="font-medium mb-2">Course Navigation:</h5>
+                        <ul className="space-y-1 text-muted-foreground">
+                          <li>• "Search for tomato farming"</li>
+                          <li>• "Show beginner courses"</li>
+                          <li>• "Open soil health course"</li>
+                          <li>• "Continue my course"</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="font-medium mb-2">Content Management:</h5>
+                        <ul className="space-y-1 text-muted-foreground">
+                          <li>• "Download PDF guide"</li>
+                          <li>• "Show my progress"</li>
+                          <li>• "View achievements"</li>
+                          <li>• "Ask AgriGPT for help"</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-3">Voice Command Interface</h4>
+                    <VoiceCommands />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
 
