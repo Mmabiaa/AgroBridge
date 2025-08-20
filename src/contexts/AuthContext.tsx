@@ -43,36 +43,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check for stored user session
     const storedUser = localStorage.getItem('agrobridge_user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      // Refresh permissions and routes to ensure they're up to date
+      const updatedUser = refreshUserPermissions(parsedUser);
+      setUser(updatedUser);
+      // Update localStorage with refreshed permissions
+      localStorage.setItem('agrobridge_user', JSON.stringify(updatedUser));
     }
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string, role?: UserRole) => {
+  const refreshUserPermissions = (user: User): User => {
+    // Update permissions and routes based on current role
+    const updatedPermissions = getDefaultPermissions(user.role);
+    const updatedRoutes = getDefaultRoutes(user.role);
+    
+    return {
+      ...user,
+      permissions: updatedPermissions,
+      accessibleRoutes: updatedRoutes
+    };
+  };
+
+  const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
       // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/token', {
+      // const response = await fetch('/api/auth/login', {
       //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      //   body: new URLSearchParams({ username: email, password })
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email, password })
       // });
       // const data = await response.json();
       
       // Mock API response for now
-      const userRole = role || 'farmer'; // Default to farmer if no role specified
       const mockUser: User = {
         id: '1',
-        email,
-        name: email.split('@')[0],
-        role: userRole,
+        email: email,
+        name: 'John Doe',
+        role: 'buyer', // Default role for testing
         isAuthenticated: true,
-        permissions: getDefaultPermissions(userRole),
-        accessibleRoutes: getDefaultRoutes(userRole)
+        permissions: ['view_dashboard', 'view_marketplace', 'place_orders', 'view_orders', 'view_learning', 'view_community', 'view_financial_planning'],
+        accessibleRoutes: ['/dashboard', '/marketplace', '/learning', '/community', '/financial-planning']
       };
       
-      setUser(mockUser);
-      localStorage.setItem('agrobridge_user', JSON.stringify(mockUser));
+      // Refresh permissions and routes to ensure they're up to date
+      const updatedUser = refreshUserPermissions(mockUser);
+      
+      setUser(updatedUser);
+      localStorage.setItem('agrobridge_user', JSON.stringify(updatedUser));
     } catch (error) {
       throw new Error('Login failed');
     } finally {
@@ -134,7 +153,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateUserRole = (role: UserRole) => {
     if (user) {
-      const updatedUser = { ...user, role };
+      const updatedUser = { 
+        ...user, 
+        role,
+        permissions: getDefaultPermissions(role),
+        accessibleRoutes: getDefaultRoutes(role)
+      };
       setUser(updatedUser);
       localStorage.setItem('agrobridge_user', JSON.stringify(updatedUser));
     }
@@ -160,13 +184,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ],
       buyer: [
         'view_dashboard', 'view_marketplace', 'place_orders', 'view_orders',
-        'view_learning', 'view_community', 'view_financial_planning'
+        'view_learning', 'view_community', 'view_financial_planning', 'use_voice_commands'
       ],
       ngo: [
         'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
         'view_marketplace', 'view_learning', 'view_community', 'moderate_community',
         'create_content', 'edit_content', 'use_satellite_integration',
-        'use_iot_sensors', 'view_financial_planning', 'manage_content'
+        'use_iot_sensors', 'view_financial_planning', 'manage_content', 'use_voice_commands'
       ],
       admin: [
         'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
@@ -197,11 +221,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ],
       buyer: [
         '/dashboard', '/marketplace', '/learning', '/community',
-        '/financial-planning'
+        '/financial-planning', '/voice-commands'
       ],
       ngo: [
         '/dashboard', '/analytics', '/monitoring', '/agrigpt',
-        '/marketplace', '/learning', '/community', '/financial-planning'
+        '/marketplace', '/learning', '/community', '/financial-planning', '/voice-commands'
       ],
       admin: [
         '/dashboard', '/analytics', '/monitoring', '/agrigpt',

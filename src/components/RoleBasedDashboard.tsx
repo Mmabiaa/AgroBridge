@@ -217,6 +217,15 @@ export const RoleBasedDashboard = () => {
           color: 'bg-green-500'
         },
         {
+          id: 'voice-commands',
+          title: 'Voice Control',
+          description: 'Voice-activated commands',
+          icon: Mic,
+          href: '/voice-commands',
+          permission: 'use_voice_commands',
+          color: 'bg-pink-500'
+        },
+        {
           id: 'analytics',
           title: 'Analytics',
           description: 'Community insights',
