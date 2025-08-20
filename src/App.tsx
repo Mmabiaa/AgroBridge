@@ -40,8 +40,9 @@ import Support from "./pages/Support";
 import CropCalendar from "./pages/CropCalendar";
 import FarmerStories from "./pages/FarmerStories";
 import { VoiceFab } from '@/components/VoiceFab';
-import { FeatureFlagsProvider } from '@/contexts/FeatureFlagsContext';
 import { FeatureFlaggedVoiceFab } from '@/components/FeatureFlaggedVoiceFab';
+import { GlobalVoiceCommands } from '@/components/GlobalVoiceCommands';
+import { FeatureFlagsProvider } from '@/contexts/FeatureFlagsContext';
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,7 @@ const App = () => (
                   <ProtectedRoute>
                     <Navigation />
                     <FeatureFlaggedVoiceFab />
+                    <GlobalVoiceCommands />
                     <Routes>
                       {/* Core Dashboard - accessible to all authenticated users */}
                       <Route path="/dashboard" element={
