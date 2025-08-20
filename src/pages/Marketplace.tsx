@@ -114,6 +114,66 @@ export default function Marketplace() {
     },
     {
       id: '4',
+      name: 'Plantain',
+      farmer: 'Ayensu Bahh',
+      location: 'Kumasi, Ghana',
+      price: 300,
+      previousPrice: 325,
+      unit: 'kg',
+      quantity: 1000,
+      rating: 4.7,
+      image: 'https://i.pinimg.com/736x/48/9e/7d/489e7db7bfcae138013db6442927aa81.jpg',
+      category: 'Fruits',
+      isOrganic: true,
+      harvestDate: '2024-01-10',
+      deliveryOptions: ['Pickup', 'Nationwide Shipping'],
+      description: 'Fresh plantains harvested from fertile farms in Kumasi. Great for boiling, frying or roasting.',
+      minOrder: 10,
+      maxOrder: 300,
+      stockStatus: 'in-stock'
+    },
+    {
+      id: '5',
+      name: 'Ripe Mangoes',
+      farmer: 'Boateng Asantewaa',
+      location: 'Brekum, Ghana',
+      price: 100,
+      previousPrice: 223,
+      unit: 'kg',
+      quantity: 30,
+      rating: 4.9,
+      image: 'https://i.pinimg.com/1200x/83/e9/23/83e9236642e447a2ad197f85cf31cdaa.jpg',
+      category: 'Fruits',
+      isOrganic: true,
+      harvestDate: '2024-01-10',
+      deliveryOptions: ['Pickup', 'Nationwide Shipping'],
+      description: 'Sweet, juicy mangoes harvested from Brong-Ahafo farms. Ideal for fresh eating or juice.',
+      minOrder: 2,
+      maxOrder: 20,
+      stockStatus: 'low-stock'
+    },
+    {
+      id: '6',
+      name: 'Pawpaw',
+      farmer: 'Jacob Asare',
+      location: 'Wenchi, Ghana',
+      price: 100,
+      previousPrice: 124,
+      unit: 'kg',
+      quantity: 24,
+      rating: 4.9,
+      image: 'https://i.pinimg.com/1200x/fb/de/4b/fbde4b8be3b48ac96ee678c4a00d1c6f.jpg',
+      category: 'Fruits',
+      isOrganic: true,
+      harvestDate: '2024-01-10',
+      deliveryOptions: ['Pickup', 'Nationwide Shipping'],
+      description: 'Delicious ripe pawpaw with natural sweetness, rich in vitamins and good for digestion.',
+      minOrder: 2,
+      maxOrder: 15,
+      stockStatus: 'low-stock'
+    },
+    {
+      id: '7',
       name: 'Fresh Pineapples',
       farmer: 'Grace Mensah',
       location: 'Cape Coast, Ghana',
@@ -133,7 +193,7 @@ export default function Marketplace() {
       stockStatus: 'in-stock'
     },
     {
-      id: '5',
+      id: '8',
       name: 'Yam Tubers',
       farmer: 'Kofi Owusu',
       location: 'Ho, Ghana',
@@ -153,6 +213,7 @@ export default function Marketplace() {
       stockStatus: 'in-stock'
     }
   ];
+  
 
   const [products, setProducts] = useState(initialMockProducts);
   const [searchFilters, setSearchFilters] = useState(null);
