@@ -140,32 +140,16 @@ const englishIntents = [
 ];
 
 const englishSuggestions = [
-  'Open Dashboard',
-  'Open Market',
-  'Open Learning',
-  'Open Community',
   'Open Support',
+  'Open Market',
+  'Chat',
+  'Scan crops',
+  'Open Community',
+  'Show Help',
   'Open Settings',
   'Show Notifications',
-  'Open Analytics',
-  'Open Monitoring',
-  'Open AgriGPT',
-  'Scan Crops',
-  'Open Calendar',
-  'Open Stories',
-  'Open Admin',
-  'Open Financial',
-  'Open Scheduling',
-  'Open Satellite',
-  'Open IoT Sensors',
-  'Open Drone',
-  'Open AR View',
-  'Open Blockchain',
-  'Open Social Learning',
-  'Open Emergency',
-  'Open Export',
-  'Open Search',
-  'Setup Profile'
+  'Farmer story',
+  'Crop Calender'
 ];
 
 const greetingPhrases = [
@@ -237,37 +221,26 @@ export function VoiceCommands() {
     'show voice options': '/voice-commands',
     'help with voice commands': '/voice-commands',
   
-    // Learning & Training
-    'show me farming tips': '/learning',
-    'open training': '/learning',
-    'access learning center': '/learning',
-    'open learning': '/learning',
-    'show learning': '/learning',
-    'go to learning': '/learning',
+    // New: Tips & Training
+    'show me farming tips': '/training',
+    'open training': '/training',
+    'access learning center': '/training',
 
-    // Crop Calendar
-    'calender': '/crop-calendar',
-    'open calender': '/crop-calendar',
-    'crop calendar': '/crop-calendar',
-    'show calendar': '/crop-calendar',
-    'open crop calendar': '/crop-calendar',
+    // Crop Calender
+    'calender': '/crop-calender',
+    'open calender': '/crop-calender',
     
     // Farmer Stories
     'Open Farmer stories':'/farmer-stories',
     'Stories': '/farmer-stories',
-    'farmer stories': '/farmer-stories',
-    'show stories': '/farmer-stories',
-    'open stories': '/farmer-stories',
   
-    // Support
+    // New: Support
     'open support': '/support',
     'need help': '/support',
     'contact support': '/support',
     'report a problem': '/support',
-    'get help': '/support',
-    'show help': '/support',
   
-    // NGO or Aid Info
+    // New: NGO or Aid Info
     'find ngo help': '/ngo',
     'open ngo programs': '/ngo',
     'any farming support': '/ngo',
@@ -280,122 +253,7 @@ export function VoiceCommands() {
     // Farm Monitoring
     'farm monitoring': '/monitoring',
     'farm monitor': '/monitoring',
-    'open farm monitor': '/monitoring',
-    'show monitoring': '/monitoring',
-    'go to monitoring': '/monitoring',
-
-    // Analytics
-    'analytics': '/analytics',
-    'show analytics': '/analytics',
-    'open analytics': '/analytics',
-    'farm analysis': '/analytics',
-    'show analysis': '/analytics',
-
-    // Smart Scheduling
-    'smart scheduling': '/smart-scheduling',
-    'open scheduling': '/smart-scheduling',
-    'show scheduling': '/smart-scheduling',
-    'task scheduling': '/smart-scheduling',
-    'go to scheduling': '/smart-scheduling',
-
-    // Financial Planning
-    'financial planning': '/financial-planning',
-    'open financial': '/financial-planning',
-    'show financial': '/financial-planning',
-    'money planning': '/financial-planning',
-    'go to financial': '/financial-planning',
-
-    // Satellite Integration
-    'satellite': '/satellite-integration',
-    'satellite data': '/satellite-integration',
-    'open satellite': '/satellite-integration',
-    'show satellite': '/satellite-integration',
-    'satellite imagery': '/satellite-integration',
-
-    // IoT Sensor Network
-    'iot sensors': '/iot-sensor-network',
-    'sensor network': '/iot-sensor-network',
-    'open sensors': '/iot-sensor-network',
-    'show sensors': '/iot-sensor-network',
-    'smart sensors': '/iot-sensor-network',
-
-    // Drone Integration
-    'drone': '/drone-integration',
-    'drone control': '/drone-integration',
-    'open drone': '/drone-integration',
-    'show drone': '/drone-integration',
-    'drone monitoring': '/drone-integration',
-
-    // AR Visualization
-    'ar visualization': '/ar-visualization',
-    'augmented reality': '/ar-visualization',
-    'open ar': '/ar-visualization',
-    'show ar': '/ar-visualization',
-    'ar view': '/ar-visualization',
-
-    // Blockchain Certificates
-    'blockchain': '/blockchain-certificates',
-    'digital certificates': '/blockchain-certificates',
-    'open blockchain': '/blockchain-certificates',
-    'show certificates': '/blockchain-certificates',
-    'blockchain traceability': '/blockchain-certificates',
-
-    // Social Learning Platform
-    'social learning': '/social-learning',
-    'social platform': '/social-learning',
-    'open social learning': '/social-learning',
-    'show social learning': '/social-learning',
-    'learning platform': '/social-learning',
-
-    // Emergency Response
-    'emergency': '/emergency-response',
-    'emergency response': '/emergency-response',
-    'open emergency': '/emergency-response',
-    'show emergency': '/emergency-response',
-    'crisis response': '/emergency-response',
-
-    // Export Documentation
-    'export': '/export-documentation',
-    'export docs': '/export-documentation',
-    'open export': '/export-documentation',
-    'show export': '/export-documentation',
-    'documentation': '/export-documentation',
-
-    // Search
-    'search': '/search',
-    'open search': '/search',
-    'show search': '/search',
-    'find something': '/search',
-    'go to search': '/search',
-
-    // Profile Setup
-    'profile': '/profile-setup',
-    'profile setup': '/profile-setup',
-    'open profile': '/profile-setup',
-    'show profile': '/profile-setup',
-    'setup profile': '/profile-setup',
-
-    // Settings
-    'settings': '/settings',
-    'open settings': '/settings',
-    'show settings': '/settings',
-    'preferences': '/settings',
-    'account settings': '/settings',
-
-    // Notifications
-    'notifications': '/notifications',
-    'open notifications': '/notifications',
-    'show notifications': '/notifications',
-    'alerts': '/notifications',
-    'show alerts': '/notifications',
-
-    // Admin Panel
-    'admin': '/admin',
-    'admin panel': '/admin',
-    'open admin': '/admin',
-    'show admin': '/admin',
-    'administration': '/admin',
-    'system admin': '/admin'
+    'open farm monitor': '/monitoring'
   };
   
 
@@ -827,73 +685,6 @@ export function VoiceCommands() {
                 <span className="font-semibold">{item.result}</span>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Comprehensive Voice Commands Help */}
-        <div className="space-y-3">
-          <h4 className="font-medium">All Available Voice Commands:</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div className="space-y-2">
-              <h5 className="font-semibold text-primary">Core Navigation:</h5>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• "Go to dashboard"</li>
-                <li>• "Open market"</li>
-                <li>• "Show learning"</li>
-                <li>• "Open community"</li>
-                <li>• "Open support"</li>
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h5 className="font-semibold text-primary">AI & Tools:</h5>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• "Open AgriGPT"</li>
-                <li>• "Scan my crops"</li>
-                <li>• "Check crop health"</li>
-                <li>• "Open voice commands"</li>
-                <li>• "Show analytics"</li>
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h5 className="font-semibold text-primary">Farm Management:</h5>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• "Open monitoring"</li>
-                <li>• "Show calendar"</li>
-                <li>• "Open scheduling"</li>
-                <li>• "Open financial"</li>
-                <li>• "Show stories"</li>
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h5 className="font-semibold text-primary">Advanced Tech:</h5>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• "Open satellite"</li>
-                <li>• "Show IoT sensors"</li>
-                <li>• "Open drone"</li>
-                <li>• "Show AR view"</li>
-                <li>• "Open blockchain"</li>
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h5 className="font-semibold text-primary">System & Settings:</h5>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• "Open settings"</li>
-                <li>• "Show notifications"</li>
-                <li>• "Open admin"</li>
-                <li>• "Open search"</li>
-                <li>• "Setup profile"</li>
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h5 className="font-semibold text-primary">Other Features:</h5>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• "Open social learning"</li>
-                <li>• "Show emergency"</li>
-                <li>• "Open export"</li>
-                <li>• "Need help"</li>
-                <li>• "Logout"</li>
-              </ul>
-            </div>
           </div>
         </div>
 

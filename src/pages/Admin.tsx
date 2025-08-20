@@ -20,12 +20,10 @@ import {
   Trash2,
   Eye,
   Download,
-  RefreshCw,
-  Mic
+  RefreshCw
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { VoiceCommands } from '@/components/ai/VoiceCommands';
 
 // Mock data for demonstration
 const mockUsers = [
@@ -109,12 +107,11 @@ const AdminPanel = () => {
 
         {/* Main Content */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
             <TabsTrigger value="system">System</TabsTrigger>
             <TabsTrigger value="content">Content</TabsTrigger>
-            <TabsTrigger value="voice-commands">Voice Commands</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -373,56 +370,6 @@ const AdminPanel = () => {
                       </Button>
                     </CardContent>
                   </Card>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Voice Commands Tab */}
-          <TabsContent value="voice-commands" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Mic className="h-5 w-5" />
-                  Voice Commands
-                </CardTitle>
-                <CardDescription>
-                  Test and manage voice command functionality for administrative tasks
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="bg-muted/30 rounded-lg p-4">
-                    <h4 className="font-semibold mb-2">Admin Voice Commands</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Use voice commands to perform administrative tasks quickly and efficiently.
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <h5 className="font-medium mb-2">System Commands:</h5>
-                        <ul className="space-y-1 text-muted-foreground">
-                          <li>• "Show system status"</li>
-                          <li>• "Check user activity"</li>
-                          <li>• "View system logs"</li>
-                          <li>• "Monitor performance"</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 className="font-medium mb-2">User Management:</h5>
-                        <ul className="space-y-1 text-muted-foreground">
-                          <li>• "Add new user"</li>
-                          <li>• "Search users"</li>
-                          <li>• "View user details"</li>
-                          <li>• "Block user"</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-semibold mb-3">Voice Command Interface</h4>
-                    <VoiceCommands />
-                  </div>
                 </div>
               </CardContent>
             </Card>
