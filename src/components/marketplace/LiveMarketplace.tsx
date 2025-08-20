@@ -92,7 +92,55 @@ const mockProducts: Product[] = [
     isOrganic: true,
     harvestDate: '2024-01-10',
     deliveryOptions: ['Pickup', 'Nationwide Shipping']
-  }
+  },
+  {
+    id: '4',
+    name: 'Plaintain',
+    farmer: 'Ayensu Bahh',
+    location: 'Kumasi, Ghana',
+    price: 300,
+    previousPrice: 325,
+    unit: 'kg',
+    quantity: 1000,
+    rating: 4.7,
+    image: 'https://i.pinimg.com/736x/48/9e/7d/489e7db7bfcae138013db6442927aa81.jpg',
+    category: 'Fruits',
+    isOrganic: true,
+    harvestDate: '2024-01-10',
+    deliveryOptions: ['Pickup', 'Nationwide Shipping']
+  },
+  {
+    id: '5',
+    name: 'Riped Mangoes',
+    farmer: 'Boateng Asantewaa',
+    location: 'Brekum, Ghana',
+    price: 100,
+    previousPrice: 223,
+    unit: 'kg',
+    quantity: 30,
+    rating: 4.9,
+    image: 'https://i.pinimg.com/1200x/83/e9/23/83e9236642e447a2ad197f85cf31cdaa.jpg',
+    category: 'Fruits',
+    isOrganic: true,
+    harvestDate: '2024-01-10',
+    deliveryOptions: ['Pickup', 'Nationwide Shipping']
+  },
+  {
+    id: '6',
+    name: 'Pawpaw',
+    farmer: 'Jacob Asare',
+    location: 'Wenchi, Ghana',
+    price: 100,
+    previousPrice: 124,
+    unit: 'kg',
+    quantity: 24,
+    rating: 4.9,
+    image: 'https://i.pinimg.com/736x/45/7d/f3/457df3e0fc340a8eef6a52e4e8964a31.jpg',
+    category: 'Fruits',
+    isOrganic: true,
+    harvestDate: '2024-01-10',
+    deliveryOptions: ['Pickup', 'Nationwide Shipping']
+  },
 ];
 
 interface LiveMarketplaceProps {
@@ -219,6 +267,8 @@ export function LiveMarketplace({ products, searchFilters, onBuyProduct, userBal
                 <SelectItem value="Tamale">Tamale</SelectItem>
                 <SelectItem value="Sunyani">Sunyani</SelectItem>
                 <SelectItem value="Accra">Accra</SelectItem>
+                <SelectItem value="Brekum">Brekum</SelectItem>
+                <SelectItem value="Wenchi">Wenchi</SelectItem>
               </SelectContent>
             </Select>
 
