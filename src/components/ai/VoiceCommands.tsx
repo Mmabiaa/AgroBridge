@@ -118,19 +118,97 @@ const englishIntents = [
   {
     route: '/monitoring',
     phrases: [
-      'monitor', 'show farm monitor', 'open farm monitor', 'farm monitoring', 'show farm monitor'
+      'monitor', 'show farm monitor', 'open farm monitor', 'farm monitoring', 'show farm monitor', 'monitoring'
     ]
   },
   {
     route: '/analytics',
     phrases: [
-      'Show my analytics', 'show farm analysis', 'open analytics', 'analytics', 'show analysis', 'analysis', 'analytics'
+      'Show my analytics', 'show farm analysis', 'open analytics', 'analytics', 'show analysis', 'analysis'
     ]
   },
   {
     route: '/learning',
     phrases: [
       'I want to learn', 'Learning page', 'trends', 'learning', 'show learning progress', 'learn', 'study'
+    ]
+  },
+  {
+    route: '/smart-scheduling',
+    phrases: [
+      'smart scheduling', 'ai scheduling', 'schedule tasks', 'open scheduling', 'show schedule', 'task scheduler', 'planning'
+    ]
+  },
+  {
+    route: '/financial-planning',
+    phrases: [
+      'financial planning', 'finance', 'budget', 'money management', 'financial', 'budget planning', 'show budget'
+    ]
+  },
+  {
+    route: '/satellite-integration',
+    phrases: [
+      'satellite', 'satellite data', 'satellite integration', 'satellite monitoring', 'space monitoring'
+    ]
+  },
+  {
+    route: '/iot-sensor-network',
+    phrases: [
+      'iot sensors', 'sensor network', 'sensors', 'iot monitoring', 'smart sensors', 'device monitoring'
+    ]
+  },
+  {
+    route: '/drone-integration',
+    phrases: [
+      'drone', 'drones', 'drone monitoring', 'aerial monitoring', 'drone integration', 'flying drones'
+    ]
+  },
+  {
+    route: '/ar-visualization',
+    phrases: [
+      'ar visualization', 'augmented reality', 'ar view', 'visualization', 'ar monitoring'
+    ]
+  },
+  {
+    route: '/blockchain-certificates',
+    phrases: [
+      'blockchain', 'certificates', 'blockchain certificates', 'certification', 'verify certificates'
+    ]
+  },
+  {
+    route: '/profile-setup',
+    phrases: [
+      'profile setup', 'setup profile', 'complete profile', 'profile configuration', 'user profile'
+    ]
+  },
+  {
+    route: '/search',
+    phrases: [
+      'search', 'find', 'look for', 'search page', 'open search'
+    ]
+  },
+  {
+    route: '/social-learning',
+    phrases: [
+      'social learning', 'social platform', 'learning platform', 'collaborative learning'
+    ]
+  },
+  {
+    route: '/emergency-response',
+    phrases: [
+      'emergency', 'emergency response', 'urgent help', 'emergency support', 'crisis management'
+    ]
+  },
+  {
+    route: '/export-documentation',
+    phrases: [
+      'export documents', 'documentation', 'export data', 'export reports', 'download documents'
+    ]
+  },
+  {
+    route: '/admin',
+    phrases: [
+      'admin', 'admin panel', 'administration', 'system admin', 'admin dashboard'
     ]
   },
   {
@@ -151,7 +229,17 @@ const englishSuggestions = [
   'Open Settings',
   'Show Notifications',
   'Farmer story',
-  'Crop Calender'
+  'Crop Calendar',
+  'Smart Scheduling',
+  'Financial Planning',
+  'Open Analytics',
+  'Farm Monitor',
+  'Open Search',
+  'Emergency Response',
+  'IoT Sensors',
+  'Drone Integration',
+  'Profile Setup',
+  'Admin Panel'
 ];
 
 const greetingPhrases = [
@@ -232,39 +320,140 @@ export function VoiceCommands() {
     'show voice options': '/voice-commands',
     'help with voice commands': '/voice-commands',
   
-    // New: Tips & Training
-    'show me farming tips': '/training',
-    'open training': '/training',
-    'access learning center': '/training',
+    // Learning & Training
+    'show me farming tips': '/learning',
+    'open training': '/learning',
+    'access learning center': '/learning',
+    'open learning': '/learning',
 
-    // Crop Calender
-    'calender': '/crop-calender',
-    'open calender': '/crop-calender',
+    // Crop Calendar
+    'calendar': '/crop-calendar',
+    'open calendar': '/crop-calendar',
+    'show calendar': '/crop-calendar',
+    'crop calendar': '/crop-calendar',
     
     // Farmer Stories
-    'Open Farmer stories':'/farmer-stories',
-    'Stories': '/farmer-stories',
+    'open farmer stories': '/farmer-stories',
+    'stories': '/farmer-stories',
+    'farmer stories': '/farmer-stories',
   
-    // New: Support
+    // Support
     'open support': '/support',
     'need help': '/support',
     'contact support': '/support',
     'report a problem': '/support',
+    'get help': '/support',
+
+    // Settings
+    'open settings': '/settings',
+    'show settings': '/settings',
+    'account settings': '/settings',
+    'preferences': '/settings',
+
+    // Notifications
+    'show notifications': '/notifications',
+    'open notifications': '/notifications',
+    'check alerts': '/notifications',
   
-    // New: NGO or Aid Info
-    'find ngo help': '/ngo',
-    'open ngo programs': '/ngo',
-    'any farming support': '/ngo',
+    // Farm Monitoring
+    'farm monitoring': '/monitoring',
+    'farm monitor': '/monitoring',
+    'open farm monitor': '/monitoring',
+    'show monitoring': '/monitoring',
+
+    // Analytics
+    'show analytics': '/analytics',
+    'open analytics': '/analytics',
+    'show analysis': '/analytics',
+    'farm analysis': '/analytics',
+
+    // Smart Scheduling - NEW
+    'smart scheduling': '/smart-scheduling',
+    'ai scheduling': '/smart-scheduling',
+    'schedule tasks': '/smart-scheduling',
+    'open scheduling': '/smart-scheduling',
+    'show schedule': '/smart-scheduling',
+    'task scheduler': '/smart-scheduling',
+    'open planning': '/smart-scheduling',
+
+    // Financial Planning - NEW
+    'financial planning': '/financial-planning',
+    'open finance': '/financial-planning',
+    'budget planning': '/financial-planning',
+    'show budget': '/financial-planning',
+    'money management': '/financial-planning',
+    'financial management': '/financial-planning',
+
+    // Satellite Integration - NEW
+    'satellite integration': '/satellite-integration',
+    'satellite monitoring': '/satellite-integration',
+    'open satellite': '/satellite-integration',
+    'space monitoring': '/satellite-integration',
+
+    // IoT Sensor Network - NEW
+    'iot sensors': '/iot-sensor-network',
+    'sensor network': '/iot-sensor-network',
+    'open sensors': '/iot-sensor-network',
+    'smart sensors': '/iot-sensor-network',
+    'device monitoring': '/iot-sensor-network',
+
+    // Drone Integration - NEW
+    'drone integration': '/drone-integration',
+    'drone monitoring': '/drone-integration',
+    'open drones': '/drone-integration',
+    'aerial monitoring': '/drone-integration',
+    'flying drones': '/drone-integration',
+
+    // AR Visualization - NEW
+    'ar visualization': '/ar-visualization',
+    'augmented reality': '/ar-visualization',
+    'ar monitoring': '/ar-visualization',
+    'open visualization': '/ar-visualization',
+
+    // Blockchain Certificates - NEW
+    'blockchain certificates': '/blockchain-certificates',
+    'open blockchain': '/blockchain-certificates',
+    'certificates': '/blockchain-certificates',
+    'verify certificates': '/blockchain-certificates',
+
+    // Profile Setup - NEW
+    'profile setup': '/profile-setup',
+    'setup profile': '/profile-setup',
+    'complete profile': '/profile-setup',
+    'user profile': '/profile-setup',
+
+    // Search - NEW
+    'open search': '/search',
+    'search page': '/search',
+    'find something': '/search',
+
+    // Social Learning - NEW
+    'social learning': '/social-learning',
+    'learning platform': '/social-learning',
+    'collaborative learning': '/social-learning',
+
+    // Emergency Response - NEW
+    'emergency response': '/emergency-response',
+    'emergency support': '/emergency-response',
+    'urgent help': '/emergency-response',
+    'crisis management': '/emergency-response',
+
+    // Export Documentation - NEW
+    'export documentation': '/export-documentation',
+    'export documents': '/export-documentation',
+    'download documents': '/export-documentation',
+    'export reports': '/export-documentation',
+
+    // Admin Panel - NEW
+    'admin panel': '/admin',
+    'administration': '/admin',
+    'system admin': '/admin',
+    'admin dashboard': '/admin',
   
     // Logout
     'log me out': '/logout',
     'logout': '/logout',
     'sign me out': '/logout',
-
-    // Farm Monitoring
-    'farm monitoring': '/monitoring',
-    'farm monitor': '/monitoring',
-    'open farm monitor': '/monitoring'
   };
   
 
