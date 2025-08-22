@@ -109,35 +109,35 @@ export default function Settings() {
         farmSize: user.role === 'farmer' || user.role === 'poultry_keeper' ? 'Medium (1-5 acres)' : undefined,
         experience: user.role === 'farmer' || user.role === 'poultry_keeper' ? 'intermediate' : undefined,
         crops: user.role === 'farmer' || user.role === 'poultry_keeper' ? ['Tomatoes', 'Maize', 'Yam'] : undefined,
-        language: 'en',
+  language: 'en',
         timezone: 'Africa/Accra',
         bio: user.role === 'ngo' ? 'Community development and agricultural support organization' : undefined,
         organization: user.role === 'ngo' ? 'AgroBridge NGO' : undefined,
         role: user.role
-      };
+};
 
       const enhancedSettings: EnhancedSettings = {
-        notifications: {
-          push: true,
-          email: true,
-          sms: false,
-          weather: true,
-          market: true,
+  notifications: {
+    push: true,
+    email: true,
+    sms: false,
+    weather: true,
+    market: true,
           disease: user.role === 'farmer' || user.role === 'poultry_keeper',
           voice: hasPermission('use_voice_commands'),
           community: true
-        },
-        app: {
-          offlineMode: false,
-          autoSync: true,
-          locationServices: true,
+  },
+  app: {
+    offlineMode: false,
+    autoSync: true,
+    locationServices: true,
           darkMode: false,
           voiceCommands: hasPermission('use_voice_commands'),
           accessibility: true
-        },
-        privacy: {
-          shareData: true,
-          analytics: true,
+  },
+  privacy: {
+    shareData: true,
+    analytics: true,
           marketing: false,
           profileVisibility: 'community'
         },
@@ -161,8 +161,8 @@ export default function Settings() {
     
     setSaveStatus('saving');
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Update user profile in context
       updateUserProfile({
@@ -176,8 +176,8 @@ export default function Settings() {
         organization: userData.organization
       });
       
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 3000);
+    setSaveStatus('saved');
+    setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (error) {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
@@ -204,10 +204,10 @@ export default function Settings() {
     
     setSaveStatus('saving');
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 3000);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setSaveStatus('saved');
+    setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (error) {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
@@ -355,8 +355,8 @@ export default function Settings() {
                       onChange={(e) => setUserData(prev => ({ ...prev!, fullName: e.target.value }))}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
                     <Input
                       id="email"
                       type="email"
@@ -369,8 +369,8 @@ export default function Settings() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
                     <Input
                       id="phone"
                       type="tel"
@@ -396,19 +396,19 @@ export default function Settings() {
                 {(user.role === 'farmer' || user.role === 'poultry_keeper') && (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="farmSize">Farm Size</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="farmSize">Farm Size</Label>
                         <Select value={userData.farmSize} onValueChange={(value) => setUserData(prev => ({ ...prev!, farmSize: value }))}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Small (< 1 acre)">Small (&lt; 1 acre)</SelectItem>
-                            <SelectItem value="Medium (1-5 acres)">Medium (1-5 acres)</SelectItem>
-                            <SelectItem value="Large (5+ acres)">Large (5+ acres)</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Small (< 1 acre)">Small (&lt; 1 acre)</SelectItem>
+                        <SelectItem value="Medium (1-5 acres)">Medium (1-5 acres)</SelectItem>
+                        <SelectItem value="Large (5+ acres)">Large (5+ acres)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                       <div className="space-y-2">
                         <Label htmlFor="experience">Experience Level</Label>
                         <Select value={userData.experience} onValueChange={(value) => setUserData(prev => ({ ...prev!, experience: value }))}>
@@ -422,9 +422,9 @@ export default function Settings() {
                           </SelectContent>
                         </Select>
                       </div>
-                    </div>
+                </div>
 
-                    <div className="space-y-2">
+                <div className="space-y-2">
                       <Label>Crops</Label>
                       <div className="flex flex-wrap gap-2 mb-2">
                         {userData.crops?.map((crop) => (
@@ -903,10 +903,10 @@ export default function Settings() {
                 <Separator />
                 
                 <div className="pt-4">
-                  <Button variant="outline" className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground">
+                    <Button variant="outline" className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground">
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete Account
-                  </Button>
+                      Delete Account
+                    </Button>
                 </div>
               </CardContent>
             </Card>

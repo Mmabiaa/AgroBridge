@@ -105,46 +105,46 @@ export default function FinancialPlanning() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-4">
-      <div className="container mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 md:py-8 px-0 overflow-x-hidden">
+      <div className="container mx-auto w-full max-w-full space-y-6 md:space-y-8 px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold flex items-center justify-center gap-3">
-            <DollarSign className="h-8 w-8 text-primary" />
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold flex items-center justify-center gap-2 md:gap-3">
+            <DollarSign className="h-6 w-6 md:h-8 md:w-8 text-primary" />
             Agricultural Financial Planning
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
             Comprehensive financial management tools for sustainable farm operations
           </p>
         </div>
 
         {/* Financial Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
-              <DollarSign className="h-8 w-8 text-primary mx-auto mb-2" />
-              <div className="text-2xl font-bold">₦{totalBudget.toLocaleString()}</div>
-              <p className="text-sm text-muted-foreground">Annual Budget</p>
+            <CardContent className="p-4 md:p-6 text-center">
+              <DollarSign className="h-6 w-6 md:h-8 md:w-8 text-primary mx-auto mb-2" />
+              <div className="text-xl md:text-2xl font-bold">₦{totalBudget.toLocaleString()}</div>
+              <p className="text-xs md:text-sm text-muted-foreground">Annual Budget</p>
             </CardContent>
           </Card>
           <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
-              <TrendingUp className="h-8 w-8 text-green-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold">₦{totalSpent.toLocaleString()}</div>
-              <p className="text-sm text-muted-foreground">Spent to Date</p>
+            <CardContent className="p-4 md:p-6 text-center">
+              <TrendingUp className="h-6 w-6 md:h-8 md:w-8 text-green-500 mx-auto mb-2" />
+              <div className="text-xl md:text-2xl font-bold">₦{totalSpent.toLocaleString()}</div>
+              <p className="text-xs md:text-sm text-muted-foreground">Spent to Date</p>
             </CardContent>
           </Card>
           <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
-              <Target className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold">{budgetUtilization.toFixed(1)}%</div>
-              <p className="text-sm text-muted-foreground">Budget Utilized</p>
+            <CardContent className="p-4 md:p-6 text-center">
+              <Target className="h-6 w-6 md:h-8 md:w-8 text-blue-500 mx-auto mb-2" />
+              <div className="text-xl md:text-2xl font-bold">{budgetUtilization.toFixed(1)}%</div>
+              <p className="text-xs md:text-sm text-muted-foreground">Budget Utilized</p>
             </CardContent>
           </Card>
           <Card className="shadow-soft">
-            <CardContent className="p-6 text-center">
-              <PieChart className="h-8 w-8 text-purple-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold">₦37,440</div>
-              <p className="text-sm text-muted-foreground">Projected Revenue</p>
+            <CardContent className="p-4 md:p-6 text-center">
+              <PieChart className="h-6 w-6 md:h-8 md:w-8 text-purple-500 mx-auto mb-2" />
+              <div className="text-xl md:text-2xl font-bold">₦37,440</div>
+              <p className="text-xs md:text-sm text-muted-foreground">Projected Revenue</p>
             </CardContent>
           </Card>
         </div>
