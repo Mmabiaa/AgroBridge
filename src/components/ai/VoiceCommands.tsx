@@ -326,11 +326,15 @@ export function VoiceCommands() {
     'access learning center': '/learning',
     'open learning': '/learning',
 
+
     // Crop Calendar
     'calendar': '/crop-calendar',
     'open calendar': '/crop-calendar',
     'show calendar': '/crop-calendar',
     'crop calendar': '/crop-calendar',
+
+ 
+
     
     // Farmer Stories
     'open farmer stories': '/farmer-stories',
