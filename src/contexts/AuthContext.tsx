@@ -43,55 +43,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check for stored user session
     const storedUser = localStorage.getItem('agrobridge_user');
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      // Refresh permissions and routes to ensure they're up to date
-      const updatedUser = refreshUserPermissions(parsedUser);
-      setUser(updatedUser);
-      // Update localStorage with refreshed permissions
-      localStorage.setItem('agrobridge_user', JSON.stringify(updatedUser));
+      setUser(JSON.parse(storedUser));
     }
     setIsLoading(false);
   }, []);
 
-  const refreshUserPermissions = (user: User): User => {
-    // Update permissions and routes based on current role
-    const updatedPermissions = getDefaultPermissions(user.role);
-    const updatedRoutes = getDefaultRoutes(user.role);
-    
-    return {
-      ...user,
-      permissions: updatedPermissions,
-      accessibleRoutes: updatedRoutes
-    };
-  };
-
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, role?: UserRole) => {
     setIsLoading(true);
     try {
       // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/login', {
+      // const response = await fetch('/api/auth/token', {
       //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password })
+      //   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      //   body: new URLSearchParams({ username: email, password })
       // });
       // const data = await response.json();
       
       // Mock API response for now
+      const userRole = role || 'farmer'; // Default to farmer if no role specified
       const mockUser: User = {
         id: '1',
-        email: email,
-        name: 'John Doe',
-        role: 'buyer', // Default role for testing
+        email,
+        name: email.split('@')[0],
+        role: userRole,
         isAuthenticated: true,
-        permissions: ['view_dashboard', 'view_marketplace', 'place_orders', 'view_orders', 'view_learning', 'view_community', 'view_financial_planning'],
-        accessibleRoutes: ['/dashboard', '/marketplace', '/learning', '/community', '/financial-planning']
+        permissions: getDefaultPermissions(userRole),
+        accessibleRoutes: getDefaultRoutes(userRole)
       };
       
-      // Refresh permissions and routes to ensure they're up to date
-      const updatedUser = refreshUserPermissions(mockUser);
-      
-      setUser(updatedUser);
-      localStorage.setItem('agrobridge_user', JSON.stringify(updatedUser));
+      setUser(mockUser);
+      localStorage.setItem('agrobridge_user', JSON.stringify(mockUser));
     } catch (error) {
       throw new Error('Login failed');
     } finally {
@@ -153,12 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateUserRole = (role: UserRole) => {
     if (user) {
-      const updatedUser = { 
-        ...user, 
-        role,
-        permissions: getDefaultPermissions(role),
-        accessibleRoutes: getDefaultRoutes(role)
-      };
+      const updatedUser = { ...user, role };
       setUser(updatedUser);
       localStorage.setItem('agrobridge_user', JSON.stringify(updatedUser));
     }
