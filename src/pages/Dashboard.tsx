@@ -252,78 +252,76 @@ export default function Dashboard() {
   // If user has basic dashboard permission, show role-based dashboard
   if (user && hasPermission('view_dashboard')) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <RoleBasedDashboard />
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
+        <div className="container mx-auto w-full max-w-full space-y-6 md:space-y-8 px-4 sm:px-6 lg:px-8">
+          <RoleBasedDashboard />
+        </div>
       </div>
     );
   }
 
   // Fallback to basic dashboard for users without specific permissions
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="space-y-6">
-        {/* Welcome Section */}
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">
-            Welcome to AgroBridge
-          </h1>
-          <p className="text-muted-foreground">
-            Your comprehensive agricultural platform
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
+      <div className="container mx-auto w-full max-w-full space-y-6 md:space-y-8 px-4 sm:px-6 lg:px-8">
+        <div className="space-y-6">
+          {/* Welcome Section */}
+          <div className="text-center space-y-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+              Welcome to AgroBridge
+            </h1>
+            <p className="text-sm md:text-base text-muted-foreground">
+              Your comprehensive agricultural platform
+            </p>
+          </div>
 
-        {/* Basic Dashboard Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Getting Started</CardTitle>
-              <CardDescription>Begin your journey with AgroBridge</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
+          {/* Basic Dashboard Content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <Card className="shadow-soft">
+              <CardHeader>
+                <CardTitle className="text-lg md:text-xl">Getting Started</CardTitle>
+                <CardDescription className="text-sm md:text-base">Begin your journey with AgroBridge</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <Link to="/profile-setup">
-                  <Button className="w-full">Complete Profile Setup</Button>
+                  <Button className="w-full text-sm md:text-base">Complete Profile Setup</Button>
                 </Link>
                 <Link to="/learning">
-                  <Button variant="outline" className="w-full">Explore Learning Center</Button>
+                  <Button variant="outline" className="w-full text-sm md:text-base">Explore Learning Center</Button>
                 </Link>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Support</CardTitle>
-              <CardDescription>Need help? We're here for you</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
+            <Card className="shadow-soft">
+              <CardHeader>
+                <CardTitle className="text-lg md:text-xl">Support</CardTitle>
+                <CardDescription className="text-sm md:text-base">Need help? We're here for you</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <Link to="/support">
-                  <Button variant="outline" className="w-full">Get Support</Button>
+                  <Button variant="outline" className="w-full text-sm md:text-base">Get Support</Button>
                 </Link>
                 <Link to="/community">
-                  <Button variant="outline" className="w-full">Join Community</Button>
+                  <Button variant="outline" className="w-full text-sm md:text-base">Join Community</Button>
                 </Link>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Account</CardTitle>
-              <CardDescription>Manage your account settings</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
+            <Card className="shadow-soft">
+              <CardHeader>
+                <CardTitle className="text-lg md:text-xl">Account</CardTitle>
+                <CardDescription className="text-sm md:text-base">Manage your account settings</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <Link to="/settings">
-                  <Button variant="outline" className="w-full">Account Settings</Button>
+                  <Button variant="outline" className="w-full text-sm md:text-base">Account Settings</Button>
                 </Link>
                 <Link to="/notifications">
-                  <Button variant="outline" className="w-full">Notifications</Button>
+                  <Button variant="outline" className="w-full text-sm md:text-base">Notifications</Button>
                 </Link>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

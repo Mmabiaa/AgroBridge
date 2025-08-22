@@ -8,6 +8,7 @@ import { Mic, MicOff, Volume2, Languages, MessageSquare, CheckCircle } from 'luc
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getAgriQAAnswer } from '@/data/agrigpt_knowledge';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -177,6 +178,8 @@ export function VoiceCommands() {
   const [wakeWord, setWakeWord] = useState('Hey AgroBridge');
   const [isWakeWordListening, setIsWakeWordListening] = useState(false);
   const [wakeWordResponse, setWakeWordResponse] = useState('');
+  const [wakeWordDetected, setWakeWordDetected] = useState(false);
+  const [isProcessingWakeWord, setIsProcessingWakeWord] = useState(false);
 
   // Navigation command mapping (English only)
   const navigationCommands: { [key: string]: string } = {
@@ -329,38 +332,76 @@ export function VoiceCommands() {
         const normalizedFinal = normalizeText(final);
         const normalizedWakeWord = normalizeText(wakeWord);
         
-        // Check if wake word is detected
-        if (normalizedFinal.includes(normalizedWakeWord) || 
-            normalizedFinal.includes('hey agrobridge') || 
-            normalizedFinal.includes('hello agrobridge') ||
-            normalizedFinal.includes('hi agrobridge')) {
-          
-          // Wake word detected!
+        // Enhanced wake word detection - more like Siri
+        const wakeWordPatterns = [
+          normalizedWakeWord,
+          'hey agrobridge',
+          'hello agrobridge', 
+          'hi agrobridge',
+          'agrobridge',
+          'hey agro',
+          'hello agro',
+          'hi agro',
+          'agro bridge',
+          'hey farming',
+          'hello farming',
+          'hi farming'
+        ];
+        
+        const isWakeWordDetected = wakeWordPatterns.some(pattern => 
+          normalizedFinal.includes(pattern) || 
+          normalizedFinal.startsWith(pattern) ||
+          normalizedFinal.endsWith(pattern)
+        );
+        
+        if (isWakeWordDetected) {
+          // Wake word detected! - Immediate response like Siri
           setIsWakeWordActive(true);
           setIsWakeWordListening(false);
+          setWakeWordDetected(true);
+          setIsProcessingWakeWord(true);
           
-          // Stop wake word listening
+          // Stop wake word listening immediately
           if (wakeWordRecognitionRef.current) {
             wakeWordRecognitionRef.current.stop();
           }
           
-          // Respond to wake word
+          // Immediate visual feedback
           const greeting = `Hello! I'm AgroBridge, your farming assistant. How may I help you today?`;
           setWakeWordResponse(greeting);
           setResponse(greeting);
           
-          // Speak the greeting
+          // Immediate audio feedback with better voice
           if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance(greeting);
             utterance.lang = 'en-US';
             utterance.rate = 0.9;
+            utterance.pitch = 1.1;
+            utterance.volume = 0.8;
+            
+            // Get available voices and use a better one if available
+            const voices = speechSynthesis.getVoices();
+            const preferredVoice = voices.find(voice => 
+              voice.name.includes('Google') || 
+              voice.name.includes('Natural') || 
+              voice.name.includes('Premium')
+            );
+            if (preferredVoice) {
+              utterance.voice = preferredVoice;
+            }
+            
             speechSynthesis.speak(utterance);
           }
           
-          // Start active listening for commands
+          // Clear any previous transcripts
+          setTranscript('');
+          setInterimTranscript('');
+          
+          // Start active listening for commands after a short delay (like Siri)
           setTimeout(() => {
+            setIsProcessingWakeWord(false);
             startListening();
-          }, 2000); // Wait for greeting to finish
+          }, 1500); // Shorter delay for more responsive feel
         }
       }
     };
@@ -409,10 +450,21 @@ export function VoiceCommands() {
       setIsWakeWordActive(false);
       stopWakeWordListening();
       setWakeWordResponse('');
+      setWakeWordDetected(false);
+      setIsProcessingWakeWord(false);
     } else {
       setIsWakeWordActive(true);
+      setWakeWordDetected(false);
+      setIsProcessingWakeWord(false);
       startWakeWordListening();
     }
+  };
+
+  // Reset wake word state after command processing
+  const resetWakeWordState = () => {
+    setWakeWordDetected(false);
+    setIsProcessingWakeWord(false);
+    setWakeWordResponse('');
   };
 
   // Function to speak text
@@ -421,9 +473,46 @@ export function VoiceCommands() {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = getLanguageCode(selectedLanguage);
       utterance.rate = 0.9;
+      utterance.pitch = 1.1;
+      utterance.volume = 0.8;
+      
+      // Use better voice if available
+      const voices = speechSynthesis.getVoices();
+      const preferredVoice = voices.find(voice => 
+        voice.name.includes('Google') || 
+        voice.name.includes('Natural') || 
+        voice.name.includes('Premium')
+      );
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+      }
+      
       speechSynthesis.speak(utterance);
     }
   };
+
+  // Get available voices for better speech synthesis
+  const getAvailableVoices = () => {
+    if ('speechSynthesis' in window) {
+      return speechSynthesis.getVoices();
+    }
+    return [];
+  };
+
+  // Initialize voices when component mounts
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      // Load voices
+      const loadVoices = () => {
+        const voices = speechSynthesis.getVoices();
+        console.log('Available voices:', voices.map(v => v.name));
+      };
+      
+      // Some browsers need time to load voices
+      setTimeout(loadVoices, 100);
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
+  }, []);
 
   // Keyboard shortcut (spacebar) to start/stop listening
   useEffect(() => {
@@ -467,6 +556,9 @@ export function VoiceCommands() {
       recognitionRef.current.stop();
       setIsListening(false);
       // No need to processVoiceCommand here, now handled in onresult
+      
+      // Reset wake word state
+      resetWakeWordState();
       
       // Restart wake word listening after command listening stops
       if (isWakeWordActive) {
@@ -758,32 +850,110 @@ export function VoiceCommands() {
             </Button>
           </div>
           
+          {/* Custom Wake Word Input */}
+          <div className="space-y-2">
+            <Label htmlFor="customWakeWord" className="text-sm font-medium">Custom Wake Word</Label>
+            <div className="flex gap-2">
+              <Input
+                id="customWakeWord"
+                placeholder="e.g., Hey AgroBridge"
+                value={wakeWord}
+                onChange={(e) => setWakeWord(e.target.value)}
+                className="flex-1"
+                disabled={isWakeWordActive}
+              />
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setWakeWord('Hey AgroBridge')}
+                disabled={isWakeWordActive}
+              >
+                Reset
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Customize your wake word phrase. Must be enabled when wake word is inactive.
+            </p>
+          </div>
+          
           {isWakeWordActive && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${isWakeWordListening ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
-                <span className="text-sm text-muted-foreground">
-                  {isWakeWordListening ? 'Listening for wake word...' : 'Wake word detection ready'}
+            <div className="space-y-3">
+              {/* Wake Word Status */}
+              <div className="flex items-center gap-3">
+                <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  isProcessingWakeWord ? 'bg-blue-500 animate-pulse scale-125' :
+                  isWakeWordListening ? 'bg-green-500 animate-pulse' : 
+                  wakeWordDetected ? 'bg-blue-600' : 'bg-gray-400'
+                }`}></div>
+                <span className="text-sm font-medium">
+                  {isProcessingWakeWord ? 'Wake word detected! Processing...' :
+                   isWakeWordListening ? 'Listening for wake word...' : 
+                   wakeWordDetected ? 'Wake word ready' : 'Wake word detection ready'}
                 </span>
               </div>
+              
+              {/* Wake Word Response */}
               {wakeWordResponse && (
-                <div className="p-3 bg-primary/10 rounded-lg">
-                  <p className="text-sm font-medium">Wake word detected!</p>
+                <div className={`p-4 rounded-lg transition-all duration-300 ${
+                  isProcessingWakeWord ? 'bg-blue-100 border-2 border-blue-300' : 'bg-primary/10'
+                }`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`w-2 h-2 rounded-full ${
+                      isProcessingWakeWord ? 'bg-blue-500 animate-pulse' : 'bg-green-500'
+                    }`}></div>
+                    <p className="text-sm font-medium">
+                      {isProcessingWakeWord ? 'Wake word detected!' : 'Response complete'}
+                    </p>
+                  </div>
                   <p className="text-sm text-muted-foreground">{wakeWordResponse}</p>
                 </div>
               )}
+              
+              {/* Wake Word Patterns */}
+              <div className="text-xs text-muted-foreground">
+                <p className="font-medium mb-1">Try saying:</p>
+                <div className="flex flex-wrap gap-1">
+                  {['Hey AgroBridge', 'Hello AgroBridge', 'Hi AgroBridge', 'AgroBridge'].map((pattern, i) => (
+                    <span key={i} className="bg-muted px-2 py-1 rounded text-xs">
+                      "{pattern}"
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
 
         {/* Voice Control */}
         <div className="space-y-4">
+          {/* Siri-like Wake Word Indicator */}
+          {isProcessingWakeWord && (
+            <div className="flex items-center justify-center p-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white">
+              <div className="text-center space-y-3">
+                <div className="flex items-center justify-center gap-1">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="w-2 h-2 bg-white rounded-full animate-pulse"
+                      style={{
+                        animationDelay: `${i * 0.2}s`,
+                        animationDuration: '1s'
+                      }}
+                    ></div>
+                  ))}
+                </div>
+                <p className="text-sm font-medium">Wake word detected! Listening for your command...</p>
+              </div>
+            </div>
+          )}
+          
           <div className="flex items-center justify-center gap-4">
             <Button
               size="lg"
               variant={isListening ? "destructive" : "default"}
               onClick={isListening ? stopListening : startListening}
               className="h-20 w-20 rounded-full text-2xl"
+              disabled={isProcessingWakeWord}
             >
               {isListening ? '🎤' : '🎙️'}
             </Button>
@@ -799,7 +969,9 @@ export function VoiceCommands() {
             )}
           </div>
           <div className="text-center">
-            {isListening ? (
+            {isProcessingWakeWord ? (
+              <Badge variant="default" className="bg-blue-500">Wake word detected! Processing...</Badge>
+            ) : isListening ? (
               <Badge variant="destructive">Listening...</Badge>
             ) : (
               <Badge variant="outline">Tap or press Space to speak</Badge>
