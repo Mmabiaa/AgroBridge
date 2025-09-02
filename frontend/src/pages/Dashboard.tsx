@@ -93,14 +93,6 @@ const farmHealth = {
   pestRisk: 25,
   weatherSuitability: 95
 };
-const messages = [
-  "Welcome to AgroBridge, your smart farming partner.",
-  "AgroBridge connects farmers and markets with AI.",
-  "Hello! AgroBridge is here to power your agriculture journey.",
-  "AgroBridge — smarter farming, stronger connections.",
-  "Akwaaba to AgroBridge, wo AI farming partner.",
-  "AgroBridge yɛ wo kuayo boafo — your farm helper."
-];
 const quickActions = [
   { title: 'Chat with AgriGPT', icon: Bot, href: '/agrigpt', variant: 'farmer' },
   { title: 'Check Farm Monitor', icon: Monitor, href: '/monitoring', variant: 'sky' },
@@ -129,22 +121,7 @@ export default function Dashboard() {
     // Welcome speech on every dashboard visit
     
     const messages = [
-      "Welcome to AgroBridge, your smart farming partner.",
-      "Welcome to AgroBridge, your friend for better farming!",
-      "AgroBridge connects you to markets with smart AI help.",
-      "Hello farmer! AgroBridge makes your farming journey easier.",
-      "AgroBridge — grow more, sell smarter, succeed faster.",
-      "Hi there! AgroBridge is your AI partner for farm success.",
-      "Join AgroBridge to link with buyers and boost your farm!",
-      "AgroBridge connects farmers and markets with AI.",
-      "Hello! AgroBridge is here to power your agriculture journey.",
-      "AgroBridge — smarter farming, stronger connections.",
-      "AgroBridge, your digital farming assistant.",
-      "Welcome back to AgroBridge, supporting farmers every step.",
-      "AgroBridge helps you grow smarter and sell faster.",
-      "Discover new opportunities with AgroBridge.",
-      "AgroBridge — bridging farmers and buyers seamlessly.",
-      "Your agriculture future starts here, with AgroBridge."
+      "Welcome back to AgroBridge, would you need any assistance today?",
     ];
     
     
@@ -156,7 +133,7 @@ export default function Dashboard() {
     
         utterance.rate = 0.8;
         utterance.pitch = 0.8;
-        utterance.volume = 0.8;
+        utterance.volume = 0.5;
     
         // Wait until voices are loaded (important for Safari & mobile)
         const setVoice = () => {
