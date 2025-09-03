@@ -144,7 +144,8 @@ export default function Dashboard() {
       "AgroBridge helps you grow smarter and sell faster.",
       "Discover new opportunities with AgroBridge.",
       "AgroBridge — bridging farmers and buyers seamlessly.",
-      "Your agriculture future starts here, with AgroBridge."
+      "Your agriculture future starts here, with AgroBridge.",
+      "AgroBridge — your smart farming companion."
     ];
     
     
