@@ -1,52 +1,48 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine, Base
-from routers import auth, products, orders, sensors, forums, comments, events, gpt, plans, reminders, blockchain
-import models.user
-import models.product
-import models.order
-import models.sensor_data
-import models.forum
-import models.comment
-import models.event
-import models.gpt_log
-import models.plan
-import models.reminder
-import models.blockchain_certificate
-# New models
-import models.farm
-import models.market_price
-import models.audit_log
-from routers import rbac
-from routers import voice
+from fastapi.staticfiles import StaticFiles
+import os
 
-app = FastAPI()
+# Import configurations and utilities
+from core.config import settings
+from database import Base, engine
 
-# Allow all origins for development; restrict in production
+# Create database tables
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(
+    title="AgroBridge API",
+    description="Backend API for AgroBridge - Connecting Farmers and Buyers",
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
+
+# Set up CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # In production, replace with specific origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-Base.metadata.create_all(engine)  # type: ignore[attr-defined]
+# Create uploads directory if it doesn't exist
+os.makedirs("uploads", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
-app.include_router(auth.router)
-app.include_router(products.router)
-app.include_router(orders.router)
-app.include_router(sensors.router)
-app.include_router(forums.router)
-app.include_router(comments.router)
-app.include_router(events.router)
-app.include_router(gpt.router)
-app.include_router(plans.router)
-app.include_router(reminders.router)
-app.include_router(blockchain.router)
-app.include_router(rbac.router)
-app.include_router(voice.router)
+# Import and include routers
+from api.v1.api import api_router
+app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/")
-def read_root():
-    return {"message": "Hello from FastAPI backend!"} 
+async def root():
+    return {
+        "message": "Welcome to AgroBridge API",
+        "docs": "/docs",
+        "redoc": "/redoc"
+    }
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
