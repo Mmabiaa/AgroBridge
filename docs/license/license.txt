@@ -1,0 +1,64 @@
+AgroBridge Proprietary Software License
+======================================
+
+Copyright (c) YYYY YOUR NAME / ORGANIZATION. All rights reserved.
+
+1. Ownership
+   AgroBridge (the "Software") and all associated code, documentation, assets,
+   images, designs, schemas, databases, and other materials (collectively, the
+   "Materials") are and shall remain the exclusive property of the copyright
+   holder identified above ("Copyright Owner"). Nothing in this License transfers
+   ownership of the Materials to any third party.
+
+2. License Grant
+   Subject to the terms below, Copyright Owner grants no rights to copy,
+   distribute, modify, sublicense, publish, or create derivative works of the
+   Materials except where a written license, contributor agreement, or separate
+   authorization from the Copyright Owner exists.
+
+3. Prohibitions
+   Except where expressly permitted in writing by Copyright Owner:
+     a) No person or entity may use the Materials for commercial or non-commercial
+        purposes.
+     b) No person or entity may reproduce, modify, distribute, sublicense,
+        publicly display or perform, or create derivative works based on the
+        Materials.
+     c) No person or entity may falsely claim authorship, ownership, or authorship
+        credit for the Materials or any derivative thereof.
+     d) No person or entity may remove, alter, or obscure any copyright, trademark,
+        or other proprietary notices included in the Materials.
+
+4. Attribution and Notices
+   If Copyright Owner provides written permission for reuse, the Licensee must:
+     a) Include the following exact copyright notice in every file or distribution:
+        "Copyright (c) 2025 Boateng Prince Agyenim / Mmabiaa. All rights reserved."
+     b) Include a copy of this License and any associated NOTICE file where the
+        Materials are distributed.
+
+5. DMCA / Enforcement
+   Copyright Owner reserves all enforcement rights, including seeking injunctive
+   relief, monetary damages, and takedown under applicable laws (including the
+   DMCA in the United States) where appropriate.
+
+6. No Warranty
+   THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED. COPYRIGHT OWNER DISCLAIMS ALL WARRANTIES, INCLUDING MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+7. Limitation of Liability
+   IN NO EVENT WILL COPYRIGHT OWNER BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
+   INDIRECT, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+   THE MATERIALS, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+8. Governing Law & Venue
+   This Agreement is governed by the law of Ghana. Any legal
+   actions or proceedings related to this License shall be brought exclusively
+   in the courts located in Ghana, and the parties consent to
+   the personal jurisdiction of such courts. 
+9. Contact
+   For permissions, licensing inquiries, or reporting misuse, contact:
+     EMAIL: mmaabiaa@gmail.com
+
+By using or accessing the Materials without a written license, you accept and
+agree that you are bound by this License and are in violation if you do not
+comply.

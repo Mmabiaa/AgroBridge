@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+pillow
+torch
+yolov5 # for torch.hub.load('ultralytics/yolov5', ...)
+pandas 

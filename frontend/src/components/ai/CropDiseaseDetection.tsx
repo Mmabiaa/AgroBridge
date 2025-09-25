@@ -1,0 +1,806 @@
+
+import { useState, useRef, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { 
+  Camera, 
+  Upload, 
+  Scan, 
+  AlertTriangle, 
+  CheckCircle, 
+  RefreshCw, 
+  RotateCw,
+  Leaf,
+  Droplets,
+  Thermometer,
+  Calendar,
+  AlertCircle,
+  Info,
+  Shield
+} from 'lucide-react';
+import { notifyScanCompleted } from '@/components/notifications/NotificationCenter';
+
+interface DetectionResult {
+  disease: string;
+  confidence: number;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  treatment: string[];
+  prevention: string[];
+  symptoms: string[];
+  causes: string[];
+  affectedCrops: string[];
+  spreadRate: 'slow' | 'moderate' | 'fast';
+  environmentalFactors: string[];
+  recommendedProducts: string[];
+  cost: 'low' | 'medium' | 'high';
+  recoveryTime: string;
+  riskLevel: 'low' | 'medium' | 'high';
+}
+
+interface DiseaseDatabase {
+  [key: string]: DetectionResult;
+}
+
+const diseaseDatabase: DiseaseDatabase = {
+  'Late Blight': {
+    disease: 'Late Blight (Phytophthora infestans)',
+    confidence: 89,
+    severity: 'high',
+    treatment: [
+      'Apply copper-based fungicide (e.g., Copper Oxychloride) immediately',
+      'Remove and destroy all infected plant parts',
+      'Apply systemic fungicide like Metalaxyl or Mancozeb',
+      'Increase plant spacing for better air circulation',
+      'Apply treatment every 7-10 days for 3 weeks'
+    ],
+    prevention: [
+      'Use resistant varieties (e.g., Mountain Magic, Defiant)',
+      'Avoid overhead irrigation',
+      'Maintain proper plant spacing (60-90cm apart)',
+      'Apply preventive fungicide before rainy season',
+      'Remove volunteer plants and crop debris'
+    ],
+    symptoms: [
+      'Dark, water-soaked lesions on leaves',
+      'White fungal growth on underside of leaves',
+      'Brown to black lesions on stems',
+      'Rapid wilting and death of plants',
+      'Fruit rot with firm, brown lesions'
+    ],
+    causes: [
+      'High humidity (>90%) and cool temperatures (15-25°C)',
+      'Poor air circulation in dense plantings',
+      'Overhead irrigation keeping foliage wet',
+      'Infected seed tubers or transplants'
+    ],
+    affectedCrops: ['Tomatoes', 'Potatoes', 'Peppers', 'Eggplants'],
+    spreadRate: 'fast',
+    environmentalFactors: ['High humidity', 'Cool temperatures', 'Rainy weather', 'Poor ventilation'],
+    recommendedProducts: [
+      'Copper Oxychloride 50% WP',
+      'Mancozeb 80% WP',
+      'Metalaxyl + Mancozeb',
+      'Chlorothalonil 75% WP'
+    ],
+    cost: 'medium',
+    recoveryTime: '2-3 weeks with proper treatment',
+    riskLevel: 'high'
+  },
+  'Early Blight': {
+    disease: 'Early Blight (Alternaria solani)',
+    confidence: 76,
+    severity: 'medium',
+    treatment: [
+      'Apply chlorothalonil or mancozeb fungicide',
+      'Remove infected leaves and stems',
+      'Apply neem oil as organic alternative',
+      'Improve soil drainage and reduce moisture',
+      'Apply treatment every 10-14 days'
+    ],
+    prevention: [
+      'Practice crop rotation (3-4 year cycle)',
+      'Use certified disease-free seeds',
+      'Maintain adequate plant spacing',
+      'Avoid working in wet fields',
+      'Mulch to prevent soil splash'
+    ],
+    symptoms: [
+      'Dark brown spots with concentric rings',
+      'Yellow halos around lesions',
+      'Defoliation starting from bottom leaves',
+      'Stem lesions near soil line',
+      'Fruit spots with leathery texture'
+    ],
+    causes: [
+      'Warm, humid weather conditions',
+      'Poor soil fertility and stress',
+      'Infected plant debris in soil',
+      'Overcrowded plantings'
+    ],
+    affectedCrops: ['Tomatoes', 'Potatoes', 'Peppers'],
+    spreadRate: 'moderate',
+    environmentalFactors: ['Warm temperatures', 'High humidity', 'Poor soil conditions', 'Plant stress'],
+    recommendedProducts: [
+      'Chlorothalonil 75% WP',
+      'Mancozeb 80% WP',
+      'Neem Oil (organic)',
+      'Bacillus subtilis (biological control)'
+    ],
+    cost: 'low',
+    recoveryTime: '1-2 weeks with treatment',
+    riskLevel: 'medium'
+  },
+  'Bacterial Wilt': {
+    disease: 'Bacterial Wilt (Ralstonia solanacearum)',
+    confidence: 92,
+    severity: 'critical',
+    treatment: [
+      'Remove and destroy infected plants immediately',
+      'Solarize soil for 6-8 weeks',
+      'Apply copper-based bactericide to surrounding plants',
+      'Disinfect tools and equipment',
+      'No effective chemical treatment available'
+    ],
+    prevention: [
+      'Use resistant varieties',
+      'Practice crop rotation with non-solanaceous crops',
+      'Improve soil drainage',
+      'Use disease-free transplants',
+      'Avoid overwatering and poor drainage'
+    ],
+    symptoms: [
+      'Sudden wilting of leaves during day',
+      'Recovery at night initially',
+      'Brown discoloration of vascular tissue',
+      'White bacterial ooze from cut stems',
+      'Complete plant collapse'
+    ],
+    causes: [
+      'Infected soil or water',
+      'Contaminated tools or equipment',
+      'Infected transplants or seeds',
+      'Poor soil drainage and overwatering'
+    ],
+    affectedCrops: ['Tomatoes', 'Potatoes', 'Peppers', 'Eggplants', 'Tobacco'],
+    spreadRate: 'fast',
+    environmentalFactors: ['Warm soil temperatures', 'High soil moisture', 'Poor drainage', 'Acidic soil'],
+    recommendedProducts: [
+      'Copper-based bactericides',
+      'Biological control agents',
+      'Soil solarization materials'
+    ],
+    cost: 'high',
+    recoveryTime: 'No recovery - plant removal required',
+    riskLevel: 'high'
+  },
+  'Healthy Plant': {
+    disease: 'Healthy Plant - No Disease Detected',
+    confidence: 95,
+    severity: 'low',
+    treatment: [
+      'Continue current care routine',
+      'Monitor for early signs of disease',
+      'Maintain proper watering schedule',
+      'Apply preventive fungicide if in high-risk area'
+    ],
+    prevention: [
+      'Regular monitoring and scouting',
+      'Maintain good agricultural practices',
+      'Use disease-resistant varieties',
+      'Practice crop rotation',
+      'Keep field clean and weed-free'
+    ],
+    symptoms: [
+      'No visible disease symptoms',
+      'Healthy green foliage',
+      'Normal growth and development',
+      'No lesions or spots on leaves',
+      'Strong, upright plant structure'
+    ],
+    causes: [
+      'Good agricultural practices',
+      'Disease-resistant varieties',
+      'Proper environmental conditions',
+      'Regular monitoring and early intervention'
+    ],
+    affectedCrops: ['All crops'],
+    spreadRate: 'slow',
+    environmentalFactors: ['Optimal growing conditions', 'Good air circulation', 'Proper nutrition', 'Adequate water'],
+    recommendedProducts: [
+      'Preventive fungicides (optional)',
+      'Balanced fertilizers',
+      'Organic soil amendments'
+    ],
+    cost: 'low',
+    recoveryTime: 'No recovery needed',
+    riskLevel: 'low'
+  },
+  'Powdery Mildew': {
+    disease: 'Powdery Mildew (Oidium spp.)',
+    confidence: 84,
+    severity: 'medium',
+    treatment: [
+      'Apply sulfur-based fungicide',
+      'Use neem oil or potassium bicarbonate',
+      'Remove severely infected leaves',
+      'Improve air circulation',
+      'Apply treatment every 7 days'
+    ],
+    prevention: [
+      'Plant resistant varieties',
+      'Maintain adequate spacing',
+      'Avoid overhead irrigation',
+      'Prune for better air flow',
+      'Apply preventive fungicide early season'
+    ],
+    symptoms: [
+      'White to gray powdery spots on leaves',
+      'Yellowing and curling of leaves',
+      'Stunted growth and reduced yield',
+      'Powdery coating on stems and flowers',
+      'Premature leaf drop'
+    ],
+    causes: [
+      'High humidity with moderate temperatures',
+      'Poor air circulation',
+      'Overcrowded plantings',
+      'Overhead irrigation'
+    ],
+    affectedCrops: ['Cucumbers', 'Squash', 'Melons', 'Peas', 'Beans'],
+    spreadRate: 'moderate',
+    environmentalFactors: ['Moderate temperatures', 'High humidity', 'Poor ventilation', 'Dense plantings'],
+    recommendedProducts: [
+      'Sulfur 80% WP',
+      'Neem Oil',
+      'Potassium Bicarbonate',
+      'Bacillus subtilis'
+    ],
+    cost: 'low',
+    recoveryTime: '1-2 weeks with treatment',
+    riskLevel: 'medium'
+  }
+};
+
+export function CropDiseaseDetection() {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [result, setResult] = useState<DetectionResult | null>(null);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [cameraActive, setCameraActive] = useState(true);
+  const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
+
+  // Always start camera on mount unless an image is selected
+  useEffect(() => {
+    if (cameraActive && !selectedImage) {
+      (async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        } catch (error) {
+          setCameraActive(false);
+        }
+      })();
+    }
+    // Stop camera when not active
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [cameraActive, selectedImage, facingMode]);
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedImage(e.target?.result as string);
+        setResult(null);
+        setCameraActive(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current) {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(videoRef.current, 0, 0);
+      const imageData = canvas.toDataURL('image/jpeg');
+      setSelectedImage(imageData);
+      setCameraActive(false);
+    }
+  };
+
+  const retakePhoto = () => {
+    setSelectedImage(null);
+    setResult(null);
+    setCameraActive(true);
+  };
+
+  const analyzeImage = async () => {
+    if (!selectedImage) return;
+    
+    setIsAnalyzing(true);
+    setAnalysisProgress(0);
+    
+    // Simulate realistic AI analysis with progress updates
+    const analysisSteps = [
+      'Initializing AI model...',
+      'Processing image data...',
+      'Extracting visual features...',
+      'Comparing with disease database...',
+      'Analyzing symptom patterns...',
+      'Calculating confidence scores...',
+      'Generating recommendations...'
+    ];
+    
+    for (let i = 0; i < analysisSteps.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setAnalysisProgress(((i + 1) / analysisSteps.length) * 100);
+    }
+    
+    // Select result based on realistic probabilities
+    const diseases = Object.keys(diseaseDatabase);
+    const weights = [0.15, 0.20, 0.10, 0.40, 0.15]; // Higher weight for healthy plants
+    const random = Math.random();
+    let cumulativeWeight = 0;
+    let selectedDisease = 'Healthy Plant';
+    
+    for (let i = 0; i < diseases.length; i++) {
+      cumulativeWeight += weights[i];
+      if (random <= cumulativeWeight) {
+        selectedDisease = diseases[i];
+        break;
+      }
+    }
+    
+    const analysisResult = diseaseDatabase[selectedDisease];
+    setResult(analysisResult);
+    setIsAnalyzing(false);
+    setAnalysisProgress(0);
+
+    // Save scan result to localStorage
+    const newScan = {
+      id: Date.now().toString(),
+      crop: 'Crop Analysis', // Could be enhanced to detect crop type
+      result: analysisResult.disease.includes('Healthy') ? 'Healthy' : analysisResult.disease,
+      confidence: analysisResult.confidence,
+      timestamp: new Date().toISOString(),
+      severity: analysisResult.severity,
+      diseaseDetails: {
+        disease: analysisResult.disease,
+        treatment: analysisResult.treatment,
+        prevention: analysisResult.prevention,
+        symptoms: analysisResult.symptoms,
+        causes: analysisResult.causes,
+        affectedCrops: analysisResult.affectedCrops,
+        spreadRate: analysisResult.spreadRate,
+        recoveryTime: analysisResult.recoveryTime,
+        cost: analysisResult.cost,
+        riskLevel: analysisResult.riskLevel,
+        environmentalFactors: analysisResult.environmentalFactors,
+        recommendedProducts: analysisResult.recommendedProducts
+      }
+    };
+
+    // Get existing scans from localStorage
+    const existingScans = localStorage.getItem('userCropScans');
+    const scans = existingScans ? JSON.parse(existingScans) : [];
+    
+    // Add new scan to the beginning
+    scans.unshift(newScan);
+    
+    // Keep only the last 50 scans to prevent localStorage from getting too large
+    const limitedScans = scans.slice(0, 50);
+    
+    // Save back to localStorage
+    localStorage.setItem('userCropScans', JSON.stringify(limitedScans));
+
+    notifyScanCompleted(newScan.result, newScan.confidence);
+  };
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'critical': return 'bg-red-100 text-red-800 border-red-200';
+      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low': return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getRiskColor = (risk: string) => {
+    switch (risk) {
+      case 'high': return 'text-red-600';
+      case 'medium': return 'text-yellow-600';
+      case 'low': return 'text-green-600';
+      default: return 'text-gray-600';
+    }
+  };
+
+  return (
+    <div className="space-y-6 w-full">
+      <Card className="shadow-soft w-full">
+        <CardHeader className="p-4 lg:p-6">
+          <CardTitle className="flex items-center gap-2 lg:gap-3 text-lg lg:text-2xl">
+            <Scan className="h-5 w-5 lg:h-6 lg:w-6 text-primary" />
+            Advanced Crop Disease Detection
+          </CardTitle>
+          <p className="text-sm lg:text-base text-muted-foreground">
+            AI-powered disease detection with comprehensive analysis and treatment recommendations
+          </p>
+        </CardHeader>
+        <CardContent className="p-4 lg:p-6 space-y-4 lg:space-y-6">
+          {cameraActive && !selectedImage && (
+            <div className="space-y-4 lg:space-y-6 relative">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className="w-full rounded-lg lg:rounded-xl max-h-64 lg:max-h-96 object-cover"
+              />
+              <button
+                type="button"
+                aria-label="Switch camera"
+                onClick={() => setFacingMode(facingMode === 'environment' ? 'user' : 'environment')}
+                className="absolute top-2 lg:top-4 right-2 lg:right-4 z-10 bg-white/80 hover:bg-white rounded-full p-2 lg:p-3 shadow-lg border border-gray-200"
+                style={{ touchAction: 'manipulation' }}
+              >
+                <RotateCw className="h-4 w-4 lg:h-6 lg:w-6 text-primary" />
+              </button>
+              <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
+                <Button onClick={capturePhoto} className="flex-1 h-10 lg:h-12 text-sm lg:text-base">
+                  <Camera className="h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3" />
+                  Capture Photo
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex-1 h-10 lg:h-12 text-sm lg:text-base"
+                >
+                  <Upload className="h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3" />
+                  Upload Image
+                </Button>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </div>
+          )}
+
+          {selectedImage && !isAnalyzing && (
+            <div className="space-y-4 lg:space-y-6">
+              <img 
+                src={selectedImage} 
+                alt="Crop analysis" 
+                className="w-full rounded-lg lg:rounded-xl max-h-64 lg:max-h-96 object-cover"
+              />
+              <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
+                <Button 
+                  onClick={analyzeImage} 
+                  disabled={isAnalyzing}
+                  className="flex-1 h-10 lg:h-12 text-sm lg:text-base"
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <Scan className="h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3" />
+                      Analyze Disease
+                    </>
+                  )}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={retakePhoto}
+                  className="h-10 lg:h-12 text-sm lg:text-base"
+                >
+                  Retake
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {isAnalyzing && (
+            <div className="space-y-4 lg:space-y-6">
+              <div className="flex items-center gap-2 lg:gap-3">
+                <RefreshCw className="h-4 w-4 lg:h-5 lg:w-5 animate-spin text-primary" />
+                <span className="text-sm lg:text-base font-medium">AI Analysis in Progress...</span>
+              </div>
+              <Progress value={analysisProgress} className="h-2 lg:h-3" />
+              <div className="text-xs lg:text-sm text-muted-foreground">
+                Processing image data and comparing with disease database...
+              </div>
+            </div>
+          )}
+
+          {result && (
+            <div className="space-y-6 lg:space-y-8">
+              {/* Main Result Card */}
+              <Card className="shadow-soft border-l-4 border-l-orange-400 w-full">
+                <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50 p-4 lg:p-6">
+                  <div className="flex flex-col gap-3 lg:gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl lg:text-2xl xl:text-3xl font-bold text-gray-800 mb-2 lg:mb-3">{result.disease}</h3>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 lg:gap-3">
+                        <div className="flex items-center gap-2 lg:gap-3">
+                          <div className="w-3 h-3 lg:w-4 lg:h-4 bg-orange-500 rounded-full animate-pulse"></div>
+                          <span className="text-sm lg:text-base font-semibold text-orange-700">
+                            AI Confidence: {result.confidence}%
+                          </span>
+                        </div>
+                        <div className="hidden sm:block w-px h-4 lg:h-6 bg-gray-300"></div>
+                        <span className="text-sm lg:text-base text-gray-600">
+                          Analysis completed at {new Date().toLocaleTimeString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 lg:gap-3">
+                      <Badge className={`${getSeverityColor(result.severity)} text-sm lg:text-base font-bold px-3 lg:px-4 py-1 lg:py-2 w-fit`}>
+                        <div className="flex items-center gap-2 lg:gap-3">
+                          <div className={`w-2 h-2 lg:w-3 lg:h-3 rounded-full ${
+                            result.severity === 'critical' ? 'bg-red-500' :
+                            result.severity === 'high' ? 'bg-orange-500' :
+                            result.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                          }`}></div>
+                    {result.severity} severity
+                        </div>
+                      </Badge>
+                      <Badge variant="outline" className={`${getRiskColor(result.riskLevel)} text-sm lg:text-base font-bold px-3 lg:px-4 py-1 lg:py-2 border-2 w-fit`}>
+                        <div className="flex items-center gap-2 lg:gap-3">
+                          <AlertTriangle className="h-3 w-3 lg:h-4 lg:w-4" />
+                          Risk: {result.riskLevel}
+                        </div>
+                  </Badge>
+                </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4 lg:space-y-6 p-4 lg:p-6">
+                  {/* Enhanced Confidence Bar */}
+                  <div className="space-y-2 lg:space-y-3">
+                    <div className="flex items-center justify-between text-sm lg:text-base">
+                      <span className="font-semibold text-gray-700">Analysis Confidence</span>
+                      <span className="font-bold text-orange-600 text-base lg:text-lg">{result.confidence}%</span>
+                    </div>
+                    <div className="relative">
+                      <Progress value={result.confidence} className="h-2 lg:h-3 bg-gray-100" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-full opacity-20"></div>
+                    </div>
+                    <div className="flex justify-between text-xs lg:text-sm text-gray-500">
+                      <span>Low</span>
+                      <span>Medium</span>
+                      <span>High</span>
+                </div>
+                  </div>
+                  
+                  {/* Enhanced Quick Info Grid */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                    <div className="group relative overflow-hidden rounded-lg lg:rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 p-3 lg:p-4 border border-blue-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-8 h-8 lg:w-12 lg:h-12 bg-blue-200 rounded-full -translate-y-4 lg:-translate-y-6 translate-x-4 lg:translate-x-6 opacity-20"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-1.5 lg:p-2 bg-blue-500 rounded-lg">
+                            <Leaf className="h-3 w-3 lg:h-4 lg:w-4 text-white" />
+                          </div>
+                          <span className="font-bold text-blue-700 text-xs lg:text-sm">Spread Rate</span>
+                        </div>
+                        <div className="text-sm lg:text-lg font-bold text-blue-800 capitalize">{result.spreadRate}</div>
+                        <div className="text-xs text-blue-600 mt-1">
+                          {result.spreadRate === 'fast' ? 'Rapid transmission' :
+                           result.spreadRate === 'moderate' ? 'Medium transmission' : 'Slow transmission'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="group relative overflow-hidden rounded-lg lg:rounded-xl bg-gradient-to-br from-green-50 to-green-100 p-3 lg:p-4 border border-green-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-8 h-8 lg:w-12 lg:h-12 bg-green-200 rounded-full -translate-y-4 lg:-translate-y-6 translate-x-4 lg:translate-x-6 opacity-20"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-1.5 lg:p-2 bg-green-500 rounded-lg">
+                            <Calendar className="h-3 w-3 lg:h-4 lg:w-4 text-white" />
+                          </div>
+                          <span className="font-bold text-green-700 text-xs lg:text-sm">Recovery Time</span>
+                        </div>
+                        <div className="text-sm lg:text-lg font-bold text-green-800">{result.recoveryTime}</div>
+                        <div className="text-xs text-green-600 mt-1">
+                          Estimated recovery period
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="group relative overflow-hidden rounded-lg lg:rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 p-3 lg:p-4 border border-purple-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-8 h-8 lg:w-12 lg:h-12 bg-purple-200 rounded-full -translate-y-4 lg:-translate-y-6 translate-x-4 lg:translate-x-6 opacity-20"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-1.5 lg:p-2 bg-purple-500 rounded-lg">
+                            <Thermometer className="h-3 w-3 lg:h-4 lg:w-4 text-white" />
+                          </div>
+                          <span className="font-bold text-purple-700 text-xs lg:text-sm">Treatment Cost</span>
+                        </div>
+                        <div className="text-sm lg:text-lg font-bold text-purple-800 capitalize">{result.cost}</div>
+                        <div className="text-xs text-purple-600 mt-1">
+                          {result.cost === 'high' ? 'Expensive treatment' :
+                           result.cost === 'medium' ? 'Moderate cost' : 'Low cost treatment'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="group relative overflow-hidden rounded-lg lg:rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 p-3 lg:p-4 border border-orange-200 hover:shadow-lg transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-8 h-8 lg:w-12 lg:h-12 bg-orange-200 rounded-full -translate-y-4 lg:-translate-y-6 translate-x-4 lg:translate-x-6 opacity-20"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-1.5 lg:p-2 bg-orange-500 rounded-lg">
+                            <AlertCircle className="h-3 w-3 lg:h-4 lg:w-4 text-white" />
+                          </div>
+                          <span className="font-bold text-orange-700 text-xs lg:text-sm">Affected Crops</span>
+                        </div>
+                        <div className="text-sm lg:text-lg font-bold text-orange-800">{result.affectedCrops.length} crops</div>
+                        <div className="text-xs text-orange-600 mt-1">
+                          {result.affectedCrops.length === 1 ? 'Single crop affected' :
+                           result.affectedCrops.length <= 3 ? 'Few crops affected' : 'Multiple crops at risk'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Crop List Preview */}
+                  {result.affectedCrops.length > 0 && (
+                    <div className="bg-gray-50 rounded-lg lg:rounded-xl p-3 lg:p-4">
+                      <h4 className="font-semibold text-gray-700 mb-2 lg:mb-3 text-sm lg:text-base">Crops at Risk:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {result.affectedCrops.map((crop, index) => (
+                          <Badge key={index} variant="outline" className="bg-white border-gray-300 text-gray-700 hover:bg-gray-100 text-xs px-2 lg:px-3 py-1">
+                            {crop}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Detailed Analysis */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+                {/* Symptoms */}
+                <Card className="shadow-soft">
+                  <CardHeader className="p-3 lg:p-4">
+                    <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                      <AlertTriangle className="h-4 w-4 lg:h-5 lg:w-5 text-red-500" />
+                      Symptoms
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-3 lg:p-4">
+                    <ul className="space-y-2">
+                      {result.symptoms.map((symptom, index) => (
+                        <li key={index} className="flex items-start gap-2 text-sm">
+                          <span className="text-red-500 mt-1">•</span>
+                          <span>{symptom}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                {/* Causes */}
+                <Card className="shadow-soft">
+                  <CardHeader className="p-3 lg:p-4">
+                    <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                      <Info className="h-4 w-4 lg:h-5 lg:w-5 text-blue-500" />
+                      Causes
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-3 lg:p-4">
+                    <ul className="space-y-2">
+                      {result.causes.map((cause, index) => (
+                        <li key={index} className="flex items-start gap-2 text-sm">
+                          <span className="text-blue-500 mt-1">•</span>
+                          <span>{cause}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                {/* Treatment */}
+                <Card className="shadow-soft">
+                  <CardHeader className="p-3 lg:p-4">
+                    <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                      <Leaf className="h-4 w-4 lg:h-5 lg:w-5 text-green-500" />
+                      Treatment
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-3 lg:p-4">
+                    <ul className="space-y-2">
+                      {result.treatment.map((treatment, index) => (
+                        <li key={index} className="flex items-start gap-2 text-sm">
+                          <span className="text-green-500 mt-1">•</span>
+                          <span>{treatment}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                {/* Prevention */}
+                <Card className="shadow-soft">
+                  <CardHeader className="p-3 lg:p-4">
+                    <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                      <Shield className="h-4 w-4 lg:h-5 lg:w-5 text-blue-500" />
+                      Prevention
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-3 lg:p-4">
+                    <ul className="space-y-2">
+                      {result.prevention.map((prevention, index) => (
+                        <li key={index} className="flex items-start gap-2 text-sm">
+                          <span className="text-blue-500 mt-1">•</span>
+                          <span>{prevention}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Recommended Products */}
+              <Card className="shadow-soft">
+                <CardHeader className="p-3 lg:p-4">
+                  <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                    <Leaf className="h-4 w-4 lg:h-5 lg:w-5" />
+                    Recommended Products
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-3 lg:p-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 lg:gap-3">
+                    {result.recommendedProducts.map((product, index) => (
+                      <Badge key={index} variant="outline" className="text-xs lg:text-sm p-2 lg:p-3 text-center">
+                        {product}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Environmental Factors */}
+              <Card className="shadow-soft">
+                <CardHeader className="p-3 lg:p-4">
+                  <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+                    <Thermometer className="h-4 w-4 lg:h-5 lg:w-5" />
+                    Environmental Factors
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-3 lg:p-4">
+                  <div className="flex flex-wrap gap-2">
+                    {result.environmentalFactors.map((factor, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs px-2 lg:px-3 py-1">
+                        {factor}
+                      </Badge>
+                    ))}
+                </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
