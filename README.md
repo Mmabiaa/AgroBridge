@@ -66,12 +66,13 @@ This documentation is organized into the following sections:
 
 ---
 ## License & Copyright
-
+```
 AgroBridge is proprietary software. Copyright (c) Boateng Prince Agyenim / Tech-By-Mmabiaa. All rights reserved.
 
 This repository is not open-source. Reuse, distribution, or claiming ownership of
 these materials without prior written permission is prohibited. For permission
 requests or licensing, contact: mmaabiaa@gmail.com
+```
 
 ---
 
