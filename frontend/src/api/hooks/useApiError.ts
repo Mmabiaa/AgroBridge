@@ -29,7 +29,7 @@ export const useApiError = (options: UseApiErrorOptions = {}): UseApiErrorReturn
 
   const {
     showNotifications = true,
-    logErrors = process.env.NODE_ENV === 'development',
+    logErrors = import.meta.env.DEV,
     onError,
     customErrorMessages = {},
   } = options;

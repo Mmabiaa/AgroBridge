@@ -136,14 +136,22 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # React dev server
     'http://localhost:5173',  # Vite dev server
     'http://127.0.0.1:5173',  # Vite dev server alternative
-    'http://yourfrontend.com',  # Production frontend
+    'https://agrobridge.com',  # Production frontend
+    'https://www.agrobridge.com',  # Production frontend with www
+    'https://app.agrobridge.com',  # Production app subdomain
 ]
 
 # Allow credentials for authentication
 CORS_ALLOW_CREDENTIALS = True
 
-# Allow all headers for development
+# Allow all headers for development only
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only in development
+
+# Additional CORS settings for production
+if not DEBUG:
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^https://.*\.agrobridge\.com$",  # Allow all subdomains in production
+    ]
 
 TEMPLATES = [
     {

@@ -76,7 +76,7 @@ class TokenManager {
 
 // Request/Response logging
 class ApiLogger {
-    private static isEnabled = process.env.NODE_ENV === 'development';
+    private static isEnabled = import.meta.env.DEV;
 
     static logRequest(config: InternalAxiosRequestConfig): void {
         if (!this.isEnabled) return;
@@ -174,7 +174,7 @@ class ApiErrorHandler {
 
 // Create axios instance
 const axiosClient: AxiosInstance = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api/v1',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
     timeout: 30000, // 30 seconds
     headers: {
         'Content-Type': 'application/json',

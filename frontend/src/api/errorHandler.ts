@@ -43,8 +43,8 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
 // Default error handler configuration
 const DEFAULT_ERROR_CONFIG: ErrorHandlerConfig = {
   showNotifications: true,
-  logErrors: process.env.NODE_ENV === 'development',
-  reportErrors: process.env.NODE_ENV === 'production',
+  logErrors: import.meta.env.DEV,
+  reportErrors: import.meta.env.PROD,
   customHandlers: {},
 };
 

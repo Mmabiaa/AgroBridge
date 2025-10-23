@@ -15,6 +15,27 @@ export type FarmListParams = any;
 export type FarmCreateData = any;
 export type FarmUpdateData = any;
 
+export interface FarmAnalytics {
+  total_area: number;
+  crop_distribution: Record<string, number>;
+  productivity_metrics: {
+    yield_per_hectare: number;
+    revenue_per_hectare?: number;
+    cost_per_hectare?: number;
+  };
+  seasonal_data: Array<{
+    season: string;
+    year: number;
+    yield: number;
+    revenue?: number;
+  }>;
+  weather_data?: {
+    temperature: number;
+    humidity: number;
+    rainfall: number;
+  };
+}
+
 export type Product = any;
 export type ProductListParams = any;
 export type ProductCreateData = any;

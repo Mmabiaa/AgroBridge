@@ -377,10 +377,11 @@ if (typeof window !== 'undefined') {
   }
 
   // Initialize real-time sync
-  import('./realTimeSync').then(({ realTimeSync }) => {
-    // Real-time sync is automatically initialized
-    console.log('Real-time sync initialized');
-  });
+  // Temporarily disable WebSocket connection until authentication is working
+  // import('./realTimeSync').then(({ realTimeSync }) => {
+  //   // Real-time sync is automatically initialized
+  //   console.log('Real-time sync initialized');
+  // });
 }
 
 export default queryClient;

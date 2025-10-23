@@ -1,437 +1,433 @@
-
-import { useRef, useState, useEffect } from 'react';
+/**
+ * AgriGPT Page - Production Ready with API Integration
+ */
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot } from 'lucide-react';
-import { ChatHeader } from '@/components/agrigpt/ChatHeader';
-import { ChatMessage } from '@/components/agrigpt/ChatMessage';
-import { ChatInput } from '@/components/agrigpt/ChatInput';
-import { QuickQuestions } from '@/components/agrigpt/QuickQuestions';
-import { ImageUpload } from '@/components/agrigpt/ImageUpload';
-import { ExpertContact } from '@/components/agrigpt/ExpertContact';
-import { VoiceControls } from '@/components/agrigpt/VoiceControls';
-import { getAgriQAAnswer } from '@/data/agrigpt_knowledge';
-import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  Bot, 
+  Send, 
+  Mic, 
+  MicOff, 
+  Image as ImageIcon, 
+  MessageSquare,
+  History,
+  Settings,
+  Loader2,
+  Plus,
+  Volume2,
+  VolumeX
+} from 'lucide-react';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import { 
+  useConversations, 
+  useCreateConversation, 
+  useSendMessage,
+  useConversationMessages 
+} from '@/api/hooks/useAI';
+import { useAuth } from '@/contexts/AuthContext';
 
-// Add ChatMessage type
-interface ChatMessage {
-  id: number;
-  type: 'user' | 'bot';
-  message: string;
-  time: string;
-  audio?: string;
-  image?: string;
-}
-
-const chatHistory: ChatMessage[] = [
-  {
-    id: 1,
-    type: 'bot',
-    message: "Hi there, I'm AgriGPT of AgroBridge. How can I help you today?",
-    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  }
-];
-
-const preloadedQA = [
-  {
-    question: "How do I treat tomato leaf curl disease?",
-    answer: "Tomato leaf curl is best managed by removing infected plants, controlling whiteflies, and using resistant varieties. Avoid planting tomatoes near cotton or tobacco."
-  },
-  {
-    question: "What's the best fertilizer for maize?",
-    answer: "For maize, use NPK 15-15-15 at planting (200kg/hectare) and Urea (46-0-0) as a top dressing (50kg/hectare) 3-4 weeks after planting."
-  },
-  {
-    question: "When should I plant onions in Ghana?",
-    answer: "The best time to plant onions in Ghana is at the start of the dry season, typically from November to January."
-  },
-  {
-    question: "How to prevent pest attacks naturally?",
-    answer: "Use neem oil spray, encourage beneficial insects, rotate crops, and remove plant debris to prevent pest attacks naturally."
-  },
-  {
-    question: "What crops grow well in dry season?",
-    answer: "Crops like tomatoes, onions, okra, pepper, and leafy greens can be grown in the dry season with irrigation."
-  },
-  {
-    question: "How to improve soil fertility?",
-    answer: "Add organic matter (compost, manure), practice crop rotation, and use cover crops to improve soil fertility."
-  },
-  {
-    question: "How do I control armyworms in maize?",
-    answer: "Scout fields regularly, use recommended insecticides early, and encourage natural predators to control armyworms in maize."
-  },
-  {
-    question: "What is the best way to irrigate tomatoes?",
-    answer: "Drip irrigation is best for tomatoes as it delivers water directly to the roots and reduces disease risk."
-  },
-  {
-    question: "How can I tell if my soil is acidic?",
-    answer: "Test your soil with a pH kit. Acidic soils have a pH below 6.0. Yellowing leaves and poor growth can also be signs."
-  },
-  {
-    question: "Are organic fertilizers better than chemical ones?",
-    answer: "Organic fertilizers improve soil health over time, while chemical fertilizers provide quick nutrients. A balanced approach is often best."
-  },
-  {
-    question: "How do I store harvested maize to prevent spoilage?",
-    answer: "Dry maize thoroughly, store in airtight containers or bags, and keep in a cool, dry place to prevent spoilage."
-  },
-  {
-    question: "What are the signs of cassava mosaic disease?",
-    answer: "Look for yellow or green mosaic patterns on leaves, leaf distortion, and stunted growth. Remove infected plants promptly."
-  },
-  {
-    question: "How do I access government loans for farmers?",
-    answer: "Contact your local Ministry of Food and Agriculture office for information on available government loan schemes and requirements."
-  },
-  {
-    question: "How can I increase my poultry egg production?",
-    answer: "Provide balanced feed, clean water, proper lighting, and good housing. Regularly check for diseases and parasites."
-  },
-  {
-    question: "What is the best way to control weeds in rice fields?",
-    answer: "Use pre-emergence herbicides, hand weeding, and maintain proper water levels to control weeds in rice fields."
-  }
-];
-
-const quickQuestions = preloadedQA.map(qa => qa.question);
-
-// Add a shared normalize function for punctuation-insensitive comparison
-function normalize(str: string) {
-  return str.trim().toLowerCase().replace(/[^\w\s]/g, '');
-}
-
-function findPreloadedAnswer(userQuestion: string) {
-  const norm = normalize(userQuestion);
-  for (const qa of preloadedQA) {
-    if (normalize(qa.question) === norm) {
-      return qa.answer;
-    }
-  }
-  return null;
-}
-
-function findAgriGPTAnswer(userInput: string) {
-  const norm = normalize(userInput);
-  for (const qa of preloadedQA) {
-    if (normalize(qa.question) === norm) {
-      return qa.answer;
-    }
-  }
-  return null;
-}
-
-function getPreloadedAnswer(question: string) {
-  const normalized = normalize(question);
-  return preloadedQA.find(qa => normalize(qa.question) === normalized)?.answer;
-}
-
-// Add TTS helper
-function isMobile() {
-  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-}
-
-let currentUtterance: SpeechSynthesisUtterance | null = null;
-
-function speakText(text: string, userInitiated = false, onFail?: () => void) {
-  if (!('speechSynthesis' in window)) return;
-  if (isMobile() && !userInitiated) {
-    if (onFail) onFail();
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utter = new window.SpeechSynthesisUtterance(text);
-  utter.lang = 'en-US';
-  currentUtterance = utter;
-  utter.onend = () => { currentUtterance = null; };
-  utter.onerror = () => { currentUtterance = null; if (onFail) onFail(); };
-  window.speechSynthesis.speak(utter);
-  setTimeout(() => {
-    if (!window.speechSynthesis.speaking && onFail) onFail();
-  }, 100);
+interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+  attachments?: Array<{
+    type: 'image' | 'audio';
+    url: string;
+  }>;
 }
 
 export default function AgriGPT() {
-  const [message, setMessage] = useState('');
-  const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('en');
-  const [chat, setChat] = useState<ChatMessage[]>(chatHistory);
-  const lastInputWasAudio = useRef(false);
-  const fromVoiceNav = useRef(false);
+  const { user } = useAuth();
   const location = useLocation();
-  const [pendingVoiceConfirmation, setPendingVoiceConfirmation] = useState<null | { botMsgId: number, answer: string }>(null);
-  // Feedback state and UI should be fully isolated
-  const [pendingFeedback, setPendingFeedback] = useState<null | { botMsgId: number }>(null);
-  const [feedbackGiven, setFeedbackGiven] = useState<{ [id: number]: 'yes' | 'no' }>({});
-  const [showPlayButtonFor, setShowPlayButtonFor] = useState<number | null>(null);
+  const [searchParams] = useSearchParams();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // State
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(
+    searchParams.get('conversation')
+  );
+  const [message, setMessage] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  
+  // API hooks
+  const { data: conversationsData, isLoading: conversationsLoading } = useConversations();
+  const { data: messagesData, isLoading: messagesLoading } = useConversationMessages(
+    activeConversationId || ''
+  );
+  const createConversationMutation = useCreateConversation();
+  const sendMessageMutation = useSendMessage();
 
+  const conversations = conversationsData?.results || [];
+  const messages = messagesData || [];
 
-  // Auto-ask question from navigation state
+  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    if (location.state && location.state.question) {
-      const question = location.state.question;
-      fromVoiceNav.current = true;
-      handleSendMessageDirect(question);
-      window.history.replaceState({}, document.title);
-    }
-  }, [location.state]);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
-  // Add a direct send function for navigation state
-  function handleSendMessageDirect(text: string) {
-    if (!text.trim()) return;
-    const userMsg: ChatMessage = {
-      id: chat.length + 1,
-      type: 'user',
-      message: text,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    setChat(prev => [...prev, userMsg]);
-    // Step 1: Try to match with local preloaded answers
-    let answer = findPreloadedAnswer(text);
-    // Step 2: If no match, call local knowledge base for answer
-    if (!answer) {
-      answer = getAgriQAAnswer(text);
+  // Create new conversation
+  const handleNewConversation = async () => {
+    try {
+      const newConversation = await createConversationMutation.mutateAsync({
+        title: 'New Farming Consultation',
+        conversation_type: 'farming_advice',
+        language: 'en',
+      });
+      setActiveConversationId(newConversation.id);
+    } catch (error) {
+      console.error('Failed to create conversation:', error);
     }
-    // Step 3: Display answer in chat and speak it aloud if from voice nav
-    setChat(prev => {
-      const botMsg = {
-        id: prev.length + 1,
-        type: 'bot' as const,
-        message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      if (fromVoiceNav.current) {
-        speakText(botMsg.message, false, () => setShowPlayButtonFor(botMsg.id));
-        fromVoiceNav.current = false;
+  };
+
+  // Send message
+  const handleSendMessage = async () => {
+    if (!message.trim()) return;
+    
+    let conversationId = activeConversationId;
+    
+    // Create conversation if none exists
+    if (!conversationId) {
+      try {
+        const newConversation = await createConversationMutation.mutateAsync({
+          title: message.slice(0, 50) + (message.length > 50 ? '...' : ''),
+          conversation_type: 'farming_advice',
+          language: 'en',
+        });
+        conversationId = newConversation.id;
+        setActiveConversationId(conversationId);
+      } catch (error) {
+        console.error('Failed to create conversation:', error);
+        return;
       }
-      setPendingVoiceConfirmation({ botMsgId: botMsg.id, answer: botMsg.message });
-      setPendingFeedback({ botMsgId: botMsg.id });
-      return [...prev, botMsg];
-    });
-  }
-
-  // New: handle sending message with attachments
-  const handleSendMessage = async (attachments?: { audio?: Blob; image?: File }) => {
-    if (!message.trim() && !attachments?.audio && !attachments?.image) return;
-  
-    const userMsg: ChatMessage = {
-      id: chat.length + 1,
-      type: 'user',
-      message: message,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    if (attachments?.audio) {
-      userMsg.audio = URL.createObjectURL(attachments.audio);
-      lastInputWasAudio.current = true;
-    } else {
-      lastInputWasAudio.current = false;
     }
-    if (attachments?.image) {
-      userMsg.image = URL.createObjectURL(attachments.image);
-    }
-    setChat(prev => [...prev, userMsg]);
-  
-    // Step 1: Try to match with local preloaded answers
-    let answer = findPreloadedAnswer(message);
-  
-    // Step 2: If no match, call local knowledge base for answer
-    if (!answer) {
-      answer = getAgriQAAnswer(message);
-    }
-  
-    // Step 3: Display answer in chat and speak it only if last input was audio
-    setChat(prev => {
-      const botMsg = {
-        id: prev.length + 1,
-        type: 'bot' as const,
-        message: answer || "Sorry, I don’t know that yet. Can you ask another way?",
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      // Voice confirmation prompt
-      setPendingVoiceConfirmation({ botMsgId: botMsg.id, answer: botMsg.message });
-      setPendingFeedback({ botMsgId: botMsg.id });
-      return [...prev, botMsg];
-    });
-  
-    setMessage('');
-  };
-  
 
-  const handleVoiceToggle = () => {
-    setIsListening(!isListening);
-  };
-
-  const handleSpeakToggle = () => {
-    setIsSpeaking(!isSpeaking);
-  };
-
-  const handleQuestionClick = (question: string) => {
-    setMessage("");
-    const userMsg: ChatMessage = {
-      id: chat.length + 1,
-      type: 'user',
-      message: question,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    setChat(prev => [...prev, userMsg]);
-    // Use findPreloadedAnswer for exact answer matching from preloadedQA
-    const answer = findPreloadedAnswer(question);
-    if (answer) {
-      setChat(prev => [
-        ...prev,
-        {
-          id: prev.length + 1,
-          type: 'bot',
-          message: answer,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
-    } else {
-      setTimeout(() => {
-        setChat(prev => [
-          ...prev,
-          {
-            id: prev.length + 1,
-            type: 'bot',
-            message: "Sorry, I don't have an exact answer for that question. Please ask a different question.",
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          }
-        ]);
-      }, 1000);
+    try {
+      await sendMessageMutation.mutateAsync({
+        conversationId: conversationId!,
+        content: message,
+      });
+      setMessage('');
+    } catch (error) {
+      console.error('Failed to send message:', error);
     }
   };
 
-  const handleLanguageChange = (language: string) => {
-    setCurrentLanguage(language);
+  // Handle key press
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  // Quick questions for new users
+  const quickQuestions = [
+    "How do I treat tomato leaf curl disease?",
+    "What's the best fertilizer for maize?",
+    "When should I plant onions in Ghana?",
+    "How can I improve my soil quality?",
+    "What are the signs of nutrient deficiency in crops?",
+  ];
+
+  const handleQuickQuestion = (question: string) => {
+    setMessage(question);
+  };
+
+  // Text-to-speech
+  const speakMessage = (text: string) => {
+    if ('speechSynthesis' in window) {
+      setIsSpeaking(true);
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.onend = () => setIsSpeaking(false);
+      speechSynthesis.speak(utterance);
+    }
+  };
+
+  const stopSpeaking = () => {
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
-      <div className="container mx-auto p-4 max-w-7xl">
-        <ChatHeader
-          currentLanguage={currentLanguage}
-          setCurrentLanguage={setCurrentLanguage}
-          isSpeaking={isSpeaking}
-          onSpeakToggle={handleSpeakToggle}
-        />
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Chat Interface - Main */}
-          <div className="lg:col-span-3">
-            <Card className="flex flex-col shadow-strong hover:shadow-glow transition-all duration-500 border-2 border-primary/10">
-              {/* Chat Header */}
-              <CardHeader className="border-b bg-gradient-to-r from-card to-muted/20 rounded-t-lg flex-shrink-0">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Bot className="h-5 w-5 text-primary" />
-                    </div>
-                    <span className="text-xl">AgriGPT Chat</span>
-                  </CardTitle>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="text-green-600 border-green-600 bg-green-50 dark:bg-green-950/20">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
-                      Online
-                    </Badge>
-                  </div>
-                </div>
-              </CardHeader>
-
-              {/* Chat Messages */}
-              <CardContent className="flex-1 p-0">
-                <div className="p-6 bg-gradient-to-b from-background to-muted/10 max-h-96 overflow-y-auto">
-                  <div className="space-y-4">
-                    {chat.map((msg) => (
-                      <ChatMessage
-                        key={msg.id}
-                        id={msg.id}
-                        type={msg.type}
-                        message={msg.message}
-                        time={msg.time}
-                        audio={msg.audio}
-                        image={msg.image}
-                        showPlayButton={msg.type === 'bot' && showPlayButtonFor === msg.id}
-                        onPlayTTS={msg.type === 'bot' && showPlayButtonFor === msg.id ? () => {
-                          speakText(msg.message, true);
-                          setShowPlayButtonFor(null);
-                        } : undefined}
-                      />
+    <div className="container mx-auto p-6 h-[calc(100vh-120px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
+        
+        {/* Sidebar - Conversations */}
+        <div className="lg:col-span-1">
+          <Card className="h-full">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5" />
+                  Conversations
+                </CardTitle>
+                <Button size="sm" onClick={handleNewConversation}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ScrollArea className="h-[calc(100vh-300px)]">
+                {conversationsLoading ? (
+                  <div className="p-4 space-y-3">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                      </div>
                     ))}
                   </div>
+                ) : conversations.length === 0 ? (
+                  <div className="p-4 text-center text-muted-foreground">
+                    <Bot className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No conversations yet</p>
+                    <p className="text-xs">Start chatting to create one</p>
+                  </div>
+                ) : (
+                  <div className="p-2">
+                    {conversations.map((conversation: any) => (
+                      <div
+                        key={conversation.id}
+                        className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                          activeConversationId === conversation.id
+                            ? 'bg-primary/10 border border-primary/20'
+                            : 'hover:bg-muted/50'
+                        }`}
+                        onClick={() => setActiveConversationId(conversation.id)}
+                      >
+                        <h4 className="font-medium text-sm line-clamp-1">
+                          {conversation.title}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">
+                          {conversation.message_count} messages
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(conversation.last_activity).toLocaleDateString()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Chat Area */}
+        <div className="lg:col-span-3">
+          <Card className="h-full flex flex-col">
+            
+            {/* Chat Header */}
+            <CardHeader className="border-b">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <Bot className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle>AgriGPT Assistant</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Your AI farming advisor
+                    </p>
+                  </div>
                 </div>
-              </CardContent>
-
-              {/* Chat Input - Fixed at bottom */}
-              <div className="flex-shrink-0">
-                <ChatInput
-                  message={message}
-                  setMessage={setMessage}
-                  onSendMessage={handleSendMessage}
-                  isListening={isListening}
-                  onVoiceToggle={handleVoiceToggle}
-                  currentLanguage={currentLanguage}
-                />
-              </div>
-            </Card>
-          </div>
-
-          {/* Sidebar - Scrollable */}
-          <div className="lg:col-span-1 h-[calc(100vh-200px)]">
-            <ScrollArea className="h-full">
-              <div className="space-y-6 pr-2">
-                <QuickQuestions
-                  questions={quickQuestions}
-                  onQuestionClick={handleQuestionClick}
-                />
-
                 
-
-                <ExpertContact />
-
-                
+                <div className="flex items-center gap-2">
+                  <Badge variant="default" className="bg-green-100 text-green-800">
+                    Online
+                  </Badge>
+                  {isSpeaking && (
+                    <Button size="sm" variant="outline" onClick={stopSpeaking}>
+                      <VolumeX className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
-            </ScrollArea>
-          </div>
+            </CardHeader>
+
+            {/* Messages Area */}
+            <CardContent className="flex-1 p-0">
+              <ScrollArea className="h-[calc(100vh-400px)] p-4">
+                {!activeConversationId ? (
+                  // Welcome screen
+                  <div className="text-center py-12">
+                    <div className="p-4 rounded-full bg-primary/10 w-fit mx-auto mb-4">
+                      <Bot className="h-12 w-12 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">
+                      Welcome to AgriGPT!
+                    </h3>
+                    <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                      I'm your AI farming assistant. Ask me anything about crops, 
+                      livestock, soil management, pest control, and more.
+                    </p>
+                    
+                    {/* Quick Questions */}
+                    <div className="space-y-2 max-w-lg mx-auto">
+                      <h4 className="font-medium text-sm text-left">Try asking:</h4>
+                      {quickQuestions.map((question, index) => (
+                        <Button
+                          key={index}
+                          variant="outline"
+                          className="w-full text-left justify-start h-auto p-3"
+                          onClick={() => handleQuickQuestion(question)}
+                        >
+                          {question}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                ) : messagesLoading ? (
+                  // Loading messages
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="animate-pulse flex gap-3">
+                        <div className="h-8 w-8 bg-gray-200 rounded-full"></div>
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  // Messages
+                  <div className="space-y-4">
+                    {messages.map((msg: Message) => (
+                      <div
+                        key={msg.id}
+                        className={`flex gap-3 ${
+                          msg.role === 'user' ? 'flex-row-reverse' : ''
+                        }`}
+                      >
+                        <div className={`p-2 rounded-full ${
+                          msg.role === 'user' 
+                            ? 'bg-primary text-primary-foreground' 
+                            : 'bg-muted'
+                        }`}>
+                          {msg.role === 'user' ? (
+                            <div className="h-6 w-6 rounded-full bg-primary-foreground/20 flex items-center justify-center text-xs font-medium">
+                              {user?.name?.charAt(0) || 'U'}
+                            </div>
+                          ) : (
+                            <Bot className="h-6 w-6" />
+                          )}
+                        </div>
+                        
+                        <div className={`flex-1 max-w-[80%] ${
+                          msg.role === 'user' ? 'text-right' : ''
+                        }`}>
+                          <div className={`p-3 rounded-lg ${
+                            msg.role === 'user'
+                              ? 'bg-primary text-primary-foreground ml-auto'
+                              : 'bg-muted'
+                          }`}>
+                            <p className="whitespace-pre-wrap">{msg.content}</p>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                            <span>
+                              {new Date(msg.timestamp).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                            {msg.role === 'assistant' && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-auto p-1"
+                                onClick={() => speakMessage(msg.content)}
+                              >
+                                <Volume2 className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {sendMessageMutation.isPending && (
+                      <div className="flex gap-3">
+                        <div className="p-2 rounded-full bg-muted">
+                          <Bot className="h-6 w-6" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="p-3 rounded-lg bg-muted">
+                            <div className="flex items-center gap-2">
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <span>AgriGPT is thinking...</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div ref={messagesEndRef} />
+                  </div>
+                )}
+              </ScrollArea>
+            </CardContent>
+
+            {/* Input Area */}
+            <div className="border-t p-4">
+              <div className="flex gap-2">
+                <div className="flex-1 relative">
+                  <Input
+                    placeholder="Ask me anything about farming..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    disabled={sendMessageMutation.isPending}
+                    className="pr-20"
+                  />
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-1">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0"
+                      onClick={() => setIsRecording(!isRecording)}
+                    >
+                      {isRecording ? (
+                        <MicOff className="h-4 w-4 text-red-500" />
+                      ) : (
+                        <Mic className="h-4 w-4" />
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0"
+                    >
+                      <ImageIcon className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                
+                <Button 
+                  onClick={handleSendMessage}
+                  disabled={!message.trim() || sendMessageMutation.isPending}
+                >
+                  {sendMessageMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
-      {pendingVoiceConfirmation && (
-  <div className="mt-2 p-3 bg-muted/50 rounded-lg flex flex-col gap-2">
-    <div>Would you like to hear more details or tips?</div>
-    <div className="flex gap-2">
-      <Button size="sm" onClick={() => {
-        setChat(prev => [...prev, {
-          id: prev.length + 1,
-          type: 'bot',
-          message: 'Here are more details and tips: ...',
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }]);
-        setPendingVoiceConfirmation(null);
-      }}>Yes</Button>
-      <Button size="sm" variant="outline" onClick={() => setPendingVoiceConfirmation(null)}>No</Button>
-    </div>
-  </div>
-)}
-{pendingFeedback && !feedbackGiven[pendingFeedback.botMsgId] && (
-  <div className="mt-2 p-3 bg-muted/50 rounded-lg flex flex-col gap-2">
-    <div>Was this answer helpful?</div>
-    <div className="flex gap-2">
-      <Button size="sm" onClick={() => {
-        setFeedbackGiven(fb => ({ ...fb, [pendingFeedback.botMsgId]: 'yes' }));
-        setPendingFeedback(null);
-        speakText('Thank you for your feedback!');
-      }}>👍</Button>
-      <Button size="sm" variant="outline" onClick={() => {
-        setFeedbackGiven(fb => ({ ...fb, [pendingFeedback.botMsgId]: 'no' }));
-        setPendingFeedback(null);
-        speakText('Thanks for your feedback. We will use it to improve.');
-      }}>👎</Button>
-    </div>
-  </div>
-)}
     </div>
   );
 }

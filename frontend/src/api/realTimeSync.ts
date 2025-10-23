@@ -30,9 +30,15 @@ class RealTimeSync {
     this.isConnecting = true;
     
     try {
-      const wsUrl = process.env.NODE_ENV === 'production' 
+      // Get token for authentication
+      const token = localStorage.getItem('access_token');
+      
+      const baseUrl = import.meta.env.PROD 
         ? 'wss://api.agrobridge.com/ws/'
         : 'ws://localhost:8000/ws/';
+      
+      // Add token as query parameter if available
+      const wsUrl = token ? `${baseUrl}?token=${token}` : baseUrl;
       
       this.ws = new WebSocket(wsUrl);
       
@@ -40,15 +46,6 @@ class RealTimeSync {
         console.log('WebSocket connected for real-time sync');
         this.isConnecting = false;
         this.reconnectAttempts = 0;
-        
-        // Send authentication if available
-        const token = localStorage.getItem('access_token');
-        if (token) {
-          this.send({
-            type: 'auth',
-            token,
-          });
-        }
       };
 
       this.ws.onmessage = (event) => {

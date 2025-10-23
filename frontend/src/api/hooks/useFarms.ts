@@ -2,7 +2,7 @@
  * React Query hooks for farms with caching and optimization
  */
 import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
-import farmsService from '../services/farmsService';
+import farmsService, { FarmAnalytics } from '../services/farmsService';
 import { queryKeys, optimisticUpdates } from '../queryClient';
 import type { Farm, FarmCreateData, FarmUpdateData, PaginatedResponse, FarmListParams } from '../basicTypes';
 
@@ -51,7 +51,7 @@ export const useUserFarms = (params?: FarmListParams) => {
 };
 
 export const useFarmAnalytics = (id: string, enabled = true) => {
-  return useQuery({
+  return useQuery<FarmAnalytics>({
     queryKey: queryKeys.farms.analytics(id),
     queryFn: () => farmsService.getFarmAnalytics(id),
     enabled: enabled && !!id,
@@ -108,13 +108,13 @@ export const useUpdateFarm = () => {
       
       return { previousFarm, id };
     },
-    onError: (error, variables, context) => {
+    onError: (_error, _variables, context) => {
       // Rollback on error
       if (context?.previousFarm && context?.id) {
         queryClient.setQueryData(queryKeys.farms.detail(context.id), context.previousFarm);
       }
     },
-    onSettled: (data, error, { id }) => {
+    onSettled: (_data, _error, { id }) => {
       // Refetch to ensure consistency
       queryClient.invalidateQueries({ queryKey: queryKeys.farms.detail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.farms.lists() });
@@ -146,7 +146,7 @@ export const useDeleteFarm = () => {
       
       return { previousFarm, id };
     },
-    onError: (error, id, context) => {
+    onError: (_error, id, context) => {
       // Rollback on error
       if (context?.previousFarm) {
         queryClient.setQueryData(queryKeys.farms.detail(id), context.previousFarm);

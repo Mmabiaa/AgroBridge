@@ -2,22 +2,21 @@
  * Cache persistence utilities for offline support and performance
  */
 import { QueryClient } from '@tanstack/react-query';
-// Note: Persistence packages need to be installed separately
-// import { persistQueryClient } from '@tanstack/react-query-persist-client';
-// import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { persistQueryClient } from '@tanstack/react-query-persist-client';
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 
 // Storage keys
 const CACHE_KEY = 'agrobridge-query-cache';
 const CACHE_VERSION = 'v1';
 const CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-// Create storage persister (requires @tanstack/query-sync-storage-persister)
-// const persister = createSyncStoragePersister({
-//   storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-//   key: CACHE_KEY,
-//   serialize: JSON.stringify,
-//   deserialize: JSON.parse,
-// });
+// Create storage persister
+const persister = createSyncStoragePersister({
+  storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+  key: CACHE_KEY,
+  serialize: JSON.stringify,
+  deserialize: JSON.parse,
+});
 
 // Cache configuration for different query types
 const cacheConfig = {
@@ -27,21 +26,21 @@ const cacheConfig = {
     gcTime: 24 * 60 * 60 * 1000, // 24 hours
     persist: true,
   },
-  
+
   // Standard data caching
   standard: {
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 30 * 60 * 1000, // 30 minutes
     persist: true,
   },
-  
+
   // Frequently changing data
   dynamic: {
     staleTime: 1 * 60 * 1000, // 1 minute
     gcTime: 10 * 60 * 1000, // 10 minutes
     persist: false,
   },
-  
+
   // Real-time data that shouldn't be cached long
   realtime: {
     staleTime: 0, // Always stale
@@ -58,18 +57,18 @@ const queryCacheMap = {
   'farms.detail': cacheConfig.standard,
   'marketplace.products.detail': cacheConfig.standard,
   'crop-detection.diseases.detail': cacheConfig.critical,
-  
+
   // Standard data
   'farms.list': cacheConfig.standard,
   'marketplace.products.list': cacheConfig.standard,
   'ai.conversations.list': cacheConfig.standard,
   'crop-detection.diseases.list': cacheConfig.standard,
-  
+
   // Dynamic data
   'farms.analytics': cacheConfig.dynamic,
   'marketplace.orders': cacheConfig.dynamic,
   'ai.conversations.messages': cacheConfig.dynamic,
-  
+
   // Real-time data
   'notifications': cacheConfig.realtime,
   'websocket': cacheConfig.realtime,
@@ -78,14 +77,14 @@ const queryCacheMap = {
 // Get cache configuration for a query key
 export const getCacheConfig = (queryKey: any[]): typeof cacheConfig.standard => {
   const keyString = queryKey.join('.');
-  
+
   // Find matching pattern
   for (const [pattern, config] of Object.entries(queryCacheMap)) {
     if (keyString.includes(pattern)) {
       return config;
     }
   }
-  
+
   // Default to standard caching
   return cacheConfig.standard;
 };
@@ -96,32 +95,29 @@ export const setupCachePersistence = (queryClient: QueryClient) => {
     return; // Skip on server-side
   }
 
-  // TODO: Implement when persistence packages are installed
-  console.log('Cache persistence setup skipped - install @tanstack/react-query-persist-client and @tanstack/query-sync-storage-persister');
-  
-  // try {
-  //   persistQueryClient({
-  //     queryClient,
-  //     persister,
-  //     maxAge: CACHE_MAX_AGE,
-  //     hydrateOptions: {
-  //       defaultOptions: {
-  //         queries: {
-  //           staleTime: 5 * 60 * 1000,
-  //         },
-  //       },
-  //     },
-  //     dehydrateOptions: {
-  //       shouldDehydrateQuery: (query) => {
-  //         const config = getCacheConfig(query.queryKey);
-  //         return config.persist && query.state.status === 'success';
-  //       },
-  //     },
-  //   });
-  //   console.log('Cache persistence initialized');
-  // } catch (error) {
-  //   console.error('Failed to initialize cache persistence:', error);
-  // }
+  try {
+    persistQueryClient({
+      queryClient,
+      persister,
+      maxAge: CACHE_MAX_AGE,
+      hydrateOptions: {
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 60 * 1000,
+          },
+        },
+      },
+      dehydrateOptions: {
+        shouldDehydrateQuery: (query) => {
+          const config = getCacheConfig(query.queryKey);
+          return config.persist && query.state.status === 'success';
+        },
+      },
+    });
+    console.log('Cache persistence initialized');
+  } catch (error) {
+    console.error('Failed to initialize cache persistence:', error);
+  }
 };
 
 // Cache management utilities
@@ -144,7 +140,7 @@ export const cacheManager = {
 
       const data = JSON.parse(cached);
       const now = Date.now();
-      
+
       // Filter out expired entries
       const filtered = {
         ...data,
@@ -190,7 +186,7 @@ export const cacheManager = {
 
       const data = JSON.parse(cached);
       const queries = data.clientState?.queries || [];
-      
+
       const timestamps = queries
         .map((q: any) => q.state.dataUpdatedAt)
         .filter(Boolean)
@@ -247,7 +243,7 @@ export const cacheManager = {
     try {
       const stats = cacheManager.getCacheStats();
       const maxSize = 10 * 1024 * 1024; // 10MB
-      
+
       return stats.size < maxSize && stats.queryCount < 1000;
     } catch (error) {
       console.error('Failed to check cache health:', error);
@@ -263,7 +259,7 @@ export const cacheManager = {
 
       const data = JSON.parse(cached);
       const queries = data.clientState?.queries || [];
-      
+
       // Sort by last access time and keep only the most recent 500 queries
       const sortedQueries = queries
         .sort((a: any, b: any) => b.state.dataUpdatedAt - a.state.dataUpdatedAt)
@@ -300,8 +296,8 @@ export const offlineSupport = {
 
       const data = JSON.parse(cached);
       const queries = data.clientState?.queries || [];
-      
-      const query = queries.find((q: any) => 
+
+      const query = queries.find((q: any) =>
         JSON.stringify(q.queryKey) === JSON.stringify(queryKey)
       );
 
@@ -317,7 +313,7 @@ export const offlineSupport = {
     try {
       const queueKey = 'mutation-queue';
       const queue = JSON.parse(localStorage.getItem(queueKey) || '[]');
-      
+
       queue.push({
         id: `${Date.now()}-${Math.random()}`,
         mutationKey,
@@ -359,7 +355,7 @@ if (typeof window !== 'undefined') {
   // Clear expired cache on app start
   setTimeout(() => {
     cacheManager.clearExpired();
-    
+
     // Optimize cache if it's getting too large
     if (!cacheManager.isHealthy()) {
       cacheManager.optimize();

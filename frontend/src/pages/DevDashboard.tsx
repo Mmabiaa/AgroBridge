@@ -17,6 +17,7 @@ import {
   Settings
 } from 'lucide-react';
 import { ApiConnectionTest } from '@/components/api/ApiConnectionTest';
+import { ApiTest } from '@/components/api/ApiTest';
 import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { RecentActivity } from '@/components/dashboard/RecentActivity';
 import { ProductGrid } from '@/components/marketplace/ProductGrid';
@@ -164,7 +165,10 @@ export default function DevDashboard() {
         </TabsContent>
 
         <TabsContent value="api">
-          <ApiConnectionTest />
+          <div className="grid gap-6 md:grid-cols-2">
+            <ApiConnectionTest />
+            <ApiTest />
+          </div>
         </TabsContent>
 
         <TabsContent value="auth">
