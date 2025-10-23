@@ -562,7 +562,6 @@ class KnowledgeBaseAPITests(APITestCase):
         # Create test knowledge base entries
         KnowledgeBase.objects.create(
             title='Tomato Care Guide',
-            content_type='guide',
             category='crops',
             content='How to care for tomatoes...',
             tags=['tomato', 'care', 'guide']
