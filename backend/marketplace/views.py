@@ -23,6 +23,7 @@ from .serializers import (
 )
 from .filters import ProductFilter, OrderFilter, ReviewFilter, InquiryFilter
 from .permissions import IsSellerOrReadOnly, IsOwnerOrReadOnly
+from .search import ProductSearchEngine, RecommendationEngine, MarketplaceAnalytics
 
 logger = logging.getLogger(__name__)
 
@@ -176,27 +177,134 @@ class ProductViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
+    def search(self, request):
+        """Advanced product search"""
+        query = request.query_params.get('q', '')
+        
+        # Extract filters from query parameters
+        filters = {
+            'category': request.query_params.get('category'),
+            'price_min': request.query_params.get('price_min'),
+            'price_max': request.query_params.get('price_max'),
+            'location': request.query_params.get('location'),
+            'quality_grade': request.query_params.get('quality_grade'),
+            'organic_only': request.query_params.get('organic_only') == 'true',
+            'delivery_available': request.query_params.get('delivery_available') == 'true',
+            'pickup_available': request.query_params.get('pickup_available') == 'true',
+            'available_only': request.query_params.get('available_only', 'true') == 'true',
+            'min_rating': request.query_params.get('min_rating'),
+        }
+        
+        # Remove None values
+        filters = {k: v for k, v in filters.items() if v is not None}
+        
+        sort_by = request.query_params.get('sort', 'relevance')
+        limit = int(request.query_params.get('limit', 50))
+        
+        # Perform search
+        search_engine = ProductSearchEngine(user=request.user)
+        results = search_engine.search(query, filters, sort_by, limit)
+        
+        # Paginate results
+        page = self.paginate_queryset(results)
+        if page is not None:
+            serializer = ProductListSerializer(page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+        
+        serializer = ProductListSerializer(results, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
     def search_suggestions(self, request):
         """Get search suggestions based on query"""
         query = request.query_params.get('q', '')
         
-        if len(query) < 2:
-            return Response([])
+        search_engine = ProductSearchEngine(user=request.user)
+        suggestions = search_engine.get_search_suggestions(query)
         
-        # Get product name suggestions
-        products = Product.objects.filter(
-            name__icontains=query,
-            status='active'
-        ).values_list('name', flat=True)[:5]
+        return Response(suggestions)
+    
+    @action(detail=False, methods=['get'])
+    def recommendations(self, request):
+        """Get product recommendations"""
+        recommendation_type = request.query_params.get('type', 'personalized')
+        limit = int(request.query_params.get('limit', 10))
         
-        # Get category suggestions
-        categories = Category.objects.filter(
-            name__icontains=query,
-            is_active=True
-        ).values_list('name', flat=True)[:3]
+        engine = RecommendationEngine(user=request.user)
         
-        suggestions = list(products) + list(categories)
-        return Response(suggestions[:8])
+        if recommendation_type == 'popular':
+            products = engine.get_popular_products(limit)
+        elif recommendation_type == 'trending':
+            days = int(request.query_params.get('days', 7))
+            products = engine.get_trending_products(limit, days)
+        elif recommendation_type == 'seasonal':
+            products = engine.get_seasonal_recommendations(limit)
+        else:
+            products = engine.get_personalized_recommendations(limit)
+        
+        serializer = ProductListSerializer(products, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def similar(self, request, pk=None):
+        """Get products similar to this one"""
+        product = self.get_object()
+        limit = int(request.query_params.get('limit', 10))
+        
+        engine = RecommendationEngine(user=request.user)
+        similar_products = engine.get_similar_products(product, limit)
+        
+        serializer = ProductListSerializer(similar_products, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def analytics(self, request):
+        """Get marketplace analytics (admin only)"""
+        if not request.user.is_staff:
+            return Response(
+                {'error': 'Permission denied'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        days = int(request.query_params.get('days', 30))
+        
+        analytics = MarketplaceAnalytics()
+        category_performance = analytics.get_category_performance(days)
+        
+        # Serialize category performance
+        category_data = []
+        for category in category_performance:
+            category_data.append({
+                'id': category.id,
+                'name': category.name,
+                'product_count': category.product_count,
+                'recent_orders': category.recent_orders,
+                'total_revenue': category.total_revenue or 0,
+                'avg_rating': category.avg_rating
+            })
+        
+        return Response({
+            'category_performance': category_data,
+            'period_days': days
+        })
+    
+    @action(detail=False, methods=['get'])
+    def seller_insights(self, request):
+        """Get insights for current seller"""
+        days = int(request.query_params.get('days', 30))
+        
+        analytics = MarketplaceAnalytics()
+        insights = analytics.get_seller_insights(request.user, days)
+        
+        # Serialize top products
+        top_products_serializer = ProductListSerializer(
+            insights['top_products'], 
+            many=True, 
+            context={'request': request}
+        )
+        insights['top_products'] = top_products_serializer.data
+        
+        return Response(insights)
 
 
 class OrderViewSet(viewsets.ModelViewSet):
