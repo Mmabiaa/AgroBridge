@@ -40,7 +40,7 @@ class AIAssistantModelTests(TestCase):
         conversation = ChatConversation.objects.create(
             user=self.user,
             title='Test Conversation',
-            conversation_type='crop_advice',
+            conversation_type='farming_advice',
             context_data={'crop': 'tomato', 'location': 'California'}
         )
         
@@ -154,7 +154,7 @@ class AIServiceTests(TestCase):
         self.conversation = ChatConversation.objects.create(
             user=self.user,
             title='Test Conversation',
-            conversation_type='crop_advice'
+            conversation_type='farming_advice'
         )
         self.ai_service = AIService()
     
@@ -225,8 +225,8 @@ class VoiceServiceTests(TestCase):
         result = self.voice_service.synthesize_speech(text, 'en', 'default')
         
         self.assertTrue(result['success'])
-        self.assertIn('duration', result)
-        self.assertIn('processing_time', result)
+        self.assertIn('duration_seconds', result)
+        self.assertIn('processing_time_ms', result)
         self.assertIn('character_count', result)
     
     def test_interpret_voice_command(self):
@@ -272,7 +272,7 @@ class ChatConversationAPITests(APITestCase):
         url = reverse('ai_assistant:conversation-list')
         data = {
             'title': 'Test Conversation',
-            'conversation_type': 'crop_advice',
+            'conversation_type': 'farming_advice',
             'context_data': {'crop': 'tomato'},
             'initial_message': 'Hello, I need help with my tomatoes'
         }
@@ -293,7 +293,7 @@ class ChatConversationAPITests(APITestCase):
         ChatConversation.objects.create(
             user=self.user,
             title='Conversation 1',
-            conversation_type='crop_advice'
+            conversation_type='farming_advice'
         )
         ChatConversation.objects.create(
             user=self.user,
@@ -577,7 +577,6 @@ class KnowledgeBaseAPITests(APITestCase):
         """Test searching knowledge base"""
         KnowledgeBase.objects.create(
             title='Tomato Blight Treatment',
-            content_type='guide',
             category='diseases',
             content='How to treat tomato blight disease...',
             tags=['tomato', 'blight', 'disease']
@@ -593,7 +592,6 @@ class KnowledgeBaseAPITests(APITestCase):
         """Test retrieving specific knowledge base entry"""
         kb_entry = KnowledgeBase.objects.create(
             title='Pest Control Guide',
-            content_type='guide',
             category='pests',
             content='How to control common pests...',
             tags=['pest', 'control']
