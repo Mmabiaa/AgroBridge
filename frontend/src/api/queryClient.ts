@@ -57,11 +57,11 @@ export const queryClient = new QueryClient({
     queries: {
       // Dynamic cache configuration based on query type
       staleTime: (query) => {
-        const config = getCacheConfig(query.queryKey);
+        const config = getCacheConfig([...query.queryKey]);
         return config.staleTime;
       },
       gcTime: (query) => {
-        const config = getCacheConfig(query.queryKey);
+        const config = getCacheConfig([...query.queryKey]);
         return config.gcTime;
       },
       // Intelligent retry logic
