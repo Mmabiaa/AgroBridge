@@ -109,6 +109,13 @@ class FarmsService {
   }
 
   /**
+   * Get user's farms
+   */
+  async getUserFarms(params?: FarmListParams): Promise<PaginatedResponse<Farm>> {
+    return apiClient.getPaginated<Farm>(`${this.baseUrl}/my-farms/`, params);
+  }
+
+  /**
    * Get farm by ID
    */
   async getFarm(farmId: string): Promise<Farm> {
