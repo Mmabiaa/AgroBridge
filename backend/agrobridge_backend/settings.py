@@ -59,6 +59,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'agrobridge_backend.urls'
 
+# ASGI configuration for Django Channels
+ASGI_APPLICATION = 'agrobridge_backend.asgi.application'
+
 # REST Framework configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -192,15 +195,15 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Add channels and Redis for WebSocket support (temporarily disabled)
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             'hosts': [('redis', 6379)],  # Use service name for Docker
-#         },
-#     },
-# }
+# Channels and Redis for WebSocket support
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],  # Local Redis for development
+        },
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
