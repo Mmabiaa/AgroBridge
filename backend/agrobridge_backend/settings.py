@@ -250,6 +250,11 @@ LOGGING = {
     },
 }
 
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@agrobridge.com')
+FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:3000')
+
 # Create logs directory if it doesn't exist
 import os
 logs_dir = BASE_DIR / 'logs'
