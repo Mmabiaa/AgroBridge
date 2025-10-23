@@ -3,12 +3,52 @@
  */
 
 // Basic types
-export type LoginCredentials = any;
-export type RegisterData = any;
-export type User = any;
-export type AuthResponse = any;
-export type PasswordResetConfirm = any;
-export type ChangePasswordData = any;
+export type LoginCredentials = {
+  username: string;
+  password: string;
+};
+
+export type RegisterData = {
+  username: string;
+  email: string;
+  password: string;
+  password_confirm: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  phone?: string;
+};
+
+export type User = {
+  id: string;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  is_active: boolean;
+};
+
+export type AuthResponse = {
+  message: string;
+  user: User;
+  tokens: {
+    access: string;
+    refresh: string;
+  };
+};
+
+export type PasswordResetConfirm = {
+  token: string;
+  password: string;
+  password_confirm: string;
+};
+
+export type ChangePasswordData = {
+  old_password: string;
+  new_password: string;
+  new_password_confirm: string;
+};
 
 export type Farm = any;
 export type FarmListParams = any;

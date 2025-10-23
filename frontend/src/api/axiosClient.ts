@@ -232,7 +232,7 @@ axiosClient.interceptors.response.use(
             if (refreshToken && !TokenManager.isTokenExpired(refreshToken)) {
                 try {
                     const response = await axios.post(
-                        `${axiosClient.defaults.baseURL}/auth/token/refresh/`,
+                        `${axiosClient.defaults.baseURL}/auth/refresh/`,
                         { refresh: refreshToken }
                     );
 

@@ -65,9 +65,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [currentUser, userError]);
 
+  // Check for existing authentication on app startup
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (token && !user && !userLoading) {
+      // Token exists but no user data, trigger user fetch
+      // The useCurrentUser hook will automatically fetch if authenticated
+    }
+  }, [user, userLoading]);
+
   const login = async (email: string, password: string, role?: UserRole) => {
     try {
-      const result = await loginMutation.mutateAsync({ email, password });
+      // The backend accepts either username or email in the username field
+      const result = await loginMutation.mutateAsync({ username: email, password });
       
       const mappedUser: User = {
         id: result.user.id,
@@ -118,7 +128,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Logout error:', error);
     } finally {
       setUser(null);
+      // Clear all auth-related localStorage items
       localStorage.removeItem('agrobridge_user');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
     }
   };
 

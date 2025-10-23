@@ -98,7 +98,7 @@ export const useUpdateProfile = () => {
       
       return { previousUser };
     },
-    onError: (error, variables, context) => {
+    onError: (_error, _variables, context) => {
       // Rollback on error
       if (context?.previousUser) {
         queryClient.setQueryData(queryKeys.auth.user(), context.previousUser);
@@ -161,7 +161,7 @@ export const useAuthStatus = () => {
     user,
     isLoading,
     error,
-    isVerified: (user as any)?.is_email_verified || false,
+    isVerified: (user as any)?.email_verified || false,
   };
 };
 

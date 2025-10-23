@@ -4,13 +4,12 @@
 import apiClient from '../axiosClient';
 
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface LoginResponse {
-  access: string;
-  refresh: string;
+  message: string;
   user: {
     id: string;
     username: string;
@@ -19,6 +18,10 @@ export interface LoginResponse {
     last_name: string;
     role: string;
     is_active: boolean;
+  };
+  tokens: {
+    access: string;
+    refresh: string;
   };
 }
 
@@ -29,8 +32,8 @@ export interface RegisterRequest {
   password_confirm: string;
   first_name: string;
   last_name: string;
-  role: 'farmer' | 'buyer' | 'expert';
-  phone_number?: string;
+  role: string;
+  phone?: string;
 }
 
 export interface RegisterResponse {
@@ -83,7 +86,7 @@ class AuthService {
     );
     
     // Store tokens
-    apiClient.setTokens(response.access, response.refresh);
+    apiClient.setTokens(response.tokens.access, response.tokens.refresh);
     
     return response;
   }
@@ -140,7 +143,7 @@ class AuthService {
    */
   async confirmPasswordReset(data: PasswordResetConfirmRequest): Promise<{ message: string }> {
     return apiClient.post<{ message: string }>(
-      `${this.baseUrl}/password-reset-confirm/`,
+      `${this.baseUrl}/reset-password/`,
       data
     );
   }
@@ -150,7 +153,7 @@ class AuthService {
    */
   async changePassword(data: ChangePasswordRequest): Promise<{ message: string }> {
     return apiClient.post<{ message: string }>(
-      `${this.baseUrl}/change-password/`,
+      `${this.baseUrl}/me/change-password/`,
       data
     );
   }
@@ -159,14 +162,14 @@ class AuthService {
    * Get current user profile
    */
   async getCurrentUser(): Promise<LoginResponse['user']> {
-    return apiClient.get<LoginResponse['user']>(`${this.baseUrl}/user/`);
+    return apiClient.get<LoginResponse['user']>(`${this.baseUrl}/me/`);
   }
 
   /**
    * Update user profile
    */
   async updateProfile(data: Partial<LoginResponse['user']>): Promise<LoginResponse['user']> {
-    return apiClient.patch<LoginResponse['user']>(`${this.baseUrl}/user/`, data);
+    return apiClient.patch<LoginResponse['user']>(`${this.baseUrl}/me/update/`, data);
   }
 
   /**
