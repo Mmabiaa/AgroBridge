@@ -2,7 +2,7 @@
  * React Query client configuration for API caching and optimization
  */
 import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
-import { errorHandler } from './errorHandler';
+import { handleError } from './errorHandler';
 import { notificationService } from './notificationService';
 
 // Create query cache with error handling
@@ -13,18 +13,18 @@ const queryCache = new QueryCache({
     
     // Don't show notifications for background refetches
     if (query.state.fetchStatus !== 'fetching' || query.state.dataUpdatedAt === 0) {
-      errorHandler.handleError(error);
+      handleError(error);
     }
   },
 });
 
 // Create mutation cache with error handling
 const mutationCache = new MutationCache({
-  onError: (error, variables, context, mutation) => {
-    console.error('Mutation error:', error, 'Variables:', variables);
-    errorHandler.handleError(error);
+  onError: (error, _variables, _context, _mutation) => {
+    console.error('Mutation error:', error, 'Variables:', _variables);
+    handleError(error);
   },
-  onSuccess: (data, variables, context, mutation) => {
+  onSuccess: (_data, _variables, _context, mutation) => {
     // Show success notifications for mutations
     const mutationKey = mutation.options.mutationKey?.[0];
     
@@ -41,7 +41,7 @@ const mutationCache = new MutationCache({
         
         const message = messages[action as keyof typeof messages];
         if (message) {
-          notificationService.showSuccess(message);
+          notificationService.success(message);
         }
       }
     }
@@ -158,11 +158,11 @@ export const queryKeys = {
 // Cache invalidation utilities
 export const cacheUtils = {
   // Invalidate all queries for a specific resource
-  invalidateResource: (resource: keyof typeof queryKeys) => {
-    return queryClient.invalidateQueries({
-      queryKey: queryKeys[resource].all(),
-    });
-  },
+  invalidateAuth: () => queryClient.invalidateQueries({ queryKey: queryKeys.auth.user() }),
+  invalidateFarms: () => queryClient.invalidateQueries({ queryKey: queryKeys.farms.all() }),
+  invalidateMarketplace: () => queryClient.invalidateQueries({ queryKey: queryKeys.marketplace.all() }),
+  invalidateAI: () => queryClient.invalidateQueries({ queryKey: queryKeys.ai.all() }),
+  invalidateCropDetection: () => queryClient.invalidateQueries({ queryKey: queryKeys.cropDetection.all() }),
   
   // Invalidate specific query
   invalidateQuery: (queryKey: any[]) => {
