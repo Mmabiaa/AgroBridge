@@ -23,6 +23,8 @@ import Settings from "./pages/Settings";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import Search from "./pages/Search";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import CropDiseaseDetection from "./pages/CropDiseaseDetection";
 import VoiceCommandsPage from "./pages/VoiceCommands";
 import Notifications from "./pages/Notifications";
@@ -58,6 +60,8 @@ const App = () => (
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
                 
                 {/* Protected routes with main navigation */}
                 <Route path="/*" element={
