@@ -129,6 +129,13 @@ class MarketplaceService {
   }
 
   /**
+   * Get user's products
+   */
+  async getUserProducts(params?: ProductListParams): Promise<PaginatedResponse<Product>> {
+    return apiClient.getPaginated<Product>(`${this.baseUrl}/products/my-products/`, params);
+  }
+
+  /**
    * Get product by ID
    */
   async getProduct(productId: string): Promise<Product> {
@@ -220,6 +227,13 @@ class MarketplaceService {
   }
 
   /**
+   * Get user's orders
+   */
+  async getUserOrders(params?: OrderListParams): Promise<PaginatedResponse<Order>> {
+    return apiClient.getPaginated<Order>(`${this.baseUrl}/orders/my-orders/`, params);
+  }
+
+  /**
    * Get order by ID
    */
   async getOrder(orderId: string): Promise<Order> {
@@ -231,6 +245,13 @@ class MarketplaceService {
    */
   async createOrder(orderData: CreateOrderRequest): Promise<Order> {
     return apiClient.post<Order>(`${this.baseUrl}/orders/`, orderData);
+  }
+
+  /**
+   * Update order
+   */
+  async updateOrder(orderId: string, updateData: Partial<Order>): Promise<Order> {
+    return apiClient.patch<Order>(`${this.baseUrl}/orders/${orderId}/`, updateData);
   }
 
   /**
