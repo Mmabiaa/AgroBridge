@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { ApiConnectionTest } from '@/components/api/ApiConnectionTest';
 import { ApiTest } from '@/components/api/ApiTest';
+import { PermissionDemo } from '@/components/PermissionDemo';
 import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { RecentActivity } from '@/components/dashboard/RecentActivity';
 import { ProductGrid } from '@/components/marketplace/ProductGrid';
@@ -50,10 +51,11 @@ export default function DevDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="api">API Tests</TabsTrigger>
           <TabsTrigger value="auth">Authentication</TabsTrigger>
+          <TabsTrigger value="permissions">Permissions</TabsTrigger>
           <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
           <TabsTrigger value="farms">Farms</TabsTrigger>
           <TabsTrigger value="ai">AI Assistant</TabsTrigger>
@@ -199,6 +201,10 @@ export default function DevDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="permissions">
+          <PermissionDemo />
         </TabsContent>
 
         <TabsContent value="marketplace">

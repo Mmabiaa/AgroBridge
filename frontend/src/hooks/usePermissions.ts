@@ -326,7 +326,7 @@ interface WithPermissionProps {
   children: React.ReactNode;
 }
 
-export const WithPermission: React.FC<WithPermissionProps> = ({
+export const WithPermission = ({
   permission,
   permissions,
   requireAll = true,
@@ -334,30 +334,30 @@ export const WithPermission: React.FC<WithPermissionProps> = ({
   route,
   fallback = null,
   children,
-}) => {
+}: WithPermissionProps): React.ReactNode => {
   const { checkPermission, checkMultiplePermissions, checkRole, checkRoute } = usePermissions();
 
   // Check single permission
   if (permission && !checkPermission(permission)) {
-    return <>{fallback}</>;
+    return fallback;
   }
 
   // Check multiple permissions
   if (permissions && !checkMultiplePermissions(permissions, requireAll)) {
-    return <>{fallback}</>;
+    return fallback;
   }
 
   // Check role
   if (role && !checkRole(role)) {
-    return <>{fallback}</>;
+    return fallback;
   }
 
   // Check route access
   if (route && !checkRoute(route)) {
-    return <>{fallback}</>;
+    return fallback;
   }
 
-  return <>{children}</>;
+  return children;
 };
 
 export default usePermissions;
