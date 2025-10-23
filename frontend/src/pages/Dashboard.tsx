@@ -34,6 +34,8 @@ import { VoiceCommands } from '@/components/ai/VoiceCommands';
 import { InteractiveDashboard } from '@/components/analytics/InteractiveDashboard';
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
 import { RoleBasedDashboard } from '@/components/RoleBasedDashboard';
+import { DashboardStats } from '@/components/dashboard/DashboardStats';
+import { RecentActivity } from '@/components/dashboard/RecentActivity';
 import { useAuth } from '@/contexts/AuthContext';
 
 const weatherData = {
@@ -255,7 +257,14 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
         <div className="container mx-auto w-full max-w-full space-y-6 md:space-y-8 px-4 sm:px-6 lg:px-8">
+          {/* API-Integrated Dashboard Stats */}
+          <DashboardStats />
+          
+          {/* Role-Based Dashboard Content */}
           <RoleBasedDashboard />
+          
+          {/* Recent Activity */}
+          <RecentActivity />
         </div>
       </div>
     );

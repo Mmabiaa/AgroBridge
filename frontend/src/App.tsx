@@ -2,11 +2,11 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { Navigation } from "@/components/Navigation";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ApiProvider } from "@/contexts/ApiProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -39,14 +39,13 @@ import ExportDocumentation from "./pages/ExportDocumentation";
 import Support from "./pages/Support";
 import CropCalendar from "./pages/CropCalendar";
 import FarmerStories from "./pages/FarmerStories";
+import DevDashboard from "./pages/DevDashboard";
 import { VoiceFab } from '@/components/VoiceFab';
 import { FeatureFlagsProvider } from '@/contexts/FeatureFlagsContext';
 import { FeatureFlaggedVoiceFab } from '@/components/FeatureFlaggedVoiceFab';
 
-const queryClient = new QueryClient();
-
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  <ApiProvider>
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <FeatureFlagsProvider>
         <AuthProvider>
@@ -189,6 +188,11 @@ const App = () => (
                         </ProtectedRoute>
                       } />
                       
+                      {/* Development Dashboard - Only in development */}
+                      {import.meta.env.DEV && (
+                        <Route path="/dev" element={<DevDashboard />} />
+                      )}
+                      
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </ProtectedRoute>
@@ -199,7 +203,7 @@ const App = () => (
         </AuthProvider>
       </FeatureFlagsProvider>
     </ThemeProvider>
-  </QueryClientProvider>
+  </ApiProvider>
 );
 
 export default App;

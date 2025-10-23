@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useCurrentUser, useLogin, useRegister, useLogout } from '../api/hooks/useAuth';
 
 export type UserRole = 'farmer' | 'buyer' | 'poultry_keeper' | 'ngo' | 'admin';
 
@@ -37,83 +38,88 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  
+  // Use API hooks
+  const { data: currentUser, isLoading: userLoading, error: userError } = useCurrentUser();
+  const loginMutation = useLogin();
+  const registerMutation = useRegister();
+  const logoutMutation = useLogout();
+
+  const isLoading = userLoading || loginMutation.isPending || registerMutation.isPending;
 
   useEffect(() => {
-    // Check for stored user session
-    const storedUser = localStorage.getItem('agrobridge_user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (currentUser) {
+      const mappedUser: User = {
+        id: currentUser.id,
+        email: currentUser.email,
+        name: `${currentUser.first_name} ${currentUser.last_name}`.trim(),
+        role: currentUser.role as UserRole,
+        isAuthenticated: true,
+        permissions: getDefaultPermissions(currentUser.role as UserRole),
+        accessibleRoutes: getDefaultRoutes(currentUser.role as UserRole),
+        profileData: currentUser,
+      };
+      setUser(mappedUser);
+    } else if (userError) {
+      setUser(null);
     }
-    setIsLoading(false);
-  }, []);
+  }, [currentUser, userError]);
 
   const login = async (email: string, password: string, role?: UserRole) => {
-    setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/token', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      //   body: new URLSearchParams({ username: email, password })
-      // });
-      // const data = await response.json();
+      const result = await loginMutation.mutateAsync({ email, password });
       
-      // Mock API response for now
-      const userRole = role || 'farmer'; // Default to farmer if no role specified
-      const mockUser: User = {
-        id: '1',
-        email,
-        name: email.split('@')[0],
-        role: userRole,
+      const mappedUser: User = {
+        id: result.user.id,
+        email: result.user.email,
+        name: `${result.user.first_name} ${result.user.last_name}`.trim(),
+        role: result.user.role as UserRole,
         isAuthenticated: true,
-        permissions: getDefaultPermissions(userRole),
-        accessibleRoutes: getDefaultRoutes(userRole)
+        permissions: getDefaultPermissions(result.user.role as UserRole),
+        accessibleRoutes: getDefaultRoutes(result.user.role as UserRole),
+        profileData: result.user,
       };
       
-      setUser(mockUser);
-      localStorage.setItem('agrobridge_user', JSON.stringify(mockUser));
+      setUser(mappedUser);
     } catch (error) {
-      throw new Error('Login failed');
-    } finally {
-      setIsLoading(false);
+      throw error;
     }
   };
 
   const register = async (userData: Omit<User, 'id' | 'isAuthenticated' | 'permissions' | 'accessibleRoutes'> & { password: string }) => {
-    setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(userData)
-      // });
-      // const data = await response.json();
+      const [firstName, ...lastNameParts] = userData.name.split(' ');
+      const lastName = lastNameParts.join(' ');
       
-      // Mock API response for now
-      const newUser: User = {
-        id: Date.now().toString(),
+      const registerData = {
+        username: userData.email.split('@')[0],
         email: userData.email,
-        name: userData.name,
+        password: userData.password,
+        password_confirm: userData.password,
+        first_name: firstName,
+        last_name: lastName,
         role: userData.role,
-        isAuthenticated: true,
-        permissions: getDefaultPermissions(userData.role),
-        accessibleRoutes: getDefaultRoutes(userData.role)
       };
       
-      setUser(newUser);
-      localStorage.setItem('agrobridge_user', JSON.stringify(newUser));
+      const result = await registerMutation.mutateAsync(registerData);
+      
+      // After successful registration, login automatically
+      await login(userData.email, userData.password, userData.role);
     } catch (error) {
-      throw new Error('Registration failed');
-    } finally {
-      setIsLoading(false);
+      throw error;
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('agrobridge_user');
+  const logout = async () => {
+    try {
+      await logoutMutation.mutateAsync();
+    } catch (error) {
+      // Even if logout fails on server, clear local state
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+      localStorage.removeItem('agrobridge_user');
+    }
   };
 
   const hasPermission = (permission: string): boolean => {

@@ -4,10 +4,10 @@
 
 // Environment variables with defaults
 export const API_CONFIG = {
-  BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api/v1',
-  TIMEOUT: parseInt(process.env.REACT_APP_API_TIMEOUT || '30000', 10),
-  RETRY_ATTEMPTS: parseInt(process.env.REACT_APP_API_RETRY_ATTEMPTS || '3', 10),
-  RETRY_DELAY: parseInt(process.env.REACT_APP_API_RETRY_DELAY || '1000', 10),
+  BASE_URL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000',
+  TIMEOUT: parseInt(import.meta.env.VITE_API_TIMEOUT || '30000', 10),
+  RETRY_ATTEMPTS: parseInt(import.meta.env.VITE_API_RETRY_ATTEMPTS || '3', 10),
+  RETRY_DELAY: parseInt(import.meta.env.VITE_API_RETRY_DELAY || '1000', 10),
 } as const;
 
 // API Endpoints

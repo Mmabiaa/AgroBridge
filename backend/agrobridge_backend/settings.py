@@ -134,8 +134,16 @@ SIMPLE_JWT = {
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # React dev server
+    'http://localhost:5173',  # Vite dev server
+    'http://127.0.0.1:5173',  # Vite dev server alternative
     'http://yourfrontend.com',  # Production frontend
 ]
+
+# Allow credentials for authentication
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow all headers for development
+CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only in development
 
 TEMPLATES = [
     {
@@ -264,7 +272,7 @@ LOGGING = {
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@agrobridge.com')
-FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:3000')
+FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:8080')
 
 # Create logs directory if it doesn't exist
 import os
