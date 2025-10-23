@@ -427,25 +427,4 @@ export interface AnalyticsData {
   }>;
 }
 
-// Export all types
-export type {
-  // Re-export for convenience
-  Coordinates,
-  Location,
-  PaginatedResponse,
-  User,
-  LoginCredentials,
-  RegisterData,
-  AuthResponse,
-  Farm,
-  FarmAnalytics,
-  Product,
-  Order,
-  Conversation,
-  Message,
-  Disease,
-  CropScan,
-  ApiError,
-  Notification,
-  WebSocketMessage,
-};
+// All types are already exported above

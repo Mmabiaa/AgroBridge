@@ -361,10 +361,4 @@ export const genericOptimisticUpdates = {
   },
 };
 
-export {
-  farmOptimisticUpdates,
-  productOptimisticUpdates,
-  conversationOptimisticUpdates,
-  userOptimisticUpdates,
-  genericOptimisticUpdates,
-};
+// All utilities are already exported above
