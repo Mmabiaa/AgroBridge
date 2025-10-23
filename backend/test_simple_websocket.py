@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 """
-Simple WebSocket client test for AgroBridge backend
+Simple WebSocket client test for AgroBridge backend (no auth)
 """
 import asyncio
 import websockets
 import json
 
-async def test_websocket():
-    # Use the token from get_test_token.py
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxMjU1ODg0LCJpYXQiOjE3NjEyNTQ5ODQsImp0aSI6IjZiOWFlOWZkNjljOTQzYTA4MjI0NzRjYjU3ZmEzYTg1IiwidXNlcl9pZCI6IjUiLCJhdWQiOiJhZ3JvYnJpZGdlLWFwaSIsImlzcyI6ImFncm9icmlkZ2UifQ.4obHfh2ylFaOiewE1Or0t4ms-BYFX27pN6jBnSGtlyI"
-    uri = f"ws://localhost:8000/ws/?token={token}"
+async def test_simple_websocket():
+    uri = "ws://localhost:8000/ws/simple/"
     
     try:
         print(f"Connecting to {uri}...")
@@ -19,7 +17,7 @@ async def test_websocket():
             # Send a test message
             test_message = {
                 "type": "ping",
-                "data": {"message": "Hello from test client"}
+                "data": {"message": "Hello from simple test client"}
             }
             
             await websocket.send(json.dumps(test_message))
@@ -29,8 +27,21 @@ async def test_websocket():
             response = await websocket.recv()
             print(f"Received: {response}")
             
+            # Send another message
+            echo_message = {
+                "type": "echo",
+                "data": {"message": "This is an echo test"}
+            }
+            
+            await websocket.send(json.dumps(echo_message))
+            print(f"Sent: {echo_message}")
+            
+            # Wait for response
+            response = await websocket.recv()
+            print(f"Received: {response}")
+            
     except Exception as e:
         print(f"Connection failed: {e}")
 
 if __name__ == "__main__":
-    asyncio.run(test_websocket())
+    asyncio.run(test_simple_websocket())

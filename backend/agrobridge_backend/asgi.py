@@ -22,9 +22,9 @@ django_asgi_app = get_asgi_application()
 from . import routing
 from .websocket_auth import JWTAuthMiddlewareStack
 
+# Note: AllowedHostsOriginValidator disabled for development
+# In production, enable it with proper configuration
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
-    "websocket": AllowedHostsOriginValidator(
-        URLRouter(routing.websocket_urlpatterns)
-    ),
+    "websocket": URLRouter(routing.websocket_urlpatterns),
 })

@@ -130,7 +130,8 @@ class TestConsumer(BaseAuthenticatedConsumer):
     
     async def on_disconnect(self, close_code):
         """Handle disconnection"""
-        logger.info(f"Test WebSocket disconnected for user: {self.user.username}, code: {close_code}")
+        username = self.user.username if hasattr(self, 'user') and self.user else 'unknown'
+        logger.info(f"Test WebSocket disconnected for user: {username}, code: {close_code}")
     
     async def on_message(self, data):
         """Handle incoming messages"""
