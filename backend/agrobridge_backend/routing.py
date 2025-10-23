@@ -1,8 +1,31 @@
-# [AI-INTEGRATION] Updated on 2025-10-12: Django-React/Vue real-time integration setup
+"""
+WebSocket URL routing for the AgroBridge backend
+"""
+from django.urls import re_path, path
+from channels.routing import URLRouter
 
-from django.urls import path
-from . import consumers
+# Import consumers (will be created in subsequent tasks)
+# from notifications.consumers import NotificationConsumer
+# from marketplace.consumers import MarketplaceConsumer
+# from farms.consumers import FarmMonitoringConsumer
+# from chat.consumers import ChatConsumer
 
 websocket_urlpatterns = [
-    path('ws/some_path/', consumers.YourConsumer.as_asgi()),  # Example WebSocket path
+    # Notification WebSocket
+    # re_path(r'ws/notifications/$', NotificationConsumer.as_asgi()),
+    
+    # Marketplace updates WebSocket
+    # re_path(r'ws/marketplace/$', MarketplaceConsumer.as_asgi()),
+    
+    # Farm monitoring WebSocket
+    # re_path(r'ws/farms/(?P<farm_id>\w+)/$', FarmMonitoringConsumer.as_asgi()),
+    
+    # Chat WebSocket
+    # re_path(r'ws/chat/(?P<room_name>\w+)/$', ChatConsumer.as_asgi()),
+    
+    # Test WebSocket endpoint
+    path('ws/test/', TestConsumer.as_asgi()),
 ]
+
+# Import test consumer
+from .consumers import TestConsumer
