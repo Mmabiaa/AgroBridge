@@ -89,7 +89,11 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/hour',
         'user': '1000/hour',
-        'auth': '5/min',  # For authentication endpoints
+        'login': '5/min',  # Login attempts
+        'registration': '3/hour',  # Registration attempts
+        'password_reset': '3/hour',  # Password reset requests
+        'email_verification': '10/hour',  # Email verification attempts
+        'user_actions': '100/hour',  # General user actions
     }
 }
 

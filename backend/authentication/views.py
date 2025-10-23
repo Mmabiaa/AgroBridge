@@ -16,13 +16,12 @@ from .serializers import (
     UserUpdateSerializer, PasswordChangeSerializer, EmailVerificationSerializer,
     PasswordResetRequestSerializer, PasswordResetSerializer
 )
+from .throttles import (
+    LoginRateThrottle, RegistrationRateThrottle, PasswordResetRateThrottle,
+    EmailVerificationRateThrottle, UserActionRateThrottle, SecurityEventTracker
+)
 
 logger = logging.getLogger(__name__)
-
-
-class AuthRateThrottle(AnonRateThrottle):
-    """Custom throttle for authentication endpoints"""
-    scope = 'auth'
 
 
 @api_view(['POST'])
