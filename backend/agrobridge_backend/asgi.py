@@ -24,9 +24,5 @@ from .websocket_auth import JWTAuthMiddlewareStack
 
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
-    "websocket": AllowedHostsOriginValidator(
-        JWTAuthMiddlewareStack(
-            URLRouter(routing.websocket_urlpatterns)
-        )
-    ),
+    "websocket": URLRouter(routing.websocket_urlpatterns),
 })

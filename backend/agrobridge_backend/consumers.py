@@ -195,6 +195,74 @@ class NotificationMixin:
         )
 
 
+class SimpleTestConsumer(AsyncWebsocketConsumer):
+    """
+    Simple WebSocket consumer for testing without authentication
+    """
+    
+    async def connect(self):
+        """Accept connection without authentication"""
+        await self.accept()
+        await self.send(text_data=json.dumps({
+            'type': 'connected',
+            'message': 'Simple WebSocket connected successfully',
+            'timestamp': self.get_timestamp()
+        }))
+        logger.info("Simple WebSocket connected (no auth)")
+    
+    async def disconnect(self, close_code):
+        """Handle disconnection"""
+        logger.info(f"Simple WebSocket disconnected, code: {close_code}")
+    
+    async def receive(self, text_data):
+        """Handle incoming messages"""
+        try:
+            data = json.loads(text_data)
+            message_type = data.get('type', 'unknown')
+            
+            if message_type == 'ping':
+                await self.send(text_data=json.dumps({
+                    'type': 'pong',
+                    'message': 'Pong response',
+                    'original_data': data,
+                    'timestamp': self.get_timestamp()
+                }))
+            
+            elif message_type == 'echo':
+                await self.send(text_data=json.dumps({
+                    'type': 'echo_response',
+                    'message': 'Echo response',
+                    'echoed_data': data.get('data', {}),
+                    'timestamp': self.get_timestamp()
+                }))
+            
+            else:
+                await self.send(text_data=json.dumps({
+                    'type': 'error',
+                    'message': f'Unknown message type: {message_type}',
+                    'timestamp': self.get_timestamp()
+                }))
+                
+        except json.JSONDecodeError:
+            await self.send(text_data=json.dumps({
+                'type': 'error',
+                'message': 'Invalid JSON format',
+                'timestamp': self.get_timestamp()
+            }))
+        except Exception as e:
+            logger.error(f"Error handling WebSocket message: {str(e)}")
+            await self.send(text_data=json.dumps({
+                'type': 'error',
+                'message': 'Internal server error',
+                'timestamp': self.get_timestamp()
+            }))
+    
+    def get_timestamp(self):
+        """Get current timestamp"""
+        from django.utils import timezone
+        return timezone.now().isoformat()
+
+
 class BroadcastMixin:
     """
     Mixin for consumers that need to broadcast to groups

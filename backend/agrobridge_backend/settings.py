@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'drf_yasg',
-    # 'channels',  # Temporarily disabled due to Python 3.13 compatibility issue
+    'channels',
     'django_filters',
 
     # Microservice apps
@@ -59,8 +59,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'agrobridge_backend.urls'
 
-# ASGI configuration for Django Channels (temporarily disabled)
-# ASGI_APPLICATION = 'agrobridge_backend.asgi.application'
+# ASGI configuration for Django Channels
+ASGI_APPLICATION = 'agrobridge_backend.asgi.application'
 
 # REST Framework configuration
 REST_FRAMEWORK = {
@@ -170,7 +170,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'agrobridge_backend.wsgi.application'
-# ASGI_APPLICATION = 'agrobridge_backend.asgi.application'  # Temporarily disabled
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -211,15 +210,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Channels and Redis for WebSocket support (temporarily disabled)
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             'hosts': [('127.0.0.1', 6379)],  # Local Redis for development
-#         },
-#     },
-# }
+# Channels configuration for WebSocket support
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',  # Use in-memory for development
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
