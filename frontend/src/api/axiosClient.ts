@@ -16,11 +16,12 @@ export interface ApiResponse<T = any> {
     status: number;
 }
 
-export interface ApiError {
+export interface ClientApiError {
     message: string;
     status: number;
     code?: string;
     details?: any;
+    timestamp: string;
 }
 
 export interface PaginatedResponse<T> {
@@ -105,11 +106,12 @@ class ApiLogger {
 // Error handler
 class ApiErrorHandler {
     static handleError(error: AxiosError): Promise<never> {
-        const apiError: ApiError = {
+        const apiError: ClientApiError = {
             message: 'An unexpected error occurred',
             status: error.response?.status || 0,
-            code: error.code,
-            details: error.response?.data
+            code: error.code || 'UNKNOWN_ERROR',
+            details: error.response?.data,
+            timestamp: new Date().toISOString()
         };
 
         // Handle specific error cases
@@ -118,7 +120,7 @@ class ApiErrorHandler {
 
             switch (status) {
                 case 400:
-                    apiError.message = data?.message || 'Bad request. Please check your input.';
+                    apiError.message = (data as any)?.message || 'Bad request. Please check your input.';
                     break;
                 case 401:
                     apiError.message = 'Authentication required. Please log in.';
@@ -136,7 +138,7 @@ class ApiErrorHandler {
                     apiError.message = 'Resource not found.';
                     break;
                 case 422:
-                    apiError.message = data?.message || 'Validation error. Please check your input.';
+                    apiError.message = (data as any)?.message || 'Validation error. Please check your input.';
                     break;
                 case 429:
                     apiError.message = 'Too many requests. Please try again later.';
