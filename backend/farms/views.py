@@ -19,6 +19,7 @@ from .serializers import (
 )
 from .filters import FarmFilter, CropFilter, LivestockFilter, FarmActivityFilter, EquipmentFilter
 from .permissions import IsFarmOwnerOrReadOnly
+from .analytics import FarmAnalytics, FarmPerformanceMonitor
 
 logger = logging.getLogger(__name__)
 
@@ -52,74 +53,98 @@ class FarmViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['get'])
     def analytics(self, request, pk=None):
-        """Get analytics for a specific farm"""
+        """Get comprehensive analytics for a specific farm"""
         farm = self.get_object()
+        analytics = FarmAnalytics(farm=farm)
         
-        # Basic statistics
-        total_crops = farm.crops.count()
-        total_livestock = farm.livestock.aggregate(
-            total=Sum('count')
-        )['total'] or 0
-        
-        # Activity statistics
-        activities = farm.activities.all()
-        active_activities = activities.filter(status='in_progress').count()
-        overdue_activities = activities.filter(
-            status__in=['planned', 'in_progress'],
-            scheduled_date__lt=timezone.now()
-        ).count()
-        
-        # Crop status breakdown
-        crop_status = farm.crops.values('status').annotate(
-            count=Count('id')
-        )
-        crop_status_breakdown = {
-            item['status']: item['count'] for item in crop_status
-        }
-        
-        # Livestock type breakdown
-        livestock_types = farm.livestock.values('animal_type').annotate(
-            count=Sum('count')
-        )
-        livestock_type_breakdown = {
-            item['animal_type']: item['count'] for item in livestock_types
-        }
-        
-        # Equipment status
-        equipment_status = {
-            'total': farm.equipment.count(),
-            'operational': farm.equipment.filter(is_operational=True).count(),
-            'needs_maintenance': farm.equipment.filter(
-                next_maintenance_date__lte=timezone.now().date()
-            ).count()
-        }
-        
-        # Yield efficiency
-        completed_crops = farm.crops.filter(
-            status='harvested',
-            actual_yield_kg__isnull=False,
-            expected_yield_kg__isnull=False
-        )
-        avg_yield_efficiency = completed_crops.aggregate(
-            avg_efficiency=Avg('actual_yield_kg') / Avg('expected_yield_kg') * 100
-        )['avg_efficiency']
+        # Combine all analytics
+        farm_overview = analytics.get_farm_overview()
+        crop_analytics = analytics.get_crop_analytics()
+        livestock_analytics = analytics.get_livestock_analytics()
+        activity_analytics = analytics.get_activity_analytics()
+        equipment_analytics = analytics.get_equipment_analytics()
         
         analytics_data = {
+            'farm_overview': farm_overview,
+            'crop_analytics': crop_analytics,
+            'livestock_analytics': livestock_analytics,
+            'activity_analytics': activity_analytics,
+            'equipment_analytics': equipment_analytics,
+            
+            # Legacy format for backward compatibility
             'total_farms': 1,
             'total_area': farm.size_hectares,
-            'total_crops': total_crops,
-            'total_livestock': total_livestock,
-            'active_activities': active_activities,
-            'overdue_activities': overdue_activities,
-            'crop_status_breakdown': crop_status_breakdown,
-            'livestock_type_breakdown': livestock_type_breakdown,
-            'monthly_activities': [],  # Could be implemented with more complex queries
-            'average_yield_efficiency': avg_yield_efficiency,
-            'equipment_status': equipment_status
+            'total_crops': crop_analytics['total_crops'],
+            'total_livestock': livestock_analytics['total_animals'],
+            'active_activities': activity_analytics.get('status_breakdown', {}).get('in_progress', 0),
+            'overdue_activities': activity_analytics['overdue_activities'],
+            'crop_status_breakdown': crop_analytics['status_breakdown'],
+            'livestock_type_breakdown': livestock_analytics['type_breakdown'],
+            'monthly_activities': activity_analytics['monthly_trends'],
+            'average_yield_efficiency': crop_analytics['yield_efficiency'],
+            'equipment_status': {
+                'total': equipment_analytics['total_equipment'],
+                'operational': equipment_analytics['operational_equipment'],
+                'needs_maintenance': equipment_analytics['needs_maintenance']
+            }
         }
         
-        serializer = FarmAnalyticsSerializer(analytics_data)
-        return Response(serializer.data)
+        return Response(analytics_data)
+    
+    @action(detail=True, methods=['get'])
+    def performance(self, request, pk=None):
+        """Get performance metrics and alerts for a farm"""
+        farm = self.get_object()
+        monitor = FarmPerformanceMonitor(farm)
+        
+        alerts = monitor.get_performance_alerts()
+        metrics = monitor.get_productivity_metrics()
+        
+        return Response({
+            'alerts': alerts,
+            'metrics': metrics
+        })
+    
+    @action(detail=False, methods=['get'])
+    def dashboard(self, request):
+        """Get dashboard data for all user's farms"""
+        analytics = FarmAnalytics(user=request.user)
+        
+        # Get overview data
+        farm_overview = analytics.get_farm_overview()
+        crop_analytics = analytics.get_crop_analytics()
+        livestock_analytics = analytics.get_livestock_analytics()
+        activity_analytics = analytics.get_activity_analytics()
+        equipment_analytics = analytics.get_equipment_analytics()
+        
+        # Get alerts for all farms
+        all_alerts = []
+        for farm in Farm.objects.filter(owner=request.user):
+            monitor = FarmPerformanceMonitor(farm)
+            farm_alerts = monitor.get_performance_alerts()
+            for alert in farm_alerts:
+                alert['farm_name'] = farm.name
+                alert['farm_id'] = str(farm.id)
+            all_alerts.extend(farm_alerts)
+        
+        return Response({
+            'overview': {
+                'farms': farm_overview,
+                'crops': crop_analytics,
+                'livestock': livestock_analytics,
+                'activities': activity_analytics,
+                'equipment': equipment_analytics
+            },
+            'alerts': all_alerts[:10],  # Limit to 10 most recent alerts
+            'summary': {
+                'total_farms': farm_overview['total_farms'],
+                'total_area': farm_overview['total_area'],
+                'total_crops': crop_analytics['total_crops'],
+                'total_livestock': livestock_analytics['total_animals'],
+                'overdue_activities': activity_analytics['overdue_activities'],
+                'upcoming_activities': activity_analytics['upcoming_activities']
+            }
+        })
     
     @action(detail=True, methods=['get'])
     def summary(self, request, pk=None):
