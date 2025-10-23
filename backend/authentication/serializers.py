@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -387,3 +388,52 @@ class PasswordResetSerializer(serializers.Serializer):
         self.user.password_reset_expires = None
         self.user.save()
         return self.user
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    Custom token serializer to add additional claims
+    """
+    
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        
+        # Add custom claims
+        token['role'] = user.role
+        token['is_verified'] = user.is_verified
+        token['email_verified'] = user.email_verified
+        token['profile_completed'] = user.profile_completed
+        token['permissions'] = cls.get_user_permissions(user)
+        
+        return token
+    
+    @staticmethod
+    def get_user_permissions(user):
+        """Get user permissions based on role"""
+        role_permissions = {
+            'farmer': [
+                'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
+                'use_crop_detection', 'use_voice_commands', 'view_marketplace',
+                'place_orders', 'view_orders', 'view_learning', 'view_community'
+            ],
+            'poultry_keeper': [
+                'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
+                'use_crop_detection', 'use_voice_commands', 'view_marketplace',
+                'place_orders', 'view_orders', 'view_learning', 'view_community'
+            ],
+            'buyer': [
+                'view_dashboard', 'view_marketplace', 'place_orders', 'view_orders',
+                'view_learning', 'view_community'
+            ],
+            'ngo': [
+                'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
+                'view_marketplace', 'view_learning', 'view_community', 'moderate_community'
+            ],
+            'expert': [
+                'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
+                'view_marketplace', 'view_learning', 'view_community', 'moderate_community'
+            ],
+            'admin': ['*']  # All permissions
+        }
+        return role_permissions.get(user.role, [])
