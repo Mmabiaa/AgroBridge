@@ -115,7 +115,7 @@ class AuthService {
    */
   async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
     const response = await apiClient.post<RefreshTokenResponse>(
-      `${this.baseUrl}/token/refresh/`,
+      `${this.baseUrl}/refresh/`,
       { refresh: refreshToken }
     );
     
@@ -130,7 +130,7 @@ class AuthService {
    */
   async requestPasswordReset(email: string): Promise<{ message: string }> {
     return apiClient.post<{ message: string }>(
-      `${this.baseUrl}/password-reset/`,
+      `${this.baseUrl}/request-password-reset/`,
       { email }
     );
   }
