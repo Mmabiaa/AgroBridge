@@ -77,7 +77,7 @@ export const queryClient = new QueryClient({
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
       // Refetch configuration
       refetchOnWindowFocus: (query) => {
-        const config = getCacheConfig(query.queryKey);
+        const config = getCacheConfig([...query.queryKey]);
         // Only refetch critical data on window focus
         return config === getCacheConfig(['auth']) || config === getCacheConfig(['farms.detail']);
       },
