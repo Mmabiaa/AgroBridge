@@ -1,5 +1,5 @@
 """
-Custom permissions for AI assistant
+Permissions for AI assistant app
 """
 from rest_framework import permissions
 
@@ -8,88 +8,77 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     """
     Custom permission to only allow owners of an object to edit it.
     """
-    
-    def has_permission(self, request, view):
-        """
-        Check if user has permission to access the view
-        """
-        return request.user and request.user.is_authenticated
-    
+
     def has_object_permission(self, request, view, obj):
-        """
-        Check if user has permission to access the specific object
-        """
-        # Read permissions are allowed for any authenticated user
+        # Read permissions are allowed for any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
-            # For conversations and messages, only owner can read
-            if hasattr(obj, 'user'):
-                return obj.user == request.user or request.user.is_staff
-            elif hasattr(obj, 'conversation'):
-                return obj.conversation.user == request.user or request.user.is_staff
             return True
-        
-        # Write permissions are only allowed to the owner
-        if hasattr(obj, 'user'):
-            return obj.user == request.user or request.user.is_staff
-        elif hasattr(obj, 'conversation'):
-            return obj.conversation.user == request.user or request.user.is_staff
-        
-        return request.user.is_staff
+
+        # Write permissions are only allowed to the owner of the object.
+        return obj.user == request.user
+
+
+class IsOwner(permissions.BasePermission):
+    """
+    Custom permission to only allow owners of an object to access it.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # All permissions are only allowed to the owner of the object.
+        return obj.user == request.user
 
 
 class CanAccessAIFeatures(permissions.BasePermission):
     """
-    Permission that checks if user can access AI features based on their role
+    Permission to check if user can access AI features
     """
-    
+
     def has_permission(self, request, view):
-        """
-        Check if user can access AI features
-        """
-        if not (request.user and request.user.is_authenticated):
+        # Check if user is authenticated
+        if not request.user.is_authenticated:
             return False
         
-        # Check if user's role allows AI features
-        allowed_roles = ['farmer', 'poultry_keeper', 'expert', 'ngo', 'admin']
-        return request.user.role in allowed_roles
-    
-    def has_object_permission(self, request, view, obj):
-        """
-        Check object-level permissions
-        """
-        # Users can only access their own AI data
-        if hasattr(obj, 'user'):
-            return obj.user == request.user or request.user.is_staff
-        elif hasattr(obj, 'conversation'):
-            return obj.conversation.user == request.user or request.user.is_staff
-        
-        return request.user.is_staff
+        # Check if user has AI access (could be based on subscription, role, etc.)
+        # For now, all authenticated users have access
+        return True
 
 
-class IsKnowledgeBaseEditor(permissions.BasePermission):
+class CanUseVoiceFeatures(permissions.BasePermission):
     """
-    Permission for editing knowledge base articles
+    Permission to check if user can use voice features
     """
-    
+
     def has_permission(self, request, view):
-        """
-        Check if user can edit knowledge base
-        """
-        if not (request.user and request.user.is_authenticated):
+        # Check if user is authenticated
+        if not request.user.is_authenticated:
             return False
         
-        # Only experts, NGOs, and admins can edit knowledge base
-        allowed_roles = ['expert', 'ngo', 'admin']
-        return request.user.role in allowed_roles or request.user.is_staff
-    
-    def has_object_permission(self, request, view, obj):
-        """
-        Check object-level permissions for knowledge base
-        """
-        # Read permissions for all authenticated users
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        
-        # Write permissions for experts, NGOs, and admins
-        allowed_roles = ['expert', 'ngo', 'admin']
-        return request.user.role in allowed_roles or request.user.is_staff
+        # Check if user has voice feature access
+        # This could be based on subscription tier, user role, etc.
+        # For now, all authenticated users have access
+        return True
+
+
+class CanAccessKnowledgeBase(permissions.BasePermission):
+    """
+    Permission to check if user can access knowledge base
+    """
+
+    def has_permission(self, request, view):
+        # Knowledge base is accessible to all authenticated users
+        return request.user.is_authenticated
+
+
+class CanManageKnowledgeBase(permissions.BasePermission):
+    """
+    Permission to check if user can manage knowledge base entries
+    """
+
+    def has_permission(self, request, view):
+        # Only staff/admin users can manage knowledge base
+        return request.user.is_authenticated and (
+            request.user.is_staff or 
+            request.user.is_superuser or
+            getattr(request.user, 'role', '') in ['admin', 'expert']
+        )

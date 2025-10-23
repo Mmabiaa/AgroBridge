@@ -26,6 +26,7 @@ from .serializers import (
 )
 from .ai_service import AIService
 from .permissions import IsOwnerOrReadOnly
+from django.db import models
 
 logger = logging.getLogger(__name__)
 
