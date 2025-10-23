@@ -101,9 +101,9 @@ export const useSendMessage = () => {
 
     return useMutation({
         mutationKey: ['send_message'],
-        mutationFn: ({ conversationId, messageData }: { conversationId: string; messageData: SendMessageData }) =>
-            aiService.sendMessage(conversationId, messageData),
-        onMutate: async ({ conversationId, messageData }) => {
+        mutationFn: ({ conversationId, content }: { conversationId: string; content: string }) =>
+            aiService.sendMessage(conversationId, { content }),
+        onMutate: async ({ conversationId, content }) => {
             // Cancel outgoing refetches
             await queryClient.cancelQueries({ queryKey: queryKeys.ai.conversations.messages(conversationId) });
 
@@ -114,7 +114,7 @@ export const useSendMessage = () => {
             const optimisticUserMessage: Message = {
                 id: `temp-${Date.now()}`,
                 role: 'user',
-                content: messageData.content,
+                content: content,
                 timestamp: new Date().toISOString(),
                 conversation_id: conversationId,
             };
@@ -130,16 +130,25 @@ export const useSendMessage = () => {
 
             return { previousMessages, conversationId };
         },
-        onSuccess: (response, { conversationId }) => {
-            // Replace optimistic message with real messages
+        onSuccess: (response, { conversationId, content }) => {
+            // Create assistant message from response
+            const assistantMessage: Message = {
+                id: response.message_id,
+                role: 'assistant',
+                content: response.response,
+                timestamp: new Date().toISOString(),
+                conversation_id: conversationId,
+            };
+
+            // Replace optimistic message with real assistant message
             queryClient.setQueryData(
                 queryKeys.ai.conversations.messages(conversationId),
                 (old: Message[] | undefined) => {
-                    if (!old) return [response.user_message, response.assistant_message];
+                    if (!old) return [assistantMessage];
 
-                    // Remove the optimistic message and add real messages
+                    // Remove the optimistic message and add real assistant message
                     const withoutOptimistic = old.filter(msg => !msg.id.startsWith('temp-'));
-                    return [...withoutOptimistic, response.user_message, response.assistant_message];
+                    return [...withoutOptimistic, assistantMessage];
                 }
             );
 

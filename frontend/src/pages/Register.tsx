@@ -14,6 +14,7 @@ export default function Register() {
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [showRoleSelection, setShowRoleSelection] = useState(false);
   const [formData, setFormData] = useState({
+    'username': '',
     firstName: '',
     lastName: '',
     email: '',

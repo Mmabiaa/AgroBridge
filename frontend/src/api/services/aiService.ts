@@ -197,30 +197,56 @@ class AIService {
     conversationId: string, 
     data: SendMessageRequest
   ): Promise<{
-    user_message: ChatMessage;
-    assistant_message: ChatMessage;
+    conversation_id: string;
+    message_id: string;
+    response: string;
+    confidence_score: number;
+    processing_time_ms: number;
+    tokens_used: number;
+    recommendations: any[];
   }> {
-    const formData = new FormData();
-    formData.append('content', data.content);
-    
-    if (data.message_type) {
-      formData.append('message_type', data.message_type);
-    }
-    
-    if (data.attachments) {
-      formData.append('attachments', JSON.stringify(data.attachments));
-    }
-    
+    // If there's a voice file, use FormData
     if (data.voice_file) {
+      const formData = new FormData();
+      formData.append('content', data.content);
+      
+      if (data.message_type) {
+        formData.append('message_type', data.message_type);
+      }
+      
+      if (data.attachments) {
+        formData.append('attachments', JSON.stringify(data.attachments));
+      }
+      
       formData.append('voice_file', data.voice_file);
-    }
 
-    return apiClient.post<{
-      user_message: ChatMessage;
-      assistant_message: ChatMessage;
-    }>(`${this.baseUrl}/conversations/${conversationId}/send_message/`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+      return apiClient.post<{
+        conversation_id: string;
+        message_id: string;
+        response: string;
+        confidence_score: number;
+        processing_time_ms: number;
+        tokens_used: number;
+        recommendations: any[];
+      }>(`${this.baseUrl}/conversations/${conversationId}/send_message/`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    } else {
+      // For text messages, use JSON
+      return apiClient.post<{
+        conversation_id: string;
+        message_id: string;
+        response: string;
+        confidence_score: number;
+        processing_time_ms: number;
+        tokens_used: number;
+        recommendations: any[];
+      }>(`${this.baseUrl}/conversations/${conversationId}/send_message/`, {
+        content: data.content,
+        message_type: data.message_type || 'text',
+        attachments: data.attachments || []
+      });
+    }
   }
 
   /**
