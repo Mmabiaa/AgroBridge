@@ -15,10 +15,10 @@ class ChatConversationAdmin(admin.ModelAdmin):
 
 @admin.register(ChatMessage)
 class ChatMessageAdmin(admin.ModelAdmin):
-    list_display = ['conversation', 'role', 'message_type', 'timestamp', 'tokens_used']
-    list_filter = ['role', 'message_type', 'timestamp']
+    list_display = ['conversation', 'role', 'message_type', 'created_at', 'tokens_used']
+    list_filter = ['role', 'message_type', 'created_at']
     search_fields = ['content', 'conversation__title']
-    readonly_fields = ['id', 'timestamp', 'edited_at']
+    readonly_fields = ['id', 'created_at']
 
 
 @admin.register(AIRecommendation)
@@ -31,16 +31,16 @@ class AIRecommendationAdmin(admin.ModelAdmin):
 
 @admin.register(KnowledgeBase)
 class KnowledgeBaseAdmin(admin.ModelAdmin):
-    list_display = ['title', 'content_type', 'category', 'language', 'relevance_score', 'usage_count', 'is_active']
-    list_filter = ['content_type', 'category', 'language', 'is_active', 'created_at']
+    list_display = ['title', 'category', 'language', 'usage_count', 'is_active']
+    list_filter = ['category', 'language', 'is_active', 'created_at']
     search_fields = ['title', 'content', 'tags', 'keywords']
     readonly_fields = ['id', 'usage_count', 'last_used', 'created_at', 'updated_at']
 
 
 @admin.register(VoiceInteraction)
 class VoiceInteractionAdmin(admin.ModelAdmin):
-    list_display = ['user', 'status', 'input_language', 'transcription_confidence', 'created_at']
-    list_filter = ['status', 'input_language', 'created_at']
+    list_display = ['user', 'status', 'created_at']
+    list_filter = ['status', 'created_at']
     search_fields = ['transcribed_text', 'response_text', 'user__username']
     readonly_fields = ['id', 'created_at', 'completed_at']
 
