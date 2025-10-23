@@ -4,9 +4,9 @@ channels_redis==3.3.0
 Django==5.2.7
 django-cors-headers==4.9.0
 django-environ==0.8.1
+django-filter==24.3
 djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
-django-simplejwt==5.0.0
 drf-yasg==1.21.11
 inflection==0.5.1
 packaging==25.0
@@ -15,6 +15,7 @@ PyJWT==2.10.1
 python-decouple==3.8
 pytz==2025.2
 PyYAML==6.0.3
+redis==5.0.1
 sqlparse==0.5.3
 tzdata==2025.2
 uritemplate==4.2.0
