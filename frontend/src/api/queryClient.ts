@@ -4,6 +4,7 @@
 import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
 import { handleError } from './errorHandler';
 import { notificationService } from './notificationService';
+import { setupCachePersistence, getCacheConfig } from './cachePersistence';
 
 // Create query cache with error handling
 const queryCache = new QueryCache({
