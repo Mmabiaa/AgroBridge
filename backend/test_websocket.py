@@ -8,7 +8,7 @@ import json
 
 async def test_websocket():
     # Use the token from get_test_token.py
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxMjU1ODg0LCJpYXQiOjE3NjEyNTQ5ODQsImp0aSI6IjZiOWFlOWZkNjljOTQzYTA4MjI0NzRjYjU3ZmEzYTg1IiwidXNlcl9pZCI6IjUiLCJhdWQiOiJhZ3JvYnJpZGdlLWFwaSIsImlzcyI6ImFncm9icmlkZ2UifQ.4obHfh2ylFaOiewE1Or0t4ms-BYFX27pN6jBnSGtlyI"
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxMjU2NTkwLCJpYXQiOjE3NjEyNTU2OTAsImp0aSI6ImYxOTNjNWE2Y2JjZjQzNTI5ZTM4OTg1ZTdkN2Q2YWJmIiwidXNlcl9pZCI6IjUiLCJhdWQiOiJhZ3JvYnJpZGdlLWFwaSIsImlzcyI6ImFncm9icmlkZ2UifQ.RR2jds7sqA7SYm1Cn458XxJ6lbvulEmZecCk4u_sS88"
     uri = f"ws://localhost:8000/ws/?token={token}"
     
     try:

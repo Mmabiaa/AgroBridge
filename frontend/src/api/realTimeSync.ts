@@ -17,9 +17,11 @@ class RealTimeSync {
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
   private isConnecting = false;
+  private shouldConnect = false;
 
   constructor() {
-    this.connect();
+    // Don't auto-connect on initialization
+    // Connection will be initiated when user authenticates
   }
 
   private connect() {
@@ -27,18 +29,37 @@ class RealTimeSync {
       return;
     }
 
+    // Get token for authentication
+    const token = localStorage.getItem('access_token');
+    
+    // Don't connect if no token is available
+    if (!token) {
+      console.log('WebSocket connection skipped: No authentication token available');
+      return;
+    }
+
+    // Check if token is expired
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Date.now() / 1000;
+      if (payload.exp < currentTime) {
+        console.log('WebSocket connection skipped: Token is expired');
+        return;
+      }
+    } catch (error) {
+      console.log('WebSocket connection skipped: Invalid token format');
+      return;
+    }
+
     this.isConnecting = true;
     
     try {
-      // Get token for authentication
-      const token = localStorage.getItem('access_token');
-      
       const baseUrl = import.meta.env.PROD 
         ? 'wss://api.agrobridge.com/ws/'
         : 'ws://localhost:8000/ws/';
       
-      // Add token as query parameter if available
-      const wsUrl = token ? `${baseUrl}?token=${token}` : baseUrl;
+      // Always add token as query parameter for authenticated connections
+      const wsUrl = `${baseUrl}?token=${token}`;
       
       this.ws = new WebSocket(wsUrl);
       
@@ -76,6 +97,11 @@ class RealTimeSync {
   }
 
   private scheduleReconnect() {
+    // Don't reconnect if we shouldn't be connected
+    if (!this.shouldConnect) {
+      return;
+    }
+
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       console.log('Max reconnection attempts reached');
       return;
@@ -254,24 +280,35 @@ class RealTimeSync {
     this.reconnectAttempts = 0;
     this.connect();
   }
+
+  public startConnection() {
+    this.shouldConnect = true;
+    this.reconnectAttempts = 0;
+    this.connect();
+  }
+
+  public stopConnection() {
+    this.shouldConnect = false;
+    this.disconnect();
+  }
 }
 
 // Create singleton instance
 export const realTimeSync = new RealTimeSync();
 
-// Auto-reconnect on page visibility change
+// Auto-reconnect on page visibility change (only if should be connected)
 if (typeof document !== 'undefined') {
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !realTimeSync.isConnected()) {
+    if (!document.hidden && !realTimeSync.isConnected() && realTimeSync['shouldConnect']) {
       realTimeSync.reconnect();
     }
   });
 }
 
-// Auto-reconnect when coming back online
+// Auto-reconnect when coming back online (only if should be connected)
 if (typeof window !== 'undefined') {
   window.addEventListener('online', () => {
-    if (!realTimeSync.isConnected()) {
+    if (!realTimeSync.isConnected() && realTimeSync['shouldConnect']) {
       realTimeSync.reconnect();
     }
   });

@@ -26,7 +26,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   fallbackPath = '/dashboard',
   showAccessDenied = true,
 }) => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isAuthenticated } = useAuth();
   const { checkRole, checkPermission, checkMultiplePermissions, checkRoute } = usePermissions();
   const location = useLocation();
 
@@ -43,7 +43,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // Not authenticated
-  if (!user) {
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

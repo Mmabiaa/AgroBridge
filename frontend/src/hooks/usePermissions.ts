@@ -120,6 +120,20 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     PERMISSIONS.VIEW_FINANCIAL_PLANNING,
     PERMISSIONS.USE_VOICE_COMMANDS,
   ],
+  expert: [
+    PERMISSIONS.VIEW_DASHBOARD,
+    PERMISSIONS.VIEW_ANALYTICS,
+    PERMISSIONS.VIEW_MONITORING,
+    PERMISSIONS.USE_AGRIGPT,
+    PERMISSIONS.VIEW_MARKETPLACE,
+    PERMISSIONS.VIEW_LEARNING,
+    PERMISSIONS.VIEW_COMMUNITY,
+    PERMISSIONS.MODERATE_COMMUNITY,
+    PERMISSIONS.CREATE_CONTENT,
+    PERMISSIONS.EDIT_CONTENT,
+    PERMISSIONS.VIEW_FINANCIAL_PLANNING,
+    PERMISSIONS.USE_VOICE_COMMANDS,
+  ],
   ngo: [
     PERMISSIONS.VIEW_DASHBOARD,
     PERMISSIONS.VIEW_ANALYTICS,
@@ -173,6 +187,17 @@ export const ROLE_ROUTES: Record<UserRole, string[]> = {
   ],
   buyer: [
     ROUTES.DASHBOARD,
+    ROUTES.MARKETPLACE,
+    ROUTES.LEARNING,
+    ROUTES.COMMUNITY,
+    ROUTES.FINANCIAL_PLANNING,
+    ROUTES.VOICE_COMMANDS,
+  ],
+  expert: [
+    ROUTES.DASHBOARD,
+    ROUTES.ANALYTICS,
+    ROUTES.MONITORING,
+    ROUTES.AGRIGPT,
     ROUTES.MARKETPLACE,
     ROUTES.LEARNING,
     ROUTES.COMMUNITY,
@@ -246,6 +271,10 @@ export const usePermissions = () => {
     return user?.role === 'buyer';
   };
 
+  const isExpert = (): boolean => {
+    return user?.role === 'expert';
+  };
+
   const isNGO = (): boolean => {
     return user?.role === 'ngo';
   };
@@ -261,6 +290,7 @@ export const usePermissions = () => {
     isAdmin,
     isFarmer,
     isBuyer,
+    isExpert,
     isNGO,
     // Convenience methods for common permissions
     canViewDashboard: () => checkPermission(PERMISSIONS.VIEW_DASHBOARD),
@@ -304,10 +334,12 @@ export const useRoleAccess = () => {
     hideForRoles,
     showForFarmers: (children: React.ReactNode) => showForRoles(['farmer', 'poultry_keeper'], children),
     showForBuyers: (children: React.ReactNode) => showForRoles('buyer', children),
+    showForExperts: (children: React.ReactNode) => showForRoles('expert', children),
     showForNGOs: (children: React.ReactNode) => showForRoles('ngo', children),
     showForAdmins: (children: React.ReactNode) => showForRoles('admin', children),
     hideForFarmers: (children: React.ReactNode) => hideForRoles(['farmer', 'poultry_keeper'], children),
     hideForBuyers: (children: React.ReactNode) => hideForRoles('buyer', children),
+    hideForExperts: (children: React.ReactNode) => hideForRoles('expert', children),
     hideForNGOs: (children: React.ReactNode) => hideForRoles('ngo', children),
     hideForAdmins: (children: React.ReactNode) => hideForRoles('admin', children),
   };

@@ -25,33 +25,77 @@ export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const [error, setError] = useState<string>('');
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
     
-    if (!selectedRole) {
-      setShowRoleSelection(true);
-      return;
+    if (!formData.firstName.trim()) {
+      errors.firstName = 'First name is required';
+    }
+    
+    if (!formData.lastName.trim()) {
+      errors.lastName = 'Last name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.password) {
+      errors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      errors.password = 'Password must be at least 8 characters long';
     }
     
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
+      errors.confirmPassword = 'Passwords do not match';
+    }
+    
+    if (!selectedRole) {
+      errors.role = 'Please select a role';
+    }
+    
+    return errors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setValidationErrors({});
+    
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      if (errors.role) {
+        setShowRoleSelection(true);
+      }
       return;
     }
     
     setIsLoading(true);
     try {
+      const username = formData.email.split('@')[0]; // Generate username from email
       await register({
-        name: `${formData.firstName} ${formData.lastName}`,
+        username,
         email: formData.email,
-        role: selectedRole,
-        password: formData.password
+        password: formData.password,
+        password_confirm: formData.confirmPassword,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        role: selectedRole!,
+        phone: formData.phone
       });
       
       // Role-based redirection
-      const redirectPath = getRoleRedirectPath(selectedRole);
+      const redirectPath = getRoleRedirectPath(selectedRole!);
       navigate(redirectPath, { replace: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration failed:', error);
+      setError(error.message || 'Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -154,7 +198,11 @@ export default function Register() {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     required
+                    className={validationErrors.firstName ? 'border-destructive' : ''}
                   />
+                  {validationErrors.firstName && (
+                    <p className="text-xs text-destructive">{validationErrors.firstName}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
@@ -166,7 +214,11 @@ export default function Register() {
                     value={formData.lastName}
                     onChange={handleInputChange}
                     required
+                    className={validationErrors.lastName ? 'border-destructive' : ''}
                   />
+                  {validationErrors.lastName && (
+                    <p className="text-xs text-destructive">{validationErrors.lastName}</p>
+                  )}
                 </div>
               </div>
               
@@ -180,7 +232,11 @@ export default function Register() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
+                  className={validationErrors.email ? 'border-destructive' : ''}
                 />
+                {validationErrors.email && (
+                  <p className="text-xs text-destructive">{validationErrors.email}</p>
+                )}
               </div>
               
               <div className="space-y-2">
@@ -202,11 +258,11 @@ export default function Register() {
                     id="password" 
                     name="password"
                     type={showPassword ? "text" : "password"} 
-                    placeholder="Create a password"
+                    placeholder="Create a password (min. 8 characters)"
                     value={formData.password}
                     onChange={handleInputChange}
                     required
-                    className="pr-12"
+                    className={`pr-12 ${validationErrors.password ? 'border-destructive' : ''}`}
                   />
                   <Button
                     type="button"
@@ -222,6 +278,9 @@ export default function Register() {
                     )}
                   </Button>
                 </div>
+                {validationErrors.password && (
+                  <p className="text-xs text-destructive">{validationErrors.password}</p>
+                )}
               </div>
               
               <div className="space-y-2">
@@ -235,7 +294,7 @@ export default function Register() {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     required
-                    className="pr-12"
+                    className={`pr-12 ${validationErrors.confirmPassword ? 'border-destructive' : ''}`}
                   />
                   <Button
                     type="button"
@@ -251,6 +310,9 @@ export default function Register() {
                     )}
                   </Button>
                 </div>
+                {validationErrors.confirmPassword && (
+                  <p className="text-xs text-destructive">{validationErrors.confirmPassword}</p>
+                )}
               </div>
 
               {/* Role Selection Preview */}
@@ -270,6 +332,19 @@ export default function Register() {
                   >
                     Change Role
                   </Button>
+                </div>
+              )}
+
+              {/* Error Messages */}
+              {error && (
+                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                  <p className="text-sm text-destructive">{error}</p>
+                </div>
+              )}
+
+              {validationErrors.role && (
+                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                  <p className="text-sm text-destructive">{validationErrors.role}</p>
                 </div>
               )}
 
