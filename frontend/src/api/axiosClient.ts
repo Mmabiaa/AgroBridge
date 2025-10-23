@@ -6,7 +6,7 @@ import axios, {
     AxiosError,
     InternalAxiosRequestConfig
 } from 'axios';
-import { defaultErrorHandler, defaultRetryInterceptor, ApiError } from './errorHandler';
+import { defaultErrorHandler, defaultRetryInterceptor, ApiError as ErrorHandlerApiError } from './errorHandler';
 import { notificationService } from './notificationService';
 
 // Types for API responses

@@ -11,13 +11,13 @@ const CACHE_KEY = 'agrobridge-query-cache';
 const CACHE_VERSION = 'v1';
 const CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-// Create storage persister
-const persister = createSyncStoragePersister({
-  storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-  key: CACHE_KEY,
-  serialize: JSON.stringify,
-  deserialize: JSON.parse,
-});
+// Create storage persister (requires @tanstack/query-sync-storage-persister)
+// const persister = createSyncStoragePersister({
+//   storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+//   key: CACHE_KEY,
+//   serialize: JSON.stringify,
+//   deserialize: JSON.parse,
+// });
 
 // Cache configuration for different query types
 const cacheConfig = {
@@ -90,38 +90,38 @@ export const getCacheConfig = (queryKey: any[]): typeof cacheConfig.standard => 
   return cacheConfig.standard;
 };
 
-// Setup cache persistence
+// Setup cache persistence (requires persistence packages)
 export const setupCachePersistence = (queryClient: QueryClient) => {
   if (typeof window === 'undefined') {
     return; // Skip on server-side
   }
 
-  try {
-    persistQueryClient({
-      queryClient,
-      persister,
-      maxAge: CACHE_MAX_AGE,
-      hydrateOptions: {
-        // Only hydrate queries that should be persisted
-        defaultOptions: {
-          queries: {
-            staleTime: 5 * 60 * 1000, // 5 minutes
-          },
-        },
-      },
-      dehydrateOptions: {
-        // Only persist queries that should be persisted
-        shouldDehydrateQuery: (query) => {
-          const config = getCacheConfig(query.queryKey);
-          return config.persist && query.state.status === 'success';
-        },
-      },
-    });
-
-    console.log('Cache persistence initialized');
-  } catch (error) {
-    console.error('Failed to initialize cache persistence:', error);
-  }
+  // TODO: Implement when persistence packages are installed
+  console.log('Cache persistence setup skipped - install @tanstack/react-query-persist-client and @tanstack/query-sync-storage-persister');
+  
+  // try {
+  //   persistQueryClient({
+  //     queryClient,
+  //     persister,
+  //     maxAge: CACHE_MAX_AGE,
+  //     hydrateOptions: {
+  //       defaultOptions: {
+  //         queries: {
+  //           staleTime: 5 * 60 * 1000,
+  //         },
+  //       },
+  //     },
+  //     dehydrateOptions: {
+  //       shouldDehydrateQuery: (query) => {
+  //         const config = getCacheConfig(query.queryKey);
+  //         return config.persist && query.state.status === 'success';
+  //       },
+  //     },
+  //   });
+  //   console.log('Cache persistence initialized');
+  // } catch (error) {
+  //   console.error('Failed to initialize cache persistence:', error);
+  // }
 };
 
 // Cache management utilities
