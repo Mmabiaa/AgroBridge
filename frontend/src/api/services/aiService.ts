@@ -146,6 +146,13 @@ class AIService {
   }
 
   /**
+   * Get conversation messages
+   */
+  async getConversationMessages(conversationId: string): Promise<ChatMessage[]> {
+    return apiClient.get<ChatMessage[]>(`${this.baseUrl}/conversations/${conversationId}/messages/`);
+  }
+
+  /**
    * Create new conversation
    */
   async createConversation(data: CreateConversationRequest): Promise<ChatConversation> {
