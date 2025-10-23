@@ -23,7 +23,7 @@ const queryCache = new QueryCache({
 const mutationCache = new MutationCache({
   onError: (error, _variables, _context, _mutation) => {
     console.error('Mutation error:', error, 'Variables:', _variables);
-    handleError(error);
+    errorHandler.handleError(error);
   },
   onSuccess: (_data, _variables, _context, mutation) => {
     // Show success notifications for mutations
