@@ -7,21 +7,26 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
-# [AI-INTEGRATION] Updated on 2025-10-12: Django-React/Vue real-time integration setup
-
 import os
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.auth import AuthMiddlewareStack
-from agrobridge_backend.routing import websocket_urlpatterns
+from channels.security.websocket import AllowedHostsOriginValidator
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'agrobridge_backend.settings')
 
+# Initialize Django ASGI application early to ensure the AppRegistry
+# is populated before importing code that may import ORM models.
+django_asgi_app = get_asgi_application()
+
+# Import routing and auth middleware after Django is initialized
+from . import routing
+from .websocket_auth import JWTAuthMiddlewareStack
+
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
-    "websocket": AuthMiddlewareStack(
-        URLRouter(
-            websocket_urlpatterns
+    "http": django_asgi_app,
+    "websocket": AllowedHostsOriginValidator(
+        JWTAuthMiddlewareStack(
+            URLRouter(routing.websocket_urlpatterns)
         )
     ),
 })

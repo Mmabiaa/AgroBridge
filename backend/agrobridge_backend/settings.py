@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'drf_yasg',
-    # 'channels',  # Temporarily disabled due to Python 3.13 compatibility
+    # 'channels',  # Temporarily disabled due to Python 3.13 compatibility issue
     'django_filters',
 
     # Microservice apps
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'farms',
     'marketplace',
     'ai_assistant',
+    'crop_detection',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'agrobridge_backend.urls'
+
+# ASGI configuration for Django Channels (temporarily disabled)
+# ASGI_APPLICATION = 'agrobridge_backend.asgi.application'
 
 # REST Framework configuration
 REST_FRAMEWORK = {
@@ -191,12 +195,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Add channels and Redis for WebSocket support (temporarily disabled)
+# Channels and Redis for WebSocket support (temporarily disabled)
 # CHANNEL_LAYERS = {
 #     'default': {
 #         'BACKEND': 'channels_redis.core.RedisChannelLayer',
 #         'CONFIG': {
-#             'hosts': [('redis', 6379)],  # Use service name for Docker
+#             'hosts': [('127.0.0.1', 6379)],  # Local Redis for development
 #         },
 #     },
 # }
