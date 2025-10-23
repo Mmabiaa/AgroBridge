@@ -2,8 +2,9 @@
  * Cache persistence utilities for offline support and performance
  */
 import { QueryClient } from '@tanstack/react-query';
-import { persistQueryClient } from '@tanstack/react-query-persist-client';
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+// Note: Persistence packages need to be installed separately
+// import { persistQueryClient } from '@tanstack/react-query-persist-client';
+// import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 
 // Storage keys
 const CACHE_KEY = 'agrobridge-query-cache';
