@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@throttle_classes([AuthRateThrottle])
+@throttle_classes([RegistrationRateThrottle])
 def register_user(request):
     """
     Register a new user account with email verification
@@ -65,7 +65,7 @@ def register_user(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@throttle_classes([AuthRateThrottle])
+@throttle_classes([LoginRateThrottle])
 def login_user(request):
     """
     Authenticate user and return JWT tokens
@@ -277,7 +277,7 @@ def verify_email(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@throttle_classes([AuthRateThrottle])
+@throttle_classes([PasswordResetRateThrottle])
 def request_password_reset(request):
     """
     Request password reset email
