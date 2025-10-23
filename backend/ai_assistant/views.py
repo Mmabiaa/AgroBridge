@@ -55,16 +55,59 @@ class ChatConversationViewSet(viewsets.ModelViewSet):
             return ChatConversationListSerializer
         return ChatConversationSerializer
     
+    def create(self, request, *args, **kwargs):
+        """Create a new conversation with optional initial message"""
+        # Extract initial message if provided
+        initial_message = request.data.pop('initial_message', None)
+        
+        # Create conversation using standard serializer
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        conversation = serializer.save(user=request.user)
+        
+        # Add initial message if provided
+        if initial_message:
+            user_message = conversation.add_message(
+                role='user',
+                content=initial_message
+            )
+            
+            # Generate AI response
+            try:
+                ai_service = AIService()
+                ai_response = ai_service.generate_response(
+                    message=initial_message,
+                    conversation=conversation,
+                    user=request.user
+                )
+                
+                conversation.add_message(
+                    role='assistant',
+                    content=ai_response['response'],
+                    metadata=ai_response.get('metadata', {})
+                )
+                
+            except Exception as e:
+                logger.error(f"AI response generation failed: {str(e)}")
+                # Add fallback message
+                conversation.add_message(
+                    role='assistant',
+                    content="I'm here to help you with your agricultural questions. How can I assist you today?"
+                )
+        
+        # Return created conversation
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
     @action(detail=True, methods=['post'])
     def send_message(self, request, pk=None):
         """Send a message in this conversation"""
         conversation = self.get_object()
         
-        serializer = ChatRequestSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        message_content = serializer.validated_data['message']
+        # Simple validation
+        message_content = request.data.get('content') or request.data.get('message')
+        if not message_content:
+            return Response({'error': 'Message content is required'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
             # Create user message
