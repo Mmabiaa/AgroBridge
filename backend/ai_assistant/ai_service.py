@@ -18,9 +18,9 @@ class AIService:
     """
     
     def __init__(self):
-        # Initialize OpenAI client (or other AI service)
-        # In production, you would configure this properly
-        self.model_name = "gpt-3.5-turbo"  # or your preferred model
+        # Initialize OpenAI client
+        openai.api_key = settings.OPENAI_API_KEY
+        self.model_name = "gpt-3.5-turbo"
         self.max_tokens = 1000
         
     def generate_response(self, message: str, conversation: ChatConversation, user) -> Dict:
@@ -211,61 +211,158 @@ class AIService:
     
     def _call_ai_model(self, messages: List[Dict]) -> Dict:
         """
-        Call AI model (mock implementation)
+        Call OpenAI API to generate response
         """
-        # This is a mock implementation
-        # In production, you would call OpenAI API or your preferred AI service
+        try:
+            # Call OpenAI API
+            response = openai.ChatCompletion.create(
+                model=self.model_name,
+                messages=messages,
+                max_tokens=self.max_tokens,
+                temperature=0.7,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
+            
+            # Extract response data
+            choice = response.choices[0]
+            content = choice.message.content
+            
+            return {
+                'content': content,
+                'tokens_used': response.usage.total_tokens,
+                'confidence_score': 0.9,  # OpenAI doesn't provide confidence scores
+                'metadata': {
+                    'model': response.model,
+                    'finish_reason': choice.finish_reason,
+                    'prompt_tokens': response.usage.prompt_tokens,
+                    'completion_tokens': response.usage.completion_tokens
+                }
+            }
+            
+        except openai.error.RateLimitError:
+            logger.error("OpenAI rate limit exceeded")
+            return self._get_agricultural_fallback_response(messages[-1]['content'])
+            
+        except openai.error.InvalidRequestError as e:
+            logger.error(f"OpenAI invalid request: {str(e)}")
+            return self._get_agricultural_fallback_response(messages[-1]['content'])
+            
+        except openai.error.AuthenticationError:
+            logger.error("OpenAI authentication failed - API key may be invalid or expired")
+            return self._get_agricultural_fallback_response(messages[-1]['content'])
+            
+        except openai.error.APIConnectionError:
+            logger.error("OpenAI API connection failed")
+            return self._get_agricultural_fallback_response(messages[-1]['content'])
+            
+        except Exception as e:
+            logger.error(f"OpenAI API call failed: {str(e)}")
+            return self._get_agricultural_fallback_response(messages[-1]['content'])
+    
+    def _get_fallback_response(self, message: str) -> Dict:
+        """
+        Get fallback response when OpenAI API fails
+        """
+        return {
+            'content': message,
+            'tokens_used': 0,
+            'confidence_score': 0.5,
+            'metadata': {'fallback_response': True}
+        }
+    
+    def _get_agricultural_fallback_response(self, user_message: str) -> Dict:
+        """
+        Get agricultural-specific fallback response when OpenAI API fails
+        """
+        user_message_lower = user_message.lower()
         
-        user_message = messages[-1]['content'].lower()
+        # Provide helpful agricultural responses based on keywords
+        if 'tomato' in user_message_lower:
+            if 'water' in user_message_lower:
+                response = """For tomato watering:
+
+🌱 **Frequency**: Water deeply 1-2 times per week rather than daily light watering
+🌱 **Amount**: Provide 1-2 inches of water per week including rainfall
+🌱 **Timing**: Water early morning to reduce disease risk
+🌱 **Method**: Water at soil level, avoid wetting leaves
+🌱 **Signs**: Check soil moisture 2 inches deep - water when dry
+
+Consistent watering prevents blossom end rot and cracking."""
+            
+            elif 'disease' in user_message_lower or 'yellow' in user_message_lower:
+                response = """Common tomato issues:
+
+🍅 **Yellow leaves**: Often indicates overwatering, nutrient deficiency, or disease
+🍅 **Blight**: Remove affected leaves, improve air circulation, apply fungicide
+🍅 **Wilting**: Check for pests, ensure proper watering, examine roots
+🍅 **Spots**: May be bacterial or fungal - remove affected parts immediately
+
+Prevention: Good spacing, proper watering, disease-resistant varieties."""
+            
+            else:
+                response = """Tomato growing tips:
+
+🌿 **Planting**: Start indoors 6-8 weeks before last frost
+🌿 **Spacing**: 24-36 inches apart for good air circulation  
+🌿 **Support**: Use cages or stakes for indeterminate varieties
+🌿 **Fertilizer**: Balanced fertilizer at planting, then potassium-rich during fruiting
+🌿 **Pruning**: Remove suckers and lower leaves touching ground
+
+What specific aspect of tomato growing would you like to know more about?"""
         
-        # Simple rule-based responses for demo
-        if 'tomato' in user_message and ('disease' in user_message or 'problem' in user_message):
-            response = """Based on your description, your tomatoes might be affected by blight or other fungal diseases. Here are some recommendations:
+        elif 'fertilizer' in user_message_lower or 'nutrient' in user_message_lower:
+            response = """Fertilizer guidance:
 
-1. **Immediate Action**: Remove affected leaves and dispose of them away from your garden
-2. **Treatment**: Apply a copper-based fungicide or neem oil spray
-3. **Prevention**: Ensure good air circulation and avoid watering leaves directly
-4. **Monitoring**: Check plants daily for new symptoms
+🌱 **Soil test first**: Know your soil's pH and nutrient levels
+🌱 **NPK basics**: Nitrogen (leaves), Phosphorus (roots/flowers), Potassium (fruit/disease resistance)
+🌱 **Organic options**: Compost, aged manure, bone meal, fish emulsion
+🌱 **Timing**: Apply at planting and during growing season
+🌱 **Application**: Follow package rates, water in thoroughly
 
-Would you like more specific advice based on the exact symptoms you're seeing?"""
+Over-fertilizing can harm plants - less is often more!"""
         
-        elif 'fertilizer' in user_message:
-            response = """For optimal crop nutrition, consider these fertilizer recommendations:
+        elif 'pest' in user_message_lower or 'insect' in user_message_lower:
+            response = """Integrated Pest Management:
 
-1. **Soil Testing**: First, test your soil pH and nutrient levels
-2. **NPK Balance**: Use a balanced fertilizer (10-10-10) for general crops
-3. **Organic Options**: Compost, manure, or bone meal for sustainable farming
-4. **Application Timing**: Apply during planting and mid-growing season
-5. **Quantity**: Follow package instructions, typically 1-2 pounds per 100 sq ft
+🐛 **Prevention**: Healthy soil, proper spacing, beneficial insects
+🐛 **Identification**: Know your pests - different treatments for different bugs
+🐛 **Organic controls**: Neem oil, insecticidal soap, diatomaceous earth
+🐛 **Beneficial insects**: Ladybugs, lacewings, parasitic wasps
+🐛 **Physical barriers**: Row covers, copper tape for slugs
 
-What specific crops are you planning to fertilize?"""
+Monitor regularly and act early for best results."""
         
-        elif 'weather' in user_message:
-            response = """Weather planning is crucial for successful farming. Here's what to consider:
+        elif 'plant' in user_message_lower and ('when' in user_message_lower or 'time' in user_message_lower):
+            response = """Planting timing guide:
 
-1. **Seasonal Planning**: Align planting with your local growing seasons
-2. **Rain Patterns**: Monitor rainfall and plan irrigation accordingly
-3. **Temperature**: Watch for frost warnings and heat stress periods
-4. **Wind Protection**: Consider windbreaks for sensitive crops
-5. **Climate Change**: Adapt to changing weather patterns in your region
+📅 **Know your zone**: Check USDA hardiness zone for your area
+📅 **Last frost**: Plant warm-season crops after last frost date
+📅 **Soil temperature**: Wait for soil to warm (60°F+ for most vegetables)
+📅 **Season length**: Consider days to maturity for your growing season
+📅 **Succession planting**: Plant every 2-3 weeks for continuous harvest
 
-What specific weather concerns do you have for your crops?"""
+Local extension office has specific timing for your area."""
         
         else:
-            response = """I'd be happy to help you with your agricultural question! Could you provide more specific details about:
+            response = """I'm here to help with your agricultural questions! I can provide guidance on:
 
-- What crops or livestock you're working with
-- The specific challenge or question you have
-- Your location or growing conditions
-- Any symptoms or issues you're observing
+🌾 **Crop management**: Planting, watering, fertilizing, harvesting
+🌾 **Pest & disease control**: Identification and treatment options  
+🌾 **Soil health**: Testing, amendments, composting
+🌾 **Garden planning**: Timing, spacing, crop rotation
+🌾 **Troubleshooting**: Plant problems and solutions
 
-This will help me give you more targeted and useful advice."""
+Please provide more details about your specific question or challenge, and I'll give you targeted advice!
+
+*Note: OpenAI integration is currently unavailable, but I can still provide helpful agricultural guidance.*"""
         
         return {
             'content': response,
-            'tokens_used': len(response.split()) * 1.3,  # Rough estimate
-            'confidence_score': 0.8,
-            'metadata': {'mock_response': True}
+            'tokens_used': 0,
+            'confidence_score': 0.7,
+            'metadata': {'fallback_response': True, 'agricultural_guidance': True}
         }
     
     def _analyze_for_recommendations(self, message: str, conversation: ChatConversation, user) -> List[Dict]:

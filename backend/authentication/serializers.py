@@ -25,6 +25,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},
             'password_confirm': {'write_only': True},
             'email': {'required': True},
+            'phone': {'required': False, 'allow_blank': True},
+            'first_name': {'required': False, 'allow_blank': True},
+            'last_name': {'required': False, 'allow_blank': True},
+            'role': {'required': False},
+            'language': {'required': False},
+            'timezone': {'required': False},
         }
     
     def validate_email(self, value):
@@ -45,7 +51,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     
     def validate_phone(self, value):
         """Validate phone number format"""
-        if value:
+        if value and value.strip():  # Only validate if phone is provided and not empty
             # Basic phone number validation
             phone_pattern = r'^\+?[\d\s\-\(\)]{10,15}$'
             if not re.match(phone_pattern, value):
@@ -54,7 +60,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             # Check uniqueness
             if User.objects.filter(phone=value).exists():
                 raise serializers.ValidationError("A user with this phone number already exists.")
-        return value
+        return value if value and value.strip() else None
     
     def validate_password(self, value):
         """Validate password strength"""
@@ -76,6 +82,19 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         """Create user with email verification token"""
         validated_data.pop('password_confirm')
         password = validated_data.pop('password')
+        
+        # Set default values for optional fields
+        validated_data.setdefault('role', 'farmer')
+        validated_data.setdefault('language', 'en')
+        validated_data.setdefault('timezone', 'UTC')
+        
+        # Clean up empty string values
+        if not validated_data.get('phone'):
+            validated_data.pop('phone', None)
+        if not validated_data.get('first_name'):
+            validated_data.pop('first_name', None)
+        if not validated_data.get('last_name'):
+            validated_data.pop('last_name', None)
         
         # Generate email verification token
         email_verification_token = str(uuid.uuid4())

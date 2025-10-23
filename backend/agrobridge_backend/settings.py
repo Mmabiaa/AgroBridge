@@ -91,13 +91,13 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/hour',
-        'user': '1000/hour',
-        'login': '5/min',  # Login attempts
-        'registration': '3/hour',  # Registration attempts
-        'password_reset': '3/hour',  # Password reset requests
-        'email_verification': '10/hour',  # Email verification attempts
-        'user_actions': '100/hour',  # General user actions
+        'anon': '200/hour',           # Increased for anonymous users
+        'user': '2000/hour',          # Increased for authenticated users
+        'login': '10/min',            # More login attempts allowed
+        'registration': '10/hour',     # Increased from 3/hour - allows reasonable registration attempts
+        'password_reset': '5/hour',    # Reasonable password reset limit
+        'email_verification': '15/hour', # More verification attempts
+        'user_actions': '500/hour',    # General user actions
     }
 }
 
@@ -277,6 +277,9 @@ LOGGING = {
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@agrobridge.com')
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:8080')
+
+# OpenAI API Configuration
+OPENAI_API_KEY = env('OPENAI_API_KEY', default='')
 
 # Create logs directory if it doesn't exist
 import os

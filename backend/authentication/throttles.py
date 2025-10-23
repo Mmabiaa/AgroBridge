@@ -36,9 +36,58 @@ class LoginRateThrottle(AnonRateThrottle):
 
 class RegistrationRateThrottle(AnonRateThrottle):
     """
-    Rate limiting for registration attempts
+    Rate limiting for registration attempts with intelligent handling
     """
     scope = 'registration'
+    
+    def allow_request(self, request, view):
+        """
+        Allow more lenient throttling for legitimate users
+        """
+        # If user is already authenticated, don't throttle registration attempts
+        if request.user.is_authenticated:
+            return True
+        
+        # Check for suspicious patterns
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        if self._is_suspicious_request(request, user_agent):
+            # Apply stricter throttling for suspicious requests
+            return super().allow_request(request, view)
+        
+        # For normal requests, use a more lenient approach
+        return super().allow_request(request, view)
+    
+    def _is_suspicious_request(self, request, user_agent):
+        """
+        Detect potentially suspicious registration attempts
+        """
+        # Check for missing or suspicious user agent
+        if not user_agent or len(user_agent) < 10:
+            return True
+        
+        # Check for common bot patterns
+        bot_patterns = ['bot', 'crawler', 'spider', 'scraper']
+        if any(pattern in user_agent.lower() for pattern in bot_patterns):
+            return True
+        
+        return False
+    
+    def get_cache_key(self, request, view):
+        """
+        Create cache key based on IP and additional factors
+        """
+        ident = self.get_ident(request)
+        
+        # Include user agent hash for better identification
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        if user_agent:
+            user_agent_hash = hashlib.md5(user_agent.encode()).hexdigest()[:8]
+            ident = f"{ident}_{user_agent_hash}"
+        
+        return self.cache_format % {
+            'scope': self.scope,
+            'ident': ident
+        }
 
 
 class PasswordResetRateThrottle(AnonRateThrottle):

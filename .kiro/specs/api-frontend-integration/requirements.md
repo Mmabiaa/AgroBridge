@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This feature focuses on creating comprehensive API endpoints for the AgroBridge agricultural platform and integrating the React frontend with the Django backend. The system currently has basic authentication endpoints but needs full API coverage for farms, marketplace, AI assistant, crop detection, and other agricultural features to enable complete frontend-backend integration.
+This feature focuses on fixing critical API endpoint issues in the AgroBridge agricultural platform, specifically addressing throttling problems causing 429 errors during user registration, marketplace navigation failures, OpenAI API integration for AI conversations, and frontend-backend endpoint mismatches that prevent proper functionality across all pages.
 
 ## Glossary
 
@@ -20,60 +20,60 @@ This feature focuses on creating comprehensive API endpoints for the AgroBridge 
 
 ### Requirement 1
 
-**User Story:** As a frontend developer, I want comprehensive REST API endpoints for all agricultural features, so that I can build a fully functional user interface.
+**User Story:** As a user trying to register for AgroBridge, I want the registration process to work without throttling errors, so that I can successfully create an account and access the platform.
 
 #### Acceptance Criteria
 
-1. THE AgroBridge_System SHALL provide REST API endpoints for farm management operations including CRUD operations for farms, crops, livestock, and equipment
-2. THE AgroBridge_System SHALL provide REST API endpoints for marketplace operations including product listings, orders, payments, and buyer-seller interactions
-3. THE AgroBridge_System SHALL provide REST API endpoints for AI assistant functionality including chat conversations, voice commands, and agricultural recommendations
-4. THE AgroBridge_System SHALL provide REST API endpoints for crop disease detection including image upload, analysis results, and treatment recommendations
-5. THE AgroBridge_System SHALL provide REST API endpoints for user analytics including farm performance metrics, financial data, and predictive insights
+1. THE AgroBridge_System SHALL allow reasonable registration attempts without triggering 429 throttling errors for legitimate users
+2. THE AgroBridge_System SHALL implement intelligent rate limiting that distinguishes between legitimate users and potential abuse
+3. THE AgroBridge_System SHALL provide clear error messages when rate limits are reached with appropriate retry timing
+4. THE AgroBridge_System SHALL log registration attempts for monitoring while allowing normal user registration flow
+5. THE AgroBridge_System SHALL reset rate limiting counters appropriately to prevent legitimate users from being blocked
 
 ### Requirement 2
 
-**User Story:** As a React frontend application, I want proper API client integration with error handling and authentication, so that I can reliably communicate with the backend services.
+**User Story:** As a user navigating the AgroBridge platform, I want to access the marketplace and all other pages without errors, so that I can use all platform features seamlessly.
 
 #### Acceptance Criteria
 
-1. THE Frontend_Client SHALL integrate with the Authentication_Service using JWT tokens for secure API access
-2. THE Frontend_Client SHALL implement automatic token refresh when access tokens expire
-3. THE Frontend_Client SHALL handle API errors gracefully with user-friendly error messages and retry mechanisms
-4. THE Frontend_Client SHALL implement loading states and optimistic updates for better user experience
-5. THE Frontend_Client SHALL cache API responses appropriately to reduce server load and improve performance
+1. THE Frontend_Client SHALL successfully navigate to marketplace pages without routing errors or API failures
+2. THE Frontend_Client SHALL match all frontend API calls with corresponding backend endpoints across all pages
+3. THE Frontend_Client SHALL handle marketplace data loading and display without breaking the user interface
+4. THE Frontend_Client SHALL provide consistent navigation experience across farms, marketplace, AI assistant, and crop detection sections
+5. THE Frontend_Client SHALL display appropriate loading states and error messages when API endpoints are unavailable
 
 ### Requirement 3
 
-**User Story:** As a user of the AgroBridge platform, I want real-time updates for marketplace activities and farm monitoring, so that I can stay informed about important events.
+**User Story:** As a user of the AI assistant feature, I want my messages to be processed using OpenAI's API, so that I can receive intelligent agricultural advice and recommendations.
 
 #### Acceptance Criteria
 
-1. THE Real_Time_Service SHALL provide WebSocket connections for live marketplace updates including new listings and price changes
-2. THE Real_Time_Service SHALL provide WebSocket connections for farm monitoring alerts including sensor data and emergency notifications
-3. THE Real_Time_Service SHALL provide WebSocket connections for chat and messaging functionality between users
-4. THE Frontend_Client SHALL establish and maintain WebSocket connections with automatic reconnection on failure
-5. THE Frontend_Client SHALL display real-time notifications to users without requiring page refresh
+1. THE AI_Assistant_API SHALL integrate with OpenAI API using the configured OPENAI_API_KEY from environment variables
+2. THE AI_Assistant_API SHALL send user messages to OpenAI and return AI-generated responses through the /api/v1/ai/conversations/ endpoint
+3. THE AI_Assistant_API SHALL handle OpenAI API errors gracefully and provide fallback responses when the service is unavailable
+4. THE AI_Assistant_API SHALL maintain conversation context and history while integrating with OpenAI's chat completion API
+5. THE AI_Assistant_API SHALL implement proper error handling and logging for OpenAI API interactions
 
 ### Requirement 4
 
-**User Story:** As a mobile user, I want the API endpoints to support mobile-specific features and offline capabilities, so that I can use the platform effectively in rural areas with poor connectivity.
+**User Story:** As a developer maintaining the AgroBridge platform, I want all frontend API calls to match their corresponding backend endpoints, so that the application functions correctly without endpoint mismatches.
 
 #### Acceptance Criteria
 
-1. THE API_Gateway SHALL provide endpoints optimized for mobile data usage with compressed responses and pagination
-2. THE API_Gateway SHALL support offline-first operations with data synchronization when connectivity is restored
-3. THE Frontend_Client SHALL implement service workers for caching critical API responses offline
-4. THE Frontend_Client SHALL queue API requests when offline and sync them when connectivity returns
-5. THE API_Gateway SHALL provide endpoints for uploading images and files with progress tracking and resumable uploads
+1. THE Frontend_Client SHALL use API endpoints that exactly match the backend URL patterns and HTTP methods
+2. THE Frontend_Client SHALL send request payloads in the format expected by backend serializers and views
+3. THE Frontend_Client SHALL handle response data structures that match backend API response formats
+4. THE Frontend_Client SHALL implement proper error handling for all API endpoints across farms, marketplace, AI assistant, and crop detection features
+5. THE Frontend_Client SHALL validate API integration through comprehensive testing of all endpoint connections
 
 ### Requirement 5
 
-**User Story:** As a system administrator, I want comprehensive API documentation and monitoring, so that I can maintain and troubleshoot the integration effectively.
+**User Story:** As a system administrator, I want proper rate limiting configuration that prevents abuse while allowing legitimate user activity, so that the platform remains accessible and secure.
 
 #### Acceptance Criteria
 
-1. THE AgroBridge_System SHALL provide interactive API documentation using Swagger/OpenAPI specification
-2. THE AgroBridge_System SHALL implement API rate limiting and usage monitoring for different user roles
-3. THE AgroBridge_System SHALL log all API requests and responses for debugging and analytics purposes
-4. THE AgroBridge_System SHALL provide health check endpoints for monitoring system status and dependencies
-5. THE AgroBridge_System SHALL implement API versioning to support backward compatibility during updates
+1. THE AgroBridge_System SHALL implement reasonable rate limiting that allows normal user registration and login attempts
+2. THE AgroBridge_System SHALL provide different rate limiting tiers for different types of operations (registration, login, general API usage)
+3. THE AgroBridge_System SHALL implement rate limiting reset mechanisms that don't permanently block legitimate users
+4. THE AgroBridge_System SHALL log rate limiting events for monitoring while maintaining system performance
+5. THE AgroBridge_System SHALL provide clear documentation and configuration for rate limiting settings

@@ -34,6 +34,12 @@ def custom_exception_handler(exc, context):
             }
         }
 
+        # Add retry-after information for throttling errors
+        if exc.__class__.__name__ == 'Throttled':
+            wait_time = getattr(exc, 'wait', None)
+            if wait_time:
+                custom_response_data['error']['retry_after'] = int(wait_time)
+
         # Add request ID if available
         request = context.get('request')
         if request and hasattr(request, 'META'):
@@ -70,6 +76,20 @@ def get_error_message(exc, response_data):
     """
     Get user-friendly error message
     """
+    # Special handling for throttling errors
+    if exc.__class__.__name__ == 'Throttled':
+        wait_time = getattr(exc, 'wait', None)
+        if wait_time:
+            if wait_time < 60:
+                return f"Too many requests. Please wait {int(wait_time)} seconds before trying again."
+            elif wait_time < 3600:
+                minutes = int(wait_time / 60)
+                return f"Too many requests. Please wait {minutes} minute{'s' if minutes > 1 else ''} before trying again."
+            else:
+                hours = int(wait_time / 3600)
+                return f"Too many requests. Please wait {hours} hour{'s' if hours > 1 else ''} before trying again."
+        return "Too many requests. Please try again later."
+    
     if hasattr(exc, 'detail'):
         if isinstance(exc.detail, str):
             return exc.detail
