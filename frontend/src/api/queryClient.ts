@@ -2,7 +2,7 @@
  * React Query client configuration for API caching and optimization
  */
 import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
-import { errorHandler } from './errorHandler';
+import { defaultErrorHandler } from './errorHandler';
 import { notificationService } from './notificationService';
 import { setupCachePersistence, getCacheConfig } from './cachePersistence';
 
@@ -14,7 +14,10 @@ const queryCache = new QueryCache({
     
     // Don't show notifications for background refetches
     if (query.state.fetchStatus !== 'fetching' || query.state.dataUpdatedAt === 0) {
-      errorHandler.handleError(error);
+      // Only handle if it's an AxiosError
+      if (error && typeof error === 'object' && 'isAxiosError' in error) {
+        defaultErrorHandler.handleError(error as any);
+      }
     }
   },
 });
@@ -23,7 +26,10 @@ const queryCache = new QueryCache({
 const mutationCache = new MutationCache({
   onError: (error, _variables, _context, _mutation) => {
     console.error('Mutation error:', error, 'Variables:', _variables);
-    errorHandler.handleError(error);
+    // Only handle if it's an AxiosError
+    if (error && typeof error === 'object' && 'isAxiosError' in error) {
+      defaultErrorHandler.handleError(error as any);
+    }
   },
   onSuccess: (_data, _variables, _context, mutation) => {
     // Show success notifications for mutations
@@ -55,15 +61,9 @@ export const queryClient = new QueryClient({
   mutationCache,
   defaultOptions: {
     queries: {
-      // Dynamic cache configuration based on query type
-      staleTime: (query) => {
-        const config = getCacheConfig([...query.queryKey]);
-        return config.staleTime;
-      },
-      gcTime: (query) => {
-        const config = getCacheConfig([...query.queryKey]);
-        return config.gcTime;
-      },
+      // Default cache configuration (can be overridden per query)
+      staleTime: 5 * 60 * 1000, // 5 minutes default
+      gcTime: 30 * 60 * 1000, // 30 minutes default
       // Intelligent retry logic
       retry: (failureCount, error: any) => {
         // Don't retry on 4xx errors (client errors) except for specific cases

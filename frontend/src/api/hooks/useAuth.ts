@@ -9,10 +9,9 @@ import type {
   RegisterData,
   User,
   AuthResponse,
-  PasswordResetRequest,
   PasswordResetConfirm,
   ChangePasswordData,
-} from '../types';
+} from '../basicTypes';
 
 // Query hooks
 export const useCurrentUser = () => {
@@ -162,7 +161,7 @@ export const useAuthStatus = () => {
     user,
     isLoading,
     error,
-    isVerified: user?.is_email_verified || false,
+    isVerified: (user as any)?.is_email_verified || false,
   };
 };
 

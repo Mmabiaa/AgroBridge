@@ -2,14 +2,14 @@
  * Optimistic update utilities for better user experience
  */
 import { queryClient, queryKeys, optimisticUpdates } from './queryClient';
-import type { Farm, Product, Conversation, User } from './types';
+import type { Farm, Product, Conversation, User } from './basicTypes';
 
 // Farm optimistic updates
 export const farmOptimisticUpdates = {
   // Create farm optimistically
-  createFarm: (farmData: Partial<Farm>) => {
+  createFarm: (farmData: Partial<any>) => {
     const tempId = `temp-${Date.now()}`;
-    const optimisticFarm: Farm = {
+    const optimisticFarm: any = {
       id: tempId,
       name: farmData.name || '',
       description: farmData.description || '',
@@ -48,9 +48,9 @@ export const farmOptimisticUpdates = {
   },
 
   // Update farm optimistically
-  updateFarm: (id: string, updateData: Partial<Farm>) => {
+  updateFarm: (id: string, updateData: Partial<any>) => {
     // Update detail cache
-    queryClient.setQueryData(queryKeys.farms.detail(id), (oldData: Farm | undefined) => {
+    queryClient.setQueryData(queryKeys.farms.detail(id), (oldData: any | undefined) => {
       if (!oldData) return oldData;
       return { ...oldData, ...updateData, updated_at: new Date().toISOString() };
     });
@@ -76,12 +76,12 @@ export const farmOptimisticUpdates = {
     // Remove from all list caches
     const listQueries = queryClient.getQueriesData({ queryKey: queryKeys.farms.lists() });
     listQueries.forEach(([queryKey]) => {
-      optimisticUpdates.updateList(queryKey as any[], { id } as Farm, 'delete');
+      optimisticUpdates.updateList(queryKey as any[], { id } as any, 'delete');
     });
 
     const userFarmQueries = queryClient.getQueriesData({ queryKey: queryKeys.farms.userFarms() });
     userFarmQueries.forEach(([queryKey]) => {
-      optimisticUpdates.updateList(queryKey as any[], { id } as Farm, 'delete');
+      optimisticUpdates.updateList(queryKey as any[], { id } as any, 'delete');
     });
   },
 
@@ -100,9 +100,9 @@ export const farmOptimisticUpdates = {
 // Product optimistic updates
 export const productOptimisticUpdates = {
   // Create product optimistically
-  createProduct: (productData: Partial<Product>) => {
+  createProduct: (productData: Partial<any>) => {
     const tempId = `temp-${Date.now()}`;
-    const optimisticProduct: Product = {
+    const optimisticProduct: any = {
       id: tempId,
       seller: productData.seller || '',
       seller_name: productData.seller_name || '',
@@ -145,9 +145,9 @@ export const productOptimisticUpdates = {
   },
 
   // Update product optimistically
-  updateProduct: (id: string, updateData: Partial<Product>) => {
+  updateProduct: (id: string, updateData: Partial<any>) => {
     // Update detail cache
-    queryClient.setQueryData(queryKeys.marketplace.products.detail(id), (oldData: Product | undefined) => {
+    queryClient.setQueryData(queryKeys.marketplace.products.detail(id), (oldData: any | undefined) => {
       if (!oldData) return oldData;
       return { ...oldData, ...updateData, updated_at: new Date().toISOString() };
     });
@@ -183,7 +183,7 @@ export const productOptimisticUpdates = {
 
   // Update product quantity after purchase
   updateProductQuantity: (id: string, quantityPurchased: number) => {
-    queryClient.setQueryData(queryKeys.marketplace.products.detail(id), (oldData: Product | undefined) => {
+    queryClient.setQueryData(queryKeys.marketplace.products.detail(id), (oldData: any | undefined) => {
       if (!oldData) return oldData;
       return {
         ...oldData,
@@ -206,9 +206,9 @@ export const productOptimisticUpdates = {
 // Conversation optimistic updates
 export const conversationOptimisticUpdates = {
   // Create conversation optimistically
-  createConversation: (conversationData: Partial<Conversation>) => {
+  createConversation: (conversationData: Partial<any>) => {
     const tempId = `temp-${Date.now()}`;
-    const optimisticConversation: Conversation = {
+    const optimisticConversation: any = {
       id: tempId,
       title: conversationData.title || 'New Conversation',
       conversation_type: conversationData.conversation_type || 'farming_advice',
@@ -242,7 +242,7 @@ export const conversationOptimisticUpdates = {
     });
 
     // Update conversation last activity and message count
-    queryClient.setQueryData(queryKeys.ai.conversations.detail(conversationId), (oldData: Conversation | undefined) => {
+    queryClient.setQueryData(queryKeys.ai.conversations.detail(conversationId), (oldData: any | undefined) => {
       if (!oldData) return oldData;
       return {
         ...oldData,
@@ -257,7 +257,7 @@ export const conversationOptimisticUpdates = {
     listQueries.forEach(([queryKey]) => {
       optimisticUpdates.updateList(queryKey as any[], {
         id: conversationId,
-        message_count: (queryClient.getQueryData(queryKeys.ai.conversations.detail(conversationId)) as Conversation)?.message_count,
+        message_count: (queryClient.getQueryData(queryKeys.ai.conversations.detail(conversationId)) as any)?.message_count,
         last_activity: new Date().toISOString(),
       }, 'update');
     });
@@ -280,22 +280,22 @@ export const conversationOptimisticUpdates = {
 // User profile optimistic updates
 export const userOptimisticUpdates = {
   // Update user profile optimistically
-  updateProfile: (updateData: Partial<User>) => {
+  updateProfile: (updateData: Partial<any>) => {
     // Update user cache
-    queryClient.setQueryData(queryKeys.auth.user(), (oldData: User | undefined) => {
+    queryClient.setQueryData(queryKeys.auth.user(), (oldData: any | undefined) => {
       if (!oldData) return oldData;
       return { ...oldData, ...updateData };
     });
 
     // Update profile cache
-    queryClient.setQueryData(queryKeys.auth.profile(), (oldData: User | undefined) => {
+    queryClient.setQueryData(queryKeys.auth.profile(), (oldData: any | undefined) => {
       if (!oldData) return oldData;
       return { ...oldData, ...updateData };
     });
   },
 
   // Revert profile update on error
-  revertProfileUpdate: (originalData?: User) => {
+  revertProfileUpdate: (originalData?: any) => {
     if (originalData) {
       queryClient.setQueryData(queryKeys.auth.user(), originalData);
       queryClient.setQueryData(queryKeys.auth.profile(), originalData);

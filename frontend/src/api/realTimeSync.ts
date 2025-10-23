@@ -226,16 +226,16 @@ class RealTimeSync {
       import('./notificationService').then(({ notificationService }) => {
         switch (data.type) {
           case 'success':
-            notificationService.success(data.message);
+            notificationService.success('Success', data.message);
             break;
           case 'warning':
-            notificationService.warning(data.message);
+            notificationService.warning('Warning', data.message);
             break;
           case 'error':
-            notificationService.error(data.message);
+            notificationService.error('Error', data.message);
             break;
           default:
-            notificationService.info(data.message);
+            notificationService.info('Info', data.message);
         }
       });
     }

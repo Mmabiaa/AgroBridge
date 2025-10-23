@@ -14,7 +14,7 @@ import type {
   PaginatedResponse,
   ProductListParams,
   OrderListParams,
-} from '../types';
+} from '../basicTypes';
 
 // Product query hooks
 export const useProducts = (params?: ProductListParams) => {
@@ -104,7 +104,7 @@ export const useCreateProduct = () => {
       // Optimistically update lists
       const listQueries = queryClient.getQueriesData({ queryKey: queryKeys.marketplace.products.lists() });
       listQueries.forEach(([queryKey]) => {
-        optimisticUpdates.updateList(queryKey, newProduct, 'create');
+        optimisticUpdates.updateList([...queryKey], newProduct, 'create');
       });
     },
   });
@@ -125,12 +125,12 @@ export const useUpdateProduct = () => {
       const previousProduct = queryClient.getQueryData(queryKeys.marketplace.products.detail(id));
       
       // Optimistically update detail
-      optimisticUpdates.updateDetail(queryKeys.marketplace.products.detail(id), data);
+      optimisticUpdates.updateDetail([...queryKeys.marketplace.products.detail(id)], data);
       
       // Optimistically update lists
       const listQueries = queryClient.getQueriesData({ queryKey: queryKeys.marketplace.products.lists() });
       listQueries.forEach(([queryKey]) => {
-        optimisticUpdates.updateList(queryKey, { id, ...data } as Product, 'update');
+        optimisticUpdates.updateList([...queryKey], { id, ...data } as any, 'update');
       });
       
       return { previousProduct, id };
@@ -165,7 +165,7 @@ export const useDeleteProduct = () => {
       // Optimistically remove from lists
       const listQueries = queryClient.getQueriesData({ queryKey: queryKeys.marketplace.products.lists() });
       listQueries.forEach(([queryKey]) => {
-        optimisticUpdates.updateList(queryKey, { id } as Product, 'delete');
+        optimisticUpdates.updateList([...queryKey], { id } as any, 'delete');
       });
       
       // Remove from detail cache
@@ -234,7 +234,7 @@ export const useUpdateOrder = () => {
       const previousOrder = queryClient.getQueryData(queryKeys.marketplace.orders.detail(id));
       
       // Optimistically update detail
-      optimisticUpdates.updateDetail(queryKeys.marketplace.orders.detail(id), data);
+      optimisticUpdates.updateDetail([...queryKeys.marketplace.orders.detail(id)], data);
       
       return { previousOrder, id };
     },
@@ -275,10 +275,9 @@ export const useNearbyProducts = (location: { latitude: number; longitude: numbe
   return useQuery({
     queryKey: queryKeys.marketplace.products.list({ location, radius }),
     queryFn: () => marketplaceService.getProducts({ 
-      latitude: location.latitude,
-      longitude: location.longitude,
-      radius,
-    }),
+      location: `${location.latitude},${location.longitude}`,
+      radius: radius.toString(),
+    } as any),
     enabled: enabled && !!location.latitude && !!location.longitude,
     staleTime: 1 * 60 * 1000, // 1 minute for location-based results
   });

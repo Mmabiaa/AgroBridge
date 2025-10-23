@@ -24,6 +24,15 @@ export interface ClientApiError {
     timestamp: string;
 }
 
+// Extended request config with metadata
+export interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
+    metadata?: {
+        startTime?: number;
+        retryCount?: number;
+        [key: string]: any;
+    };
+}
+
 export interface PaginatedResponse<T> {
     count: number;
     next: string | null;
@@ -152,7 +161,7 @@ class ApiErrorHandler {
                     apiError.message = 'Service temporarily unavailable. Please try again later.';
                     break;
                 default:
-                    apiError.message = data?.message || `Request failed with status ${status}`;
+                    apiError.message = (data as any)?.message || `Request failed with status ${status}`;
             }
         } else if (error.request) {
             apiError.message = 'Network error. Please check your connection.';
@@ -183,7 +192,7 @@ axiosClient.interceptors.request.use(
         }
 
         // Add request timestamp for performance monitoring
-        config.metadata = { startTime: Date.now() };
+        (config as ExtendedAxiosRequestConfig).metadata = { startTime: Date.now() };
 
         // Log request
         ApiLogger.logRequest(config);
@@ -200,7 +209,7 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
     (response: AxiosResponse) => {
         // Calculate request duration
-        const duration = Date.now() - (response.config.metadata?.startTime || 0);
+        const duration = Date.now() - ((response.config as ExtendedAxiosRequestConfig).metadata?.startTime || 0);
 
         // Log response
         ApiLogger.logResponse(response);

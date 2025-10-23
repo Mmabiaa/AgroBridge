@@ -4,7 +4,7 @@
 import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import farmsService from '../services/farmsService';
 import { queryKeys, optimisticUpdates } from '../queryClient';
-import type { Farm, FarmCreateData, FarmUpdateData, PaginatedResponse, FarmListParams } from '../types';
+import type { Farm, FarmCreateData, FarmUpdateData, PaginatedResponse, FarmListParams } from '../basicTypes';
 
 // Query hooks
 export const useFarms = (params?: FarmListParams) => {
@@ -77,7 +77,7 @@ export const useCreateFarm = () => {
       // Optimistically update lists
       const listQueries = queryClient.getQueriesData({ queryKey: queryKeys.farms.lists() });
       listQueries.forEach(([queryKey]) => {
-        optimisticUpdates.updateList(queryKey, newFarm, 'create');
+        optimisticUpdates.updateList([...queryKey], newFarm, 'create');
       });
     },
   });
@@ -98,12 +98,12 @@ export const useUpdateFarm = () => {
       const previousFarm = queryClient.getQueryData(queryKeys.farms.detail(id));
       
       // Optimistically update detail
-      optimisticUpdates.updateDetail(queryKeys.farms.detail(id), data);
+      optimisticUpdates.updateDetail([...queryKeys.farms.detail(id)], data);
       
       // Optimistically update lists
       const listQueries = queryClient.getQueriesData({ queryKey: queryKeys.farms.lists() });
       listQueries.forEach(([queryKey]) => {
-        optimisticUpdates.updateList(queryKey, { id, ...data } as Farm, 'update');
+        optimisticUpdates.updateList([...queryKey], { id, ...data } as any, 'update');
       });
       
       return { previousFarm, id };
@@ -138,7 +138,7 @@ export const useDeleteFarm = () => {
       // Optimistically remove from lists
       const listQueries = queryClient.getQueriesData({ queryKey: queryKeys.farms.lists() });
       listQueries.forEach(([queryKey]) => {
-        optimisticUpdates.updateList(queryKey, { id } as Farm, 'delete');
+        optimisticUpdates.updateList([...queryKey], { id } as any, 'delete');
       });
       
       // Remove from detail cache
