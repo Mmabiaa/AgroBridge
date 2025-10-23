@@ -354,6 +354,270 @@ class VoiceInteractionViewSet(viewsets.ModelViewSet):
             voice_interaction.mark_failed(str(e))
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    @action(detail=False, methods=['post'])
+    def transcribe(self, request):
+        """Transcribe audio to text"""
+        serializer = VoiceTranscriptionSerializer(data=request.data)
+        
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        validated_data = serializer.validated_data
+        
+        try:
+            # Create voice interaction record
+            voice_interaction = VoiceInteraction.objects.create(
+                user=request.user,
+                conversation=None,
+                audio_input=validated_data['audio_file'],
+                input_language=validated_data.get('language', 'en'),
+                status='processing'
+            )
+            
+            # Process transcription using voice service
+            from .voice_service import VoiceService
+            voice_service = VoiceService()
+            transcription_result = voice_service.transcribe_audio(
+                audio_file=validated_data['audio_file'],
+                language=validated_data.get('language', 'en')
+            )
+            
+            # Update voice interaction with results
+            if transcription_result['success']:
+                voice_interaction.transcribed_text = transcription_result['text']
+                voice_interaction.transcription_confidence = transcription_result.get('confidence', 0.0)
+                voice_interaction.processing_time_ms = transcription_result.get('processing_time_ms', 0)
+                voice_interaction.status = 'completed'
+                voice_interaction.completed_at = timezone.now()
+            else:
+                voice_interaction.status = 'failed'
+                voice_interaction.error_message = transcription_result.get('error', 'Unknown error')
+            
+            voice_interaction.save()
+            
+            if transcription_result['success']:
+                return Response({
+                    'success': True,
+                    'transcription': transcription_result['text'],
+                    'confidence': transcription_result.get('confidence', 0.0),
+                    'language': transcription_result.get('language', 'en'),
+                    'duration_seconds': transcription_result.get('duration_seconds', 0),
+                    'word_count': transcription_result.get('word_count', 0),
+                    'interaction_id': voice_interaction.id
+                })
+            else:
+                return Response({
+                    'success': False,
+                    'error': transcription_result.get('error', 'Transcription failed'),
+                    'interaction_id': voice_interaction.id
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Exception as e:
+            logger.error(f"Voice transcription failed: {str(e)}")
+            
+            # Update voice interaction with error
+            if 'voice_interaction' in locals():
+                voice_interaction.status = 'failed'
+                voice_interaction.error_message = str(e)
+                voice_interaction.save()
+            
+            return Response(
+                {'success': False, 'error': 'Voice transcription failed. Please try again.'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['post'])
+    def synthesize(self, request):
+        """Synthesize text to speech"""
+        serializer = VoiceSynthesisSerializer(data=request.data)
+        
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        validated_data = serializer.validated_data
+        
+        try:
+            # Process text-to-speech using voice service
+            from .voice_service import VoiceService
+            voice_service = VoiceService()
+            synthesis_result = voice_service.synthesize_speech(
+                text=validated_data['text'],
+                language=validated_data.get('language', 'en'),
+                voice_model=validated_data.get('voice_model', 'default')
+            )
+            
+            # Create voice interaction record
+            voice_interaction = VoiceInteraction.objects.create(
+                user=request.user,
+                conversation=None,
+                response_text=validated_data['text'],
+                output_language=validated_data.get('language', 'en'),
+                voice_model=validated_data.get('voice_model', 'default'),
+                status='completed' if synthesis_result['success'] else 'failed',
+                completed_at=timezone.now() if synthesis_result['success'] else None,
+                error_message=synthesis_result.get('error', '') if not synthesis_result['success'] else ''
+            )
+            
+            voice_interaction.save()
+            
+            if synthesis_result['success']:
+                return Response({
+                    'success': True,
+                    'audio_url': None,  # Mock - would be actual URL in production
+                    'duration_seconds': synthesis_result.get('duration_seconds', 0),
+                    'character_count': synthesis_result.get('character_count', 0),
+                    'language': synthesis_result.get('language', 'en'),
+                    'voice_model': synthesis_result.get('voice_model', 'default'),
+                    'interaction_id': voice_interaction.id
+                })
+            else:
+                return Response({
+                    'success': False,
+                    'error': synthesis_result.get('error', 'Speech synthesis failed'),
+                    'interaction_id': voice_interaction.id
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Exception as e:
+            logger.error(f"Voice synthesis failed: {str(e)}")
+            return Response(
+                {'success': False, 'error': 'Voice synthesis failed. Please try again.'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['post'])
+    def process_command(self, request):
+        """Process complete voice command (transcribe + interpret + respond + synthesize)"""
+        serializer = VoiceTranscriptionSerializer(data=request.data)
+        
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        validated_data = serializer.validated_data
+        
+        try:
+            # Get conversation if provided
+            conversation_id = request.data.get('conversation_id')
+            conversation = None
+            if conversation_id:
+                try:
+                    conversation = ChatConversation.objects.get(
+                        id=conversation_id,
+                        user=request.user
+                    )
+                except ChatConversation.DoesNotExist:
+                    pass
+            
+            # Process complete voice command using voice service
+            from .voice_service import VoiceService
+            voice_service = VoiceService()
+            
+            processing_result = voice_service.process_voice_command(
+                audio_file=validated_data['audio_file'],
+                user=request.user,
+                conversation=conversation
+            )
+            
+            # Create voice interaction record
+            voice_interaction = VoiceInteraction.objects.create(
+                user=request.user,
+                conversation=conversation,
+                audio_input=validated_data['audio_file'],
+                input_language=validated_data.get('language', 'en'),
+                status='completed' if processing_result['success'] else 'failed',
+                completed_at=timezone.now() if processing_result['success'] else None,
+                error_message=processing_result.get('error', '') if not processing_result['success'] else ''
+            )
+            
+            if processing_result['success']:
+                # Update voice interaction with processing results
+                transcription = processing_result['transcription']
+                voice_interaction.transcribed_text = transcription['text']
+                voice_interaction.transcription_confidence = transcription.get('confidence', 0.0)
+                voice_interaction.response_text = processing_result['text_response']
+                
+                # Update processing time
+                processing_summary = processing_result.get('processing_summary', {})
+                voice_interaction.processing_time_ms = processing_summary.get('total_processing_time_ms', 0)
+                
+                voice_interaction.save()
+                
+                # Add message to conversation if conversation exists
+                if conversation:
+                    # Add user message
+                    conversation.add_message(
+                        role='user',
+                        content=transcription['text'],
+                        metadata={
+                            'voice_interaction_id': str(voice_interaction.id),
+                            'transcription_confidence': transcription.get('confidence', 0.0)
+                        }
+                    )
+                    
+                    # Add assistant response
+                    conversation.add_message(
+                        role='assistant',
+                        content=processing_result['text_response'],
+                        metadata={
+                            'voice_interaction_id': str(voice_interaction.id),
+                            'audio_response_available': True
+                        }
+                    )
+                
+                return Response({
+                    'success': True,
+                    'transcription': {
+                        'text': transcription['text'],
+                        'confidence': transcription.get('confidence', 0.0),
+                        'language': transcription.get('language', 'en')
+                    },
+                    'command_interpretation': processing_result.get('command_interpretation', {}),
+                    'text_response': processing_result['text_response'],
+                    'audio_response': {
+                        'url': None,  # Mock - would be actual URL in production
+                        'duration_seconds': processing_result.get('audio_response', {}).get('duration_seconds', 0)
+                    },
+                    'processing_summary': processing_summary,
+                    'interaction_id': voice_interaction.id,
+                    'conversation_updated': bool(conversation)
+                })
+            else:
+                voice_interaction.save()
+                return Response({
+                    'success': False,
+                    'error': processing_result.get('error', 'Voice command processing failed'),
+                    'interaction_id': voice_interaction.id
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Exception as e:
+            logger.error(f"Voice command processing failed: {str(e)}")
+            return Response(
+                {'success': False, 'error': 'Voice command processing failed. Please try again.'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['get'])
+    def supported_languages(self, request):
+        """Get list of supported languages for voice processing"""
+        from .voice_service import VoiceService
+        voice_service = VoiceService()
+        
+        return Response({
+            'supported_languages': voice_service.get_supported_languages()
+        })
+    
+    @action(detail=False, methods=['get'])
+    def voice_models(self, request):
+        """Get available voice models for a language"""
+        language = request.query_params.get('language', 'en')
+        
+        from .voice_service import VoiceService
+        voice_service = VoiceService()
+        
+        return Response({
+            'language': language,
+            'voice_models': voice_service.get_voice_models(language)
+        })
 
 
 class AIAnalyticsViewSet(viewsets.ViewSet):
