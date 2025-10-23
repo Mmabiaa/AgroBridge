@@ -416,3 +416,41 @@ class AIAnalyticsViewSet(viewsets.ViewSet):
             'average_response_time_ms': avg_response_time,
             'average_user_rating': avg_rating
         })
+
+class AIUsageStatisticsViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    ViewSet for viewing AI usage statistics
+    """
+    serializer_class = AIUsageStatisticsSerializer
+    permission_classes = [IsAuthenticated]
+    ordering = ['-date']
+    
+    def get_queryset(self):
+        """Filter statistics for current user"""
+        return AIUsageStatistics.objects.filter(user=self.request.user)
+    
+    @action(detail=False, methods=['get'])
+    def summary(self, request):
+        """Get usage summary for a period"""
+        days = int(request.query_params.get('days', 30))
+        
+        from datetime import timedelta
+        start_date = timezone.now().date() - timedelta(days=days)
+        
+        stats = self.get_queryset().filter(date__gte=start_date)
+        
+        summary = stats.aggregate(
+            total_conversations=models.Sum('conversations_started'),
+            total_messages=models.Sum('messages_sent'),
+            total_voice_interactions=models.Sum('voice_interactions'),
+            total_recommendations=models.Sum('recommendations_received'),
+            implemented_recommendations=models.Sum('recommendations_implemented'),
+            total_tokens=models.Sum('total_tokens_used'),
+            avg_satisfaction=models.Avg('user_satisfaction_score')
+        )
+        
+        return Response({
+            'period_days': days,
+            'summary': summary,
+            'daily_stats': AIUsageStatisticsSerializer(stats, many=True).data
+        })
