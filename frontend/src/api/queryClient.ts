@@ -42,7 +42,7 @@ const mutationCache = new MutationCache({
         
         const message = messages[action as keyof typeof messages];
         if (message) {
-          notificationService.success(message);
+          notificationService.success('Success', message);
         }
       }
     }
