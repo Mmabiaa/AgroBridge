@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'drf_yasg',
-    # 'channels',  # Temporarily disabled due to Python 3.13 compatibility
+    'channels',
     'django_filters',
 
     # Microservice apps
