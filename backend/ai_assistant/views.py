@@ -21,8 +21,8 @@ from .serializers import (
     ChatConversationSerializer, ChatConversationListSerializer,
     ChatMessageSerializer, AIRecommendationSerializer, KnowledgeBaseSerializer,
     VoiceInteractionSerializer, AIUsageStatisticsSerializer,
-    ChatRequestSerializer, ChatResponseSerializer, MessageFeedbackSerializer,
-    RecommendationFeedbackSerializer
+    MessageCreateSerializer, ConversationCreateSerializer, RecommendationFeedbackSerializer,
+    VoiceTranscriptionSerializer, VoiceSynthesisSerializer
 )
 from .ai_service import AIService
 from .permissions import IsOwnerOrReadOnly

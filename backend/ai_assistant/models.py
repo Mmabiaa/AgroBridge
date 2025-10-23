@@ -86,6 +86,20 @@ class ChatConversation(models.Model):
         """Add to total tokens used"""
         self.total_tokens_used += tokens
         self.save(update_fields=['total_tokens_used'])
+    
+    def add_message(self, role, content, metadata=None):
+        """Add a message to the conversation"""
+        message = ChatMessage.objects.create(
+            conversation=self,
+            role=role,
+            content=content,
+            metadata=metadata or {}
+        )
+        
+        # Update conversation stats
+        self.increment_message_count()
+        
+        return message
 
 
 class ChatMessage(models.Model):
