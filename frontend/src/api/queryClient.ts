@@ -2,7 +2,7 @@
  * React Query client configuration for API caching and optimization
  */
 import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
-import { handleError } from './errorHandler';
+import { errorHandler } from './errorHandler';
 import { notificationService } from './notificationService';
 import { setupCachePersistence, getCacheConfig } from './cachePersistence';
 
@@ -14,7 +14,7 @@ const queryCache = new QueryCache({
     
     // Don't show notifications for background refetches
     if (query.state.fetchStatus !== 'fetching' || query.state.dataUpdatedAt === 0) {
-      handleError(error);
+      errorHandler.handleError(error);
     }
   },
 });
