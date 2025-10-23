@@ -49,39 +49,61 @@ const mutationCache = new MutationCache({
   },
 });
 
-// Create and configure the query client
+// Create and configure the query client with intelligent caching
 export const queryClient = new QueryClient({
   queryCache,
   mutationCache,
   defaultOptions: {
     queries: {
-      // Cache data for 5 minutes by default
-      staleTime: 5 * 60 * 1000,
-      // Keep data in cache for 10 minutes
-      gcTime: 10 * 60 * 1000,
-      // Retry failed requests 3 times with exponential backoff
+      // Dynamic cache configuration based on query type
+      staleTime: (query) => {
+        const config = getCacheConfig(query.queryKey);
+        return config.staleTime;
+      },
+      gcTime: (query) => {
+        const config = getCacheConfig(query.queryKey);
+        return config.gcTime;
+      },
+      // Intelligent retry logic
       retry: (failureCount, error: any) => {
-        // Don't retry on 4xx errors (client errors)
+        // Don't retry on 4xx errors (client errors) except for specific cases
         if (error?.status >= 400 && error?.status < 500) {
-          return false;
+          // Retry on 408 (timeout) and 429 (rate limit)
+          return error?.status === 408 || error?.status === 429;
         }
+        // Retry up to 3 times for other errors
         return failureCount < 3;
       },
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-      // Refetch on window focus for important data
-      refetchOnWindowFocus: true,
-      // Refetch when coming back online
+      // Refetch configuration
+      refetchOnWindowFocus: (query) => {
+        const config = getCacheConfig(query.queryKey);
+        // Only refetch critical data on window focus
+        return config === getCacheConfig(['auth']) || config === getCacheConfig(['farms.detail']);
+      },
       refetchOnReconnect: true,
-      // Don't refetch on mount if data is fresh
-      refetchOnMount: 'always',
+      refetchOnMount: true,
+      // Network mode for offline support
+      networkMode: 'online',
     },
     mutations: {
-      // Retry failed mutations once
-      retry: 1,
-      retryDelay: 1000,
+      // Retry failed mutations with intelligent logic
+      retry: (failureCount, error: any) => {
+        // Don't retry on 4xx errors except timeout and rate limit
+        if (error?.status >= 400 && error?.status < 500) {
+          return error?.status === 408 || error?.status === 429;
+        }
+        // Retry once for other errors
+        return failureCount < 1;
+      },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+      networkMode: 'online',
     },
   },
 });
+
+// Setup cache persistence
+setupCachePersistence(queryClient);
 
 // Query key factories for consistent cache management
 export const queryKeys = {
@@ -288,6 +310,63 @@ export const backgroundSync = {
   },
 };
 
+// Prefetch utilities for better UX
+export const prefetchUtils = {
+  // Prefetch farm details when hovering over farm list item
+  prefetchFarm: (id: string) => {
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.farms.detail(id),
+      queryFn: () => import('./services/farmsService').then(m => m.default.getFarm(id)),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+  },
+  
+  // Prefetch product details
+  prefetchProduct: (id: string) => {
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.marketplace.products.detail(id),
+      queryFn: () => import('./services/marketplaceService').then(m => m.default.getProduct(id)),
+      staleTime: 5 * 60 * 1000,
+    });
+  },
+  
+  // Prefetch conversation messages
+  prefetchConversationMessages: (id: string) => {
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.ai.conversations.messages(id),
+      queryFn: () => import('./services/aiService').then(m => m.default.getConversationMessages(id)),
+      staleTime: 2 * 60 * 1000, // 2 minutes for messages
+    });
+  },
+
+  // Prefetch user's farms when they log in
+  prefetchUserFarms: () => {
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.farms.userFarms(),
+      queryFn: () => import('./services/farmsService').then(m => m.default.getUserFarms()),
+      staleTime: 10 * 60 * 1000, // 10 minutes
+    });
+  },
+
+  // Prefetch user's products
+  prefetchUserProducts: () => {
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.marketplace.products.userProducts(),
+      queryFn: () => import('./services/marketplaceService').then(m => m.default.getUserProducts()),
+      staleTime: 10 * 60 * 1000,
+    });
+  },
+
+  // Prefetch recent conversations
+  prefetchRecentConversations: () => {
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.ai.conversations.list({ page: 1, page_size: 10 }),
+      queryFn: () => import('./services/aiService').then(m => m.default.getConversations({ page: 1, page_size: 10 })),
+      staleTime: 5 * 60 * 1000,
+    });
+  },
+};
+
 // Set up online/offline event listeners
 if (typeof window !== 'undefined') {
   window.addEventListener('online', backgroundSync.handleOnline);
@@ -296,6 +375,12 @@ if (typeof window !== 'undefined') {
   if (navigator.onLine) {
     setTimeout(backgroundSync.processQueue, 1000);
   }
+
+  // Initialize real-time sync
+  import('./realTimeSync').then(({ realTimeSync }) => {
+    // Real-time sync is automatically initialized
+    console.log('Real-time sync initialized');
+  });
 }
 
 export default queryClient;
