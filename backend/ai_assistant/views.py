@@ -21,8 +21,8 @@ from .serializers import (
     ChatConversationSerializer, ChatConversationListSerializer,
     ChatMessageSerializer, AIRecommendationSerializer, KnowledgeBaseSerializer,
     VoiceInteractionSerializer, AIUsageStatisticsSerializer,
-    MessageCreateSerializer, ConversationCreateSerializer, RecommendationFeedbackSerializer,
-    VoiceTranscriptionSerializer, VoiceSynthesisSerializer
+    ChatRequestSerializer, ChatResponseSerializer, MessageFeedbackSerializer,
+    RecommendationFeedbackSerializer
 )
 from .ai_service import AIService
 from .permissions import IsOwnerOrReadOnly
@@ -358,20 +358,20 @@ class VoiceInteractionViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def transcribe(self, request):
         """Transcribe audio to text"""
-        serializer = VoiceTranscriptionSerializer(data=request.data)
+        # Simple validation for audio file
+        if 'audio_file' not in request.FILES:
+            return Response({'error': 'Audio file is required'}, status=status.HTTP_400_BAD_REQUEST)
         
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        validated_data = serializer.validated_data
+        audio_file = request.FILES['audio_file']
+        language = request.data.get('language', 'en')
         
         try:
             # Create voice interaction record
             voice_interaction = VoiceInteraction.objects.create(
                 user=request.user,
                 conversation=None,
-                audio_input=validated_data['audio_file'],
-                input_language=validated_data.get('language', 'en'),
+                audio_input=audio_file,
+                input_language=language,
                 status='processing'
             )
             
@@ -379,8 +379,8 @@ class VoiceInteractionViewSet(viewsets.ModelViewSet):
             from .voice_service import VoiceService
             voice_service = VoiceService()
             transcription_result = voice_service.transcribe_audio(
-                audio_file=validated_data['audio_file'],
-                language=validated_data.get('language', 'en')
+                audio_file=audio_file,
+                language=language
             )
             
             # Update voice interaction with results
@@ -430,30 +430,31 @@ class VoiceInteractionViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def synthesize(self, request):
         """Synthesize text to speech"""
-        serializer = VoiceSynthesisSerializer(data=request.data)
+        # Simple validation
+        text = request.data.get('text')
+        if not text:
+            return Response({'error': 'Text is required'}, status=status.HTTP_400_BAD_REQUEST)
         
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        validated_data = serializer.validated_data
+        language = request.data.get('language', 'en')
+        voice_model = request.data.get('voice_model', 'default')
         
         try:
             # Process text-to-speech using voice service
             from .voice_service import VoiceService
             voice_service = VoiceService()
             synthesis_result = voice_service.synthesize_speech(
-                text=validated_data['text'],
-                language=validated_data.get('language', 'en'),
-                voice_model=validated_data.get('voice_model', 'default')
+                text=text,
+                language=language,
+                voice_model=voice_model
             )
             
             # Create voice interaction record
             voice_interaction = VoiceInteraction.objects.create(
                 user=request.user,
                 conversation=None,
-                response_text=validated_data['text'],
-                output_language=validated_data.get('language', 'en'),
-                voice_model=validated_data.get('voice_model', 'default'),
+                response_text=text,
+                output_language=language,
+                voice_model=voice_model,
                 status='completed' if synthesis_result['success'] else 'failed',
                 completed_at=timezone.now() if synthesis_result['success'] else None,
                 error_message=synthesis_result.get('error', '') if not synthesis_result['success'] else ''
@@ -488,12 +489,12 @@ class VoiceInteractionViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def process_command(self, request):
         """Process complete voice command (transcribe + interpret + respond + synthesize)"""
-        serializer = VoiceTranscriptionSerializer(data=request.data)
+        # Simple validation for audio file
+        if 'audio_file' not in request.FILES:
+            return Response({'error': 'Audio file is required'}, status=status.HTTP_400_BAD_REQUEST)
         
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        validated_data = serializer.validated_data
+        audio_file = request.FILES['audio_file']
+        language = request.data.get('language', 'en')
         
         try:
             # Get conversation if provided
@@ -513,7 +514,7 @@ class VoiceInteractionViewSet(viewsets.ModelViewSet):
             voice_service = VoiceService()
             
             processing_result = voice_service.process_voice_command(
-                audio_file=validated_data['audio_file'],
+                audio_file=audio_file,
                 user=request.user,
                 conversation=conversation
             )
@@ -522,8 +523,8 @@ class VoiceInteractionViewSet(viewsets.ModelViewSet):
             voice_interaction = VoiceInteraction.objects.create(
                 user=request.user,
                 conversation=conversation,
-                audio_input=validated_data['audio_file'],
-                input_language=validated_data.get('language', 'en'),
+                audio_input=audio_file,
+                input_language=language,
                 status='completed' if processing_result['success'] else 'failed',
                 completed_at=timezone.now() if processing_result['success'] else None,
                 error_message=processing_result.get('error', '') if not processing_result['success'] else ''
