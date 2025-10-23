@@ -7,6 +7,8 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
+# [AI-INTEGRATION] Updated on 2025-10-12: Django-React/Vue real-time integration setup
+
 import os
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
