@@ -104,7 +104,7 @@ class FarmAnalytics:
         
         # Health status
         health_status = livestock.values('health_status').annotate(
-            count=Count('id'),
+            group_count=Count('id'),
             total_animals=Sum('count')
         )
         
