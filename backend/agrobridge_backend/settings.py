@@ -10,12 +10,12 @@ environ.Env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-x02y+5pp@p1w29hp4_tlx)(c7r7*h9ah!fw%#zlp^+avfum+a-')
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=True)
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost'])
 
 # Application definition
 INSTALLED_APPS = [
@@ -93,7 +93,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'agrobridge_backend.wsgi.application'
-ASGI_APPLICATION = 'agrobridge_backend.asgi.application'  # Add ASGI application
+ASGI_APPLICATION = 'agrobridge_backend.asgi.application'  # ASGI application for Channels
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -139,7 +139,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],
+            'hosts': [('redis', 6379)],  # Use service name for Docker
         },
     },
 }

@@ -1,3 +1,5 @@
+# [AI-INTEGRATION] Updated on 2025-10-12: Django-React/Vue real-time integration setup
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 

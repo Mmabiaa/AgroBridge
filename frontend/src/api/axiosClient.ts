@@ -1,7 +1,9 @@
+
+
 import axios from 'axios';
 
 const axiosClient = axios.create({
-    baseURL: 'http://localhost:8080/api/',
+    baseURL: 'http://localhost:8000/api/',
 });
 
 // Add a request interceptor to include JWT token
