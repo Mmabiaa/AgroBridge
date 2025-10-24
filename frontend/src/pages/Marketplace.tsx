@@ -1,516 +1,515 @@
-
+/**
+ * Marketplace Page - Production Ready with API Integration
+ */
 import { useState, useEffect } from 'react';
-import { LiveMarketplace } from '@/components/marketplace/LiveMarketplace';
-import { AdvancedSearch } from '@/components/search/AdvancedSearch';
-import { FileUpload } from '@/components/upload/FileUpload';
+import { ProductGrid } from '@/components/marketplace/ProductGrid';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ShoppingCart, Upload, Search, TrendingUp, Package, Clock, CheckCircle, AlertCircle } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { notifyMarketplaceActivity } from '@/components/notifications/NotificationCenter';
-
-// Mock user data
-const mockUser = {
-  id: 'user123',
-  name: 'Kwame Addo',
-  balance: 25000,
-  location: 'Accra, Ghana',
-  rating: 4.7,
-  totalOrders: 15
-};
-
-// Mock orders data
-const mockOrders = [
-  {
-    id: 'order001',
-    productId: '1',
-    productName: 'Fresh Tomatoes',
-    farmer: 'John Asante',
-    quantity: 50,
-    unit: 'kg',
-    totalPrice: 22500,
-    status: 'pending',
-    orderDate: '2024-01-20T10:30:00Z',
-    expectedDelivery: '2024-01-22T14:00:00Z',
-    paymentMethod: 'Mobile Money'
-  },
-  {
-    id: 'order002',
-    productId: '3',
-    productName: 'Organic Maize',
-    farmer: 'Samuel Oseh',
-    quantity: 100,
-    unit: 'kg',
-    totalPrice: 32000,
-    status: 'confirmed',
-    orderDate: '2024-01-19T15:45:00Z',
-    expectedDelivery: '2024-01-25T10:00:00Z',
-    paymentMethod: 'Bank Transfer'
-  }
-];
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  ShoppingCart, 
+  Plus, 
+  Search, 
+  Filter,
+  TrendingUp, 
+  Package, 
+  Clock, 
+  CheckCircle, 
+  AlertCircle,
+  RefreshCw
+} from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUserProducts, useUserOrders } from '@/api/hooks/useMarketplace';
+import { toast } from 'sonner';
+import { CreateProductModal } from '@/components/marketplace/CreateProductModal';
+import type { Product, Order } from '@/types/basicTypes';
 
 export default function Marketplace() {
-  const initialMockProducts = [
-    {
-      id: '1',
-      name: 'Fresh Tomatoes',
-      farmer: 'John Asante',
-      location: 'Kumasi, Ghana',
-      price: 450,
-      previousPrice: 420,
-      unit: 'kg',
-      quantity: 500,
-      rating: 4.8,
-      image: 'https://i.pinimg.com/736x/4e/d6/fe/4ed6feb64a7f21255f3f9d9174509cd9.jpg',
-      category: 'Vegetables',
-      isOrganic: true,
-      harvestDate: '2024-01-15',
-      deliveryOptions: ['Pickup', 'Local Delivery'],
-      description: 'Fresh, ripe tomatoes harvested from organic farms in Kumasi. Perfect for cooking and salads.',
-      minOrder: 10,
-      maxOrder: 200,
-      stockStatus: 'in-stock'
-    },
-    {
-      id: '2',
-      name: 'Red Onions',
-      farmer: 'Fatima Ibrahim',
-      location: 'Tamale, Ghana',
-      price: 280,
-      previousPrice: 300,
-      unit: 'kg',
-      quantity: 200,
-      rating: 4.6,
-      image: 'https://i.pinimg.com/736x/6b/16/fa/6b16fafc2ea41361f16126aeb56ec888.jpg',
-      category: 'Vegetables',
-      isOrganic: false,
-      harvestDate: '2024-01-12',
-      deliveryOptions: ['Pickup', 'Regional Shipping'],
-      description: 'Quality red onions from Northern Ghana. Sweet and flavorful, perfect for various dishes.',
-      minOrder: 5,
-      maxOrder: 100,
-      stockStatus: 'in-stock'
-    },
-    {
-      id: '3',
-      name: 'Organic Maize',
-      farmer: 'Samuel Oseh',
-      location: 'Sunyani, Ghana',
-      price: 320,
-      previousPrice: 325,
-      unit: 'kg',
-      quantity: 1000,
-      rating: 4.9,
-      image: 'https://i.pinimg.com/736x/45/7d/f3/457df3e0fc340a8eef6a52e4e8964a31.jpg',
-      category: 'Grains',
-      isOrganic: true,
-      harvestDate: '2024-01-10',
-      deliveryOptions: ['Pickup', 'Nationwide Shipping'],
-      description: 'Premium organic maize from Bono Region. High quality grain for various uses.',
-      minOrder: 25,
-      maxOrder: 500,
-      stockStatus: 'in-stock'
-    },
-    {
-      id: '4',
-      name: 'Plantain',
-      farmer: 'Ayensu Bahh',
-      location: 'Kumasi, Ghana',
-      price: 300,
-      previousPrice: 325,
-      unit: 'kg',
-      quantity: 1000,
-      rating: 4.7,
-      image: 'https://i.pinimg.com/736x/48/9e/7d/489e7db7bfcae138013db6442927aa81.jpg',
-      category: 'Fruits',
-      isOrganic: true,
-      harvestDate: '2024-01-10',
-      deliveryOptions: ['Pickup', 'Nationwide Shipping'],
-      description: 'Fresh plantains harvested from fertile farms in Kumasi. Great for boiling, frying or roasting.',
-      minOrder: 10,
-      maxOrder: 300,
-      stockStatus: 'in-stock'
-    },
-    {
-      id: '5',
-      name: 'Ripe Mangoes',
-      farmer: 'Boateng Asantewaa',
-      location: 'Brekum, Ghana',
-      price: 100,
-      previousPrice: 223,
-      unit: 'kg',
-      quantity: 30,
-      rating: 4.9,
-      image: 'https://i.pinimg.com/1200x/83/e9/23/83e9236642e447a2ad197f85cf31cdaa.jpg',
-      category: 'Fruits',
-      isOrganic: true,
-      harvestDate: '2024-01-10',
-      deliveryOptions: ['Pickup', 'Nationwide Shipping'],
-      description: 'Sweet, juicy mangoes harvested from Brong-Ahafo farms. Ideal for fresh eating or juice.',
-      minOrder: 2,
-      maxOrder: 20,
-      stockStatus: 'low-stock'
-    },
-    {
-      id: '6',
-      name: 'Pawpaw',
-      farmer: 'Jacob Asare',
-      location: 'Wenchi, Ghana',
-      price: 100,
-      previousPrice: 124,
-      unit: 'kg',
-      quantity: 24,
-      rating: 4.9,
-      image: 'https://i.pinimg.com/1200x/fb/de/4b/fbde4b8be3b48ac96ee678c4a00d1c6f.jpg',
-      category: 'Fruits',
-      isOrganic: true,
-      harvestDate: '2024-01-10',
-      deliveryOptions: ['Pickup', 'Nationwide Shipping'],
-      description: 'Delicious ripe pawpaw with natural sweetness, rich in vitamins and good for digestion.',
-      minOrder: 2,
-      maxOrder: 15,
-      stockStatus: 'low-stock'
-    },
-    {
-      id: '7',
-      name: 'Fresh Pineapples',
-      farmer: 'Grace Mensah',
-      location: 'Cape Coast, Ghana',
-      price: 180,
-      previousPrice: 200,
-      unit: 'kg',
-      quantity: 300,
-      rating: 4.7,
-      image: 'https://i.pinimg.com/736x/4d/90/47/4d9047453cd1cad8452d6d085e0365b5.jpg',
-      category: 'Fruits',
-      isOrganic: true,
-      harvestDate: '2024-01-18',
-      deliveryOptions: ['Pickup', 'Local Delivery'],
-      description: 'Sweet and juicy pineapples from the Central Region. Perfect for fresh consumption.',
-      minOrder: 5,
-      maxOrder: 150,
-      stockStatus: 'in-stock'
-    },
-    {
-      id: '8',
-      name: 'Yam Tubers',
-      farmer: 'Kofi Owusu',
-      location: 'Ho, Ghana',
-      price: 350,
-      previousPrice: 380,
-      unit: 'kg',
-      quantity: 800,
-      rating: 4.5,
-      image: 'https://i.pinimg.com/736x/5a/37/d0/5a37d059fae037c9e3764494911f6af1.jpg',
-      category: 'Tubers',
-      isOrganic: false,
-      harvestDate: '2024-01-14',
-      deliveryOptions: ['Pickup', 'Regional Shipping'],
-      description: 'Fresh yam tubers from Volta Region. High quality and nutritious.',
-      minOrder: 10,
-      maxOrder: 300,
-      stockStatus: 'in-stock'
-    }
-  ];
+  const { user } = useAuth();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [activeTab, setActiveTab] = useState('browse');
+  const [retryCount, setRetryCount] = useState(0);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+
+  // API hooks for user data with enhanced error handling
+  const { 
+    data: userProductsData, 
+    isLoading: productsLoading, 
+    error: productsError,
+    refetch: refetchProducts,
+    isError: productsHasError
+  } = useUserProducts();
   
+  const { 
+    data: userOrdersData, 
+    isLoading: ordersLoading, 
+    error: ordersError,
+    refetch: refetchOrders,
+    isError: ordersHasError
+  } = useUserOrders();
 
-  const [products, setProducts] = useState(initialMockProducts);
-  const [searchFilters, setSearchFilters] = useState(null);
-  const [orders, setOrders] = useState(mockOrders);
-  const [user, setUser] = useState(mockUser);
-  const [activeTab, setActiveTab] = useState('marketplace');
-
-  // Handler to add a new product (from Sell tab)
-  const handleAddProduct = (product) => {
-    const newProduct = {
-      ...product,
-      id: Date.now().toString(),
-      rating: 0,
-      harvestDate: new Date().toISOString().split('T')[0],
-      stockStatus: 'in-stock'
-    };
-    setProducts(prev => [newProduct, ...prev]);
-    setActiveTab('marketplace');
-    notifyMarketplaceActivity('listing', product.name);
-  };
-
-  // Handler to update filters (from AdvancedSearch)
-  const handleAdvancedSearch = (filters) => {
-    setSearchFilters(filters);
-  };
-
-  // Handler for buying products
-  const handleBuyProduct = (product, quantity) => {
-    const totalCost = product.price * quantity;
+  // Handle errors and provide fallback data
+  useEffect(() => {
+    if (productsError) {
+      console.warn('Failed to load user products:', productsError);
+      if (retryCount === 0) {
+        toast.error('Failed to load your products', {
+          description: 'Showing available data instead.',
+          action: {
+            label: 'Retry',
+            onClick: () => {
+              setRetryCount(prev => prev + 1);
+              refetchProducts();
+            }
+          }
+        });
+      }
+    }
     
-    if (totalCost > user.balance) {
-      alert('Insufficient balance. Please add more funds to your account.');
-      return;
+    if (ordersError) {
+      console.warn('Failed to load user orders:', ordersError);
+      if (retryCount === 0) {
+        toast.error('Failed to load your orders', {
+          description: 'Showing available data instead.',
+          action: {
+            label: 'Retry',
+            onClick: () => {
+              setRetryCount(prev => prev + 1);
+              refetchOrders();
+            }
+          }
+        });
+      }
     }
+  }, [productsError, ordersError, refetchProducts, refetchOrders, retryCount]);
 
-    if (quantity > product.quantity) {
-      alert('Requested quantity exceeds available stock.');
-      return;
-    }
+  // Use data with fallback to empty array if error occurs
+  const userProducts: Product[] = (productsHasError ? { results: [] } : userProductsData)?.results || [];
+  const userOrders: Order[] = (ordersHasError ? { results: [] } : userOrdersData)?.results || [];
 
-    if (quantity < product.minOrder) {
-      alert(`Minimum order quantity is ${product.minOrder} ${product.unit}`);
-      return;
-    }
+  const categories = [
+    { label: 'All Categories', value: 'all' },
+    { label: 'Vegetables', value: 'vegetables' },
+    { label: 'Fruits', value: 'fruits' },
+    { label: 'Grains', value: 'grains' },
+    { label: 'Legumes', value: 'legumes' },
+    { label: 'Herbs & Spices', value: 'herbs-spices' },
+    { label: 'Livestock', value: 'livestock' },
+    { label: 'Dairy', value: 'dairy' },
+    { label: 'Poultry', value: 'poultry' }
+  ];
 
-    if (quantity > product.maxOrder) {
-      alert(`Maximum order quantity is ${product.maxOrder} ${product.unit}`);
-      return;
-    }
-
-    // Create new order
-    const newOrder = {
-      id: `order${Date.now()}`,
-      productId: product.id,
-      productName: product.name,
-      farmer: product.farmer,
-      quantity: quantity,
-      unit: product.unit,
-      totalPrice: totalCost,
-      status: 'pending',
-      orderDate: new Date().toISOString(),
-      expectedDelivery: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days from now
-      paymentMethod: 'Mobile Money'
-    };
-
-    // Update orders
-    setOrders(prev => [newOrder, ...prev]);
-
-    // Update user balance
-    setUser(prev => ({
-      ...prev,
-      balance: prev.balance - totalCost,
-      totalOrders: prev.totalOrders + 1
-    }));
-
-    // Update product quantity
-    setProducts(prev => prev.map(p => 
-      p.id === product.id 
-        ? { ...p, quantity: p.quantity - quantity }
-        : p
-    ));
-
-    alert(`Order placed successfully! Order ID: ${newOrder.id}`);
-    notifyMarketplaceActivity('purchase', product.name, totalCost);
-  };
-
-  // Handler for order status updates
-  const handleOrderStatusUpdate = (orderId, newStatus) => {
-    setOrders(prev => prev.map(order => 
-      order.id === orderId 
-        ? { ...order, status: newStatus }
-        : order
-    ));
-  };
-
-  const getStatusIcon = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-      case 'confirmed':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'shipped':
-        return <Package className="h-4 w-4 text-blue-500" />;
-      case 'delivered':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'cancelled':
-        return <AlertCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return <Clock className="h-4 w-4 text-gray-500" />;
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'confirmed': return 'bg-blue-100 text-blue-800';
+      case 'shipped': return 'bg-purple-100 text-purple-800';
+      case 'delivered': return 'bg-green-100 text-green-800';
+      case 'cancelled': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'confirmed':
-        return 'bg-green-100 text-green-800';
-      case 'shipped':
-        return 'bg-blue-100 text-blue-800';
-      case 'delivered':
-        return 'bg-green-100 text-green-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+      case 'pending': return <Clock className="h-3 w-3" />;
+      case 'confirmed': return <CheckCircle className="h-3 w-3" />;
+      case 'shipped': return <Package className="h-3 w-3" />;
+      case 'delivered': return <CheckCircle className="h-3 w-3" />;
+      case 'cancelled': return <AlertCircle className="h-3 w-3" />;
+      default: return <Clock className="h-3 w-3" />;
     }
   };
+
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1);
+    refetchProducts();
+    refetchOrders();
+  };
+
+  // Show error state if both API calls fail after multiple retries
+  if ((productsHasError && ordersHasError) && retryCount > 2) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center py-12">
+          <AlertCircle className="h-12 w-12 mx-auto mb-4 text-red-500" />
+          <h3 className="text-lg font-semibold mb-2">Unable to load marketplace</h3>
+          <p className="text-muted-foreground mb-4">
+            There seems to be a connection issue with the marketplace service.
+          </p>
+          <div className="flex gap-2 justify-center">
+            <Button onClick={handleRetry}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Try Again
+            </Button>
+            <Button variant="outline" onClick={() => window.location.reload()}>
+              Reload Page
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 md:py-8 px-0 overflow-x-hidden">
-      <div className="container mx-auto w-full max-w-full space-y-6 md:space-y-8 px-0 sm:px-4">
-        <div className="px-0 sm:px-2">
-          <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2 md:gap-3 mb-2">
-            <ShoppingCart className="h-6 w-6 md:h-8 md:w-8 text-primary" />
-            Live Marketplace
-          </h1>
-          <p className="text-sm md:text-base text-muted-foreground">Connect directly with farmers and buyers across Ghana</p>
+    <div className="container mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Marketplace</h1>
+          <p className="text-muted-foreground">
+            Connect with farmers and buyers across Ghana
+          </p>
         </div>
+        
+        {user?.permissions?.includes('create_product') && (
+          <Button onClick={() => setCreateModalOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            List Product
+          </Button>
+        )}
+      </div>
 
-        {/* User Balance and Stats */}
-        <Card className="shadow-soft mx-1">
-          <CardContent className="p-4 md:p-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Welcome, {user.name}</h3>
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="flex items-center gap-1">
-                    <span className="font-medium">Balance:</span>
-                    <span className="text-primary font-bold">₵{user.balance.toLocaleString()}</span>
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className="font-medium">Orders:</span>
-                    <span>{user.totalOrders}</span>
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className="font-medium">Rating:</span>
-                    <span>⭐ {user.rating}</span>
-                  </span>
-                </div>
+      {/* Create Product Modal */}
+      <CreateProductModal 
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onSuccess={() => {
+          setCreateModalOpen(false);
+          refetchProducts();
+        }}
+      />
+
+      {/* Search and Filters */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search products, farmers, or locations..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
               </div>
-              <Button variant="outline" onClick={() => alert('Add funds feature coming soon!')}>
-                Add Funds
+            </div>
+            
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Button variant="outline">
+              <Filter className="h-4 w-4 mr-2" />
+              Filters
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* API Error Banner */}
+      {(productsHasError || ordersHasError) && (
+        <Card className="border-yellow-200 bg-yellow-50">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 text-yellow-600" />
+                <span className="text-sm text-yellow-800">
+                  Some data may not be loading correctly. 
+                  {productsHasError && ' Products data unavailable. '}
+                  {ordersHasError && ' Orders data unavailable.'}
+                </span>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleRetry}>
+                <RefreshCw className="h-3 w-3 mr-1" />
+                Retry
               </Button>
             </div>
           </CardContent>
         </Card>
+      )}
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 md:space-y-6 w-full max-w-full">
-          <TabsList className="grid w-full grid-cols-4 h-12 md:h-auto p-1 bg-muted/50">
-            <TabsTrigger value="marketplace" className="text-xs md:text-sm py-2 md:py-3">Marketplace</TabsTrigger>
-            <TabsTrigger value="orders" className="text-xs md:text-sm py-2 md:py-3">My Orders</TabsTrigger>
-            <TabsTrigger value="search" className="text-xs md:text-sm py-2 md:py-3">Advanced Search</TabsTrigger>
-            <TabsTrigger value="sell" className="text-xs md:text-sm py-2 md:py-3">Sell Products</TabsTrigger>
-          </TabsList>
+      {/* Main Content */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="browse">Browse</TabsTrigger>
+          <TabsTrigger value="my-products">My Products</TabsTrigger>
+          <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="marketplace" className="space-y-4 md:space-y-6 mt-4 md:mt-6 w-full max-w-full">
-            <div className="px-0 sm:px-1 w-full max-w-full">
-              <LiveMarketplace 
-                products={products} 
-                searchFilters={searchFilters} 
-                onBuyProduct={handleBuyProduct}
-                userBalance={user.balance}
-              />
-            </div>
-          </TabsContent>
+        {/* Browse Products */}
+        <TabsContent value="browse" className="space-y-6">
+          <ProductGrid searchTerm={searchTerm} category={selectedCategory === 'all' ? '' : selectedCategory} />
+        </TabsContent>
 
-          <TabsContent value="orders" className="space-y-4 md:space-y-6 mt-4 md:mt-6 w-full max-w-full">
-            <Card className="shadow-soft mx-1">
-              <CardHeader>
-                <CardTitle className="text-lg md:text-xl flex items-center gap-2">
-                  <Package className="h-4 w-4 md:h-5 md:w-5" />
-                  My Orders
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 md:p-6 pt-0">
-                {orders.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground">No orders yet. Start shopping in the marketplace!</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {orders.map((order) => (
-                      <Card key={order.id} className="shadow-soft">
-                        <CardContent className="p-4">
-                          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                            <div className="space-y-2 flex-1">
-                              <div className="flex items-center justify-between">
-                                <h4 className="font-semibold">{order.productName}</h4>
-                                <Badge className={getStatusColor(order.status)}>
-                                  {getStatusIcon(order.status)}
-                                  <span className="ml-1 capitalize">{order.status}</span>
-                                </Badge>
-                              </div>
-                              <div className="text-sm text-muted-foreground space-y-1">
-                                <p>Farmer: {order.farmer}</p>
-                                <p>Quantity: {order.quantity} {order.unit}</p>
-                                <p>Total: ₵{order.totalPrice.toLocaleString()}</p>
-                                <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-                                <p>Expected Delivery: {new Date(order.expectedDelivery).toLocaleDateString()}</p>
-                                <p>Payment: {order.paymentMethod}</p>
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                              {order.status === 'pending' && (
-                                <>
-                                  <Button 
-                                    size="sm" 
-                                    onClick={() => handleOrderStatusUpdate(order.id, 'confirmed')}
-                                  >
-                                    Confirm Order
-                                  </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="outline"
-                                    onClick={() => handleOrderStatusUpdate(order.id, 'cancelled')}
-                                  >
-                                    Cancel Order
-                                  </Button>
-                                </>
-                              )}
-                              {order.status === 'confirmed' && (
-                                <Button 
-                                  size="sm" 
-                                  onClick={() => handleOrderStatusUpdate(order.id, 'shipped')}
-                                >
-                                  Mark as Shipped
-                                </Button>
-                              )}
-                              {order.status === 'shipped' && (
-                                <Button 
-                                  size="sm" 
-                                  onClick={() => handleOrderStatusUpdate(order.id, 'delivered')}
-                                >
-                                  Mark as Delivered
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+        {/* My Products */}
+        <TabsContent value="my-products" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                My Products
+                {productsHasError && (
+                  <Badge variant="outline" className="text-yellow-600 border-yellow-300">
+                    Limited Data
+                  </Badge>
                 )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {productsLoading ? (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-32 bg-gray-200 rounded-lg mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-1"></div>
+                      <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : userProducts.length === 0 ? (
+                <div className="text-center py-12">
+                  <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">
+                    {productsHasError ? 'Unable to load products' : 'No products listed'}
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    {productsHasError 
+                      ? 'There was an issue loading your products.' 
+                      : 'Start selling by listing your first product'
+                    }
+                  </p>
+                  <div className="flex gap-2 justify-center">
+                    <Button onClick={() => setCreateModalOpen(true)}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      List Product
+                    </Button>
+                    {productsHasError && (
+                      <Button variant="outline" onClick={handleRetry}>
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Retry
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {userProducts.map((product: Product) => (
+                    <Card key={product.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <h4 className="font-semibold line-clamp-1">{product.name}</h4>
+                          <Badge variant={product.is_active ? 'default' : 'secondary'}>
+                            {product.is_active ? 'Active' : 'Inactive'}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                          {product.description}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="font-bold text-primary">
+                              GHS {product.price_per_unit}
+                            </span>
+                            <span className="text-sm text-muted-foreground">
+                              /{product.unit_type}
+                            </span>
+                          </div>
+                          <span className="text-sm text-muted-foreground">
+                            {product.quantity_available} available
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          <TabsContent value="search" className="space-y-4 md:space-y-6 mt-4 md:mt-6 w-full max-w-full">
-            <Card className="shadow-soft mx-1 w-full max-w-full">
-              <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-lg md:text-xl flex items-center gap-2">
-                  <Search className="h-4 w-4 md:h-5 md:w-5" />
-                  Advanced Search & Filters
+        {/* Orders */}
+        <TabsContent value="orders" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ShoppingCart className="h-5 w-5" />
+                My Orders
+                {ordersHasError && (
+                  <Badge variant="outline" className="text-yellow-600 border-yellow-300">
+                    Limited Data
+                  </Badge>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {ordersLoading ? (
+                <div className="space-y-4">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="animate-pulse flex items-center space-x-4 p-4 border rounded-lg">
+                      <div className="h-12 w-12 bg-gray-200 rounded"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                      </div>
+                      <div className="h-6 w-20 bg-gray-200 rounded"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : userOrders.length === 0 ? (
+                <div className="text-center py-12">
+                  <ShoppingCart className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">
+                    {ordersHasError ? 'Unable to load orders' : 'No orders yet'}
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    {ordersHasError 
+                      ? 'There was an issue loading your orders.' 
+                      : 'Browse products to place your first order'
+                    }
+                  </p>
+                  <div className="flex gap-2 justify-center">
+                    <Button onClick={() => setActiveTab('browse')}>
+                      Browse Products
+                    </Button>
+                    {ordersHasError && (
+                      <Button variant="outline" onClick={handleRetry}>
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Retry
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {userOrders.map((order: Order) => (
+                    <Card key={order.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h4 className="font-semibold">{order.product_name}</h4>
+                            <p className="text-sm text-muted-foreground">
+                              Order #{order.id?.slice(-8) || 'N/A'}
+                            </p>
+                          </div>
+                          <Badge className={getStatusColor(order.status)}>
+                            <div className="flex items-center gap-1">
+                              {getStatusIcon(order.status)}
+                              <span className="capitalize">{order.status}</span>
+                            </div>
+                          </Badge>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <span className="text-muted-foreground">Quantity:</span>
+                            <span className="ml-2 font-medium">
+                              {order.quantity} {order.unit || 'units'}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Total:</span>
+                            <span className="ml-2 font-medium">
+                              GHS {order.total_price || order.total_amount}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Seller:</span>
+                            <span className="ml-2">{order.seller_name || 'Unknown'}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Date:</span>
+                            <span className="ml-2">
+                              {order.created_at 
+                                ? new Date(order.created_at).toLocaleDateString()
+                                : 'Unknown date'
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Analytics */}
+        <TabsContent value="analytics" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Sales Overview
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-4 md:p-6 pt-0">
-                <AdvancedSearch onSearch={handleAdvancedSearch} />
+              <CardContent>
+                <div className="text-2xl font-bold">GHS {userOrders.reduce((sum: number, order: Order) => sum + (order.total_price || 0), 0).toLocaleString()}</div>
+                <p className="text-sm text-muted-foreground">Total sales</p>
+                <div className="mt-2">
+                  <Badge variant="default" className="bg-green-100 text-green-800">
+                    {userOrders.length} orders
+                  </Badge>
+                </div>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="sell" className="space-y-4 md:space-y-6 mt-4 md:mt-6 w-full max-w-full">
-            <Card className="shadow-soft mx-1 w-full max-w-full">
-              <CardHeader className="p-4 md:p-6">
-                <CardTitle className="text-lg md:text-xl flex items-center gap-2">
-                  <Upload className="h-4 w-4 md:h-5 md:w-5" />
-                  List Your Products
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="h-5 w-5" />
+                  Products
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-4 md:p-6 pt-0">
-                <FileUpload onProductUpload={handleAddProduct} />
+              <CardContent>
+                <div className="text-2xl font-bold">{userProducts.length}</div>
+                <p className="text-sm text-muted-foreground">Your listings</p>
+                <div className="mt-2">
+                  <Badge variant="outline">
+                    {userProducts.filter((p: Product) => p.is_active).length} active
+                  </Badge>
+                </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ShoppingCart className="h-5 w-5" />
+                  Orders
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{userOrders.length}</div>
+                <p className="text-sm text-muted-foreground">Total orders</p>
+                <div className="mt-2">
+                  <Badge variant="outline">
+                    {userOrders.filter((o: Order) => o.status === 'delivered' || o.status === 'completed').length} completed
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

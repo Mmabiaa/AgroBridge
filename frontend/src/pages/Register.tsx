@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Wheat, Eye, EyeOff, ArrowLeft, CheckCircle, User, Shield } from 'lucide-react';
+import { Wheat, Eye, EyeOff, ArrowLeft, User, Shield } from 'lucide-react';
 import { RoleSelection } from '@/components/RoleSelection';
 
 export default function Register() {
@@ -14,6 +14,7 @@ export default function Register() {
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [showRoleSelection, setShowRoleSelection] = useState(false);
   const [formData, setFormData] = useState({
+    username: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -25,33 +26,100 @@ export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const [error, setError] = useState<string>('');
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
     
-    if (!selectedRole) {
-      setShowRoleSelection(true);
-      return;
+    // Minimal validation matching backend requirements
+    if (!formData.username.trim()) {
+      errors.username = 'Username is required';
+    }
+    
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+    }
+    
+    if (!formData.password) {
+      errors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
     }
     
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
+      errors.password_confirm = 'Passwords do not match';
+    }
+    
+    if (!selectedRole) {
+      errors.role = 'Please select a role';
+    }
+    
+    return errors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setValidationErrors({});
+    
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      if (errors.role) {
+        setShowRoleSelection(true);
+      }
       return;
     }
     
     setIsLoading(true);
     try {
-      await register({
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        role: selectedRole,
-        password: formData.password
-      });
+      const registrationData = {
+        username: formData.username.trim(),
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password,
+        password_confirm: formData.confirmPassword,
+        first_name: formData.firstName.trim(),
+        last_name: formData.lastName.trim(),
+        role: selectedRole!,
+        phone: formData.phone.trim()
+      };
+      
+      console.log('Attempting registration with data:', { ...registrationData, password: '[HIDDEN]', password_confirm: '[HIDDEN]' });
+      
+      await register(registrationData);
       
       // Role-based redirection
-      const redirectPath = getRoleRedirectPath(selectedRole);
+      const redirectPath = getRoleRedirectPath(selectedRole!);
       navigate(redirectPath, { replace: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration failed:', error);
+      
+      // Handle different types of errors
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        
+        // Handle field-specific validation errors
+        if (typeof errorData === 'object' && !errorData.message) {
+          const fieldErrors: Record<string, string> = {};
+          
+          Object.keys(errorData).forEach(field => {
+            if (Array.isArray(errorData[field])) {
+              fieldErrors[field] = errorData[field][0];
+            } else if (typeof errorData[field] === 'string') {
+              fieldErrors[field] = errorData[field];
+            }
+          });
+          
+          setValidationErrors(fieldErrors);
+          setError('Please correct the errors below.');
+        } else {
+          // Handle general error messages
+          setError(errorData.message || errorData.error || 'Registration failed. Please try again.');
+        }
+      } else {
+        setError(error.message || 'Registration failed. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -69,15 +137,56 @@ export default function Register() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+    
+    // Map frontend field names to backend field names for error clearing
+    const fieldNameMap: Record<string, string> = {
+      username: 'username',
+      email: 'email',
+      password: 'password',
+      confirmPassword: 'password_confirm',
+      firstName: 'first_name',
+      lastName: 'last_name',
+      phone: 'phone'
+    };
+    
+    const backendFieldName = fieldNameMap[name];
+    
+    // Clear field-specific errors when user starts typing
+    if (validationErrors[name] || (backendFieldName && validationErrors[backendFieldName])) {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        if (backendFieldName) {
+          delete newErrors[backendFieldName];
+        }
+        return newErrors;
+      });
+    }
+    
+    // Clear general error when user makes changes
+    if (error) {
+      setError('');
+    }
   };
 
   const handleRoleSelect = (role: UserRole) => {
     setSelectedRole(role);
     setShowRoleSelection(false);
+    
+    // Clear role validation error when user selects a role
+    if (validationErrors.role) {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.role;
+        return newErrors;
+      });
+    }
   };
 
   const handleBackToRegister = () => {
@@ -145,7 +254,7 @@ export default function Register() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
+                  <Label htmlFor="firstName">First Name (Optional)</Label>
                   <Input 
                     id="firstName" 
                     name="firstName"
@@ -153,11 +262,14 @@ export default function Register() {
                     placeholder="First name"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    required
+                    className={validationErrors.first_name ? 'border-destructive' : ''}
                   />
+                  {validationErrors.first_name && (
+                    <p className="text-xs text-destructive">{validationErrors.first_name}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
+                  <Label htmlFor="lastName">Last Name (Optional)</Label>
                   <Input 
                     id="lastName" 
                     name="lastName"
@@ -165,13 +277,33 @@ export default function Register() {
                     placeholder="Last name"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    required
+                    className={validationErrors.last_name ? 'border-destructive' : ''}
                   />
+                  {validationErrors.last_name && (
+                    <p className="text-xs text-destructive">{validationErrors.last_name}</p>
+                  )}
                 </div>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="username">Username *</Label>
+                <Input 
+                  id="username" 
+                  name="username"
+                  type="text" 
+                  placeholder="Choose a username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  required
+                  className={validationErrors.username ? 'border-destructive' : ''}
+                />
+                {validationErrors.username && (
+                  <p className="text-xs text-destructive">{validationErrors.username}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email *</Label>
                 <Input 
                   id="email" 
                   name="email"
@@ -180,11 +312,15 @@ export default function Register() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
+                  className={validationErrors.email ? 'border-destructive' : ''}
                 />
+                {validationErrors.email && (
+                  <p className="text-xs text-destructive">{validationErrors.email}</p>
+                )}
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">Phone Number (Optional)</Label>
                 <Input 
                   id="phone" 
                   name="phone"
@@ -192,11 +328,15 @@ export default function Register() {
                   placeholder="Enter your phone number"
                   value={formData.phone}
                   onChange={handleInputChange}
+                  className={validationErrors.phone ? 'border-destructive' : ''}
                 />
+                {validationErrors.phone && (
+                  <p className="text-xs text-destructive">{validationErrors.phone}</p>
+                )}
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Password * (min. 6 characters)</Label>
                 <div className="relative">
                   <Input 
                     id="password" 
@@ -206,7 +346,7 @@ export default function Register() {
                     value={formData.password}
                     onChange={handleInputChange}
                     required
-                    className="pr-12"
+                    className={`pr-12 ${validationErrors.password ? 'border-destructive' : ''}`}
                   />
                   <Button
                     type="button"
@@ -222,10 +362,13 @@ export default function Register() {
                     )}
                   </Button>
                 </div>
+                {validationErrors.password && (
+                  <p className="text-xs text-destructive">{validationErrors.password}</p>
+                )}
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Confirm Password *</Label>
                 <div className="relative">
                   <Input 
                     id="confirmPassword" 
@@ -235,7 +378,7 @@ export default function Register() {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     required
-                    className="pr-12"
+                    className={`pr-12 ${validationErrors.password_confirm ? 'border-destructive' : ''}`}
                   />
                   <Button
                     type="button"
@@ -251,32 +394,58 @@ export default function Register() {
                     )}
                   </Button>
                 </div>
+                {validationErrors.password_confirm && (
+                  <p className="text-xs text-destructive">{validationErrors.password_confirm}</p>
+                )}
               </div>
 
-              {/* Role Selection Preview */}
-              {selectedRole && (
-                <div className="p-3 bg-muted/50 rounded-lg border">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Shield className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Selected Role:</span>
-                    <span className="capitalize text-primary">{selectedRole.replace('_', ' ')}</span>
+              {/* Role Selection */}
+              <div className="space-y-2">
+                <Label>Role *</Label>
+                {selectedRole ? (
+                  <div className="p-3 bg-muted/50 rounded-lg border">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Shield className="h-4 w-4 text-primary" />
+                      <span className="font-medium">Selected Role:</span>
+                      <span className="capitalize text-primary">{selectedRole.replace('_', ' ')}</span>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowRoleSelection(true)}
+                      className="mt-2 text-xs"
+                    >
+                      Change Role
+                    </Button>
                   </div>
+                ) : (
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="sm"
+                    variant="outline"
                     onClick={() => setShowRoleSelection(true)}
-                    className="mt-2 text-xs"
+                    className="w-full"
                   >
-                    Change Role
+                    <User className="h-4 w-4 mr-2" />
+                    Choose Your Role
                   </Button>
+                )}
+                {validationErrors.role && (
+                  <p className="text-xs text-destructive">{validationErrors.role}</p>
+                )}
+              </div>
+
+              {/* Error Messages */}
+              {error && (
+                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                  <p className="text-sm text-destructive">{error}</p>
                 </div>
               )}
 
               <Button 
                 type="submit" 
                 className="w-full font-medium"
-                disabled={isLoading || !formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword}
+                disabled={isLoading || !formData.username || !formData.email || !formData.password || !formData.confirmPassword || !selectedRole}
               >
                 {isLoading ? (
                   <>
@@ -289,25 +458,13 @@ export default function Register() {
               </Button>
             </form>
 
-            <div className="text-center space-y-2">
+            <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 Already have an account?{' '}
                 <Link to="/login" className="text-primary hover:underline">
                   Sign in here
                 </Link>
               </p>
-              
-              {!selectedRole && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowRoleSelection(true)}
-                  className="w-full text-sm"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  Choose Your Role First
-                </Button>
-              )}
             </div>
           </CardContent>
         </Card>

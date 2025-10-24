@@ -6,39 +6,32 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Wheat, Eye, EyeOff, ArrowLeft, User, Shield } from 'lucide-react';
-import { RoleSelection } from '@/components/RoleSelection';
-import { UserRole } from '@/contexts/AuthContext';
+import { Wheat, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showRoleSelection, setShowRoleSelection] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || '/dashboard';
 
+  const [error, setError] = useState<string>('');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!selectedRole) {
-      setShowRoleSelection(true);
-      return;
-    }
-    
+    setError('');
     setIsLoading(true);
     
     try {
-      // Use the updated login function with role parameter
-      await login(email, password, selectedRole);
+      await login(email, password);
       navigate(from, { replace: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login failed:', error);
+      setError(error.message || 'Login failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }
@@ -46,48 +39,7 @@ export default function Login() {
 
   // Remove the custom loginWithRole function and helper functions since they're now in AuthContext
 
-  const handleRoleSelect = (role: UserRole) => {
-    setSelectedRole(role);
-    setShowRoleSelection(false);
-  };
 
-  const handleBackToLogin = () => {
-    setShowRoleSelection(false);
-    setSelectedRole(null);
-  };
-
-  // Show role selection if requested
-  if (showRoleSelection) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-6 md:py-12 px-3 md:px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-6 md:mb-8">
-            <Button
-              variant="ghost"
-              onClick={handleBackToLogin}
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-4 md:mb-6"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Login
-            </Button>
-            
-            <div className="flex justify-center mb-4 md:mb-6">
-              <div className="p-2 md:p-3 rounded-full bg-gradient-primary shadow-glow">
-                <Wheat className="h-6 w-6 md:h-8 md:w-8 text-primary-foreground" />
-              </div>
-            </div>
-            
-          </div>
-
-          <RoleSelection 
-            onRoleSelect={handleRoleSelect}
-            selectedRole={selectedRole}
-            showDescription={true}
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 flex items-center justify-center py-6 md:py-12 px-3 md:px-4">
@@ -156,23 +108,10 @@ export default function Login() {
                 </div>
               </div>
 
-              {/* Role Selection Preview */}
-              {selectedRole && (
-                <div className="p-3 bg-muted/50 rounded-lg border">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Shield className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Selected Role:</span>
-                    <span className="capitalize text-primary">{selectedRole.replace('_', ' ')}</span>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowRoleSelection(true)}
-                    className="mt-2 text-xs"
-                  >
-                    Change Role
-                  </Button>
+              {/* Error Message */}
+              {error && (
+                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                  <p className="text-sm text-destructive">{error}</p>
                 </div>
               )}
 
@@ -200,17 +139,11 @@ export default function Login() {
                 </Link>
               </p>
               
-              {!selectedRole && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowRoleSelection(true)}
-                  className="w-full text-sm"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  Choose Your Role First
-                </Button>
-              )}
+              <p className="text-xs text-muted-foreground">
+                <Link to="/forgot-password" className="text-primary hover:underline">
+                  Forgot your password?
+                </Link>
+              </p>
             </div>
           </CardContent>
         </Card>

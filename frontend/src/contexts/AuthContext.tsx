@@ -1,12 +1,26 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useCurrentUser, useLogin, useRegister, useLogout, useUpdateProfile } from '../api/hooks/useAuth';
+import { realTimeSync } from '../api/realTimeSync';
+import apiClient from '../api/axiosClient';
 
-export type UserRole = 'farmer' | 'buyer' | 'poultry_keeper' | 'ngo' | 'admin';
+export type UserRole = 'farmer' | 'buyer' | 'poultry_keeper' | 'expert' | 'ngo' | 'admin';
 
 export interface User {
   id: string;
+  username: string;
   email: string;
+  first_name: string;
+  last_name: string;
   name: string;
   role: UserRole;
+  phone?: string;
+  is_verified: boolean;
+  email_verified: boolean;
+  phone_verified: boolean;
+  profile_completed: boolean;
+  onboarding_completed: boolean;
+  language: string;
+  timezone: string;
   isAuthenticated: boolean;
   permissions: string[];
   accessibleRoutes: string[];
@@ -15,14 +29,26 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string, role?: UserRole) => Promise<void>;
-  register: (userData: Omit<User, 'id' | 'isAuthenticated' | 'permissions' | 'accessibleRoutes'> & { password: string }) => Promise<void>;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<void>;
+  register: (userData: RegisterUserData) => Promise<void>;
+  logout: () => Promise<void>;
   isLoading: boolean;
   hasPermission: (permission: string) => boolean;
   canAccessRoute: (route: string) => boolean;
-  updateUserProfile: (profileData: Record<string, any>) => void;
-  updateUserRole: (role: UserRole) => void;
+  updateUserProfile: (profileData: Partial<User>) => Promise<void>;
+  refreshToken: () => Promise<void>;
+  isAuthenticated: boolean;
+}
+
+interface RegisterUserData {
+  username: string;
+  email: string;
+  password: string;
+  password_confirm: string;
+  first_name: string;
+  last_name: string;
+  role: UserRole;
+  phone?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,83 +63,126 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  
+  // Use API hooks
+  const { data: currentUser, isLoading: userLoading, error: userError, refetch: refetchUser } = useCurrentUser();
+  const loginMutation = useLogin();
+  const registerMutation = useRegister();
+  const logoutMutation = useLogout();
+  const updateProfileMutation = useUpdateProfile();
+
+  const isLoading = userLoading || loginMutation.isPending || registerMutation.isPending || updateProfileMutation.isPending;
+  const isAuthenticated = apiClient.isAuthenticated() && !!user;
 
   useEffect(() => {
-    // Check for stored user session
-    const storedUser = localStorage.getItem('agrobridge_user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
-  }, []);
-
-  const login = async (email: string, password: string, role?: UserRole) => {
-    setIsLoading(true);
-    try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/token', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      //   body: new URLSearchParams({ username: email, password })
-      // });
-      // const data = await response.json();
-      
-      // Mock API response for now
-      const userRole = role || 'farmer'; // Default to farmer if no role specified
-      const mockUser: User = {
-        id: '1',
-        email,
-        name: email.split('@')[0],
-        role: userRole,
+    if (currentUser) {
+      const mappedUser: User = {
+        id: currentUser.id,
+        username: currentUser.username,
+        email: currentUser.email,
+        first_name: currentUser.first_name,
+        last_name: currentUser.last_name,
+        name: `${currentUser.first_name} ${currentUser.last_name}`.trim() || currentUser.username,
+        role: currentUser.role as UserRole,
+        phone: (currentUser as any).phone,
+        is_verified: (currentUser as any).is_verified || false,
+        email_verified: (currentUser as any).email_verified || false,
+        phone_verified: (currentUser as any).phone_verified || false,
+        profile_completed: (currentUser as any).profile_completed || false,
+        onboarding_completed: (currentUser as any).onboarding_completed || false,
+        language: (currentUser as any).language || 'en',
+        timezone: (currentUser as any).timezone || 'UTC',
         isAuthenticated: true,
-        permissions: getDefaultPermissions(userRole),
-        accessibleRoutes: getDefaultRoutes(userRole)
+        permissions: getDefaultPermissions(currentUser.role as UserRole),
+        accessibleRoutes: getDefaultRoutes(currentUser.role as UserRole),
+        profileData: currentUser,
+      };
+      setUser(mappedUser);
+      
+      // Start WebSocket connection when user is authenticated
+      realTimeSync.startConnection();
+    } else if (userError || !apiClient.isAuthenticated()) {
+      setUser(null);
+      
+      // Stop WebSocket connection when user is not authenticated
+      realTimeSync.stopConnection();
+    }
+  }, [currentUser, userError]);
+
+  // Check for existing authentication on app startup
+  useEffect(() => {
+    const token = apiClient.getAccessToken();
+    if (token && !user && !userLoading && apiClient.isAuthenticated()) {
+      // Token exists but no user data, trigger user fetch
+      refetchUser();
+    }
+  }, [user, userLoading, refetchUser]);
+
+  const login = async (email: string, password: string) => {
+    try {
+      // The backend accepts either username or email in the username field
+      const result = await loginMutation.mutateAsync({ username: email, password });
+      
+      const mappedUser: User = {
+        id: result.user.id,
+        username: result.user.username,
+        email: result.user.email,
+        first_name: result.user.first_name,
+        last_name: result.user.last_name,
+        name: `${result.user.first_name} ${result.user.last_name}`.trim() || result.user.username,
+        role: result.user.role as UserRole,
+        phone: (result.user as any).phone,
+        is_verified: (result.user as any).is_verified || false,
+        email_verified: (result.user as any).email_verified || false,
+        phone_verified: (result.user as any).phone_verified || false,
+        profile_completed: (result.user as any).profile_completed || false,
+        onboarding_completed: (result.user as any).onboarding_completed || false,
+        language: (result.user as any).language || 'en',
+        timezone: (result.user as any).timezone || 'UTC',
+        isAuthenticated: true,
+        permissions: getDefaultPermissions(result.user.role as UserRole),
+        accessibleRoutes: getDefaultRoutes(result.user.role as UserRole),
+        profileData: result.user,
       };
       
-      setUser(mockUser);
-      localStorage.setItem('agrobridge_user', JSON.stringify(mockUser));
+      setUser(mappedUser);
+      
+      // Start WebSocket connection after successful login
+      realTimeSync.startConnection();
     } catch (error) {
-      throw new Error('Login failed');
-    } finally {
-      setIsLoading(false);
+      throw error;
     }
   };
 
-  const register = async (userData: Omit<User, 'id' | 'isAuthenticated' | 'permissions' | 'accessibleRoutes'> & { password: string }) => {
-    setIsLoading(true);
+  const register = async (userData: RegisterUserData) => {
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(userData)
-      // });
-      // const data = await response.json();
+      await registerMutation.mutateAsync(userData);
       
-      // Mock API response for now
-      const newUser: User = {
-        id: Date.now().toString(),
-        email: userData.email,
-        name: userData.name,
-        role: userData.role,
-        isAuthenticated: true,
-        permissions: getDefaultPermissions(userData.role),
-        accessibleRoutes: getDefaultRoutes(userData.role)
-      };
-      
-      setUser(newUser);
-      localStorage.setItem('agrobridge_user', JSON.stringify(newUser));
+      // After successful registration, login automatically
+      await login(userData.email, userData.password);
     } catch (error) {
-      throw new Error('Registration failed');
-    } finally {
-      setIsLoading(false);
+      throw error;
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('agrobridge_user');
+  const logout = async () => {
+    try {
+      await logoutMutation.mutateAsync();
+    } catch (error) {
+      // Even if logout fails on server, clear local state
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+      
+      // Stop WebSocket connection on logout
+      realTimeSync.stopConnection();
+      
+      // Clear tokens using the API client
+      apiClient.clearTokens();
+      
+      // Clear any other auth-related localStorage items
+      localStorage.removeItem('agrobridge_user');
+    }
   };
 
   const hasPermission = (permission: string): boolean => {
@@ -124,19 +193,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return user?.accessibleRoutes.includes(route) ?? false;
   };
 
-  const updateUserProfile = (profileData: Record<string, any>) => {
-    if (user) {
-      const updatedUser = { ...user, profileData };
-      setUser(updatedUser);
-      localStorage.setItem('agrobridge_user', JSON.stringify(updatedUser));
+  const updateUserProfile = async (profileData: Partial<User>) => {
+    try {
+      const updatedUser = await updateProfileMutation.mutateAsync(profileData);
+      
+      // Update local user state with the response from server
+      if (user) {
+        const mappedUser: User = {
+          ...user,
+          id: updatedUser.id,
+          username: updatedUser.username,
+          email: updatedUser.email,
+          first_name: updatedUser.first_name,
+          last_name: updatedUser.last_name,
+          name: `${updatedUser.first_name} ${updatedUser.last_name}`.trim() || updatedUser.username,
+          role: updatedUser.role as UserRole,
+          phone: (updatedUser as any).phone,
+          is_verified: (updatedUser as any).is_verified || user.is_verified,
+          email_verified: (updatedUser as any).email_verified || user.email_verified,
+          phone_verified: (updatedUser as any).phone_verified || user.phone_verified,
+          profile_completed: (updatedUser as any).profile_completed || user.profile_completed,
+          onboarding_completed: (updatedUser as any).onboarding_completed || user.onboarding_completed,
+          language: (updatedUser as any).language || user.language,
+          timezone: (updatedUser as any).timezone || user.timezone,
+          profileData: updatedUser,
+        };
+        setUser(mappedUser);
+      }
+    } catch (error) {
+      throw error;
     }
   };
 
-  const updateUserRole = (role: UserRole) => {
-    if (user) {
-      const updatedUser = { ...user, role };
-      setUser(updatedUser);
-      localStorage.setItem('agrobridge_user', JSON.stringify(updatedUser));
+  const refreshToken = async () => {
+    try {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (refreshToken) {
+        // The axios interceptor will handle token refresh automatically
+        // We just need to trigger a user data refetch
+        await refetchUser();
+      }
+    } catch (error) {
+      // If refresh fails, logout the user
+      await logout();
+      throw error;
     }
   };
 
@@ -161,6 +261,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       buyer: [
         'view_dashboard', 'view_marketplace', 'place_orders', 'view_orders',
         'view_learning', 'view_community', 'view_financial_planning', 'use_voice_commands'
+      ],
+      expert: [
+        'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
+        'view_marketplace', 'view_learning', 'view_community', 'moderate_community',
+        'create_content', 'edit_content', 'view_financial_planning', 'use_voice_commands'
       ],
       ngo: [
         'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
@@ -199,6 +304,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         '/dashboard', '/marketplace', '/learning', '/community',
         '/financial-planning', '/voice-commands'
       ],
+      expert: [
+        '/dashboard', '/analytics', '/monitoring', '/agrigpt',
+        '/marketplace', '/learning', '/community', '/financial-planning', '/voice-commands'
+      ],
       ngo: [
         '/dashboard', '/analytics', '/monitoring', '/agrigpt',
         '/marketplace', '/learning', '/community', '/financial-planning', '/voice-commands'
@@ -223,7 +332,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       hasPermission, 
       canAccessRoute,
       updateUserProfile,
-      updateUserRole
+      refreshToken,
+      isAuthenticated
     }}>
       {children}
     </AuthContext.Provider>
