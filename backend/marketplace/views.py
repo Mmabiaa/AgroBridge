@@ -306,6 +306,11 @@ class ProductViewSet(viewsets.ModelViewSet):
         
         return Response(insights)
 
+    @action(detail=False, methods=['get'], url_path='my-products')
+    def my_products_alt(self, request):
+        """Alternative endpoint for my-products"""
+        return self.my_products(request)
+
 
 class OrderViewSet(viewsets.ModelViewSet):
     """
