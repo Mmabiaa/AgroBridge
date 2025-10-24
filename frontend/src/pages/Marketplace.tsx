@@ -518,7 +518,7 @@ export default function Marketplace() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+           </div>
         </TabsContent>
       </Tabs>
     </div>
