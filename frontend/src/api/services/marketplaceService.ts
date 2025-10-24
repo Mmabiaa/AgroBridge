@@ -9,6 +9,7 @@ import type {
     PaginatedResponse,
     ProductListParams,
     OrderListParams,
+    Category,
 } from '../basicTypes';
 
 class MarketplaceService {
@@ -27,29 +28,7 @@ class MarketplaceService {
         const response = await apiClient.get<Product>(`${this.basePath}/products/${id}/`);
         return response;
     }
-    async createProductWithImages(productData: ProductCreateData, images: File[]): Promise<Product> {
-    const formData = new FormData();
-    
-    // Append product data
-    Object.keys(productData).forEach(key => {
-      if (productData[key] !== undefined) {
-        formData.append(key, productData[key].toString());
-      }
-    });
-    
-    // Append images
-    images.forEach((image, index) => {
-      formData.append(`images`, image);
-    });
 
-    const response = await apiClient.post<Product>(`${this.basePath}/products/`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response;
-  }
-  
     async getUserProducts(params?: ProductListParams): Promise<PaginatedResponse<Product>> {
         try {
             // Try the custom endpoint first (the one we defined in Django URLs)
@@ -152,6 +131,12 @@ class MarketplaceService {
         return response;
     }
 
+    // Category methods
+    async getCategories(): Promise<PaginatedResponse<Category>> {
+        const response = await apiClient.get<PaginatedResponse<Category>>(`${this.basePath}/categories/`);
+        return response;
+    }
+
     // Search and filter methods
     async searchProducts(query: string, params?: ProductListParams): Promise<PaginatedResponse<Product>> {
         return this.getProducts({ ...params, search: query });
@@ -172,6 +157,30 @@ class MarketplaceService {
             console.warn('Featured products endpoint not available, using regular products');
             return this.getProducts({ limit: 8 });
         }
+    }
+
+    // Image upload method
+    async createProductWithImages(productData: ProductCreateData, images: File[]): Promise<Product> {
+        const formData = new FormData();
+        
+        // Append product data
+        Object.keys(productData).forEach(key => {
+            if (productData[key] !== undefined && productData[key] !== null) {
+                formData.append(key, productData[key].toString());
+            }
+        });
+        
+        // Append images
+        images.forEach((image, index) => {
+            formData.append(`images`, image);
+        });
+
+        const response = await apiClient.post<Product>(`${this.basePath}/products/`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
     }
 }
 

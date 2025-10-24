@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Plus, Upload, X } from 'lucide-react';
-import { useCreateProduct } from '@/api/hooks/useMarketplace';
+import { useCreateProduct, useCategories } from '@/api/hooks/useMarketplace';
 import { toast } from 'sonner';
 
 interface CreateProductModalProps {
@@ -18,41 +18,73 @@ export function CreateProductModal({ open, onOpenChange }: CreateProductModalPro
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    price: '',
-    unit: 'kg',
+    price_per_unit: '',
+    unit_type: 'kg',
     quantity_available: '',
     category: ''
   });
   const [images, setImages] = useState<File[]>([]);
 
   const createProductMutation = useCreateProduct();
+  const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
-      await createProductMutation.mutateAsync({
+      // Convert form data to match Django API expectations
+      const productData = {
         name: formData.name,
         description: formData.description,
-        price: parseFloat(formData.price),
-        unit: formData.unit,
+        price_per_unit: parseFloat(formData.price_per_unit),
+        unit_type: formData.unit_type,
         quantity_available: parseInt(formData.quantity_available),
-        category: formData.category || undefined,
-      });
+        category: formData.category ? parseInt(formData.category) : undefined,
+        status: 'active',
+        is_active: true,
+      };
+
+      console.log('Sending product data:', productData); // Debug log
+
+      await createProductMutation.mutateAsync(productData);
 
       toast.success('Product listed successfully!');
+      // Reset form
       setFormData({
         name: '',
         description: '',
-        price: '',
-        unit: 'kg',
+        price_per_unit: '',
+        unit_type: 'kg',
         quantity_available: '',
         category: ''
       });
       setImages([]);
       onOpenChange(false);
-    } catch (error) {
-      toast.error('Failed to create product. Please try again.');
+    } catch (error: any) {
+      console.error('Product creation error:', error);
+      
+      // Show detailed error message from API response
+      let errorMessage = 'Failed to create product. Please check your input.';
+      
+      if (error.response?.data) {
+        // Handle Django validation errors
+        const errorData = error.response.data;
+        if (typeof errorData === 'object') {
+          // Extract field errors
+          const fieldErrors = Object.entries(errorData)
+            .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
+            .join('; ');
+          errorMessage = `Validation errors: ${fieldErrors}`;
+        } else if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        } else if (errorData.error) {
+          errorMessage = errorData.error;
+        }
+      }
+      
+      toast.error('Failed to create product', {
+        description: errorMessage,
+      });
     }
   };
 
@@ -67,18 +99,8 @@ export function CreateProductModal({ open, onOpenChange }: CreateProductModalPro
     setImages(images.filter((_, i) => i !== index));
   };
 
-  const categories = [
-    { label: 'Vegetables', value: 'vegetables' },
-    { label: 'Fruits', value: 'fruits' },
-    { label: 'Grains', value: 'grains' },
-    { label: 'Legumes', value: 'legumes' },
-    { label: 'Herbs & Spices', value: 'herbs-spices' },
-    { label: 'Livestock', value: 'livestock' },
-    { label: 'Dairy', value: 'dairy' },
-    { label: 'Poultry', value: 'poultry' }
-  ];
-
-  const units = [
+  // Unit types
+  const unitTypes = [
     { label: 'Kilogram (kg)', value: 'kg' },
     { label: 'Gram (g)', value: 'g' },
     { label: 'Pound (lb)', value: 'lb' },
@@ -87,8 +109,14 @@ export function CreateProductModal({ open, onOpenChange }: CreateProductModalPro
     { label: 'Milliliter (ml)', value: 'ml' },
     { label: 'Piece', value: 'piece' },
     { label: 'Bunch', value: 'bunch' },
-    { label: 'Bundle', value: 'bundle' }
+    { label: 'Bundle', value: 'bundle' },
+    { label: 'Bag', value: 'bag' },
+    { label: 'Box', value: 'box' },
+    { label: 'Crate', value: 'crate' }
   ];
+
+  // Use actual categories from API or fallback
+  const categories = categoriesData?.results || [];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -132,15 +160,15 @@ export function CreateProductModal({ open, onOpenChange }: CreateProductModalPro
           {/* Price and Quantity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="price">Price (GHS) *</Label>
+              <Label htmlFor="price_per_unit">Price per Unit (GHS) *</Label>
               <Input
-                id="price"
+                id="price_per_unit"
                 type="number"
                 step="0.01"
                 min="0"
                 placeholder="0.00"
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                value={formData.price_per_unit}
+                onChange={(e) => setFormData({ ...formData, price_per_unit: e.target.value })}
                 required
               />
             </div>
@@ -159,16 +187,16 @@ export function CreateProductModal({ open, onOpenChange }: CreateProductModalPro
             </div>
           </div>
 
-          {/* Unit and Category */}
+          {/* Unit Type and Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="unit">Unit *</Label>
-              <Select value={formData.unit} onValueChange={(value) => setFormData({ ...formData, unit: value })}>
+              <Label htmlFor="unit_type">Unit Type *</Label>
+              <Select value={formData.unit_type} onValueChange={(value) => setFormData({ ...formData, unit_type: value })}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select unit" />
+                  <SelectValue placeholder="Select unit type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {units.map((unit) => (
+                  {unitTypes.map((unit) => (
                     <SelectItem key={unit.value} value={unit.value}>
                       {unit.label}
                     </SelectItem>
@@ -179,14 +207,18 @@ export function CreateProductModal({ open, onOpenChange }: CreateProductModalPro
 
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
-              <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+              <Select 
+                value={formData.category} 
+                onValueChange={(value) => setFormData({ ...formData, category: value })}
+                disabled={categoriesLoading}
+              >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder={categoriesLoading ? "Loading categories..." : "Select category"} />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>
-                      {category.label}
+                    <SelectItem key={category.id} value={category.id.toString()}>
+                      {category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -196,7 +228,7 @@ export function CreateProductModal({ open, onOpenChange }: CreateProductModalPro
 
           {/* Image Upload */}
           <div className="space-y-2">
-            <Label>Product Images</Label>
+            <Label>Product Images (Optional)</Label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
               <Input
                 type="file"

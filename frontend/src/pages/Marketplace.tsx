@@ -25,30 +25,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useUserProducts, useUserOrders } from '@/api/hooks/useMarketplace';
 import { toast } from 'sonner';
 import { CreateProductModal } from '@/components/marketplace/CreateProductModal';
-
-// Define proper TypeScript interfaces for the data
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  unit: string;
-  quantity_available: number;
-  is_active: boolean;
-  status?: string;
-}
-
-interface Order {
-  id: string;
-  product_name: string;
-  quantity: number;
-  unit: string;
-  total_price: number;
-  total_amount?: number;
-  status: string;
-  seller_name: string;
-  created_at: string;
-}
+import type { Product, Order } from '@/types/basicTypes';
 
 export default function Marketplace() {
   const { user } = useAuth();
@@ -308,7 +285,6 @@ export default function Marketplace() {
                     }
                   </p>
                   <div className="flex gap-2 justify-center">
-                    {/* Fixed: Use CreateProductModal instead of disabled Button */}
                     <CreateProductModal 
                       open={createModalOpen}
                       onOpenChange={setCreateModalOpen}
@@ -338,10 +314,10 @@ export default function Marketplace() {
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="font-bold text-primary">
-                              GHS {product.price}
+                              GHS {product.price_per_unit}
                             </span>
                             <span className="text-sm text-muted-foreground">
-                              /{product.unit}
+                              /{product.unit_type}
                             </span>
                           </div>
                           <span className="text-sm text-muted-foreground">

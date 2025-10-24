@@ -13,6 +13,7 @@ import type {
     PaginatedResponse,
     ProductListParams,
     OrderListParams,
+    Category,
 } from '@/types/basicTypes';
 
 // Product query hooks
@@ -97,6 +98,15 @@ export const useUserOrders = (params?: OrderListParams) => {
             if (error?.response?.status === 404) return false;
             return failureCount < 2;
         },
+    });
+};
+
+// Category query hooks
+export const useCategories = () => {
+    return useQuery({
+        queryKey: ['marketplace', 'categories'],
+        queryFn: () => marketplaceService.getCategories(),
+        staleTime: 5 * 60 * 1000, // 5 minutes
     });
 };
 
@@ -238,10 +248,19 @@ export const useMarketplacePrefetch = () => {
         });
     };
 
+    const prefetchCategories = () => {
+        queryClient.prefetchQuery({
+            queryKey: ['marketplace', 'categories'],
+            queryFn: () => marketplaceService.getCategories(),
+            staleTime: 5 * 60 * 1000,
+        });
+    };
+
     return {
         prefetchProduct,
         prefetchOrder,
         prefetchUserProducts,
         prefetchUserOrders,
+        prefetchCategories,
     };
 };
