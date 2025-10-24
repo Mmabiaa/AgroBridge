@@ -15,9 +15,8 @@ class AIService:
     """
 
     def __init__(self):
-        # Initialize OpenAI client
         self.client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
-        self.model_name = "gpt-4o-mini"  # faster and better for production
+        self.model_name = "gpt-4o-mini"  # or "gpt-3.5-turbo" if you don't have access to gpt-4
         self.max_tokens = 1000
 
     # -------------------------------------------------------------------------
@@ -82,7 +81,7 @@ class AIService:
         try:
             with audio_file.open("rb") as audio:
                 transcription = self.client.audio.transcriptions.create(
-                    model="gpt-4o-mini-transcribe",
+                    model="whisper-1",
                     file=audio
                 )
 
@@ -123,3 +122,52 @@ class AIService:
         except Exception as e:
             logger.error(f"Speech synthesis failed: {str(e)}")
             raise
+    
+
+    def generate_response(self, message: str, conversation, user) -> Dict:
+    
+    #Generate AI response for a user message
+    
+    # Build conversation history
+        messages = self._build_conversation_history(conversation)
+        
+        # Add system prompt for agriculture
+        system_prompt = {
+            'role': 'system',
+            'content': '''You are AgriGPT, an expert agricultural advisor specializing in farming practices, 
+            crop management, pest control, soil health, and sustainable agriculture. Provide practical, 
+            actionable advice based on agricultural best practices. Be concise, helpful, and supportive.'''
+        }
+        
+        # Add user message
+        messages.insert(0, system_prompt)
+        messages.append({
+            'role': 'user',
+            'content': message
+        })
+        
+        # Call OpenAI API (will raise exception if fails)
+        ai_response = self._call_ai_model(messages)
+        
+        return {
+            'response': ai_response['content'],
+            'tokens_used': ai_response['tokens_used'],
+            'confidence_score': ai_response['confidence_score'],
+            'model_used': self.model_name,
+            'metadata': ai_response['metadata']
+        }
+
+    def _build_conversation_history(self, conversation) -> List[Dict]:
+        """Build conversation history from messages"""
+        messages = []
+        
+        # Get last 10 messages for context
+        recent_messages = conversation.messages.order_by('created_at')[:10]
+        
+        for msg in recent_messages:
+            messages.append({
+                'role': msg.role,
+                'content': msg.content
+            })
+        
+        return messages
