@@ -10,15 +10,14 @@ import {
     ShoppingCart,
     Heart,
     MapPin,
-    Star,
     Search,
-    Filter,
     Grid,
     List,
     Plus
 } from 'lucide-react';
 import { useProducts, useCreateOrder } from '@/api/hooks/useMarketplace';
 import { useAuth } from '@/contexts/AuthContext';
+import { Product, OrderCreateData } from '@/types/basicTypes';
 
 interface ProductGridProps {
     searchTerm?: string;
@@ -48,24 +47,32 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
 
     const products = productsData?.results || [];
 
-    const handleOrder = async (product: any) => {
+    const handleOrder = async (product: Product) => {
         if (!user) return;
 
         try {
-            await createOrderMutation.mutateAsync({
-                product: product.id,
-                quantity: 1,
-                unit_price: product.price,
-                total_price: product.price,
+            const orderData: OrderCreateData = {
+                items: [
+                    {
+                        product_id: product.id,
+                        quantity: 1,
+                        special_instructions: `Order for ${product.name}`
+                    }
+                ],
+                delivery_method: 'delivery',
                 delivery_address: {
                     address: '123 Main St',
                     city: 'Accra',
                     state: 'Greater Accra',
                     coordinates: { latitude: 5.6037, longitude: -0.1870 }
                 },
-                payment_method: 'mobile_money',
-                notes: `Order for ${product.name}`,
-            });
+                delivery_notes: `Order for ${product.name}`,
+                buyer_phone: user.phone || '',
+                buyer_email: user.email,
+                buyer_notes: `Order for ${product.name}`,
+            };
+
+            await createOrderMutation.mutateAsync(orderData);
         } catch (error) {
             console.error('Order creation failed:', error);
         }
@@ -210,7 +217,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                                 <MapPin className="h-3 w-3" />
                                 <span>{formatDistance(product.location)}</span>
                                 <span>•</span>
-                                <span>{product.seller_name}</span>
+                                <span>{product.seller?.business_name || product.seller?.username || 'Seller'}</span>
                             </div>
                         </CardHeader>
 
@@ -219,16 +226,16 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <div className="text-2xl font-bold text-primary">
-                                            {formatPrice(product.price)}
+                                            {formatPrice(product.price_per_unit)}
                                         </div>
                                         <div className="text-sm text-muted-foreground">
-                                            per {product.unit}
+                                            per {product.unit_type}
                                         </div>
                                     </div>
                                     <div className="text-right">
                                         <Badge variant={product.quantity_available > 0 ? 'default' : 'secondary'}>
                                             {product.quantity_available > 0
-                                                ? `${product.quantity_available} ${product.unit} available`
+                                                ? `${product.quantity_available} ${product.unit_type} available`
                                                 : 'Out of stock'
                                             }
                                         </Badge>
@@ -237,11 +244,21 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
 
                                 <div className="flex items-center gap-2">
                                     <Badge variant="outline" className="text-xs">
-                                        Grade {product.quality_grade}
+                                        Grade {product.quality_grade || 'A'}
                                     </Badge>
-                                    {product.organic_certified && (
+                                    {product.organic && (
                                         <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
                                             Organic
+                                        </Badge>
+                                    )}
+                                    {product.delivery_available && (
+                                        <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">
+                                            Delivery
+                                        </Badge>
+                                    )}
+                                    {product.pickup_available && (
+                                        <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700">
+                                            Pickup
                                         </Badge>
                                     )}
                                 </div>
