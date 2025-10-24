@@ -59,6 +59,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing products
     """
+    queryset = Product.objects.all()  # Add base queryset
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated, IsSellerOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -316,6 +317,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing orders
     """
+    queryset = Order.objects.all()  # Add base queryset
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -552,6 +554,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing reviews
     """
+    queryset = Review.objects.all()  # Add base queryset
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -594,6 +597,7 @@ class WishlistViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing user wishlists
     """
+    queryset = Wishlist.objects.all()  # Add base queryset
     serializer_class = WishlistSerializer
     permission_classes = [IsAuthenticated]
     
@@ -606,6 +610,7 @@ class InquiryViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing product inquiries
     """
+    queryset = Inquiry.objects.all()  # Add base queryset
     serializer_class = InquirySerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]

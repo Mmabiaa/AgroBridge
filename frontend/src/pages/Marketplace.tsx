@@ -25,14 +25,34 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useUserProducts, useUserOrders } from '@/api/hooks/useMarketplace';
 import { toast } from 'sonner';
 
-// Mock data for fallback
-const MOCK_USER_PRODUCTS = [];
-const MOCK_USER_ORDERS = [];
+// Define proper TypeScript interfaces for the data
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  unit: string;
+  quantity_available: number;
+  is_active: boolean;
+  status?: string;
+}
+
+interface Order {
+  id: string;
+  product_name: string;
+  quantity: number;
+  unit: string;
+  total_price: number;
+  total_amount?: number;
+  status: string;
+  seller_name: string;
+  created_at: string;
+}
 
 export default function Marketplace() {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [activeTab, setActiveTab] = useState('browse');
   const [retryCount, setRetryCount] = useState(0);
 
@@ -41,55 +61,67 @@ export default function Marketplace() {
     data: userProductsData, 
     isLoading: productsLoading, 
     error: productsError,
-    refetch: refetchProducts 
+    refetch: refetchProducts,
+    isError: productsHasError
   } = useUserProducts();
   
   const { 
     data: userOrdersData, 
     isLoading: ordersLoading, 
     error: ordersError,
-    refetch: refetchOrders 
+    refetch: refetchOrders,
+    isError: ordersHasError
   } = useUserOrders();
 
   // Handle errors and provide fallback data
   useEffect(() => {
     if (productsError) {
       console.warn('Failed to load user products:', productsError);
-      toast.error('Failed to load your products', {
-        description: 'Showing available data instead.',
-        action: {
-          label: 'Retry',
-          onClick: () => refetchProducts()
-        }
-      });
+      if (retryCount === 0) {
+        toast.error('Failed to load your products', {
+          description: 'Showing available data instead.',
+          action: {
+            label: 'Retry',
+            onClick: () => {
+              setRetryCount(prev => prev + 1);
+              refetchProducts();
+            }
+          }
+        });
+      }
     }
     
     if (ordersError) {
       console.warn('Failed to load user orders:', ordersError);
-      toast.error('Failed to load your orders', {
-        description: 'Showing available data instead.',
-        action: {
-          label: 'Retry',
-          onClick: () => refetchOrders()
-        }
-      });
+      if (retryCount === 0) {
+        toast.error('Failed to load your orders', {
+          description: 'Showing available data instead.',
+          action: {
+            label: 'Retry',
+            onClick: () => {
+              setRetryCount(prev => prev + 1);
+              refetchOrders();
+            }
+          }
+        });
+      }
     }
-  }, [productsError, ordersError, refetchProducts, refetchOrders]);
+  }, [productsError, ordersError, refetchProducts, refetchOrders, retryCount]);
 
-  // Use fallback data if API fails
-  const userProducts = userProductsData?.results || MOCK_USER_PRODUCTS;
-  const userOrders = userOrdersData?.results || MOCK_USER_ORDERS;
+  // Use data with fallback to empty array if error occurs
+  const userProducts: Product[] = (productsHasError ? { results: [] } : userProductsData)?.results || [];
+  const userOrders: Order[] = (ordersHasError ? { results: [] } : userOrdersData)?.results || [];
 
   const categories = [
-    'All Categories',
-    'Vegetables',
-    'Fruits',
-    'Grains',
-    'Legumes',
-    'Herbs & Spices',
-    'Livestock',
-    'Dairy',
-    'Poultry'
+    { label: 'All Categories', value: 'all' },
+    { label: 'Vegetables', value: 'vegetables' },
+    { label: 'Fruits', value: 'fruits' },
+    { label: 'Grains', value: 'grains' },
+    { label: 'Legumes', value: 'legumes' },
+    { label: 'Herbs & Spices', value: 'herbs-spices' },
+    { label: 'Livestock', value: 'livestock' },
+    { label: 'Dairy', value: 'dairy' },
+    { label: 'Poultry', value: 'poultry' }
   ];
 
   const getStatusColor = (status: string) => {
@@ -120,8 +152,8 @@ export default function Marketplace() {
     refetchOrders();
   };
 
-  // Show error state if both API calls fail
-  if (productsError && ordersError && retryCount > 2) {
+  // Show error state if both API calls fail after multiple retries
+  if ((productsHasError && ordersHasError) && retryCount > 2) {
     return (
       <div className="container mx-auto p-6">
         <div className="text-center py-12">
@@ -185,8 +217,8 @@ export default function Marketplace() {
               </SelectTrigger>
               <SelectContent>
                 {categories.map((category) => (
-                  <SelectItem key={category} value={category === 'All Categories' ? '' : category.toLowerCase()}>
-                    {category}
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -201,7 +233,7 @@ export default function Marketplace() {
       </Card>
 
       {/* API Error Banner */}
-      {(productsError || ordersError) && (
+      {(productsHasError || ordersHasError) && (
         <Card className="border-yellow-200 bg-yellow-50">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -209,8 +241,8 @@ export default function Marketplace() {
                 <AlertCircle className="h-4 w-4 text-yellow-600" />
                 <span className="text-sm text-yellow-800">
                   Some data may not be loading correctly. 
-                  {productsError && ' Products data unavailable. '}
-                  {ordersError && ' Orders data unavailable.'}
+                  {productsHasError && ' Products data unavailable. '}
+                  {ordersHasError && ' Orders data unavailable.'}
                 </span>
               </div>
               <Button variant="outline" size="sm" onClick={handleRetry}>
@@ -233,7 +265,7 @@ export default function Marketplace() {
 
         {/* Browse Products */}
         <TabsContent value="browse" className="space-y-6">
-          <ProductGrid searchTerm={searchTerm} category={selectedCategory} />
+          <ProductGrid searchTerm={searchTerm} category={selectedCategory === 'all' ? '' : selectedCategory} />
         </TabsContent>
 
         {/* My Products */}
@@ -243,7 +275,7 @@ export default function Marketplace() {
               <CardTitle className="flex items-center gap-2">
                 <Package className="h-5 w-5" />
                 My Products
-                {productsError && (
+                {productsHasError && (
                   <Badge variant="outline" className="text-yellow-600 border-yellow-300">
                     Limited Data
                   </Badge>
@@ -265,20 +297,20 @@ export default function Marketplace() {
                 <div className="text-center py-12">
                   <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <h3 className="text-lg font-semibold mb-2">
-                    {productsError ? 'Unable to load products' : 'No products listed'}
+                    {productsHasError ? 'Unable to load products' : 'No products listed'}
                   </h3>
                   <p className="text-muted-foreground mb-4">
-                    {productsError 
+                    {productsHasError 
                       ? 'There was an issue loading your products.' 
                       : 'Start selling by listing your first product'
                     }
                   </p>
                   <div className="flex gap-2 justify-center">
-                    <Button disabled={productsError}>
+                    <Button disabled={productsHasError}>
                       <Plus className="h-4 w-4 mr-2" />
                       List Your First Product
                     </Button>
-                    {productsError && (
+                    {productsHasError && (
                       <Button variant="outline" onClick={handleRetry}>
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Retry
@@ -288,7 +320,7 @@ export default function Marketplace() {
                 </div>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {userProducts.map((product: any) => (
+                  {userProducts.map((product: Product) => (
                     <Card key={product.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-2">
@@ -329,7 +361,7 @@ export default function Marketplace() {
               <CardTitle className="flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5" />
                 My Orders
-                {ordersError && (
+                {ordersHasError && (
                   <Badge variant="outline" className="text-yellow-600 border-yellow-300">
                     Limited Data
                   </Badge>
@@ -354,10 +386,10 @@ export default function Marketplace() {
                 <div className="text-center py-12">
                   <ShoppingCart className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <h3 className="text-lg font-semibold mb-2">
-                    {ordersError ? 'Unable to load orders' : 'No orders yet'}
+                    {ordersHasError ? 'Unable to load orders' : 'No orders yet'}
                   </h3>
                   <p className="text-muted-foreground mb-4">
-                    {ordersError 
+                    {ordersHasError 
                       ? 'There was an issue loading your orders.' 
                       : 'Browse products to place your first order'
                     }
@@ -366,7 +398,7 @@ export default function Marketplace() {
                     <Button onClick={() => setActiveTab('browse')}>
                       Browse Products
                     </Button>
-                    {ordersError && (
+                    {ordersHasError && (
                       <Button variant="outline" onClick={handleRetry}>
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Retry
@@ -376,7 +408,7 @@ export default function Marketplace() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {userOrders.map((order: any) => (
+                  {userOrders.map((order: Order) => (
                     <Card key={order.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-3">
@@ -441,7 +473,7 @@ export default function Marketplace() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">GHS {userOrders.reduce((sum: number, order: any) => sum + (order.total_price || 0), 0).toLocaleString()}</div>
+                <div className="text-2xl font-bold">GHS {userOrders.reduce((sum: number, order: Order) => sum + (order.total_price || 0), 0).toLocaleString()}</div>
                 <p className="text-sm text-muted-foreground">Total sales</p>
                 <div className="mt-2">
                   <Badge variant="default" className="bg-green-100 text-green-800">
@@ -463,7 +495,7 @@ export default function Marketplace() {
                 <p className="text-sm text-muted-foreground">Your listings</p>
                 <div className="mt-2">
                   <Badge variant="outline">
-                    {userProducts.filter((p: any) => p.is_active).length} active
+                    {userProducts.filter((p: Product) => p.is_active).length} active
                   </Badge>
                 </div>
               </CardContent>
@@ -481,7 +513,7 @@ export default function Marketplace() {
                 <p className="text-sm text-muted-foreground">Total orders</p>
                 <div className="mt-2">
                   <Badge variant="outline">
-                    {userOrders.filter((o: any) => o.status === 'delivered' || o.status === 'completed').length} completed
+                    {userOrders.filter((o: Order) => o.status === 'delivered' || o.status === 'completed').length} completed
                   </Badge>
                 </div>
               </CardContent>

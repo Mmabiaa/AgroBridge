@@ -1,4 +1,4 @@
-import apiClient from '../axiosClient';
+import apiClient from '@/api/axiosClient';
 import type {
     Product,
     ProductCreateData,
@@ -30,19 +30,18 @@ class MarketplaceService {
 
     async getUserProducts(params?: ProductListParams): Promise<PaginatedResponse<Product>> {
         try {
-            // Try the correct Django endpoint first
+            // Try the custom endpoint first (the one we defined in Django URLs)
             const response = await apiClient.get<PaginatedResponse<Product>>(
-                `${this.basePath}/products/my_products/`,
+                `${this.basePath}/products/my-products/`,
                 { params }
             );
             return response;
         } catch (error: any) {
-            // If 404, try alternative endpoints
+            // If custom endpoint fails, try the DRF action endpoint
             if (error.response?.status === 404) {
                 try {
-                    // Try alternative endpoint name
                     const response = await apiClient.get<PaginatedResponse<Product>>(
-                        `${this.basePath}/products/my-products/`,
+                        `${this.basePath}/products/my_products/`,
                         { params }
                     );
                     return response;
@@ -91,19 +90,18 @@ class MarketplaceService {
 
     async getUserOrders(params?: OrderListParams): Promise<PaginatedResponse<Order>> {
         try {
-            // Try the correct Django endpoint first
+            // Try the custom endpoint first (the one we defined in Django URLs)
             const response = await apiClient.get<PaginatedResponse<Order>>(
-                `${this.basePath}/orders/my_purchases/`,
+                `${this.basePath}/orders/my-orders/`,
                 { params }
             );
             return response;
         } catch (error: any) {
-            // If 404, try alternative endpoints
+            // If custom endpoint fails, try the DRF action endpoint
             if (error.response?.status === 404) {
                 try {
-                    // Try alternative endpoint name
                     const response = await apiClient.get<PaginatedResponse<Order>>(
-                        `${this.basePath}/orders/my-orders/`,
+                        `${this.basePath}/orders/my_purchases/`,
                         { params }
                     );
                     return response;
@@ -152,28 +150,6 @@ class MarketplaceService {
             console.warn('Featured products endpoint not available, using regular products');
             return this.getProducts({ limit: 8 });
         }
-    }
-
-    // Analytics methods
-    async getSellerAnalytics(): Promise<any> {
-        try {
-            const response = await apiClient.get(`${this.basePath}/products/seller_insights/`);
-            return response;
-        } catch (error: any) {
-            // Return mock analytics if endpoint doesn't exist
-            console.warn('Analytics endpoint not available, returning mock data');
-            return this.getMockAnalytics();
-        }
-    }
-
-    private getMockAnalytics(): any {
-        return {
-            total_sales: 0,
-            total_orders: 0,
-            total_products: 0,
-            monthly_revenue: 0,
-            top_products: []
-        };
     }
 }
 

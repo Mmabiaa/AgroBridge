@@ -1,13 +1,18 @@
+"""
+Marketplace API URLs
+"""
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register(r'categories', views.CategoryViewSet)
-router.register(r'products', views.ProductViewSet)
-router.register(r'orders', views.OrderViewSet)
-router.register(r'reviews', views.ReviewViewSet)
-router.register(r'inquiries', views.InquiryViewSet)
+
+# Register ViewSets with explicit basename where needed
+router.register(r'categories', views.CategoryViewSet, basename='category')
+router.register(r'products', views.ProductViewSet, basename='product')
+router.register(r'orders', views.OrderViewSet, basename='order')
+router.register(r'reviews', views.ReviewViewSet, basename='review')
+router.register(r'inquiries', views.InquiryViewSet, basename='inquiry')
 router.register(r'wishlist', views.WishlistViewSet, basename='wishlist')
 
 urlpatterns = [
