@@ -1,53 +1,39 @@
 /**
  * AgriGPT Page - Production Ready with API Integration
  */
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Bot, 
-  Send, 
-  Mic, 
-  MicOff, 
-  Image as ImageIcon, 
+import {
+  Bot,
+  Send,
+  Mic,
+  MicOff,
+  Image as ImageIcon,
   MessageSquare,
-  History,
-  Settings,
   Loader2,
   Plus,
   Volume2,
   VolumeX
 } from 'lucide-react';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import { 
-  useConversations, 
-  useCreateConversation, 
+import { useSearchParams } from 'react-router-dom';
+import {
+  useConversations,
+  useCreateConversation,
   useSendMessage,
-  useConversationMessages 
+  useConversationMessages
 } from '@/api/hooks/useAI';
 import { useAuth } from '@/contexts/AuthContext';
-
-interface Message {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: string;
-  attachments?: Array<{
-    type: 'image' | 'audio';
-    url: string;
-  }>;
-}
+import type { ChatMessage, ChatConversation } from '@/api/services/aiService';
 
 export default function AgriGPT() {
   const { user } = useAuth();
-  const location = useLocation();
   const [searchParams] = useSearchParams();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   // State
   const [activeConversationId, setActiveConversationId] = useState<string | null>(
     searchParams.get('conversation')
@@ -55,7 +41,7 @@ export default function AgriGPT() {
   const [message, setMessage] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  
+
   // API hooks
   const { data: conversationsData, isLoading: conversationsLoading } = useConversations();
   const { data: messagesData, isLoading: messagesLoading } = useConversationMessages(
@@ -65,7 +51,7 @@ export default function AgriGPT() {
   const sendMessageMutation = useSendMessage();
 
   const conversations = conversationsData?.results || [];
-  const messages = messagesData || [];
+  const messages: ChatMessage[] = messagesData || [];
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -89,9 +75,9 @@ export default function AgriGPT() {
   // Send message
   const handleSendMessage = async () => {
     if (!message.trim()) return;
-    
+
     let conversationId = activeConversationId;
-    
+
     // Create conversation if none exists
     if (!conversationId) {
       try {
@@ -120,7 +106,7 @@ export default function AgriGPT() {
   };
 
   // Handle key press
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -160,7 +146,7 @@ export default function AgriGPT() {
   return (
     <div className="container mx-auto p-6 h-[calc(100vh-120px)]">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
-        
+
         {/* Sidebar - Conversations */}
         <div className="lg:col-span-1">
           <Card className="h-full">
@@ -194,14 +180,13 @@ export default function AgriGPT() {
                   </div>
                 ) : (
                   <div className="p-2">
-                    {conversations.map((conversation: any) => (
+                    {conversations.map((conversation: ChatConversation) => (
                       <div
                         key={conversation.id}
-                        className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                          activeConversationId === conversation.id
+                        className={`p-3 rounded-lg cursor-pointer transition-colors ${activeConversationId === conversation.id
                             ? 'bg-primary/10 border border-primary/20'
                             : 'hover:bg-muted/50'
-                        }`}
+                          }`}
                         onClick={() => setActiveConversationId(conversation.id)}
                       >
                         <h4 className="font-medium text-sm line-clamp-1">
@@ -225,7 +210,7 @@ export default function AgriGPT() {
         {/* Main Chat Area */}
         <div className="lg:col-span-3">
           <Card className="h-full flex flex-col">
-            
+
             {/* Chat Header */}
             <CardHeader className="border-b">
               <div className="flex items-center justify-between">
@@ -240,7 +225,7 @@ export default function AgriGPT() {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <Badge variant="default" className="bg-green-100 text-green-800">
                     Online
@@ -267,10 +252,10 @@ export default function AgriGPT() {
                       Welcome to AgriGPT!
                     </h3>
                     <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                      I'm your AI farming assistant. Ask me anything about crops, 
+                      I'm your AI farming assistant. Ask me anything about crops,
                       livestock, soil management, pest control, and more.
                     </p>
-                    
+
                     {/* Quick Questions */}
                     <div className="space-y-2 max-w-lg mx-auto">
                       <h4 className="font-medium text-sm text-left">Try asking:</h4>
@@ -302,38 +287,38 @@ export default function AgriGPT() {
                 ) : (
                   // Messages
                   <div className="space-y-4">
-                    {messages.map((msg: Message) => (
+                    {messages.map((msg: ChatMessage) => (
                       <div
                         key={msg.id}
-                        className={`flex gap-3 ${
-                          msg.role === 'user' ? 'flex-row-reverse' : ''
-                        }`}
+                        className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''
+                          }`}
                       >
-                        <div className={`p-2 rounded-full ${
-                          msg.role === 'user' 
-                            ? 'bg-primary text-primary-foreground' 
+                        <div className={`p-2 rounded-full ${msg.role === 'user'
+                            ? 'bg-primary text-primary-foreground'
                             : 'bg-muted'
-                        }`}>
+                          }`}>
                           {msg.role === 'user' ? (
                             <div className="h-6 w-6 rounded-full bg-primary-foreground/20 flex items-center justify-center text-xs font-medium">
                               {user?.name?.charAt(0) || 'U'}
                             </div>
-                          ) : (
+                          ) : msg.role === 'assistant' ? (
                             <Bot className="h-6 w-6" />
+                          ) : (
+                            <div className="h-6 w-6 rounded-full bg-gray-400 flex items-center justify-center text-xs font-medium text-white">
+                              S
+                            </div>
                           )}
                         </div>
-                        
-                        <div className={`flex-1 max-w-[80%] ${
-                          msg.role === 'user' ? 'text-right' : ''
-                        }`}>
-                          <div className={`p-3 rounded-lg ${
-                            msg.role === 'user'
+
+                        <div className={`flex-1 max-w-[80%] ${msg.role === 'user' ? 'text-right' : ''
+                          }`}>
+                          <div className={`p-3 rounded-lg ${msg.role === 'user'
                               ? 'bg-primary text-primary-foreground ml-auto'
                               : 'bg-muted'
-                          }`}>
+                            }`}>
                             <p className="whitespace-pre-wrap">{msg.content}</p>
                           </div>
-                          
+
                           <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                             <span>
                               {new Date(msg.timestamp).toLocaleTimeString([], {
@@ -355,7 +340,7 @@ export default function AgriGPT() {
                         </div>
                       </div>
                     ))}
-                    
+
                     {sendMessageMutation.isPending && (
                       <div className="flex gap-3">
                         <div className="p-2 rounded-full bg-muted">
@@ -371,7 +356,7 @@ export default function AgriGPT() {
                         </div>
                       </div>
                     )}
-                    
+
                     <div ref={messagesEndRef} />
                   </div>
                 )}
@@ -386,7 +371,7 @@ export default function AgriGPT() {
                     placeholder="Ask me anything about farming..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
+                    onKeyDown={handleKeyDown}
                     disabled={sendMessageMutation.isPending}
                     className="pr-20"
                   />
@@ -412,8 +397,8 @@ export default function AgriGPT() {
                     </Button>
                   </div>
                 </div>
-                
-                <Button 
+
+                <Button
                   onClick={handleSendMessage}
                   disabled={!message.trim() || sendMessageMutation.isPending}
                 >

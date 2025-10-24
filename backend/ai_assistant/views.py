@@ -172,6 +172,15 @@ class ChatConversationViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
+    @action(detail=True, methods=['get'])
+    def messages(self, request, pk=None):
+        """Get messages for this conversation"""
+        conversation = self.get_object()
+        messages = conversation.messages.all().order_by('created_at')
+        
+        serializer = ChatMessageSerializer(messages, many=True)
+        return Response(serializer.data)
+    
     @action(detail=True, methods=['post'])
     def archive(self, request, pk=None):
         """Archive a conversation"""

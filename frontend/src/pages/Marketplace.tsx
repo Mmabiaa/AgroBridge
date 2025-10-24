@@ -1,7 +1,7 @@
 /**
  * Marketplace Page - Production Ready with API Integration
  */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ProductGrid } from '@/components/marketplace/ProductGrid';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -18,9 +18,7 @@ import {
   Package, 
   Clock, 
   CheckCircle, 
-  AlertCircle,
-  MapPin,
-  Star
+  AlertCircle
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserProducts, useUserOrders } from '@/api/hooks/useMarketplace';

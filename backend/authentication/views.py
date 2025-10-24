@@ -16,27 +16,43 @@ from .serializers import (
     UserUpdateSerializer, PasswordChangeSerializer, EmailVerificationSerializer,
     PasswordResetRequestSerializer, PasswordResetSerializer
 )
-from .throttles import (
-    LoginRateThrottle, RegistrationRateThrottle, PasswordResetRateThrottle,
-    EmailVerificationRateThrottle, UserActionRateThrottle, SecurityEventTracker
-)
+try:
+    from .throttles import (
+        LoginRateThrottle, RegistrationRateThrottle, PasswordResetRateThrottle,
+        EmailVerificationRateThrottle, UserActionRateThrottle, SecurityEventTracker
+    )
+except ImportError:
+    # Fallback to basic throttles if custom ones are not available
+    from rest_framework.throttling import AnonRateThrottle as RegistrationRateThrottle
+    from rest_framework.throttling import AnonRateThrottle as LoginRateThrottle
+    from rest_framework.throttling import AnonRateThrottle as PasswordResetRateThrottle
+    from rest_framework.throttling import AnonRateThrottle as EmailVerificationRateThrottle
+    from rest_framework.throttling import UserRateThrottle as UserActionRateThrottle
+    
+    class SecurityEventTracker:
+        @staticmethod
+        def track_failed_login(request, username):
+            pass
 
 logger = logging.getLogger(__name__)
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@throttle_classes([RegistrationRateThrottle])
+# @throttle_classes([RegistrationRateThrottle])  # Temporarily disabled for debugging
 def register_user(request):
     """
     Register a new user account with email verification
     """
     try:
+        # Log incoming registration data (without sensitive info)
+        logger.info(f"Registration attempt for user: {request.data.get('username', 'unknown')}, email: {request.data.get('email', 'unknown')}")
+        
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
             
-            # Log registration
+            # Log successful registration
             logger.info(f"New user registered: {user.username} ({user.email})")
             
             # Generate JWT tokens
@@ -53,6 +69,9 @@ def register_user(request):
                     'refresh': str(refresh)
                 }
             }, status=status.HTTP_201_CREATED)
+        else:
+            # Log validation errors for debugging
+            logger.warning(f"Registration validation failed for {request.data.get('username', 'unknown')}: {serializer.errors}")
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

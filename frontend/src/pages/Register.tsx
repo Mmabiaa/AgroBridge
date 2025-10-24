@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Wheat, Eye, EyeOff, ArrowLeft, CheckCircle, User, Shield } from 'lucide-react';
+import { Wheat, Eye, EyeOff, ArrowLeft, User, Shield } from 'lucide-react';
 import { RoleSelection } from '@/components/RoleSelection';
 
 export default function Register() {
@@ -14,7 +14,7 @@ export default function Register() {
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [showRoleSelection, setShowRoleSelection] = useState(false);
   const [formData, setFormData] = useState({
-    'username': '',
+    username: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -31,6 +31,12 @@ export default function Register() {
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
+    
+    if (!formData.username.trim()) {
+      errors.username = 'Username is required';
+    } else if (formData.username.length < 3) {
+      errors.username = 'Username must be at least 3 characters long';
+    }
     
     if (!formData.firstName.trim()) {
       errors.firstName = 'First name is required';
@@ -79,24 +85,52 @@ export default function Register() {
     
     setIsLoading(true);
     try {
-      const username = formData.email.split('@')[0]; // Generate username from email
-      await register({
-        username,
+      const registrationData = {
+        username: formData.username,
         email: formData.email,
         password: formData.password,
         password_confirm: formData.confirmPassword,
         first_name: formData.firstName,
         last_name: formData.lastName,
         role: selectedRole!,
-        phone: formData.phone
-      });
+        phone: formData.phone || undefined
+      };
+      
+      console.log('Attempting registration with data:', { ...registrationData, password: '[HIDDEN]', password_confirm: '[HIDDEN]' });
+      
+      await register(registrationData);
       
       // Role-based redirection
       const redirectPath = getRoleRedirectPath(selectedRole!);
       navigate(redirectPath, { replace: true });
     } catch (error: any) {
       console.error('Registration failed:', error);
-      setError(error.message || 'Registration failed. Please try again.');
+      
+      // Handle different types of errors
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        
+        // Handle field-specific validation errors
+        if (typeof errorData === 'object' && !errorData.message) {
+          const fieldErrors: Record<string, string> = {};
+          
+          Object.keys(errorData).forEach(field => {
+            if (Array.isArray(errorData[field])) {
+              fieldErrors[field] = errorData[field][0];
+            } else if (typeof errorData[field] === 'string') {
+              fieldErrors[field] = errorData[field];
+            }
+          });
+          
+          setValidationErrors(fieldErrors);
+          setError('Please correct the errors below.');
+        } else {
+          // Handle general error messages
+          setError(errorData.message || errorData.error || 'Registration failed. Please try again.');
+        }
+      } else {
+        setError(error.message || 'Registration failed. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -114,15 +148,40 @@ export default function Register() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+    
+    // Clear field-specific errors when user starts typing
+    if (validationErrors[name]) {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+    
+    // Clear general error when user makes changes
+    if (error) {
+      setError('');
+    }
   };
 
   const handleRoleSelect = (role: UserRole) => {
     setSelectedRole(role);
     setShowRoleSelection(false);
+    
+    // Clear role validation error when user selects a role
+    if (validationErrors.role) {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.role;
+        return newErrors;
+      });
+    }
   };
 
   const handleBackToRegister = () => {
@@ -224,6 +283,23 @@ export default function Register() {
               </div>
               
               <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input 
+                  id="username" 
+                  name="username"
+                  type="text" 
+                  placeholder="Choose a username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  required
+                  className={validationErrors.username ? 'border-destructive' : ''}
+                />
+                {validationErrors.username && (
+                  <p className="text-xs text-destructive">{validationErrors.username}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input 
                   id="email" 
@@ -316,25 +392,41 @@ export default function Register() {
                 )}
               </div>
 
-              {/* Role Selection Preview */}
-              {selectedRole && (
-                <div className="p-3 bg-muted/50 rounded-lg border">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Shield className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Selected Role:</span>
-                    <span className="capitalize text-primary">{selectedRole.replace('_', ' ')}</span>
+              {/* Role Selection */}
+              <div className="space-y-2">
+                <Label>Role</Label>
+                {selectedRole ? (
+                  <div className="p-3 bg-muted/50 rounded-lg border">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Shield className="h-4 w-4 text-primary" />
+                      <span className="font-medium">Selected Role:</span>
+                      <span className="capitalize text-primary">{selectedRole.replace('_', ' ')}</span>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowRoleSelection(true)}
+                      className="mt-2 text-xs"
+                    >
+                      Change Role
+                    </Button>
                   </div>
+                ) : (
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="sm"
+                    variant="outline"
                     onClick={() => setShowRoleSelection(true)}
-                    className="mt-2 text-xs"
+                    className="w-full"
                   >
-                    Change Role
+                    <User className="h-4 w-4 mr-2" />
+                    Choose Your Role
                   </Button>
-                </div>
-              )}
+                )}
+                {validationErrors.role && (
+                  <p className="text-xs text-destructive">{validationErrors.role}</p>
+                )}
+              </div>
 
               {/* Error Messages */}
               {error && (
@@ -343,16 +435,12 @@ export default function Register() {
                 </div>
               )}
 
-              {validationErrors.role && (
-                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                  <p className="text-sm text-destructive">{validationErrors.role}</p>
-                </div>
-              )}
+
 
               <Button 
                 type="submit" 
                 className="w-full font-medium"
-                disabled={isLoading || !formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword}
+                disabled={isLoading || !formData.username || !formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword || !selectedRole}
               >
                 {isLoading ? (
                   <>
@@ -365,25 +453,13 @@ export default function Register() {
               </Button>
             </form>
 
-            <div className="text-center space-y-2">
+            <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 Already have an account?{' '}
                 <Link to="/login" className="text-primary hover:underline">
                   Sign in here
                 </Link>
               </p>
-              
-              {!selectedRole && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowRoleSelection(true)}
-                  className="w-full text-sm"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  Choose Your Role First
-                </Button>
-              )}
             </div>
           </CardContent>
         </Card>

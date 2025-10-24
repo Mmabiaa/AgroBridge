@@ -46,6 +46,10 @@ export interface RegisterResponse {
     role: string;
   };
   message: string;
+  tokens?: {
+    access: string;
+    refresh: string;
+  };
 }
 
 export interface PasswordResetRequest {
@@ -95,10 +99,24 @@ class AuthService {
    * Register new user
    */
   async register(userData: RegisterRequest): Promise<RegisterResponse> {
-    return apiClient.post<RegisterResponse>(
-      `${this.baseUrl}/register/`,
-      userData
-    );
+    try {
+      const response = await apiClient.post<RegisterResponse>(
+        `${this.baseUrl}/register/`,
+        userData
+      );
+      
+      // If registration includes tokens, store them
+      if ('tokens' in response && response.tokens) {
+        const tokens = response.tokens as { access: string; refresh: string };
+        apiClient.setTokens(tokens.access, tokens.refresh);
+      }
+      
+      return response;
+    } catch (error: any) {
+      // Log registration errors for debugging
+      console.error('Registration API error:', error.response?.data || error.message);
+      throw error;
+    }
   }
 
   /**

@@ -19,7 +19,7 @@ class AIService:
     
     def __init__(self):
         # Initialize OpenAI client
-        openai.api_key = settings.OPENAI_API_KEY
+        self.client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
         self.model_name = "gpt-3.5-turbo"
         self.max_tokens = 1000
         
@@ -214,8 +214,8 @@ class AIService:
         Call OpenAI API to generate response
         """
         try:
-            # Call OpenAI API
-            response = openai.ChatCompletion.create(
+            # Call OpenAI API using new client
+            response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
                 max_tokens=self.max_tokens,
@@ -241,19 +241,19 @@ class AIService:
                 }
             }
             
-        except openai.error.RateLimitError:
+        except openai.RateLimitError:
             logger.error("OpenAI rate limit exceeded")
             return self._get_agricultural_fallback_response(messages[-1]['content'])
             
-        except openai.error.InvalidRequestError as e:
+        except openai.BadRequestError as e:
             logger.error(f"OpenAI invalid request: {str(e)}")
             return self._get_agricultural_fallback_response(messages[-1]['content'])
             
-        except openai.error.AuthenticationError:
+        except openai.AuthenticationError:
             logger.error("OpenAI authentication failed - API key may be invalid or expired")
             return self._get_agricultural_fallback_response(messages[-1]['content'])
             
-        except openai.error.APIConnectionError:
+        except openai.APIConnectionError:
             logger.error("OpenAI API connection failed")
             return self._get_agricultural_fallback_response(messages[-1]['content'])
             
