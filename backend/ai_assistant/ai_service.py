@@ -24,9 +24,9 @@ class AIService:
     # 🧠 Generate AI Text Response
     # -------------------------------------------------------------------------
     def _call_ai_model(self, messages: List[Dict]) -> Dict:
-        """
-        Call OpenAI ChatCompletion API to generate response
-        """
+    
+    # Call OpenAI ChatCompletion API to generate response
+    
         try:
             response = self.client.chat.completions.create(
                 model=self.model_name,
@@ -51,25 +51,26 @@ class AIService:
                 }
             }
 
-        except openai.RateLimitError:
-            logger.error("OpenAI rate limit exceeded")
-            return self._get_agricultural_fallback_response(messages[-1]['content'])
+        except openai.RateLimitError as e:
+            logger.error(f"OpenAI rate limit exceeded: {str(e)}")
+            raise Exception("OpenAI rate limit exceeded. Please try again in a few moments.")
 
         except openai.BadRequestError as e:
             logger.error(f"OpenAI bad request: {str(e)}")
-            return self._get_agricultural_fallback_response(messages[-1]['content'])
+            raise Exception(f"Invalid request: {str(e)}")
 
-        except openai.AuthenticationError:
-            logger.error("OpenAI authentication failed - check API key")
-            return self._get_agricultural_fallback_response(messages[-1]['content'])
+        except openai.AuthenticationError as e:
+            logger.error(f"OpenAI authentication failed: {str(e)}")
+            raise Exception("AI service authentication failed. Please contact support.")
 
-        except openai.APIConnectionError:
-            logger.error("OpenAI API connection error")
-            return self._get_agricultural_fallback_response(messages[-1]['content'])
+        except openai.APIConnectionError as e:
+            logger.error(f"OpenAI API connection error: {str(e)}")
+            raise Exception("Failed to connect to AI service. Please check your connection.")
 
         except Exception as e:
             logger.error(f"OpenAI chat completion failed: {str(e)}")
-            return self._get_agricultural_fallback_response(messages[-1]['content'])
+            raise Exception(f"AI service error: {str(e)}")
+
 
     # -------------------------------------------------------------------------
     # 🎙️ Real Speech-to-Text (Transcription)
