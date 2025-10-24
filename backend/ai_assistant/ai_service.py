@@ -108,8 +108,8 @@ class AIService:
             output_path = f"/tmp/voice_output_{timezone.now().timestamp()}.mp3"
 
             with self.client.audio.speech.with_streaming_response.create(
-                model="gpt-4o-mini-tts",
-                voice="alloy",  # Available: alloy, verse, sage, etc.
+                model="tts-1",  # (or tts-1-hd for higher quality)
+                voice="alloy",
                 input=text
             ) as response:
                 response.stream_to_file(output_path)
