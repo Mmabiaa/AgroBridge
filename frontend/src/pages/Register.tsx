@@ -32,34 +32,23 @@ export default function Register() {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     
+    // Minimal validation matching backend requirements
     if (!formData.username.trim()) {
       errors.username = 'Username is required';
-    } else if (formData.username.length < 3) {
-      errors.username = 'Username must be at least 3 characters long';
-    }
-    
-    if (!formData.firstName.trim()) {
-      errors.firstName = 'First name is required';
-    }
-    
-    if (!formData.lastName.trim()) {
-      errors.lastName = 'Last name is required';
     }
     
     if (!formData.email.trim()) {
       errors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Please enter a valid email address';
     }
     
     if (!formData.password) {
       errors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      errors.password = 'Password must be at least 8 characters long';
+    } else if (formData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
     }
     
     if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
+      errors.password_confirm = 'Passwords do not match';
     }
     
     if (!selectedRole) {
@@ -86,14 +75,14 @@ export default function Register() {
     setIsLoading(true);
     try {
       const registrationData = {
-        username: formData.username,
-        email: formData.email,
+        username: formData.username.trim(),
+        email: formData.email.trim().toLowerCase(),
         password: formData.password,
         password_confirm: formData.confirmPassword,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
+        first_name: formData.firstName.trim(),
+        last_name: formData.lastName.trim(),
         role: selectedRole!,
-        phone: formData.phone || ''
+        phone: formData.phone.trim()
       };
       
       console.log('Attempting registration with data:', { ...registrationData, password: '[HIDDEN]', password_confirm: '[HIDDEN]' });
@@ -155,11 +144,27 @@ export default function Register() {
       [name]: value
     });
     
+    // Map frontend field names to backend field names for error clearing
+    const fieldNameMap: Record<string, string> = {
+      username: 'username',
+      email: 'email',
+      password: 'password',
+      confirmPassword: 'password_confirm',
+      firstName: 'first_name',
+      lastName: 'last_name',
+      phone: 'phone'
+    };
+    
+    const backendFieldName = fieldNameMap[name];
+    
     // Clear field-specific errors when user starts typing
-    if (validationErrors[name]) {
+    if (validationErrors[name] || (backendFieldName && validationErrors[backendFieldName])) {
       setValidationErrors(prev => {
         const newErrors = { ...prev };
         delete newErrors[name];
+        if (backendFieldName) {
+          delete newErrors[backendFieldName];
+        }
         return newErrors;
       });
     }
@@ -249,7 +254,7 @@ export default function Register() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
+                  <Label htmlFor="firstName">First Name (Optional)</Label>
                   <Input 
                     id="firstName" 
                     name="firstName"
@@ -257,15 +262,14 @@ export default function Register() {
                     placeholder="First name"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    required
-                    className={validationErrors.firstName ? 'border-destructive' : ''}
+                    className={validationErrors.first_name ? 'border-destructive' : ''}
                   />
-                  {validationErrors.firstName && (
-                    <p className="text-xs text-destructive">{validationErrors.firstName}</p>
+                  {validationErrors.first_name && (
+                    <p className="text-xs text-destructive">{validationErrors.first_name}</p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
+                  <Label htmlFor="lastName">Last Name (Optional)</Label>
                   <Input 
                     id="lastName" 
                     name="lastName"
@@ -273,17 +277,16 @@ export default function Register() {
                     placeholder="Last name"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    required
-                    className={validationErrors.lastName ? 'border-destructive' : ''}
+                    className={validationErrors.last_name ? 'border-destructive' : ''}
                   />
-                  {validationErrors.lastName && (
-                    <p className="text-xs text-destructive">{validationErrors.lastName}</p>
+                  {validationErrors.last_name && (
+                    <p className="text-xs text-destructive">{validationErrors.last_name}</p>
                   )}
                 </div>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">Username *</Label>
                 <Input 
                   id="username" 
                   name="username"
@@ -300,7 +303,7 @@ export default function Register() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Email *</Label>
                 <Input 
                   id="email" 
                   name="email"
@@ -317,7 +320,7 @@ export default function Register() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">Phone Number (Optional)</Label>
                 <Input 
                   id="phone" 
                   name="phone"
@@ -325,17 +328,21 @@ export default function Register() {
                   placeholder="Enter your phone number"
                   value={formData.phone}
                   onChange={handleInputChange}
+                  className={validationErrors.phone ? 'border-destructive' : ''}
                 />
+                {validationErrors.phone && (
+                  <p className="text-xs text-destructive">{validationErrors.phone}</p>
+                )}
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Password * (min. 6 characters)</Label>
                 <div className="relative">
                   <Input 
                     id="password" 
                     name="password"
                     type={showPassword ? "text" : "password"} 
-                    placeholder="Create a password (min. 8 characters)"
+                    placeholder="Create a password"
                     value={formData.password}
                     onChange={handleInputChange}
                     required
@@ -361,7 +368,7 @@ export default function Register() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Confirm Password *</Label>
                 <div className="relative">
                   <Input 
                     id="confirmPassword" 
@@ -371,7 +378,7 @@ export default function Register() {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     required
-                    className={`pr-12 ${validationErrors.confirmPassword ? 'border-destructive' : ''}`}
+                    className={`pr-12 ${validationErrors.password_confirm ? 'border-destructive' : ''}`}
                   />
                   <Button
                     type="button"
@@ -387,14 +394,14 @@ export default function Register() {
                     )}
                   </Button>
                 </div>
-                {validationErrors.confirmPassword && (
-                  <p className="text-xs text-destructive">{validationErrors.confirmPassword}</p>
+                {validationErrors.password_confirm && (
+                  <p className="text-xs text-destructive">{validationErrors.password_confirm}</p>
                 )}
               </div>
 
               {/* Role Selection */}
               <div className="space-y-2">
-                <Label>Role</Label>
+                <Label>Role *</Label>
                 {selectedRole ? (
                   <div className="p-3 bg-muted/50 rounded-lg border">
                     <div className="flex items-center gap-2 text-sm">
@@ -435,12 +442,10 @@ export default function Register() {
                 </div>
               )}
 
-
-
               <Button 
                 type="submit" 
                 className="w-full font-medium"
-                disabled={isLoading || !formData.username || !formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword || !selectedRole}
+                disabled={isLoading || !formData.username || !formData.email || !formData.password || !formData.confirmPassword || !selectedRole}
               >
                 {isLoading ? (
                   <>

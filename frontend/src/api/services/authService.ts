@@ -100,10 +100,15 @@ class AuthService {
    */
   async register(userData: RegisterRequest): Promise<RegisterResponse> {
     try {
+      console.log('🔵 AuthService: Sending registration request...');
+      console.log('🔵 Request data:', { ...userData, password: '[HIDDEN]', password_confirm: '[HIDDEN]' });
+      
       const response = await apiClient.post<RegisterResponse>(
         `${this.baseUrl}/register/`,
         userData
       );
+      
+      console.log('✅ AuthService: Registration successful', response);
       
       // If registration includes tokens, store them
       if ('tokens' in response && response.tokens) {
@@ -113,12 +118,19 @@ class AuthService {
       
       return response;
     } catch (error: any) {
-      // Log registration errors for debugging
-      console.error('Registration API error:', error.response?.data || error.message);
+      // Enhanced error logging
+      console.error('❌ AuthService: Registration failed');
+      console.error('❌ Error object:', error);
+      console.error('❌ Error response:', error.response);
+      console.error('❌ Error response data:', error.response?.data);
+      console.error('❌ Error response status:', error.response?.status);
+      console.error('❌ Error message:', error.message);
+      
+      // Re-throw the error with the response data intact
       throw error;
     }
   }
-
+  
   /**
    * Logout user
    */

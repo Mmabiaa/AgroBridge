@@ -13,7 +13,7 @@ interface Message {
   timestamp: string;
 }
 
-export default function AgriGPT() {
+export default function AgriGPTSimple() {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -48,17 +48,14 @@ export default function AgriGPT() {
         const data = await response.json();
         setConversationId(data.id);
         return data.id;
-      } else {
-        console.error('Create conversation failed:', response.status);
-        return null;
       }
     } catch (error) {
       console.error('Failed to create conversation:', error);
-      return null;
     }
+    return null;
   };
 
-  const sendMessage = async (message: string, convId: string) => {
+  const sendMessage = async (message: string, convId?: string) => {
     try {
       const response = await fetch(`/api/v1/ai/conversations/${convId}/send_message/`, {
         method: 'POST',
@@ -75,7 +72,6 @@ export default function AgriGPT() {
         const data = await response.json();
         return data;
       } else {
-        console.error('Send message failed:', response.status, await response.text());
         throw new Error('Failed to send message');
       }
     } catch (error) {
@@ -95,7 +91,6 @@ export default function AgriGPT() {
     };
 
     setMessages(prev => [...prev, userMessage]);
-    const currentMessage = inputMessage;
     setInputMessage('');
     setIsLoading(true);
 
@@ -111,7 +106,7 @@ export default function AgriGPT() {
       }
 
       // Send message
-      const response = await sendMessage(currentMessage, currentConvId);
+      const response = await sendMessage(inputMessage, currentConvId);
       
       const assistantMessage: Message = {
         id: response.message_id || Date.now().toString(),
@@ -124,46 +119,11 @@ export default function AgriGPT() {
     } catch (error) {
       console.error('Error sending message:', error);
       
-      // Add fallback response based on the message content
-      let fallbackContent = "I'm here to help with your farming questions! I can provide advice on crops, livestock, soil management, pest control, and more.";
-      
-      const lowerMessage = currentMessage.toLowerCase();
-      if (lowerMessage.includes('tomato')) {
-        fallbackContent = `For tomato farming:
-
-🍅 **Planting**: Start seeds indoors 6-8 weeks before last frost
-🍅 **Spacing**: Plant 24-36 inches apart for good air circulation
-🍅 **Watering**: Water deeply 1-2 times per week, avoid wetting leaves
-🍅 **Support**: Use cages or stakes for indeterminate varieties
-🍅 **Common issues**: Watch for blight, wilting, and nutrient deficiencies
-
-What specific aspect of tomato growing would you like to know more about?`;
-      } else if (lowerMessage.includes('maize') || lowerMessage.includes('corn')) {
-        fallbackContent = `For maize/corn cultivation:
-
-🌽 **Soil**: Well-drained soil with pH 6.0-6.8
-🌽 **Fertilizer**: Apply NPK 15-15-15 at planting, side-dress with nitrogen
-🌽 **Planting**: Plant after soil temperature reaches 60°F (16°C)
-🌽 **Spacing**: 8-12 inches between plants, 30-36 inches between rows
-🌽 **Water**: Needs consistent moisture, especially during tasseling
-
-Would you like specific fertilizer recommendations for your soil type?`;
-      } else if (lowerMessage.includes('fertilizer')) {
-        fallbackContent = `Fertilizer guidance:
-
-🌱 **Soil test first**: Know your soil's pH and nutrient levels
-🌱 **NPK basics**: Nitrogen (leaves), Phosphorus (roots/flowers), Potassium (fruit)
-🌱 **Organic options**: Compost, aged manure, bone meal, fish emulsion
-🌱 **Timing**: Apply at planting and during growing season
-🌱 **Application**: Follow package rates, water in thoroughly
-
-What crop are you looking to fertilize?`;
-      }
-      
+      // Add fallback response
       const fallbackMessage: Message = {
         id: Date.now().toString(),
         role: 'assistant',
-        content: fallbackContent,
+        content: "I'm here to help with your farming questions! I can provide advice on crops, livestock, soil management, pest control, and more. What would you like to know?",
         timestamp: new Date().toISOString()
       };
 

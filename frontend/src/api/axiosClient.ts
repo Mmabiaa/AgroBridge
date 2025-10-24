@@ -112,7 +112,8 @@ class ApiLogger {
     }
 }
 
-// Error handler
+
+// Error handler - UPDATED VERSION
 class ApiErrorHandler {
     static handleError(error: AxiosError): Promise<never> {
         const apiError: ClientApiError = {
@@ -129,7 +130,10 @@ class ApiErrorHandler {
 
             switch (status) {
                 case 400:
-                    apiError.message = (data as any)?.message || 'Bad request. Please check your input.';
+                    // For 400 errors, preserve the entire data object for field-level errors
+                    apiError.message = (data as any)?.message || (data as any)?.error || 'Bad request. Please check your input.';
+                    // Keep the full details for field-level validation errors
+                    apiError.details = data;
                     break;
                 case 401:
                     apiError.message = 'Authentication required. Please log in.';
@@ -148,6 +152,7 @@ class ApiErrorHandler {
                     break;
                 case 422:
                     apiError.message = (data as any)?.message || 'Validation error. Please check your input.';
+                    apiError.details = data;
                     break;
                 case 429:
                     apiError.message = 'Too many requests. Please try again later.';
@@ -168,7 +173,16 @@ class ApiErrorHandler {
         }
 
         ApiLogger.logError(error);
-        return Promise.reject(apiError);
+        
+        // Create a custom error object that preserves the response structure
+        const customError: any = new Error(apiError.message);
+        customError.response = {
+            data: apiError.details,
+            status: apiError.status
+        };
+        customError.code = apiError.code;
+        
+        return Promise.reject(customError);
     }
 }
 
@@ -205,7 +219,7 @@ axiosClient.interceptors.request.use(
     }
 );
 
-// Response interceptor
+// Response interceptor - UPDATED VERSION
 axiosClient.interceptors.response.use(
     (response: AxiosResponse) => {
         // Calculate request duration
@@ -224,45 +238,60 @@ axiosClient.interceptors.response.use(
     async (error: AxiosError) => {
         const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-        // Handle token refresh for 401 errors
+        // Handle token refresh for 401 errors ONLY if it's not a login/register request
         if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
+            // Skip token refresh for auth endpoints
+            const isAuthEndpoint = originalRequest.url?.includes('/auth/login') || 
+                                  originalRequest.url?.includes('/auth/register');
+            
+            if (!isAuthEndpoint) {
+                originalRequest._retry = true;
 
-            const refreshToken = TokenManager.getRefreshToken();
-            if (refreshToken && !TokenManager.isTokenExpired(refreshToken)) {
-                try {
-                    const response = await axios.post(
-                        `${axiosClient.defaults.baseURL}/auth/refresh/`,
-                        { refresh: refreshToken }
-                    );
+                const refreshToken = TokenManager.getRefreshToken();
+                if (refreshToken && !TokenManager.isTokenExpired(refreshToken)) {
+                    try {
+                        const response = await axios.post(
+                            `${axiosClient.defaults.baseURL}/auth/refresh/`,
+                            { refresh: refreshToken }
+                        );
 
-                    const { access, refresh: newRefresh } = response.data;
-                    TokenManager.setTokens(access, newRefresh || refreshToken);
+                        const { access, refresh: newRefresh } = response.data;
+                        TokenManager.setTokens(access, newRefresh || refreshToken);
 
-                    // Retry original request with new token
-                    originalRequest.headers.Authorization = `Bearer ${access}`;
-                    return axiosClient(originalRequest);
-                } catch (refreshError) {
-                    // Refresh failed, clear tokens and redirect to login
-                    TokenManager.clearTokens();
-                    if (window.location.pathname !== '/login') {
-                        window.location.href = '/login';
+                        // Retry original request with new token
+                        originalRequest.headers.Authorization = `Bearer ${access}`;
+                        return axiosClient(originalRequest);
+                    } catch (refreshError) {
+                        // Refresh failed, clear tokens and redirect to login
+                        TokenManager.clearTokens();
+                        if (window.location.pathname !== '/login') {
+                            window.location.href = '/login';
+                        }
                     }
                 }
             }
         }
 
-        // Try retry interceptor first
+        // For validation errors (400, 422), preserve the response data
+        if (error.response?.status === 400 || error.response?.status === 422) {
+            ApiLogger.logError(error);
+            // Return the error with full response data intact
+            return Promise.reject(error);
+        }
+
+        // Try retry interceptor for other errors
         try {
             return await defaultRetryInterceptor.createInterceptor()(error);
         } catch (retryError) {
-            // If retry fails, handle error with enhanced error handler
+            // If retry fails, handle error but DON'T show notification for validation errors
             const apiError = defaultErrorHandler.handleError(error);
 
-            // Show notification for the error
-            notificationService.error('Request Failed', apiError.message, undefined, apiError.requestId);
+            // Only show notification for non-validation errors
+            if (error.response?.status !== 400 && error.response?.status !== 422) {
+                notificationService.error('Request Failed', apiError.message, undefined, apiError.requestId);
+            }
 
-            return Promise.reject(apiError);
+            return Promise.reject(error); // Return original error with response intact
         }
     }
 );
