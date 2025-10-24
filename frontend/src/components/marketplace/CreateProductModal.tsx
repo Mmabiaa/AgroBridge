@@ -1,297 +1,338 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useForm } from 'react-hook-form';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Plus, Upload, X } from 'lucide-react';
-import { useCreateProduct, useCategories } from '@/api/hooks/useMarketplace';
-import { toast } from 'sonner';
+import { useCreateProduct } from '@/api/hooks/useMarketplace';
+import { ProductCreateData } from '@/types/basicTypes';
 
 interface CreateProductModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function CreateProductModal({ open, onOpenChange }: CreateProductModalProps) {
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price_per_unit: '',
-    unit_type: 'kg',
-    quantity_available: '',
-    category: ''
+interface ProductFormData {
+  name: string;
+  description: string;
+  price_per_unit: number;
+  unit_type: string;
+  quantity_available: number;
+  category: string;
+  status?: string;
+  quality_grade?: string;
+  location?: string;
+  delivery_available?: boolean;
+  pickup_available?: boolean;
+  organic?: boolean;
+}
+
+export const CreateProductModal: React.FC<CreateProductModalProps> = ({
+  isOpen,
+  onClose,
+  onSuccess,
+}) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+    watch,
+  } = useForm<ProductFormData>({
+    defaultValues: {
+      status: 'active',
+      unit_type: 'kg',
+      quality_grade: 'A',
+      delivery_available: false,
+      pickup_available: false,
+      organic: false,
+    },
   });
-  const [images, setImages] = useState<File[]>([]);
 
   const createProductMutation = useCreateProduct();
-  const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = async (data: ProductFormData) => {
+    setIsSubmitting(true);
     try {
-      // Convert form data to match Django API expectations
-      const productData = {
-        name: formData.name,
-        description: formData.description,
-        price_per_unit: parseFloat(formData.price_per_unit),
-        unit_type: formData.unit_type,
-        quantity_available: parseInt(formData.quantity_available),
-        category: formData.category ? parseInt(formData.category) : undefined,
-        status: 'active',
+      const productData: ProductCreateData = {
+        name: data.name,
+        description: data.description,
+        price_per_unit: Number(data.price_per_unit),
+        unit_type: data.unit_type,
+        quantity_available: Number(data.quantity_available),
+        category: Number(data.category),
+        status: data.status || 'active',
         is_active: true,
+        quality_grade: data.quality_grade,
+        location: data.location,
+        delivery_available: data.delivery_available,
+        pickup_available: data.pickup_available,
+        organic: data.organic,
       };
 
-      console.log('Sending product data:', productData); // Debug log
-
       await createProductMutation.mutateAsync(productData);
-
-      toast.success('Product listed successfully!');
-      // Reset form
-      setFormData({
-        name: '',
-        description: '',
-        price_per_unit: '',
-        unit_type: 'kg',
-        quantity_available: '',
-        category: ''
-      });
-      setImages([]);
-      onOpenChange(false);
-    } catch (error: any) {
+      
+      reset();
+      onSuccess?.();
+      onClose();
+    } catch (error) {
       console.error('Product creation error:', error);
-      
-      // Show detailed error message from API response
-      let errorMessage = 'Failed to create product. Please check your input.';
-      
-      if (error.response?.data) {
-        // Handle Django validation errors
-        const errorData = error.response.data;
-        if (typeof errorData === 'object') {
-          // Extract field errors
-          const fieldErrors = Object.entries(errorData)
-            .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
-            .join('; ');
-          errorMessage = `Validation errors: ${fieldErrors}`;
-        } else if (typeof errorData === 'string') {
-          errorMessage = errorData;
-        } else if (errorData.error) {
-          errorMessage = errorData.error;
-        }
-      }
-      
-      toast.error('Failed to create product', {
-        description: errorMessage,
-      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      setImages(Array.from(files));
-    }
+  const handleClose = () => {
+    reset();
+    onClose();
   };
 
-  const removeImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
-  };
-
-  // Unit types
-  const unitTypes = [
-    { label: 'Kilogram (kg)', value: 'kg' },
-    { label: 'Gram (g)', value: 'g' },
-    { label: 'Pound (lb)', value: 'lb' },
-    { label: 'Ounce (oz)', value: 'oz' },
-    { label: 'Liter (L)', value: 'L' },
-    { label: 'Milliliter (ml)', value: 'ml' },
-    { label: 'Piece', value: 'piece' },
-    { label: 'Bunch', value: 'bunch' },
-    { label: 'Bundle', value: 'bundle' },
-    { label: 'Bag', value: 'bag' },
-    { label: 'Box', value: 'box' },
-    { label: 'Crate', value: 'crate' }
+  // Mock categories - you should replace this with actual categories from your API
+  const categories = [
+    { id: 1, name: 'Vegetables' },
+    { id: 2, name: 'Fruits' },
+    { id: 3, name: 'Grains' },
+    { id: 4, name: 'Livestock' },
+    { id: 5, name: 'Dairy' },
+    { id: 6, name: 'Poultry' },
   ];
 
-  // Use actual categories from API or fallback
-  const categories = categoriesData?.results || [];
+  const unitTypes = [
+    'kg',
+    'g',
+    'lb',
+    'oz',
+    'piece',
+    'bunch',
+    'crate',
+    'bag',
+    'liter',
+    'gallon',
+  ];
+
+  const qualityGrades = ['A', 'B', 'C', 'Premium', 'Standard', 'Commercial'];
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          List Product
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>List New Product</DialogTitle>
         </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Product Name */}
-          <div className="space-y-2">
-            <Label htmlFor="name">Product Name *</Label>
-            <Input
-              id="name"
-              placeholder="Enter product name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
-          </div>
 
-          {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="description">Description *</Label>
-            <Textarea
-              id="description"
-              placeholder="Describe your product..."
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={4}
-              required
-            />
-          </div>
-
-          {/* Price and Quantity */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="price_per_unit">Price per Unit (GHS) *</Label>
-              <Input
-                id="price_per_unit"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0.00"
-                value={formData.price_per_unit}
-                onChange={(e) => setFormData({ ...formData, price_per_unit: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="quantity">Quantity Available *</Label>
-              <Input
-                id="quantity"
-                type="number"
-                min="1"
-                placeholder="100"
-                value={formData.quantity_available}
-                onChange={(e) => setFormData({ ...formData, quantity_available: e.target.value })}
-                required
-              />
-            </div>
-          </div>
-
-          {/* Unit Type and Category */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="unit_type">Unit Type *</Label>
-              <Select value={formData.unit_type} onValueChange={(value) => setFormData({ ...formData, unit_type: value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select unit type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {unitTypes.map((unit) => (
-                    <SelectItem key={unit.value} value={unit.value}>
-                      {unit.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Select 
-                value={formData.category} 
-                onValueChange={(value) => setFormData({ ...formData, category: value })}
-                disabled={categoriesLoading}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={categoriesLoading ? "Loading categories..." : "Select category"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id.toString()}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Image Upload */}
-          <div className="space-y-2">
-            <Label>Product Images (Optional)</Label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-              <Input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-                id="image-upload"
-              />
-              <Label htmlFor="image-upload" className="cursor-pointer">
-                <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                <p className="text-sm text-gray-600">
-                  Click to upload images or drag and drop
-                </p>
-                <p className="text-xs text-gray-500">
-                  PNG, JPG, JPEG up to 5MB each
-                </p>
-              </Label>
-            </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Basic Information */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Basic Information</h3>
             
-            {/* Preview Images */}
-            {images.length > 0 && (
-              <div className="grid grid-cols-3 gap-2 mt-4">
-                {images.map((file, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-20 object-cover rounded"
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
-                      onClick={() => removeImage(index)}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </div>
-                ))}
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <Label htmlFor="name">Product Name *</Label>
+                <Input
+                  id="name"
+                  {...register('name', { required: 'Product name is required' })}
+                  placeholder="Enter product name"
+                />
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
+                )}
               </div>
-            )}
+
+              <div>
+                <Label htmlFor="description">Description *</Label>
+                <Textarea
+                  id="description"
+                  {...register('description', { required: 'Description is required' })}
+                  placeholder="Describe your product"
+                  rows={3}
+                />
+                {errors.description && (
+                  <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="category">Category *</Label>
+                <Select 
+                  onValueChange={(value) => setValue('category', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id.toString()}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.category && (
+                  <p className="text-sm text-red-500 mt-1">Category is required</p>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-end gap-3 pt-4">
+          {/* Pricing & Quantity */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Pricing & Quantity</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="price_per_unit">Price per Unit *</Label>
+                <Input
+                  id="price_per_unit"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  {...register('price_per_unit', { 
+                    required: 'Price is required',
+                    min: { value: 0, message: 'Price must be positive' }
+                  })}
+                  placeholder="0.00"
+                />
+                {errors.price_per_unit && (
+                  <p className="text-sm text-red-500 mt-1">{errors.price_per_unit.message}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="unit_type">Unit Type *</Label>
+                <Select 
+                  onValueChange={(value) => setValue('unit_type', value)} 
+                  defaultValue="kg"
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {unitTypes.map((unit) => (
+                      <SelectItem key={unit} value={unit}>
+                        {unit}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="quantity_available">Quantity Available *</Label>
+                <Input
+                  id="quantity_available"
+                  type="number"
+                  min="0"
+                  {...register('quantity_available', { 
+                    required: 'Quantity is required',
+                    min: { value: 0, message: 'Quantity must be positive' }
+                  })}
+                  placeholder="0"
+                />
+                {errors.quantity_available && (
+                  <p className="text-sm text-red-500 mt-1">{errors.quantity_available.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Product Details */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Product Details</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="quality_grade">Quality Grade</Label>
+                <Select 
+                  onValueChange={(value) => setValue('quality_grade', value)} 
+                  defaultValue="A"
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {qualityGrades.map((grade) => (
+                      <SelectItem key={grade} value={grade}>
+                        {grade}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  {...register('location')}
+                  placeholder="Enter location"
+                />
+              </div>
+            </div>
+
+            {/* Checkboxes */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="organic"
+                  {...register('organic')}
+                  className="rounded border-gray-300"
+                />
+                <Label htmlFor="organic" className="text-sm">Organic</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="delivery_available"
+                  {...register('delivery_available')}
+                  className="rounded border-gray-300"
+                />
+                <Label htmlFor="delivery_available" className="text-sm">Delivery Available</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="pickup_available"
+                  {...register('pickup_available')}
+                  className="rounded border-gray-300"
+                />
+                <Label htmlFor="pickup_available" className="text-sm">Pickup Available</Label>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={handleClose}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={createProductMutation.isPending}
+              disabled={isSubmitting}
             >
-              {createProductMutation.isPending ? 'Creating...' : 'List Product'}
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Creating...
+                </>
+              ) : (
+                'Create Product'
+              )}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
-}
+};

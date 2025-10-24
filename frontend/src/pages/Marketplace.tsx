@@ -167,12 +167,22 @@ export default function Marketplace() {
         </div>
         
         {user?.permissions?.includes('create_product') && (
-          <CreateProductModal 
-            open={createModalOpen}
-            onOpenChange={setCreateModalOpen}
-          />
+          <Button onClick={() => setCreateModalOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            List Product
+          </Button>
         )}
       </div>
+
+      {/* Create Product Modal */}
+      <CreateProductModal 
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onSuccess={() => {
+          setCreateModalOpen(false);
+          refetchProducts();
+        }}
+      />
 
       {/* Search and Filters */}
       <Card>
@@ -285,10 +295,10 @@ export default function Marketplace() {
                     }
                   </p>
                   <div className="flex gap-2 justify-center">
-                    <CreateProductModal 
-                      open={createModalOpen}
-                      onOpenChange={setCreateModalOpen}
-                    />
+                    <Button onClick={() => setCreateModalOpen(true)}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      List Product
+                    </Button>
                     {productsHasError && (
                       <Button variant="outline" onClick={handleRetry}>
                         <RefreshCw className="h-4 w-4 mr-2" />
