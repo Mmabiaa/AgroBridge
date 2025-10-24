@@ -93,7 +93,7 @@ export default function Register() {
         first_name: formData.firstName,
         last_name: formData.lastName,
         role: selectedRole!,
-        phone: formData.phone || undefined
+        phone: formData.phone || ''
       };
       
       console.log('Attempting registration with data:', { ...registrationData, password: '[HIDDEN]', password_confirm: '[HIDDEN]' });

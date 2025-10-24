@@ -91,11 +91,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         # Clean up empty string values
         if not validated_data.get('phone'):
             validated_data.pop('phone', None)
-        # Don't remove first_name and last_name as they are required by frontend
-        # if not validated_data.get('first_name'):
-        #     validated_data.pop('first_name', None)
-        # if not validated_data.get('last_name'):
-        #     validated_data.pop('last_name', None)
         
         # Generate email verification token
         email_verification_token = str(uuid.uuid4())

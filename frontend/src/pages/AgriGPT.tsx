@@ -184,8 +184,8 @@ export default function AgriGPT() {
                       <div
                         key={conversation.id}
                         className={`p-3 rounded-lg cursor-pointer transition-colors ${activeConversationId === conversation.id
-                            ? 'bg-primary/10 border border-primary/20'
-                            : 'hover:bg-muted/50'
+                          ? 'bg-primary/10 border border-primary/20'
+                          : 'hover:bg-muted/50'
                           }`}
                         onClick={() => setActiveConversationId(conversation.id)}
                       >
@@ -294,8 +294,8 @@ export default function AgriGPT() {
                           }`}
                       >
                         <div className={`p-2 rounded-full ${msg.role === 'user'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-muted'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted'
                           }`}>
                           {msg.role === 'user' ? (
                             <div className="h-6 w-6 rounded-full bg-primary-foreground/20 flex items-center justify-center text-xs font-medium">
@@ -313,8 +313,8 @@ export default function AgriGPT() {
                         <div className={`flex-1 max-w-[80%] ${msg.role === 'user' ? 'text-right' : ''
                           }`}>
                           <div className={`p-3 rounded-lg ${msg.role === 'user'
-                              ? 'bg-primary text-primary-foreground ml-auto'
-                              : 'bg-muted'
+                            ? 'bg-primary text-primary-foreground ml-auto'
+                            : 'bg-muted'
                             }`}>
                             <p className="whitespace-pre-wrap">{msg.content}</p>
                           </div>
