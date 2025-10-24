@@ -19,21 +19,16 @@ import {
 
 interface Message {
   id: string;
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'system';
   content: string;
-  timestamp: string;
-  metadata?: {
-    tokens_used?: number;
-    confidence_score?: number;
-    model?: string;
-  };
-}
-
-interface PaginatedResponse<T> {
-  results: T[];
-  count: number;
-  next: string | null;
-  previous: string | null;
+  created_at: string;
+  conversation?: string;
+  message_type?: string;
+  tokens_used?: number;
+  processing_time_ms?: number;
+  confidence_score?: number;
+  model_used?: string;
+  metadata?: Record<string, any>;
 }
 
 export default function AgriGPT() {
@@ -47,7 +42,7 @@ export default function AgriGPT() {
   const { data: conversationsData, isLoading: conversationsLoading } = useConversations({ 
     page_size: 20 
   });
-  const { data: messagesData, isLoading: messagesLoading } = useConversationMessages(
+  const { data: messagesData, isLoading: messagesLoading, refetch: refetchMessages } = useConversationMessages(
     currentConversationId || '',
     !!currentConversationId
   );
@@ -70,8 +65,22 @@ export default function AgriGPT() {
     scrollToBottom();
   }, [messages]);
 
+  // Auto-refetch messages when sending
+  useEffect(() => {
+    if (currentConversationId && !sendMessageMutation.isPending) {
+      const interval = setInterval(() => {
+        refetchMessages();
+      }, 2000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [currentConversationId, sendMessageMutation.isPending, refetchMessages]);
+
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
+
+    const messageContent = inputMessage.trim();
+    setInputMessage(''); // Clear input immediately for better UX
 
     try {
       let conversationId = currentConversationId;
@@ -79,7 +88,7 @@ export default function AgriGPT() {
       // Create new conversation if none exists
       if (!conversationId) {
         const newConversation = await createConversationMutation.mutateAsync({
-          title: inputMessage.slice(0, 50),
+          title: messageContent.slice(0, 50),
           conversation_type: 'farming_advice',
           language: 'en'
         });
@@ -90,16 +99,23 @@ export default function AgriGPT() {
       // Send message
       await sendMessageMutation.mutateAsync({
         conversationId,
-        content: inputMessage
+        content: messageContent
       });
 
-      setInputMessage('');
+      // Force immediate refetch of messages
+      setTimeout(() => {
+        refetchMessages();
+      }, 500);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
+      setInputMessage(messageContent); // Restore message on error
+      
+      const errorMessage = error?.response?.data?.error || error?.message || 'Failed to send message';
+      
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again.",
+        description: errorMessage,
         variant: "destructive"
       });
     }
@@ -172,6 +188,17 @@ export default function AgriGPT() {
     { name: "Harvesting", emoji: "🌾" },
     { name: "Market Prices", emoji: "💰" }
   ];
+
+  const formatTimestamp = (timestamp: string) => {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) return '';
+    
+    return date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
   return (
     <div className="container mx-auto p-4 max-w-6xl h-[calc(100vh-100px)]">
@@ -337,54 +364,65 @@ export default function AgriGPT() {
                     </p>
                   </div>
                 ) : (
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     {messages.map((message) => (
                       <div
                         key={message.id}
-                        className={`flex gap-4 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
+                        className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
                       >
-                        <div className={`p-3 rounded-2xl ${
+                        {/* Avatar */}
+                        <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-md ${
                           message.role === 'user'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-muted border'
+                            ? 'bg-gradient-to-br from-blue-500 to-blue-600'
+                            : 'bg-gradient-to-br from-green-500 to-emerald-600'
                         }`}>
                           {message.role === 'user' ? (
-                            <User className="h-5 w-5" />
+                            <User className="h-5 w-5 text-white" />
                           ) : (
-                            <Bot className="h-5 w-5" />
+                            <Bot className="h-5 w-5 text-white" />
                           )}
                         </div>
 
-                        <div className={`flex-1 max-w-[85%] ${message.role === 'user' ? 'text-right' : ''}`}>
-                          <div className={`p-4 rounded-2xl ${
+                        {/* Message Content */}
+                        <div className={`flex flex-col max-w-[80%] ${message.role === 'user' ? 'items-end' : 'items-start'}`}>
+                          <div className={`rounded-2xl px-5 py-3 shadow-sm ${
                             message.role === 'user'
-                              ? 'bg-primary text-primary-foreground ml-auto shadow-sm'
-                              : 'bg-white dark:bg-gray-800 border shadow-sm'
+                              ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white'
+                              : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
                           }`}>
-                            <p className="whitespace-pre-wrap leading-relaxed">
+                            <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
                               {message.content}
                             </p>
                           </div>
                           
-                          <div className={`flex items-center gap-3 mt-2 text-xs text-muted-foreground ${
-                            message.role === 'user' ? 'justify-end' : 'justify-between'
+                          {/* Message Metadata */}
+                          <div className={`flex items-center gap-2 mt-1.5 px-2 ${
+                            message.role === 'user' ? 'flex-row-reverse' : ''
                           }`}>
-                            <span>
-                              {new Date(message.timestamp).toLocaleTimeString([], {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
+                            <span className="text-xs text-muted-foreground">
+                              {formatTimestamp(message.created_at)}
                             </span>
-                            {message.role === 'assistant' && message.metadata && (
-                              <div className="flex items-center gap-2">
-                                {message.metadata.confidence_score && (
-                                  <Badge variant="outline" className="text-xs">
-                                    {Math.round(message.metadata.confidence_score * 100)}% confident
+                            
+                            {message.role === 'assistant' && (
+                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                {message.confidence_score && (
+                                  <Badge variant="outline" className="text-[10px] h-5 px-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">
+                                    {Math.round(message.confidence_score * 100)}% confident
                                   </Badge>
                                 )}
-                                {message.metadata.tokens_used && (
-                                  <span className="text-xs">
-                                    {message.metadata.tokens_used} tokens
+                                {message.tokens_used && (
+                                  <span className="text-xs opacity-60">
+                                    {message.tokens_used} tokens
+                                  </span>
+                                )}
+                                {message.processing_time_ms && (
+                                  <span className="text-xs opacity-60">
+                                    • {(message.processing_time_ms / 1000).toFixed(1)}s
+                                  </span>
+                                )}
+                                {message.model_used && (
+                                  <span className="text-xs opacity-60">
+                                    • {message.model_used}
                                   </span>
                                 )}
                               </div>
@@ -395,15 +433,19 @@ export default function AgriGPT() {
                     ))}
 
                     {isLoading && (
-                      <div className="flex gap-4">
-                        <div className="p-3 rounded-2xl bg-muted border">
-                          <Bot className="h-5 w-5" />
+                      <div className="flex gap-3">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-md bg-gradient-to-br from-green-500 to-emerald-600">
+                          <Bot className="h-5 w-5 text-white" />
                         </div>
-                        <div className="flex-1">
-                          <div className="p-4 rounded-2xl bg-white dark:bg-gray-800 border shadow-sm">
+                        <div className="flex flex-col items-start">
+                          <div className="rounded-2xl px-5 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
                             <div className="flex items-center gap-3">
-                              <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                              <span className="text-muted-foreground">AgriGPT is thinking...</span>
+                              <Loader2 className="h-4 w-4 animate-spin text-green-600" />
+                              <div className="flex gap-1">
+                                <span className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                                <span className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                                <span className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -442,7 +484,7 @@ export default function AgriGPT() {
                 </Button>
               </div>
               <div className="text-xs text-muted-foreground text-center mt-2">
-                AgriGPT provides real-time farming advice using AI
+                Powered by OpenAI GPT-4 • Real-time agricultural expertise
               </div>
             </div>
           </Card>
