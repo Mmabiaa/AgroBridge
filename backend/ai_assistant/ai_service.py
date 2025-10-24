@@ -16,16 +16,16 @@ class AIService:
 
     def __init__(self):
         self.client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
-        self.model_name = "gpt-4o-mini"  # or "gpt-3.5-turbo" if you don't have access to gpt-4
+        self.model_name = "gpt-4o-mini"
         self.max_tokens = 1000
 
     # -------------------------------------------------------------------------
     # 🧠 Generate AI Text Response
     # -------------------------------------------------------------------------
     def _call_ai_model(self, messages: List[Dict]) -> Dict:
-    
-    # Call OpenAI ChatCompletion API to generate response
-    
+        """
+        Call OpenAI ChatCompletion API to generate response
+        """
         try:
             response = self.client.chat.completions.create(
                 model=self.model_name,
@@ -70,7 +70,6 @@ class AIService:
             logger.error(f"OpenAI chat completion failed: {str(e)}")
             raise Exception(f"AI service error: {str(e)}")
 
-
     # -------------------------------------------------------------------------
     # 🎙️ Real Speech-to-Text (Transcription)
     # -------------------------------------------------------------------------
@@ -87,7 +86,7 @@ class AIService:
 
             return {
                 'text': transcription.text,
-                'language': 'en',  # Whisper auto-detects, can parse from metadata if available
+                'language': 'en',
                 'confidence': 0.95,
                 'processing_time': 1500
             }
@@ -104,11 +103,10 @@ class AIService:
         Generate speech from text using OpenAI TTS model
         """
         try:
-            # Save as .mp3 or .wav as desired
             output_path = f"/tmp/voice_output_{timezone.now().timestamp()}.mp3"
 
             with self.client.audio.speech.with_streaming_response.create(
-                model="tts-1",  # (or tts-1-hd for higher quality)
+                model="tts-1",
                 voice="alloy",
                 input=text
             ) as response:
@@ -122,13 +120,12 @@ class AIService:
         except Exception as e:
             logger.error(f"Speech synthesis failed: {str(e)}")
             raise
-    
 
     def generate_response(self, message: str, conversation, user) -> Dict:
-    
-    #Generate AI response for a user message
-    
-    # Build conversation history
+        """
+        Generate AI response for a user message
+        """
+        # Build conversation history
         messages = self._build_conversation_history(conversation)
         
         # Add system prompt for agriculture
@@ -171,3 +168,134 @@ class AIService:
             })
         
         return messages
+
+    # -------------------------------------------------------------------------
+    # 🎯 Generate Recommendations
+    # -------------------------------------------------------------------------
+    def generate_recommendations(self, conversation, user, message_content: str) -> List[Dict]:
+        """
+        Generate AI-powered recommendations based on conversation context
+        """
+        try:
+            recommendation_prompt = {
+                'role': 'system',
+                'content': '''You are an agricultural expert. Based on the user's query, generate 1-3 specific, 
+                actionable recommendations. Focus on practical farming advice, crop management, pest control, 
+                soil improvement, or sustainable practices relevant to the user's context.'''
+            }
+            
+            user_prompt = {
+                'role': 'user',
+                'content': f"Based on this farming question: '{message_content}', provide 1-3 specific recommendations with clear actionable steps."
+            }
+            
+            messages = [recommendation_prompt, user_prompt]
+            
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=messages,
+                max_tokens=500,
+                temperature=0.7,
+            )
+            
+            recommendations_text = response.choices[0].message.content
+            
+            # Parse recommendations (simple parsing - you might want more sophisticated parsing)
+            recommendations = []
+            lines = recommendations_text.split('\n')
+            
+            for line in lines:
+                line = line.strip()
+                if line and (line.startswith('-') or line.startswith('•') or line[0].isdigit()):
+                    # Clean up the recommendation text
+                    recommendation_text = line.lstrip('-• ').lstrip('1234567890. ').strip()
+                    if recommendation_text:
+                        recommendations.append({
+                            'title': f"Recommendation for {message_content[:30]}...",
+                            'description': recommendation_text,
+                            'recommendation_type': 'agricultural_advice',
+                            'confidence_score': 0.8,
+                            'priority': 'medium'
+                        })
+            
+            # Ensure we have at least one recommendation
+            if not recommendations:
+                recommendations.append({
+                    'title': 'General Farming Advice',
+                    'description': 'Consider consulting with local agricultural extension services for region-specific advice.',
+                    'recommendation_type': 'general_advice',
+                    'confidence_score': 0.7,
+                    'priority': 'low'
+                })
+            
+            return recommendations[:3]  # Return max 3 recommendations
+            
+        except Exception as e:
+            logger.error(f"Recommendation generation failed: {str(e)}")
+            # Return empty list if recommendation generation fails
+            return []
+
+    # -------------------------------------------------------------------------
+    # 🔄 Fallback Response
+    # -------------------------------------------------------------------------
+    def _get_agricultural_fallback_response(self, user_message: str) -> Dict:
+        """
+        Provide fallback responses when OpenAI API fails
+        """
+        fallback_responses = {
+            'general': "I'm here to help with your farming questions! I can provide advice on crops, soil management, pest control, and sustainable farming practices.",
+            'tomato': "For tomato plants: ensure proper spacing (24-36 inches), consistent watering, and watch for common issues like blight or blossom end rot.",
+            'maize': "For maize/corn: plant in well-drained soil after last frost, use balanced fertilizer, and ensure adequate spacing for good air circulation.",
+            'fertilizer': "Consider soil testing first to determine nutrient needs. Organic options include compost, manure, or balanced NPK fertilizers.",
+            'pest': "For pest control: identify the specific pest first, then consider organic options like neem oil, companion planting, or biological controls."
+        }
+        
+        user_message_lower = user_message.lower()
+        
+        for key, response in fallback_responses.items():
+            if key in user_message_lower and key != 'general':
+                return {
+                    'content': response,
+                    'tokens_used': 0,
+                    'confidence_score': 0.5,
+                    'metadata': {'fallback': True}
+                }
+        
+        return {
+            'content': fallback_responses['general'],
+            'tokens_used': 0,
+            'confidence_score': 0.5,
+            'metadata': {'fallback': True}
+        }
+
+    # -------------------------------------------------------------------------
+    # 🎙️ Voice Interaction Processing
+    # -------------------------------------------------------------------------
+    def process_voice_interaction(self, voice_interaction):
+        """
+        Process voice interaction (transcribe + generate response)
+        """
+        try:
+            # Transcribe audio
+            transcription_result = self._transcribe_audio(voice_interaction.audio_input)
+            voice_interaction.transcribed_text = transcription_result['text']
+            voice_interaction.transcription_confidence = transcription_result['confidence']
+            
+            # Generate response
+            if voice_interaction.conversation:
+                response = self.generate_response(
+                    message=transcription_result['text'],
+                    conversation=voice_interaction.conversation,
+                    user=voice_interaction.user
+                )
+                voice_interaction.response_text = response['response']
+            
+            voice_interaction.status = 'completed'
+            voice_interaction.completed_at = timezone.now()
+            voice_interaction.save()
+            
+        except Exception as e:
+            logger.error(f"Voice interaction processing failed: {str(e)}")
+            voice_interaction.status = 'failed'
+            voice_interaction.error_message = str(e)
+            voice_interaction.save()
