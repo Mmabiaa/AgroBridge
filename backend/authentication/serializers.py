@@ -136,8 +136,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             # Log the error but don't fail registration
             print(f"Failed to send verification email: {e}")
 
-cl
-ass UserLoginSerializer(serializers.Serializer):
+
+class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
     
