@@ -24,6 +24,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserProducts, useUserOrders } from '@/api/hooks/useMarketplace';
 import { toast } from 'sonner';
+import { CreateProductModal } from '@/components/marketplace/CreateProductModal';
 
 // Define proper TypeScript interfaces for the data
 interface Product {
@@ -55,6 +56,7 @@ export default function Marketplace() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [activeTab, setActiveTab] = useState('browse');
   const [retryCount, setRetryCount] = useState(0);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
   // API hooks for user data with enhanced error handling
   const { 
@@ -188,10 +190,10 @@ export default function Marketplace() {
         </div>
         
         {user?.permissions?.includes('create_product') && (
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            List Product
-          </Button>
+          <CreateProductModal 
+            open={createModalOpen}
+            onOpenChange={setCreateModalOpen}
+          />
         )}
       </div>
 
@@ -306,10 +308,11 @@ export default function Marketplace() {
                     }
                   </p>
                   <div className="flex gap-2 justify-center">
-                    <Button disabled={productsHasError}>
-                      <Plus className="h-4 w-4 mr-2" />
-                      List Your First Product
-                    </Button>
+                    {/* Fixed: Use CreateProductModal instead of disabled Button */}
+                    <CreateProductModal 
+                      open={createModalOpen}
+                      onOpenChange={setCreateModalOpen}
+                    />
                     {productsHasError && (
                       <Button variant="outline" onClick={handleRetry}>
                         <RefreshCw className="h-4 w-4 mr-2" />
@@ -518,7 +521,7 @@ export default function Marketplace() {
                 </div>
               </CardContent>
             </Card>
-           </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

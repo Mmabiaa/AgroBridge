@@ -27,7 +27,29 @@ class MarketplaceService {
         const response = await apiClient.get<Product>(`${this.basePath}/products/${id}/`);
         return response;
     }
+    async createProductWithImages(productData: ProductCreateData, images: File[]): Promise<Product> {
+    const formData = new FormData();
+    
+    // Append product data
+    Object.keys(productData).forEach(key => {
+      if (productData[key] !== undefined) {
+        formData.append(key, productData[key].toString());
+      }
+    });
+    
+    // Append images
+    images.forEach((image, index) => {
+      formData.append(`images`, image);
+    });
 
+    const response = await apiClient.post<Product>(`${this.basePath}/products/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response;
+  }
+  
     async getUserProducts(params?: ProductListParams): Promise<PaginatedResponse<Product>> {
         try {
             // Try the custom endpoint first (the one we defined in Django URLs)

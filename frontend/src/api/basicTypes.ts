@@ -50,6 +50,8 @@ export type ChangePasswordData = {
   new_password_confirm: string;
 };
 
+
+
 export type Farm = any;
 export type FarmListParams = any;
 export type FarmCreateData = any;
@@ -74,6 +76,8 @@ export interface FarmAnalytics {
     humidity: number;
     rainfall: number;
   };
+
+  
 }
 
 export type Product = any;
