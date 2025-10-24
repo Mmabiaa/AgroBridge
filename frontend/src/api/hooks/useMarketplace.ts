@@ -128,6 +128,24 @@ export const useCreateProduct = () => {
     });
 };
 
+export const useCreateProductWithImages = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationKey: ['create_product_with_images'],
+        mutationFn: ({ productData, images }: { productData: ProductCreateData; images: File[] }) => 
+            marketplaceService.createProductWithImages(productData, images),
+        onSuccess: (newProduct: Product) => {
+            // Invalidate product lists
+            queryClient.invalidateQueries({ queryKey: ['marketplace', 'products', 'list'] });
+            queryClient.invalidateQueries({ queryKey: ['marketplace', 'products', 'user'] });
+
+            // Add to cache
+            queryClient.setQueryData(['marketplace', 'products', 'detail', newProduct.id], newProduct);
+        },
+    });
+};
+
 export const useUpdateProduct = () => {
     const queryClient = useQueryClient();
 

@@ -4,9 +4,17 @@
  * This file exports all API services for easy importing throughout the application.
  */
 
-// Export API client
+// Export API client and related utilities
 export { default as apiClient } from '../axiosClient';
-export type { ApiResponse, ApiError, PaginatedResponse } from '../axiosClient';
+export { TokenManager, ApiLogger, ApiErrorHandler } from '../axiosClient';
+
+// Export types from axiosClient
+export type {
+  ApiResponse,
+  ClientApiError as ApiError, // Map ClientApiError to ApiError for backward compatibility
+  PaginatedResponse,
+  ExtendedAxiosRequestConfig
+} from '../axiosClient';
 
 // Export services
 export { default as authService } from './authService';
@@ -36,14 +44,17 @@ export type {
   FarmListParams,
 } from './farmsService';
 
+// Export marketplace types
 export type {
   Product,
   CreateProductRequest,
   UpdateProductRequest,
   Order,
   CreateOrderRequest,
+  UpdateOrderRequest,
   ProductListParams,
   OrderListParams,
+  Category,
   MarketplaceAnalytics,
 } from './marketplaceService';
 

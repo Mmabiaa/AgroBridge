@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { useCreateProduct } from '@/api/hooks/useMarketplace';
+import { useCreateProductWithImages, useCategories } from '@/api/hooks/useMarketplace';
 import { ProductCreateData } from '@/types/basicTypes';
+import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 
 interface CreateProductModalProps {
   isOpen: boolean;
@@ -27,7 +28,7 @@ interface ProductFormData {
   location?: string;
   delivery_available?: boolean;
   pickup_available?: boolean;
-  organic?: boolean;
+  organic_certified?: boolean;
 }
 
 export const CreateProductModal: React.FC<CreateProductModalProps> = ({
@@ -36,6 +37,8 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
   onSuccess,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [images, setImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   
   const {
     register,
@@ -48,18 +51,49 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     defaultValues: {
       status: 'active',
       unit_type: 'kg',
-      quality_grade: 'A',
+      quality_grade: 'standard',
       delivery_available: false,
-      pickup_available: false,
-      organic: false,
+      pickup_available: true,
+      organic_certified: false,
     },
   });
 
-  const createProductMutation = useCreateProduct();
+  const createProductMutation = useCreateProductWithImages();
+  const { data: categoriesData, isLoading: categoriesLoading, error: categoriesError } = useCategories();
+
+  // Handle image upload
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    const newImages = Array.from(files).slice(0, 5 - images.length); // Limit to 5 images
+    const newImagePreviews = newImages.map(file => URL.createObjectURL(file));
+
+    setImages(prev => [...prev, ...newImages]);
+    setImagePreviews(prev => [...prev, ...newImagePreviews]);
+  };
+
+  // Remove image
+  const removeImage = (index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => {
+      URL.revokeObjectURL(prev[index]); // Clean up memory
+      return prev.filter((_, i) => i !== index);
+    });
+  };
 
   const onSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
     try {
+      // Create location JSON string if location is provided
+      const locationJson = data.location ? JSON.stringify({
+        address: data.location,
+        coordinates: { 
+          latitude: 5.6037, // Default to Accra coordinates
+          longitude: -0.1870 
+        }
+      }) : undefined;
+
       const productData: ProductCreateData = {
         name: data.name,
         description: data.description,
@@ -70,15 +104,21 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         status: data.status || 'active',
         is_active: true,
         quality_grade: data.quality_grade,
-        location: data.location,
+        location: locationJson, // Now it's a string (JSON)
         delivery_available: data.delivery_available,
         pickup_available: data.pickup_available,
-        organic: data.organic,
+        organic_certified: data.organic_certified,
       };
 
-      await createProductMutation.mutateAsync(productData);
+      await createProductMutation.mutateAsync({
+        productData,
+        images
+      });
       
+      // Reset form and images
       reset();
+      setImages([]);
+      setImagePreviews([]);
       onSuccess?.();
       onClose();
     } catch (error) {
@@ -90,33 +130,37 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
 
   const handleClose = () => {
     reset();
+    setImages([]);
+    setImagePreviews([]);
     onClose();
   };
 
-  // Mock categories - you should replace this with actual categories from your API
-  const categories = [
-    { id: 1, name: 'Vegetables' },
-    { id: 2, name: 'Fruits' },
-    { id: 3, name: 'Grains' },
-    { id: 4, name: 'Livestock' },
-    { id: 5, name: 'Dairy' },
-    { id: 6, name: 'Poultry' },
-  ];
+  // Use actual categories from API or fallback to empty array
+  const categories = categoriesData?.results || [];
 
+  // Use exact unit types from your Django model
   const unitTypes = [
-    'kg',
-    'g',
-    'lb',
-    'oz',
-    'piece',
-    'bunch',
-    'crate',
-    'bag',
-    'liter',
-    'gallon',
+    { value: 'kg', label: 'Kilogram' },
+    { value: 'g', label: 'Gram' },
+    { value: 'lb', label: 'Pound' },
+    { value: 'ton', label: 'Ton' },
+    { value: 'piece', label: 'Piece' },
+    { value: 'dozen', label: 'Dozen' },
+    { value: 'bag', label: 'Bag' },
+    { value: 'box', label: 'Box' },
+    { value: 'crate', label: 'Crate' },
+    { value: 'liter', label: 'Liter' },
+    { value: 'gallon', label: 'Gallon' }
   ];
 
-  const qualityGrades = ['A', 'B', 'C', 'Premium', 'Standard', 'Commercial'];
+  // Use exact quality grades from your Django model
+  const qualityGrades = [
+    { value: 'premium', label: 'Premium' },
+    { value: 'grade_a', label: 'Grade A' },
+    { value: 'grade_b', label: 'Grade B' },
+    { value: 'standard', label: 'Standard' },
+    { value: 'organic', label: 'Organic Certified' }
+  ];
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -126,6 +170,52 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Image Upload */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Product Images</h3>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <input
+                type="file"
+                id="images"
+                multiple
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              <label htmlFor="images" className="cursor-pointer">
+                <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                <p className="text-sm text-gray-600">
+                  Click to upload images (max 5)
+                </p>
+                <p className="text-xs text-gray-500">
+                  PNG, JPG, JPEG up to 5MB each
+                </p>
+              </label>
+            </div>
+
+            {/* Image Previews */}
+            {imagePreviews.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={preview}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-24 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Basic Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Basic Information</h3>
@@ -162,14 +252,33 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                   onValueChange={(value) => setValue('category', value)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder={
+                      categoriesLoading ? "Loading categories..." : 
+                      categoriesError ? "Error loading categories" : 
+                      "Select category"
+                    } />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id.toString()}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
+                    {categoriesLoading ? (
+                      <div className="flex items-center justify-center p-4">
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Loading categories...
+                      </div>
+                    ) : categoriesError ? (
+                      <div className="text-center p-4 text-red-500">
+                        Failed to load categories
+                      </div>
+                    ) : categories.length === 0 ? (
+                      <div className="text-center p-4 text-gray-500">
+                        No categories available
+                      </div>
+                    ) : (
+                      categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id.toString()}>
+                          {category.name}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
                 {errors.category && (
@@ -190,10 +299,10 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                   id="price_per_unit"
                   type="number"
                   step="0.01"
-                  min="0"
+                  min="0.01"
                   {...register('price_per_unit', { 
                     required: 'Price is required',
-                    min: { value: 0, message: 'Price must be positive' }
+                    min: { value: 0.01, message: 'Price must be at least 0.01' }
                   })}
                   placeholder="0.00"
                 />
@@ -213,8 +322,8 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                   </SelectTrigger>
                   <SelectContent>
                     {unitTypes.map((unit) => (
-                      <SelectItem key={unit} value={unit}>
-                        {unit}
+                      <SelectItem key={unit.value} value={unit.value}>
+                        {unit.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -226,10 +335,11 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                 <Input
                   id="quantity_available"
                   type="number"
-                  min="0"
+                  step="0.01"
+                  min="0.01"
                   {...register('quantity_available', { 
                     required: 'Quantity is required',
-                    min: { value: 0, message: 'Quantity must be positive' }
+                    min: { value: 0.01, message: 'Quantity must be at least 0.01' }
                   })}
                   placeholder="0"
                 />
@@ -249,15 +359,15 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                 <Label htmlFor="quality_grade">Quality Grade</Label>
                 <Select 
                   onValueChange={(value) => setValue('quality_grade', value)} 
-                  defaultValue="A"
+                  defaultValue="standard"
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {qualityGrades.map((grade) => (
-                      <SelectItem key={grade} value={grade}>
-                        {grade}
+                      <SelectItem key={grade.value} value={grade.value}>
+                        {grade.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -265,12 +375,15 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
               </div>
 
               <div>
-                <Label htmlFor="location">Location</Label>
+                <Label htmlFor="location">Location Address</Label>
                 <Input
                   id="location"
                   {...register('location')}
-                  placeholder="Enter location"
+                  placeholder="Enter your location address"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  This will be converted to coordinates automatically
+                </p>
               </div>
             </div>
 
@@ -279,11 +392,11 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  id="organic"
-                  {...register('organic')}
+                  id="organic_certified"
+                  {...register('organic_certified')}
                   className="rounded border-gray-300"
                 />
-                <Label htmlFor="organic" className="text-sm">Organic</Label>
+                <Label htmlFor="organic_certified" className="text-sm">Organic Certified</Label>
               </div>
 
               <div className="flex items-center space-x-2">
@@ -302,6 +415,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                   id="pickup_available"
                   {...register('pickup_available')}
                   className="rounded border-gray-300"
+                  defaultChecked
                 />
                 <Label htmlFor="pickup_available" className="text-sm">Pickup Available</Label>
               </div>
@@ -319,7 +433,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || categoriesLoading}
             >
               {isSubmitting ? (
                 <>

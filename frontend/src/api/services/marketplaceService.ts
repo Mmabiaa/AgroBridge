@@ -12,6 +12,33 @@ import type {
     Category,
 } from '../basicTypes';
 
+// Export the same types for consistency
+export type {
+    Product,
+    ProductCreateData as CreateProductRequest,
+    ProductUpdateData as UpdateProductRequest,
+    Order,
+    OrderCreateData as CreateOrderRequest,
+    OrderUpdateData as UpdateOrderRequest,
+    PaginatedResponse,
+    ProductListParams,
+    OrderListParams,
+    Category,
+};
+
+// Export MarketplaceAnalytics type if needed
+export type MarketplaceAnalytics = {
+    category_performance: Array<{
+        id: number;
+        name: string;
+        product_count: number;
+        recent_orders: number;
+        total_revenue: number;
+        avg_rating: number;
+    }>;
+    period_days: number;
+};
+
 class MarketplaceService {
     private basePath = '/marketplace';
 
@@ -165,8 +192,13 @@ class MarketplaceService {
         
         // Append product data
         Object.keys(productData).forEach(key => {
-            if (productData[key] !== undefined && productData[key] !== null) {
-                formData.append(key, productData[key].toString());
+            const value = productData[key as keyof ProductCreateData];
+            if (value !== undefined && value !== null) {
+                if (typeof value === 'object') {
+                    formData.append(key, JSON.stringify(value));
+                } else {
+                    formData.append(key, value.toString());
+                }
             }
         });
         
