@@ -139,6 +139,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://agrobridge.com',  # Production frontend
     'https://www.agrobridge.com',  # Production frontend with www
     'https://app.agrobridge.com',  # Production app subdomain
+    'http://agro-bridge.vercel.app' # Vercel deployment
 ]
 
 # Allow credentials for authentication
