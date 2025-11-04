@@ -11,10 +11,10 @@ import type {
     SendMessageData,
     PaginatedResponse,
     ConversationListParams,
-} from '../basicTypes';
+} from '../../types/ai';
 
 // Query hooks
-export const useConversations = (params?: any) => {
+export const useConversations = (params?: ConversationListParams) => {
     return useQuery({
         queryKey: queryKeys.ai.conversations.list(params),
         queryFn: () => aiService.getConversations(params),
@@ -185,7 +185,7 @@ export const useSendMessage = () => {
             queryClient.invalidateQueries({ queryKey: queryKeys.ai.conversations.detail(conversationId) });
             queryClient.invalidateQueries({ queryKey: queryKeys.ai.conversations.lists() });
         },
-        onError: (error, { conversationId }, context) => {
+        onError: (error: Error, { conversationId }, context) => {
             console.error('❌ useSendMessage - onError:', error);
             
             // Rollback on error
@@ -219,7 +219,7 @@ export const useDeleteConversation = () => {
     return useMutation({
         mutationKey: ['delete_conversation'],
         mutationFn: (id: string) => aiService.deleteConversation(id),
-        onMutate: async (id) => {
+        onMutate: async (id: string) => {
             // Cancel outgoing refetches
             await queryClient.cancelQueries({ queryKey: queryKeys.ai.conversations.detail(id) });
 
@@ -229,7 +229,7 @@ export const useDeleteConversation = () => {
             // Optimistically remove from lists
             const listQueries = queryClient.getQueriesData({ queryKey: queryKeys.ai.conversations.lists() });
             listQueries.forEach(([queryKey]) => {
-                optimisticUpdates.updateList([...queryKey], { id } as any, 'delete');
+                optimisticUpdates.updateList([...queryKey], { id } as Conversation, 'delete');
             });
 
             // Remove from cache
@@ -238,7 +238,7 @@ export const useDeleteConversation = () => {
 
             return { previousConversation, id };
         },
-        onError: (error, id, context) => {
+        onError: (error: Error, id: string, context) => {
             // Rollback on error
             if (context?.previousConversation) {
                 queryClient.setQueryData(queryKeys.ai.conversations.detail(id), context.previousConversation);
