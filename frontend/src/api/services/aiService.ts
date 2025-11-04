@@ -16,10 +16,6 @@ class AIService {
     return apiClient.get<PaginatedResponse<Conversation>>(`${this.baseUrl}/conversations/`, { params });
   }
 
-  async getConversation(conversationId: string): Promise<Conversation> {
-    return apiClient.get<Conversation>(`${this.baseUrl}/conversations/${conversationId}/`);
-  }
-
   async getConversationMessages(conversationId: string): Promise<Message[]> {
     return apiClient.get<Message[]>(`${this.baseUrl}/conversations/${conversationId}/messages/`);
   }
@@ -33,8 +29,6 @@ class AIService {
   }
 
   async sendMessage(conversationId: string, data: SendMessageData): Promise<SendMessageResponse> {
-    console.log('🚀 Sending message to:', conversationId, data);
-    
     const response = await apiClient.post<SendMessageResponse>(
       `${this.baseUrl}/conversations/${conversationId}/send_message/`, 
       {
@@ -44,7 +38,6 @@ class AIService {
       }
     );
 
-    // Validate response
     if (!response.response) {
       throw new Error('AI service returned empty response');
     }

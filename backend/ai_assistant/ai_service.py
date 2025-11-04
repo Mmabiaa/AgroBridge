@@ -3,7 +3,7 @@ import json
 import logging
 from django.conf import settings
 from django.utils import timezone
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from .models import ChatConversation, ChatMessage, AIRecommendation, KnowledgeBase
 
 logger = logging.getLogger(__name__)
@@ -15,10 +15,6 @@ class AIService:
     """
 
     def __init__(self):
-        if not settings.OPENAI_API_KEY:
-            logger.error("OpenAI API key is not configured")
-            raise ValueError("OpenAI API key is not configured")
-        
         self.client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
         self.model_name = "gpt-4o-mini"
         self.max_tokens = 1000
@@ -26,13 +22,11 @@ class AIService:
     # -------------------------------------------------------------------------
     # 🧠 Generate AI Text Response
     # -------------------------------------------------------------------------
-    def _call_ai_model(self, messages: List[Dict[str, str]]) -> Dict[str, Any]:
+    def _call_ai_model(self, messages: List[Dict]) -> Dict:
         """
         Call OpenAI ChatCompletion API to generate response
         """
         try:
-            logger.info(f"Calling OpenAI API with model: {self.model_name}, messages: {len(messages)}")
-            
             response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
@@ -43,12 +37,6 @@ class AIService:
 
             choice = response.choices[0]
             content = choice.message.content
-
-            if not content:
-                logger.error("OpenAI returned empty content")
-                raise Exception("AI service returned empty response")
-
-            logger.info(f"OpenAI response successful, tokens used: {response.usage.total_tokens}")
 
             return {
                 'content': content,
@@ -64,11 +52,11 @@ class AIService:
 
         except openai.RateLimitError as e:
             logger.error(f"OpenAI rate limit exceeded: {str(e)}")
-            raise Exception("AI service is currently busy. Please try again in a few moments.")
+            raise Exception("OpenAI rate limit exceeded. Please try again in a few moments.")
 
         except openai.BadRequestError as e:
             logger.error(f"OpenAI bad request: {str(e)}")
-            raise Exception(f"Invalid request to AI service: {str(e)}")
+            raise Exception(f"Invalid request: {str(e)}")
 
         except openai.AuthenticationError as e:
             logger.error(f"OpenAI authentication failed: {str(e)}")
@@ -76,11 +64,7 @@ class AIService:
 
         except openai.APIConnectionError as e:
             logger.error(f"OpenAI API connection error: {str(e)}")
-            raise Exception("Failed to connect to AI service. Please check your connection and try again.")
-
-        except openai.InternalServerError as e:
-            logger.error(f"OpenAI internal server error: {str(e)}")
-            raise Exception("AI service is experiencing internal issues. Please try again later.")
+            raise Exception("Failed to connect to AI service. Please check your connection.")
 
         except Exception as e:
             logger.error(f"OpenAI chat completion failed: {str(e)}")
@@ -89,12 +73,11 @@ class AIService:
     # -------------------------------------------------------------------------
     # 🎙️ Real Speech-to-Text (Transcription)
     # -------------------------------------------------------------------------
-    def _transcribe_audio(self, audio_file) -> Dict[str, Any]:
+    def _transcribe_audio(self, audio_file) -> Dict:
         """
         Transcribe audio to text using OpenAI Whisper model
         """
         try:
-            logger.info("Starting audio transcription")
             with audio_file.open("rb") as audio:
                 transcription = self.client.audio.transcriptions.create(
                     model="whisper-1",
@@ -110,12 +93,12 @@ class AIService:
 
         except Exception as e:
             logger.error(f"Audio transcription failed: {str(e)}")
-            raise Exception(f"Audio transcription failed: {str(e)}")
+            raise
 
     # -------------------------------------------------------------------------
     # 🔊 Real Text-to-Speech (TTS)
     # -------------------------------------------------------------------------
-    def _synthesize_speech(self, text: str, language: str = 'en') -> Dict[str, Any]:
+    def _synthesize_speech(self, text: str, language: str = 'en') -> Dict:
         """
         Generate speech from text using OpenAI TTS model
         """
@@ -136,56 +119,44 @@ class AIService:
 
         except Exception as e:
             logger.error(f"Speech synthesis failed: {str(e)}")
-            raise Exception(f"Speech synthesis failed: {str(e)}")
+            raise
 
-    def generate_response(self, message: str, conversation: Any, user: Any) -> Dict[str, Any]:
+    def generate_response(self, message: str, conversation, user) -> Dict:
         """
         Generate AI response for a user message
         """
-        try:
-            logger.info(f"Generating AI response for conversation {conversation.id}, user {user.id}")
-            
-            # Build conversation history
-            messages = self._build_conversation_history(conversation)
-            
-            # Add system prompt for agriculture
-            system_prompt = {
-                'role': 'system',
-                'content': '''You are AgriGPT, an expert agricultural advisor specializing in farming practices, 
-                crop management, pest control, soil health, and sustainable agriculture. Provide practical, 
-                actionable advice based on agricultural best practices. Be concise, helpful, and supportive.'''
-            }
-            
-            # Add user message
-            messages.insert(0, system_prompt)
-            messages.append({
-                'role': 'user',
-                'content': message
-            })
-            
-            # Call OpenAI API (will raise exception if fails)
-            ai_response = self._call_ai_model(messages)
-            
-            logger.info(f"AI response generated successfully, length: {len(ai_response['content'])}")
-            
-            return {
-                'response': ai_response['content'],
-                'tokens_used': ai_response['tokens_used'],
-                'confidence_score': ai_response['confidence_score'],
-                'model_used': self.model_name,
-                'metadata': ai_response['metadata']
-            }
-            
-        except Exception as e:
-            logger.error(f"AI response generation failed: {str(e)}")
-            # Try fallback response
-            fallback_response = self._get_agricultural_fallback_response(message)
-            logger.info("Using fallback response")
-            return fallback_response
+        # Build conversation history
+        messages = self._build_conversation_history(conversation)
+        
+        # Add system prompt for agriculture
+        system_prompt = {
+            'role': 'system',
+            'content': '''You are AgriGPT, an expert agricultural advisor specializing in farming practices, 
+            crop management, pest control, soil health, and sustainable agriculture. Provide practical, 
+            actionable advice based on agricultural best practices. Be concise, helpful, and supportive.'''
+        }
+        
+        # Add user message
+        messages.insert(0, system_prompt)
+        messages.append({
+            'role': 'user',
+            'content': message
+        })
+        
+        # Call OpenAI API (will raise exception if fails)
+        ai_response = self._call_ai_model(messages)
+        
+        return {
+            'response': ai_response['content'],
+            'tokens_used': ai_response['tokens_used'],
+            'confidence_score': ai_response['confidence_score'],
+            'model_used': self.model_name,
+            'metadata': ai_response['metadata']
+        }
 
-    def _build_conversation_history(self, conversation: Any) -> List[Dict[str, str]]:
+    def _build_conversation_history(self, conversation) -> List[Dict]:
         """Build conversation history from messages"""
-        messages: List[Dict[str, str]] = []
+        messages = []
         
         # Get last 10 messages for context
         recent_messages = conversation.messages.order_by('created_at')[:10]
@@ -201,7 +172,7 @@ class AIService:
     # -------------------------------------------------------------------------
     # 🎯 Generate Recommendations
     # -------------------------------------------------------------------------
-    def generate_recommendations(self, conversation: Any, user: Any, message_content: str) -> List[Dict[str, Any]]:
+    def generate_recommendations(self, conversation, user, message_content: str) -> List[Dict]:
         """
         Generate AI-powered recommendations based on conversation context
         """
@@ -230,7 +201,7 @@ class AIService:
             recommendations_text = response.choices[0].message.content
             
             # Parse recommendations (simple parsing - you might want more sophisticated parsing)
-            recommendations: List[Dict[str, Any]] = []
+            recommendations = []
             lines = recommendations_text.split('\n')
             
             for line in lines:
@@ -267,7 +238,7 @@ class AIService:
     # -------------------------------------------------------------------------
     # 🔄 Fallback Response
     # -------------------------------------------------------------------------
-    def _get_agricultural_fallback_response(self, user_message: str) -> Dict[str, Any]:
+    def _get_agricultural_fallback_response(self, user_message: str) -> Dict:
         """
         Provide fallback responses when OpenAI API fails
         """
@@ -287,7 +258,6 @@ class AIService:
                     'content': response,
                     'tokens_used': 0,
                     'confidence_score': 0.5,
-                    'model_used': 'fallback',
                     'metadata': {'fallback': True}
                 }
         
@@ -295,14 +265,13 @@ class AIService:
             'content': fallback_responses['general'],
             'tokens_used': 0,
             'confidence_score': 0.5,
-            'model_used': 'fallback',
             'metadata': {'fallback': True}
         }
 
     # -------------------------------------------------------------------------
     # 🎙️ Voice Interaction Processing
     # -------------------------------------------------------------------------
-    def process_voice_interaction(self, voice_interaction: Any) -> None:
+    def process_voice_interaction(self, voice_interaction):
         """
         Process voice interaction (transcribe + generate response)
         """

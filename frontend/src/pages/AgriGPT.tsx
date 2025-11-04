@@ -21,14 +21,29 @@ interface Message {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
-  created_at: string;
-  conversation?: string;
+  timestamp: string;
+  conversation_id: string;
   message_type?: string;
   tokens_used?: number;
   processing_time_ms?: number;
   confidence_score?: number;
   model_used?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, string>;
+}
+
+interface Conversation {
+  id: string;
+  title: string;
+  conversation_type: string;
+  status: string;
+  context_data?: Record<string, unknown>;
+  language: string;
+  voice_enabled: boolean;
+  message_count: number;
+  total_tokens_used: number;
+  created_at: string;
+  updated_at: string;
+  last_activity: string;
 }
 
 export default function AgriGPT() {
@@ -71,7 +86,6 @@ export default function AgriGPT() {
     
     if (currentConversationId && sendMessageMutation.isPending) {
       console.log('🔄 Setting up auto-refetch for conversation:', currentConversationId);
-      // Only refetch when we're waiting for a response
       interval = setInterval(() => {
         console.log('🔄 Auto-refetching messages...');
         refetchMessages();
@@ -96,7 +110,7 @@ export default function AgriGPT() {
       hasConversation: !!currentConversationId 
     });
     
-    setInputMessage(''); // Clear input immediately for better UX
+    setInputMessage('');
 
     try {
       let conversationId = currentConversationId;
@@ -137,6 +151,7 @@ export default function AgriGPT() {
         refetchMessages();
       }, 500);
       
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('❌ handleSendMessage - Error:', error);
       setInputMessage(messageContent); // Restore message on error
@@ -201,7 +216,7 @@ export default function AgriGPT() {
         title: "Conversation Deleted",
         description: "The conversation has been removed",
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('❌ Error deleting conversation:', error);
       toast({
         title: "Error",
@@ -286,7 +301,7 @@ export default function AgriGPT() {
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      {conversations.map((conv) => (
+                      {conversations.map((conv: Conversation) => (
                         <div
                           key={conv.id}
                           onClick={() => loadConversation(conv.id)}
@@ -310,7 +325,7 @@ export default function AgriGPT() {
                             onClick={(e) => handleDeleteConversation(conv.id, e)}
                             disabled={deleteConversationMutation.isPending}
                           >
-                            {deleteConversationMutation.isPending && deleteConversationMutation.variables === conv.id ? (
+                            {deleteConversationMutation.isPending ? (
                               <Loader2 className="h-3 w-3 animate-spin" />
                             ) : (
                               <Trash2 className="h-3 w-3" />
@@ -421,7 +436,7 @@ export default function AgriGPT() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {messages.map((message) => (
+                    {messages.map((message: Message) => (
                       <div
                         key={message.id}
                         className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
@@ -456,7 +471,7 @@ export default function AgriGPT() {
                             message.role === 'user' ? 'flex-row-reverse' : ''
                           }`}>
                             <span className="text-xs text-muted-foreground">
-                              {formatTimestamp(message.created_at)}
+                              {formatTimestamp(message.timestamp)}
                             </span>
                             
                             {message.role === 'assistant' && (
@@ -521,7 +536,7 @@ export default function AgriGPT() {
                   placeholder="Ask about crops, soil, pests, weather, market prices..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyPress}
                   disabled={isLoading}
                   className="flex-1 text-base h-12"
                 />

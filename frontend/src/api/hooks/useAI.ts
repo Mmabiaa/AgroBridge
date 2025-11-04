@@ -7,6 +7,7 @@ import type {
   SendMessageData,
   PaginatedResponse,
   ConversationListParams,
+  SendMessageResponse
 } from '../../types/ai';
 
 // Query keys
@@ -18,13 +19,6 @@ export const queryKeys = {
       detail: (id: string) => ['ai', 'conversations', 'detail', id] as const,
       messages: (conversationId: string) => ['ai', 'conversations', 'messages', conversationId] as const,
     },
-  },
-};
-
-// Optimistic updates helper
-export const optimisticUpdates = {
-  updateList: (queryKey: readonly unknown[], item: Conversation, action: 'create' | 'delete') => {
-    // Implementation for optimistic updates
   },
 };
 
@@ -68,38 +62,24 @@ export const useSendMessage = () => {
     mutationFn: async ({ conversationId, content }: { 
       conversationId: string; 
       content: string 
-    }) => {
-      console.log('🔍 useSendMessage - Sending message:', { 
-        conversationId, 
-        contentLength: content.length 
-      });
-      
+    }): Promise<SendMessageResponse> => {
       const response = await aiService.sendMessage(conversationId, { content });
       
       if (!response?.response) {
-        console.error('❌ useSendMessage - Invalid response:', response);
         throw new Error('AI service returned empty response');
       }
-      
-      console.log('✅ useSendMessage - Response received:', {
-        responseLength: response.response.length,
-        messageId: response.message_id
-      });
       
       return response;
     },
     onMutate: async ({ conversationId, content }) => {
-      // Cancel outgoing refetches
       await queryClient.cancelQueries({ 
         queryKey: queryKeys.ai.conversations.messages(conversationId) 
       });
 
-      // Snapshot previous messages
       const previousMessages = queryClient.getQueryData(
         queryKeys.ai.conversations.messages(conversationId)
       ) as Message[];
 
-      // Create optimistic user message
       const optimisticUserMessage: Message = {
         id: `temp-${Date.now()}`,
         role: 'user',
@@ -108,7 +88,6 @@ export const useSendMessage = () => {
         conversation_id: conversationId,
       };
 
-      // Optimistically add user message
       queryClient.setQueryData(
         queryKeys.ai.conversations.messages(conversationId),
         (old: Message[] = []) => [...old, optimisticUserMessage]
@@ -117,12 +96,6 @@ export const useSendMessage = () => {
       return { previousMessages };
     },
     onSuccess: (response, { conversationId }) => {
-      console.log('✅ useSendMessage - onSuccess:', { 
-        conversationId, 
-        messageId: response.message_id 
-      });
-
-      // Create assistant message from response
       const assistantMessage: Message = {
         id: response.message_id,
         role: 'assistant',
@@ -134,25 +107,19 @@ export const useSendMessage = () => {
         processing_time_ms: response.processing_time_ms,
       };
 
-      // Update messages with the actual response
       queryClient.setQueryData(
         queryKeys.ai.conversations.messages(conversationId),
         (old: Message[] = []) => {
-          // Remove temporary message and add actual response
           const withoutTemp = old.filter(msg => !msg.id.startsWith('temp-'));
           return [...withoutTemp, assistantMessage];
         }
       );
 
-      // Invalidate conversation to refresh counts
       queryClient.invalidateQueries({ 
         queryKey: queryKeys.ai.conversations.lists() 
       });
     },
-    onError: (error, { conversationId }, context) => {
-      console.error('❌ useSendMessage - Error:', error);
-      
-      // Rollback on error
+    onError: (error: Error, { conversationId }, context) => {
       if (context?.previousMessages) {
         queryClient.setQueryData(
           queryKeys.ai.conversations.messages(conversationId), 
