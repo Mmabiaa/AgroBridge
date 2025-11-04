@@ -53,6 +53,52 @@ export interface AIRecommendation {
   updated_at: string;
 }
 
+export interface VoiceInteraction {
+  id: string;
+  audio_input?: string;
+  audio_output?: string;
+  transcribed_text: string;
+  response_text: string;
+  status: string;
+  processing_time_ms: number;
+  transcription_confidence?: number;
+  input_language: string;
+  output_language: string;
+  voice_model: string;
+  error_message: string;
+  created_at: string;
+  completed_at?: string;
+}
+
+export interface AIUsageStatistics {
+  user: string;
+  date: string;
+  conversations_started: number;
+  messages_sent: number;
+  voice_interactions: number;
+  recommendations_received: number;
+  recommendations_implemented: number;
+  total_tokens_used: number;
+  features_used: Record<string, number>;
+  average_response_time_ms: number;
+  user_satisfaction_score?: number;
+}
+
+export interface KnowledgeBaseEntry {
+  id: string;
+  title: string;
+  content_type: string;
+  category: string;
+  content: string;
+  summary: string;
+  tags: string[];
+  keywords: string[];
+  relevance_score: number;
+  usage_count: number;
+  language: string;
+  created_at: string;
+}
+
 export interface SendMessageResponse {
   conversation_id: string;
   message_id: string;
@@ -79,6 +125,24 @@ export interface SendMessageRequest {
   message_type?: string;
   attachments?: unknown[];
   voice_file?: File;
+}
+
+export interface RecommendationFeedbackRequest {
+  user_rating: number;
+  user_feedback?: string;
+  status?: 'accepted' | 'rejected' | 'implemented';
+  implementation_notes?: string;
+}
+
+export interface VoiceTranscriptionRequest {
+  audio_file: File;
+  language?: string;
+}
+
+export interface VoiceSynthesisRequest {
+  text: string;
+  language?: string;
+  voice_model?: string;
 }
 
 // For React Query hooks
@@ -140,4 +204,83 @@ export interface ConversationListParams {
   conversation_type?: string;
   status?: string;
   search?: string;
+}
+
+export interface VoiceCommandResponse {
+  success: boolean;
+  transcription: {
+    text: string;
+    confidence: number;
+    language: string;
+  };
+  command_interpretation: Record<string, unknown>;
+  text_response: string;
+  audio_response: {
+    url?: string;
+    duration_seconds: number;
+  };
+  processing_summary: Record<string, unknown>;
+  interaction_id: string;
+  conversation_updated: boolean;
+}
+
+export interface VoiceStatistics {
+  total_interactions: number;
+  successful_interactions: number;
+  failed_interactions: number;
+  success_rate: number;
+  average_confidence: number;
+  average_processing_time_ms: number;
+  language_distribution: Array<{ input_language: string; count: number }>;
+}
+
+export interface VoiceModelsResponse {
+  language: string;
+  voice_models: string[];
+}
+
+export interface SupportedLanguagesResponse {
+  supported_languages: string[];
+}
+
+export interface UsageStatisticsResponse {
+  period_days: number;
+  summary: {
+    total_conversations: number;
+    total_messages: number;
+    total_voice_interactions: number;
+    total_recommendations: number;
+    implemented_recommendations: number;
+    total_tokens: number;
+    avg_satisfaction: number;
+  };
+  daily_stats: AIUsageStatistics[];
+}
+
+// Error types
+export interface APIError {
+  error: string;
+  code?: string;
+  details?: Record<string, unknown>;
+}
+
+// Query key types for React Query
+export interface QueryKeys {
+  ai: {
+    conversations: {
+      lists: () => readonly [string, string];
+      list: (params?: ConversationListParams) => readonly [string, string, ConversationListParams?];
+      detail: (id: string) => readonly [string, string, string];
+      messages: (conversationId: string) => readonly [string, string, string];
+    };
+    recommendations: {
+      lists: () => readonly [string, string];
+      list: (params?: string) => readonly [string, string, string?];
+      detail: (id: string) => readonly [string, string, string];
+    };
+    voice: {
+      interactions: () => readonly [string, string];
+      statistics: () => readonly [string, string];
+    };
+  };
 }

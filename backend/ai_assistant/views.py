@@ -57,47 +57,63 @@ class ChatConversationViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         """Create a new conversation with optional initial message"""
-        # Extract initial message if provided
-        initial_message = request.data.pop('initial_message', None)
-        
-        # Create conversation using standard serializer
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        conversation = serializer.save(user=request.user)
-        
-        # Add initial message if provided
-        if initial_message:
-            user_message = conversation.add_message(
-                role='user',
-                content=initial_message
-            )
+        try:
+            # Extract initial message if provided
+            initial_message = request.data.pop('initial_message', None)
             
-            # Generate AI response
-            try:
-                ai_service = AIService()
-                ai_response = ai_service.generate_response(
-                    message=initial_message,
+            # Create conversation using standard serializer
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            conversation = serializer.save(user=request.user)
+            
+            # Add initial message if provided
+            if initial_message:
+                user_message = ChatMessage.objects.create(
                     conversation=conversation,
-                    user=request.user
+                    role='user',
+                    content=initial_message,
+                    message_type='text'
                 )
                 
-                conversation.add_message(
-                    role='assistant',
-                    content=ai_response['response'],
-                    metadata=ai_response.get('metadata', {})
-                )
-                
-            except Exception as e:
-                logger.error(f"AI response generation failed: {str(e)}")
-                # Add fallback message
-                conversation.add_message(
-                    role='assistant',
-                    content="I'm here to help you with your agricultural questions. How can I assist you today?"
-                )
-        
-        # Return created conversation
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+                # Generate AI response
+                try:
+                    ai_service = AIService()
+                    ai_response = ai_service.generate_response(
+                        message=initial_message,
+                        conversation=conversation,
+                        user=request.user
+                    )
+                    
+                    ChatMessage.objects.create(
+                        conversation=conversation,
+                        role='assistant',
+                        content=ai_response['response'],
+                        message_type='text',
+                        tokens_used=ai_response.get('tokens_used', 0),
+                        model_used=ai_response.get('model_used', ''),
+                        confidence_score=ai_response.get('confidence_score', 0.8),
+                        metadata=ai_response.get('metadata', {})
+                    )
+                    
+                except Exception as e:
+                    logger.error(f"AI response generation failed during conversation creation: {str(e)}")
+                    # Add fallback message
+                    ChatMessage.objects.create(
+                        conversation=conversation,
+                        role='assistant',
+                        content="I'm here to help you with your agricultural questions. How can I assist you today?"
+                    )
+            
+            # Return created conversation
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+            
+        except Exception as e:
+            logger.error(f"Conversation creation failed: {str(e)}")
+            return Response(
+                {'error': 'Failed to create conversation'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=True, methods=['post'])
     def send_message(self, request, pk=None):
@@ -118,17 +134,34 @@ class ChatConversationViewSet(viewsets.ModelViewSet):
                 message_type='text'
             )
             
+            logger.info(f"Created user message for conversation {conversation.id}")
+            
             # Get AI response
             ai_service = AIService()
             start_time = time.time()
             
-            ai_response = ai_service.generate_response(
-                message=message_content,
-                conversation=conversation,
-                user=request.user
-            )
-            
-            processing_time = int((time.time() - start_time) * 1000)
+            try:
+                ai_response = ai_service.generate_response(
+                    message=message_content,
+                    conversation=conversation,
+                    user=request.user
+                )
+                
+                processing_time = int((time.time() - start_time) * 1000)
+                
+                logger.info(f"AI response generated successfully in {processing_time}ms")
+                
+            except Exception as ai_error:
+                logger.error(f"AI service failed: {str(ai_error)}")
+                # Use fallback response
+                ai_response = {
+                    'response': "I'm currently experiencing technical difficulties. Please try again in a moment or rephrase your question about agriculture, crops, or farming practices.",
+                    'tokens_used': 0,
+                    'confidence_score': 0.5,
+                    'model_used': 'fallback',
+                    'metadata': {'fallback': True, 'error': str(ai_error)}
+                }
+                processing_time = 0
             
             # Create AI message
             ai_message = ChatMessage.objects.create(
@@ -143,19 +176,30 @@ class ChatConversationViewSet(viewsets.ModelViewSet):
                 metadata=ai_response.get('metadata', {})
             )
             
-            # ✅ FIXED: Generate recommendations with correct parameter names
-            recommendations = ai_service.generate_recommendations(
-                conversation=conversation,
-                user=request.user,
-                message_content=message_content
-            )
+            logger.info(f"Created AI message with ID: {ai_message.id}")
             
-            logger.info(f"AI response generated for user {request.user.username}")
+            # Generate recommendations (handle gracefully if it fails)
+            recommendations = []
+            try:
+                recommendations = ai_service.generate_recommendations(
+                    conversation=conversation,
+                    user=request.user,
+                    message_content=message_content
+                )
+                logger.info(f"Generated {len(recommendations)} recommendations")
+            except Exception as rec_error:
+                logger.warning(f"Recommendation generation failed: {str(rec_error)}")
+                # Continue without recommendations
+            
+            # Update conversation stats
+            conversation.message_count = conversation.messages.count()
+            conversation.total_tokens_used += ai_response.get('tokens_used', 0)
+            conversation.save()
             
             # Serialize response
             response_data = {
-                'conversation_id': conversation.id,
-                'message_id': ai_message.id,
+                'conversation_id': str(conversation.id),
+                'message_id': str(ai_message.id),
                 'response': ai_response['response'],
                 'confidence_score': ai_response.get('confidence_score', 0.8),
                 'processing_time_ms': processing_time,
@@ -163,51 +207,75 @@ class ChatConversationViewSet(viewsets.ModelViewSet):
                 'recommendations': recommendations
             }
             
+            logger.info(f"Successfully completed send_message for conversation {conversation.id}")
+            
             return Response(response_data, status=status.HTTP_200_OK)
         
         except Exception as e:
-            logger.error(f"AI response generation failed: {str(e)}")
+            logger.error(f"Send message failed for conversation {conversation.id}: {str(e)}", exc_info=True)
             return Response(
-                {'error': 'Failed to generate AI response. Please try again.'},
+                {'error': 'Failed to process your message. Please try again.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
     @action(detail=True, methods=['get'])
     def messages(self, request, pk=None):
         """Get messages for this conversation"""
-        conversation = self.get_object()
-        messages = conversation.messages.all().order_by('created_at')
-        
-        serializer = ChatMessageSerializer(messages, many=True)
-        return Response(serializer.data)
+        try:
+            conversation = self.get_object()
+            messages = conversation.messages.all().order_by('created_at')
+            
+            serializer = ChatMessageSerializer(messages, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Failed to get messages: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve messages'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=True, methods=['post'])
     def archive(self, request, pk=None):
         """Archive a conversation"""
-        conversation = self.get_object()
-        conversation.status = 'archived'
-        conversation.save()
-        
-        return Response({'message': 'Conversation archived'})
+        try:
+            conversation = self.get_object()
+            conversation.status = 'archived'
+            conversation.save()
+            
+            return Response({'message': 'Conversation archived'})
+        except Exception as e:
+            logger.error(f"Failed to archive conversation: {str(e)}")
+            return Response(
+                {'error': 'Failed to archive conversation'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=False, methods=['post'])
     def start_conversation(self, request):
         """Start a new conversation with an initial message"""
-        serializer = ChatRequestSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Create new conversation
-        conversation = ChatConversation.objects.create(
-            user=request.user,
-            conversation_type=serializer.validated_data.get('conversation_type', 'general'),
-            context_data=serializer.validated_data.get('context_data', {}),
-            language=serializer.validated_data.get('language', 'en')
-        )
-        
-        # Send initial message
-        request.data['conversation_id'] = str(conversation.id)
-        return self.send_message(request, pk=conversation.id)
+        try:
+            serializer = ChatRequestSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Create new conversation
+            conversation = ChatConversation.objects.create(
+                user=request.user,
+                conversation_type=serializer.validated_data.get('conversation_type', 'general'),
+                context_data=serializer.validated_data.get('context_data', {}),
+                language=serializer.validated_data.get('language', 'en')
+            )
+            
+            # Send initial message
+            request.data['conversation_id'] = str(conversation.id)
+            return self.send_message(request, pk=conversation.id)
+            
+        except Exception as e:
+            logger.error(f"Start conversation failed: {str(e)}")
+            return Response(
+                {'error': 'Failed to start conversation'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class ChatMessageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -230,24 +298,32 @@ class ChatMessageViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=['post'])
     def feedback(self, request, pk=None):
         """Provide feedback on a message"""
-        message = self.get_object()
-        
-        serializer = MessageFeedbackSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Update message with feedback
-        if 'is_helpful' in serializer.validated_data:
-            message.is_helpful = serializer.validated_data['is_helpful']
-        
-        if 'user_rating' in serializer.validated_data:
-            message.user_rating = serializer.validated_data['user_rating']
-        
-        message.save()
-        
-        logger.info(f"Feedback provided for message {message.id}")
-        
-        return Response({'message': 'Feedback recorded'})
+        try:
+            message = self.get_object()
+            
+            serializer = MessageFeedbackSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Update message with feedback
+            if 'is_helpful' in serializer.validated_data:
+                message.is_helpful = serializer.validated_data['is_helpful']
+            
+            if 'user_rating' in serializer.validated_data:
+                message.user_rating = serializer.validated_data['user_rating']
+            
+            message.save()
+            
+            logger.info(f"Feedback provided for message {message.id}")
+            
+            return Response({'message': 'Feedback recorded'})
+            
+        except Exception as e:
+            logger.error(f"Feedback submission failed: {str(e)}")
+            return Response(
+                {'error': 'Failed to record feedback'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class AIRecommendationViewSet(viewsets.ModelViewSet):
@@ -269,59 +345,88 @@ class AIRecommendationViewSet(viewsets.ModelViewSet):
     
     def retrieve(self, request, *args, **kwargs):
         """Mark recommendation as viewed when retrieved"""
-        instance = self.get_object()
-        instance.mark_as_viewed()
-        
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        try:
+            instance = self.get_object()
+            instance.mark_as_viewed()
+            
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Failed to retrieve recommendation: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve recommendation'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=True, methods=['post'])
     def feedback(self, request, pk=None):
         """Provide feedback on a recommendation"""
-        recommendation = self.get_object()
-        
-        serializer = RecommendationFeedbackSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        action_type = serializer.validated_data['action']
-        feedback_text = serializer.validated_data.get('feedback_text', '')
-        user_rating = serializer.validated_data.get('user_rating')
-        
-        if action_type == 'implement':
-            recommendation.mark_as_implemented(feedback_text)
-        elif action_type == 'dismiss':
-            recommendation.dismiss(feedback_text)
-        elif action_type == 'rate' and user_rating:
-            recommendation.user_rating = user_rating
-            recommendation.user_feedback = feedback_text
-            recommendation.save()
-        
-        logger.info(f"Feedback provided for recommendation {recommendation.id}: {action_type}")
-        
-        return Response({'message': f'Recommendation {action_type}ed'})
+        try:
+            recommendation = self.get_object()
+            
+            serializer = RecommendationFeedbackSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            action_type = serializer.validated_data['action']
+            feedback_text = serializer.validated_data.get('feedback_text', '')
+            user_rating = serializer.validated_data.get('user_rating')
+            
+            if action_type == 'implement':
+                recommendation.mark_as_implemented(feedback_text)
+            elif action_type == 'dismiss':
+                recommendation.dismiss(feedback_text)
+            elif action_type == 'rate' and user_rating:
+                recommendation.user_rating = user_rating
+                recommendation.user_feedback = feedback_text
+                recommendation.save()
+            
+            logger.info(f"Feedback provided for recommendation {recommendation.id}: {action_type}")
+            
+            return Response({'message': f'Recommendation {action_type}ed'})
+            
+        except Exception as e:
+            logger.error(f"Recommendation feedback failed: {str(e)}")
+            return Response(
+                {'error': 'Failed to process feedback'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=False, methods=['get'])
     def active(self, request):
         """Get active recommendations"""
-        queryset = self.get_queryset().filter(
-            status='active',
-            valid_until__gt=timezone.now()
-        )
-        
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        try:
+            queryset = self.get_queryset().filter(
+                status='active',
+                valid_until__gt=timezone.now()
+            )
+            
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Failed to get active recommendations: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve recommendations'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=False, methods=['get'])
     def urgent(self, request):
         """Get urgent recommendations"""
-        queryset = self.get_queryset().filter(
-            status='active',
-            priority='urgent'
-        )
-        
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        try:
+            queryset = self.get_queryset().filter(
+                status='active',
+                priority='urgent'
+            )
+            
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Failed to get urgent recommendations: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve urgent recommendations'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class KnowledgeBaseViewSet(viewsets.ReadOnlyModelViewSet):
@@ -339,36 +444,50 @@ class KnowledgeBaseViewSet(viewsets.ReadOnlyModelViewSet):
     
     def retrieve(self, request, *args, **kwargs):
         """Increment usage count when article is viewed"""
-        instance = self.get_object()
-        instance.increment_usage()
-        
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        try:
+            instance = self.get_object()
+            instance.increment_usage()
+            
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Failed to retrieve knowledge base article: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve article'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=False, methods=['get'])
     def search(self, request):
         """Search knowledge base articles"""
-        query = request.query_params.get('q', '')
-        category = request.query_params.get('category')
-        
-        queryset = self.get_queryset()
-        
-        if query:
-            queryset = queryset.filter(
-                Q(title__icontains=query) |
-                Q(content__icontains=query) |
-                Q(summary__icontains=query) |
-                Q(tags__icontains=query)
+        try:
+            query = request.query_params.get('q', '')
+            category = request.query_params.get('category')
+            
+            queryset = self.get_queryset()
+            
+            if query:
+                queryset = queryset.filter(
+                    Q(title__icontains=query) |
+                    Q(content__icontains=query) |
+                    Q(summary__icontains=query) |
+                    Q(tags__icontains=query)
+                )
+            
+            if category:
+                queryset = queryset.filter(category=category)
+            
+            # Limit results
+            queryset = queryset[:20]
+            
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Knowledge base search failed: {str(e)}")
+            return Response(
+                {'error': 'Search failed'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        
-        if category:
-            queryset = queryset.filter(category=category)
-        
-        # Limit results
-        queryset = queryset[:20]
-        
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
 
 class VoiceInteractionViewSet(viewsets.ModelViewSet):
@@ -390,21 +509,28 @@ class VoiceInteractionViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         """Create voice interaction and process audio"""
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        voice_interaction = serializer.save()
-        
-        # Process voice interaction asynchronously
         try:
-            ai_service = AIService()
-            ai_service.process_voice_interaction(voice_interaction)
+            serializer = self.get_serializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            voice_interaction = serializer.save()
+            
+            # Process voice interaction asynchronously
+            try:
+                ai_service = AIService()
+                ai_service.process_voice_interaction(voice_interaction)
+            except Exception as e:
+                logger.error(f"Voice processing failed: {str(e)}")
+                voice_interaction.mark_failed(str(e))
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
-            logger.error(f"Voice processing failed: {str(e)}")
-            voice_interaction.mark_failed(str(e))
-        
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            logger.error(f"Voice interaction creation failed: {str(e)}")
+            return Response(
+                {'error': 'Failed to create voice interaction'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class AIAnalyticsViewSet(viewsets.ViewSet):
@@ -416,57 +542,71 @@ class AIAnalyticsViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def usage_stats(self, request):
         """Get user's AI usage statistics"""
-        days = int(request.query_params.get('days', 30))
-        start_date = timezone.now().date() - timedelta(days=days)
-        
-        stats = AIUsageStatistics.objects.filter(
-            user=request.user,
-            date__gte=start_date
-        ).order_by('date')
-        
-        serializer = AIUsageStatisticsSerializer(stats, many=True)
-        return Response(serializer.data)
+        try:
+            days = int(request.query_params.get('days', 30))
+            start_date = timezone.now().date() - timedelta(days=days)
+            
+            stats = AIUsageStatistics.objects.filter(
+                user=request.user,
+                date__gte=start_date
+            ).order_by('date')
+            
+            serializer = AIUsageStatisticsSerializer(stats, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Failed to get usage stats: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve usage statistics'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=False, methods=['get'])
     def summary(self, request):
         """Get summary of AI usage"""
-        # Total conversations
-        total_conversations = ChatConversation.objects.filter(
-            user=request.user
-        ).count()
-        
-        # Total messages
-        total_messages = ChatMessage.objects.filter(
-            conversation__user=request.user
-        ).count()
-        
-        # Active recommendations
-        active_recommendations = AIRecommendation.objects.filter(
-            user=request.user,
-            status='active'
-        ).count()
-        
-        # Average response time
-        avg_response_time = ChatMessage.objects.filter(
-            conversation__user=request.user,
-            role='assistant',
-            processing_time_ms__isnull=False
-        ).aggregate(avg_time=Avg('processing_time_ms'))['avg_time']
-        
-        # User satisfaction
-        avg_rating = ChatMessage.objects.filter(
-            conversation__user=request.user,
-            role='assistant',
-            user_rating__isnull=False
-        ).aggregate(avg_rating=Avg('user_rating'))['avg_rating']
-        
-        return Response({
-            'total_conversations': total_conversations,
-            'total_messages': total_messages,
-            'active_recommendations': active_recommendations,
-            'average_response_time_ms': avg_response_time,
-            'average_user_rating': avg_rating
-        })
+        try:
+            # Total conversations
+            total_conversations = ChatConversation.objects.filter(
+                user=request.user
+            ).count()
+            
+            # Total messages
+            total_messages = ChatMessage.objects.filter(
+                conversation__user=request.user
+            ).count()
+            
+            # Active recommendations
+            active_recommendations = AIRecommendation.objects.filter(
+                user=request.user,
+                status='active'
+            ).count()
+            
+            # Average response time
+            avg_response_time = ChatMessage.objects.filter(
+                conversation__user=request.user,
+                role='assistant',
+                processing_time_ms__isnull=False
+            ).aggregate(avg_time=Avg('processing_time_ms'))['avg_time']
+            
+            # User satisfaction
+            avg_rating = ChatMessage.objects.filter(
+                conversation__user=request.user,
+                role='assistant',
+                user_rating__isnull=False
+            ).aggregate(avg_rating=Avg('user_rating'))['avg_rating']
+            
+            return Response({
+                'total_conversations': total_conversations,
+                'total_messages': total_messages,
+                'active_recommendations': active_recommendations,
+                'average_response_time_ms': avg_response_time or 0,
+                'average_user_rating': avg_rating or 0
+            })
+        except Exception as e:
+            logger.error(f"Failed to get analytics summary: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve analytics'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class AIUsageStatisticsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -484,25 +624,32 @@ class AIUsageStatisticsViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=['get'])
     def summary(self, request):
         """Get usage summary for a period"""
-        days = int(request.query_params.get('days', 30))
-        
-        from datetime import timedelta
-        start_date = timezone.now().date() - timedelta(days=days)
-        
-        stats = self.get_queryset().filter(date__gte=start_date)
-        
-        summary = stats.aggregate(
-            total_conversations=models.Sum('conversations_started'),
-            total_messages=models.Sum('messages_sent'),
-            total_voice_interactions=models.Sum('voice_interactions'),
-            total_recommendations=models.Sum('recommendations_received'),
-            implemented_recommendations=models.Sum('recommendations_implemented'),
-            total_tokens=models.Sum('total_tokens_used'),
-            avg_satisfaction=models.Avg('user_satisfaction_score')
-        )
-        
-        return Response({
-            'period_days': days,
-            'summary': summary,
-            'daily_stats': AIUsageStatisticsSerializer(stats, many=True).data
-        })
+        try:
+            days = int(request.query_params.get('days', 30))
+            
+            from datetime import timedelta
+            start_date = timezone.now().date() - timedelta(days=days)
+            
+            stats = self.get_queryset().filter(date__gte=start_date)
+            
+            summary = stats.aggregate(
+                total_conversations=models.Sum('conversations_started'),
+                total_messages=models.Sum('messages_sent'),
+                total_voice_interactions=models.Sum('voice_interactions'),
+                total_recommendations=models.Sum('recommendations_received'),
+                implemented_recommendations=models.Sum('recommendations_implemented'),
+                total_tokens=models.Sum('total_tokens_used'),
+                avg_satisfaction=models.Avg('user_satisfaction_score')
+            )
+            
+            return Response({
+                'period_days': days,
+                'summary': summary,
+                'daily_stats': AIUsageStatisticsSerializer(stats, many=True).data
+            })
+        except Exception as e:
+            logger.error(f"Failed to get usage statistics summary: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve usage statistics'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
