@@ -101,9 +101,28 @@ export const useSendMessage = () => {
 
     return useMutation({
         mutationKey: ['send_message'],
-        mutationFn: ({ conversationId, content }: { conversationId: string; content: string }) =>
-            aiService.sendMessage(conversationId, { content }),
+        mutationFn: async ({ conversationId, content }: { conversationId: string; content: string }) => {
+            console.log('🔍 useSendMessage - Sending message:', { conversationId, contentLength: content.length });
+            
+            const response = await aiService.sendMessage(conversationId, { content });
+            
+            // Validate the response structure
+            if (!response || !response.response || !response.message_id) {
+                console.error('❌ useSendMessage - Invalid response format:', response);
+                throw new Error('Invalid response format from AI service');
+            }
+            
+            console.log('✅ useSendMessage - Response validated:', {
+                hasResponse: !!response.response,
+                responseLength: response.response.length,
+                messageId: response.message_id
+            });
+            
+            return response;
+        },
         onMutate: async ({ conversationId, content }) => {
+            console.log('🔄 useSendMessage - onMutate:', { conversationId });
+            
             // Cancel outgoing refetches
             await queryClient.cancelQueries({ queryKey: queryKeys.ai.conversations.messages(conversationId) });
 
@@ -131,36 +150,65 @@ export const useSendMessage = () => {
             return { previousMessages, conversationId };
         },
         onSuccess: (response, { conversationId, content }) => {
-            // Create assistant message from response
+            console.log('✅ useSendMessage - onSuccess:', { 
+                conversationId, 
+                messageId: response.message_id,
+                responseLength: response.response.length 
+            });
+
+            // Validate response before creating message
+            if (!response.response) {
+                console.error('❌ useSendMessage - AI response is empty');
+                throw new Error('AI response is empty');
+            }
+
             const assistantMessage: Message = {
                 id: response.message_id,
                 role: 'assistant',
                 content: response.response,
                 timestamp: new Date().toISOString(),
                 conversation_id: conversationId,
+                confidence_score: response.confidence_score,
+                tokens_used: response.tokens_used,
+                processing_time_ms: response.processing_time_ms,
             };
 
-            // Replace optimistic message with real assistant message
             queryClient.setQueryData(
                 queryKeys.ai.conversations.messages(conversationId),
                 (old: Message[] | undefined) => {
                     if (!old) return [assistantMessage];
-
-                    // Remove the optimistic message and add real assistant message
                     const withoutOptimistic = old.filter(msg => !msg.id.startsWith('temp-'));
                     return [...withoutOptimistic, assistantMessage];
                 }
             );
 
-            // Update conversation metadata
             queryClient.invalidateQueries({ queryKey: queryKeys.ai.conversations.detail(conversationId) });
             queryClient.invalidateQueries({ queryKey: queryKeys.ai.conversations.lists() });
         },
         onError: (error, { conversationId }, context) => {
+            console.error('❌ useSendMessage - onError:', error);
+            
             // Rollback on error
             if (context?.previousMessages) {
+                console.log('🔄 useSendMessage - Rolling back messages');
                 queryClient.setQueryData(queryKeys.ai.conversations.messages(conversationId), context.previousMessages);
             }
+            
+            // Show specific error message
+            const errorMessage = error.message.includes('Invalid response format') 
+                ? 'The AI service returned an unexpected response format'
+                : error.message.includes('empty response')
+                ? 'AI service returned empty response'
+                : 'Failed to send message';
+                
+            console.error('💬 useSendMessage - Error message:', errorMessage);
+        },
+        onSettled: (data, error, variables) => {
+            console.log('🔚 useSendMessage - onSettled:', { 
+                hasData: !!data, 
+                hasError: !!error,
+                conversationId: variables.conversationId 
+            });
         },
     });
 };

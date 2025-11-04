@@ -90,6 +90,18 @@ export interface SendMessageRequest {
   voice_file?: File;
 }
 
+export interface SendMessageResponse {
+  conversation_id: string;
+  message_id: string;
+  response: string;
+  confidence_score: number;
+  processing_time_ms: number;
+  tokens_used: number;
+  recommendations: any[];
+  error?: string;
+  status?: string;
+}
+
 export interface RecommendationFeedbackRequest {
   user_rating: number;
   user_feedback?: string;
@@ -196,56 +208,67 @@ class AIService {
   async sendMessage(
     conversationId: string, 
     data: SendMessageRequest
-  ): Promise<{
-    conversation_id: string;
-    message_id: string;
-    response: string;
-    confidence_score: number;
-    processing_time_ms: number;
-    tokens_used: number;
-    recommendations: any[];
-  }> {
-    // If there's a voice file, use FormData
-    if (data.voice_file) {
-      const formData = new FormData();
-      formData.append('content', data.content);
-      
-      if (data.message_type) {
-        formData.append('message_type', data.message_type);
-      }
-      
-      if (data.attachments) {
-        formData.append('attachments', JSON.stringify(data.attachments));
-      }
-      
-      formData.append('voice_file', data.voice_file);
+  ): Promise<SendMessageResponse> {
+    try {
+      let response: SendMessageResponse;
 
-      return apiClient.post<{
-        conversation_id: string;
-        message_id: string;
-        response: string;
-        confidence_score: number;
-        processing_time_ms: number;
-        tokens_used: number;
-        recommendations: any[];
-      }>(`${this.baseUrl}/conversations/${conversationId}/send_message/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      // If there's a voice file, use FormData
+      if (data.voice_file) {
+        const formData = new FormData();
+        formData.append('content', data.content);
+        
+        if (data.message_type) {
+          formData.append('message_type', data.message_type);
+        }
+        
+        if (data.attachments) {
+          formData.append('attachments', JSON.stringify(data.attachments));
+        }
+        
+        formData.append('voice_file', data.voice_file);
+
+        response = await apiClient.post<SendMessageResponse>(
+          `${this.baseUrl}/conversations/${conversationId}/send_message/`, 
+          formData, 
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        );
+      } else {
+        // For text messages, use JSON
+        response = await apiClient.post<SendMessageResponse>(
+          `${this.baseUrl}/conversations/${conversationId}/send_message/`, 
+          {
+            content: data.content,
+            message_type: data.message_type || 'text',
+            attachments: data.attachments || []
+          }
+        );
+      }
+
+      console.log('🔍 AI Service - Send Message Response:', {
+        status: 'success',
+        hasResponse: !!response.response,
+        responseLength: response.response?.length,
+        messageId: response.message_id,
+        conversationId: response.conversation_id
       });
-    } else {
-      // For text messages, use JSON
-      return apiClient.post<{
-        conversation_id: string;
-        message_id: string;
-        response: string;
-        confidence_score: number;
-        processing_time_ms: number;
-        tokens_used: number;
-        recommendations: any[];
-      }>(`${this.baseUrl}/conversations/${conversationId}/send_message/`, {
-        content: data.content,
-        message_type: data.message_type || 'text',
-        attachments: data.attachments || []
-      });
+
+      // Validate required fields
+      if (!response.response) {
+        console.error('❌ AI Service - Invalid response: missing response field', response);
+        throw new Error('Invalid response: AI service returned empty response');
+      }
+
+      if (!response.message_id) {
+        console.error('❌ AI Service - Invalid response: missing message_id', response);
+        throw new Error('Invalid response: missing message ID');
+      }
+
+      return response;
+    } catch (error) {
+      console.error('❌ AI Service - Send message error:', error);
+      throw error;
     }
   }
 

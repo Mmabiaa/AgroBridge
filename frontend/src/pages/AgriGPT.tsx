@@ -65,21 +65,37 @@ export default function AgriGPT() {
     scrollToBottom();
   }, [messages]);
 
-  // Auto-refetch messages when sending
+  // Fixed auto-refetch to only run when waiting for response
   useEffect(() => {
-    if (currentConversationId && !sendMessageMutation.isPending) {
-      const interval = setInterval(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (currentConversationId && sendMessageMutation.isPending) {
+      console.log('🔄 Setting up auto-refetch for conversation:', currentConversationId);
+      // Only refetch when we're waiting for a response
+      interval = setInterval(() => {
+        console.log('🔄 Auto-refetching messages...');
         refetchMessages();
       }, 2000);
-      
-      return () => clearInterval(interval);
     }
+    
+    return () => {
+      if (interval) {
+        console.log('🧹 Clearing auto-refetch interval');
+        clearInterval(interval);
+      }
+    };
   }, [currentConversationId, sendMessageMutation.isPending, refetchMessages]);
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
     const messageContent = inputMessage.trim();
+    console.log('🚀 handleSendMessage - Starting:', { 
+      messageContent, 
+      currentConversationId,
+      hasConversation: !!currentConversationId 
+    });
+    
     setInputMessage(''); // Clear input immediately for better UX
 
     try {
@@ -87,6 +103,7 @@ export default function AgriGPT() {
 
       // Create new conversation if none exists
       if (!conversationId) {
+        console.log('📝 Creating new conversation...');
         const newConversation = await createConversationMutation.mutateAsync({
           title: messageContent.slice(0, 50),
           conversation_type: 'farming_advice',
@@ -94,24 +111,49 @@ export default function AgriGPT() {
         });
         conversationId = newConversation.id;
         setCurrentConversationId(conversationId);
+        console.log('✅ New conversation created:', conversationId);
       }
 
-      // Send message
-      await sendMessageMutation.mutateAsync({
+      console.log('📤 Sending message to conversation:', conversationId);
+      const response = await sendMessageMutation.mutateAsync({
         conversationId,
         content: messageContent
       });
 
+      // Check if we got a valid AI response
+      if (!response?.response) {
+        console.error('❌ handleSendMessage - AI service returned empty response');
+        throw new Error('AI service returned empty response');
+      }
+
+      console.log('✅ Message sent successfully:', {
+        responseLength: response.response.length,
+        messageId: response.message_id
+      });
+
       // Force immediate refetch of messages
       setTimeout(() => {
+        console.log('🔄 Manually refetching messages after success');
         refetchMessages();
       }, 500);
       
     } catch (error: any) {
-      console.error('Error sending message:', error);
+      console.error('❌ handleSendMessage - Error:', error);
       setInputMessage(messageContent); // Restore message on error
+
+      let errorMessage = 'Failed to send message';
       
-      const errorMessage = error?.response?.data?.error || error?.message || 'Failed to send message';
+      if (error?.message?.includes('empty response')) {
+        errorMessage = 'AI service is not generating responses currently. Please try again.';
+      } else if (error?.message?.includes('Invalid response format')) {
+        errorMessage = 'Service returned unexpected data format. Please contact support.';
+      } else if (error?.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
+      console.error('💬 Displaying error to user:', errorMessage);
       
       toast({
         title: "Error",
@@ -129,10 +171,12 @@ export default function AgriGPT() {
   };
 
   const loadConversation = (conversationId: string) => {
+    console.log('💾 Loading conversation:', conversationId);
     setCurrentConversationId(conversationId);
   };
 
   const startNewConversation = () => {
+    console.log('🆕 Starting new conversation');
     setCurrentConversationId(null);
     setInputMessage('');
     
@@ -146,6 +190,7 @@ export default function AgriGPT() {
     event.stopPropagation();
     
     try {
+      console.log('🗑️ Deleting conversation:', conversationId);
       await deleteConversationMutation.mutateAsync(conversationId);
       
       if (currentConversationId === conversationId) {
@@ -157,7 +202,7 @@ export default function AgriGPT() {
         description: "The conversation has been removed",
       });
     } catch (error) {
-      console.error('Error deleting conversation:', error);
+      console.error('❌ Error deleting conversation:', error);
       toast({
         title: "Error",
         description: "Failed to delete conversation",
@@ -199,6 +244,14 @@ export default function AgriGPT() {
       minute: '2-digit'
     });
   };
+
+  console.log('🔍 Component State:', {
+    currentConversationId,
+    messagesCount: messages.length,
+    isLoading,
+    sendMessagePending: sendMessageMutation.isPending,
+    createConversationPending: createConversationMutation.isPending
+  });
 
   return (
     <div className="container mx-auto p-4 max-w-6xl h-[calc(100vh-100px)]">
@@ -297,6 +350,9 @@ export default function AgriGPT() {
                 {currentConversationId && (
                   <Badge variant="outline" className="text-xs">
                     {messages.length} messages
+                    {sendMessageMutation.isPending && (
+                      <Loader2 className="h-3 w-3 animate-spin ml-1" />
+                    )}
                   </Badge>
                 )}
               </div>
@@ -485,6 +541,9 @@ export default function AgriGPT() {
               </div>
               <div className="text-xs text-muted-foreground text-center mt-2">
                 Powered by OpenAI GPT-4 • Real-time agricultural expertise
+                {sendMessageMutation.isPending && (
+                  <span className="ml-2 text-primary">• Generating response...</span>
+                )}
               </div>
             </div>
           </Card>
