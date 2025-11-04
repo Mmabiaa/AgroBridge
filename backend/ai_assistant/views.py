@@ -8,6 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q, Count, Avg
 from django.utils import timezone
+from django.core.cache import cache  # 🆕 ADD THIS IMPORT
+from django.db import transaction     # 🆕 ADD THIS IMPORT
 from datetime import timedelta
 import logging
 import time
@@ -26,7 +28,6 @@ from .serializers import (
 )
 from .ai_service import AIService
 from .permissions import IsOwnerOrReadOnly
-from django.db import models
 
 logger = logging.getLogger(__name__)
 
@@ -125,91 +126,104 @@ class ChatConversationViewSet(viewsets.ModelViewSet):
         if not message_content:
             return Response({'error': 'Message content is required'}, status=status.HTTP_400_BAD_REQUEST)
         
+        # 🔒 ADD DEDUPLICATION - Prevent multiple requests for same message
+        cache_key = f"msg_lock_{conversation.id}_{hash(message_content)}"
+        if cache.get(cache_key):
+            logger.warning(f"Duplicate message detected for conversation {conversation.id}")
+            return Response(
+                {'error': 'Message is already being processed'}, 
+                status=status.HTTP_409_CONFLICT
+            )
+        
+        # Set lock for 10 seconds
+        cache.set(cache_key, True, 10)
+        
         try:
-            # Create user message
-            user_message = ChatMessage.objects.create(
-                conversation=conversation,
-                role='user',
-                content=message_content,
-                message_type='text'
-            )
-            
-            logger.info(f"Created user message for conversation {conversation.id}")
-            
-            # Get AI response
-            ai_service = AIService()
-            start_time = time.time()
-            
-            try:
-                ai_response = ai_service.generate_response(
-                    message=message_content,
+            # Use atomic transaction to ensure data consistency
+            with transaction.atomic():
+                # Create user message
+                user_message = ChatMessage.objects.create(
                     conversation=conversation,
-                    user=request.user
+                    role='user',
+                    content=message_content,
+                    message_type='text'
                 )
                 
-                processing_time = int((time.time() - start_time) * 1000)
+                logger.info(f"Created user message for conversation {conversation.id}")
                 
-                logger.info(f"AI response generated successfully in {processing_time}ms")
+                # Get AI response
+                ai_service = AIService()
+                start_time = time.time()
                 
-            except Exception as ai_error:
-                logger.error(f"AI service failed: {str(ai_error)}")
-                # Use fallback response
-                ai_response = {
-                    'response': "I'm currently experiencing technical difficulties. Please try again in a moment or rephrase your question about agriculture, crops, or farming practices.",
-                    'tokens_used': 0,
-                    'confidence_score': 0.5,
-                    'model_used': 'fallback',
-                    'metadata': {'fallback': True, 'error': str(ai_error)}
+                try:
+                    ai_response = ai_service.generate_response(
+                        message=message_content,
+                        conversation=conversation,
+                        user=request.user
+                    )
+                    
+                    processing_time = int((time.time() - start_time) * 1000)
+                    logger.info(f"AI response generated successfully in {processing_time}ms")
+                    
+                except Exception as ai_error:
+                    logger.error(f"AI service failed: {str(ai_error)}")
+                    # Use fallback response
+                    ai_response = {
+                        'response': "I'm currently experiencing technical difficulties. Please try again in a moment or rephrase your question about agriculture, crops, or farming practices.",
+                        'tokens_used': 0,
+                        'confidence_score': 0.5,
+                        'model_used': 'fallback',
+                        'metadata': {'fallback': True, 'error': str(ai_error)}
+                    }
+                    processing_time = 0
+                
+                # Create AI message
+                ai_message = ChatMessage.objects.create(
+                    conversation=conversation,
+                    role='assistant',
+                    content=ai_response['response'],
+                    message_type='text',
+                    tokens_used=ai_response.get('tokens_used', 0),
+                    processing_time_ms=processing_time,
+                    model_used=ai_response.get('model_used', ''),
+                    confidence_score=ai_response.get('confidence_score', 0.8),
+                    metadata=ai_response.get('metadata', {})
+                )
+                
+                logger.info(f"Created AI message with ID: {ai_message.id}")
+                
+                # Generate recommendations (handle gracefully if it fails)
+                recommendations = []
+                try:
+                    recommendations = ai_service.generate_recommendations(
+                        conversation=conversation,
+                        user=request.user,
+                        message_content=message_content
+                    )
+                    logger.info(f"Generated {len(recommendations)} recommendations")
+                except Exception as rec_error:
+                    logger.warning(f"Recommendation generation failed: {str(rec_error)}")
+                    # Continue without recommendations
+                
+                # Update conversation stats
+                conversation.message_count = conversation.messages.count()
+                conversation.total_tokens_used += ai_response.get('tokens_used', 0)
+                conversation.save()
+                
+                # Serialize response
+                response_data = {
+                    'conversation_id': str(conversation.id),
+                    'message_id': str(ai_message.id),
+                    'response': ai_response['response'],
+                    'confidence_score': ai_response.get('confidence_score', 0.8),
+                    'processing_time_ms': processing_time,
+                    'tokens_used': ai_response.get('tokens_used', 0),
+                    'recommendations': recommendations
                 }
-                processing_time = 0
-            
-            # Create AI message
-            ai_message = ChatMessage.objects.create(
-                conversation=conversation,
-                role='assistant',
-                content=ai_response['response'],
-                message_type='text',
-                tokens_used=ai_response.get('tokens_used', 0),
-                processing_time_ms=processing_time,
-                model_used=ai_response.get('model_used', ''),
-                confidence_score=ai_response.get('confidence_score', 0.8),
-                metadata=ai_response.get('metadata', {})
-            )
-            
-            logger.info(f"Created AI message with ID: {ai_message.id}")
-            
-            # Generate recommendations (handle gracefully if it fails)
-            recommendations = []
-            try:
-                recommendations = ai_service.generate_recommendations(
-                    conversation=conversation,
-                    user=request.user,
-                    message_content=message_content
-                )
-                logger.info(f"Generated {len(recommendations)} recommendations")
-            except Exception as rec_error:
-                logger.warning(f"Recommendation generation failed: {str(rec_error)}")
-                # Continue without recommendations
-            
-            # Update conversation stats
-            conversation.message_count = conversation.messages.count()
-            conversation.total_tokens_used += ai_response.get('tokens_used', 0)
-            conversation.save()
-            
-            # Serialize response
-            response_data = {
-                'conversation_id': str(conversation.id),
-                'message_id': str(ai_message.id),
-                'response': ai_response['response'],
-                'confidence_score': ai_response.get('confidence_score', 0.8),
-                'processing_time_ms': processing_time,
-                'tokens_used': ai_response.get('tokens_used', 0),
-                'recommendations': recommendations
-            }
-            
-            logger.info(f"Successfully completed send_message for conversation {conversation.id}")
-            
-            return Response(response_data, status=status.HTTP_200_OK)
+                
+                logger.info(f"Successfully completed send_message for conversation {conversation.id}")
+                
+                return Response(response_data, status=status.HTTP_200_OK)
         
         except Exception as e:
             logger.error(f"Send message failed for conversation {conversation.id}: {str(e)}", exc_info=True)
@@ -217,6 +231,12 @@ class ChatConversationViewSet(viewsets.ModelViewSet):
                 {'error': 'Failed to process your message. Please try again.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        finally:
+            # 🧹 Always clear the lock
+            try:
+                cache.delete(cache_key)
+            except Exception as cache_error:
+                logger.warning(f"Failed to clear cache lock: {str(cache_error)}")
     
     @action(detail=True, methods=['get'])
     def messages(self, request, pk=None):
@@ -276,7 +296,6 @@ class ChatConversationViewSet(viewsets.ModelViewSet):
                 {'error': 'Failed to start conversation'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
 
 class ChatMessageViewSet(viewsets.ReadOnlyModelViewSet):
     """

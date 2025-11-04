@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,6 +51,8 @@ export default function AgriGPT() {
   const { toast } = useToast();
   const [inputMessage, setInputMessage] = useState('');
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [isSending, setIsSending] = useState(false);
+  const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // React Query hooks
@@ -80,16 +82,17 @@ export default function AgriGPT() {
     scrollToBottom();
   }, [messages]);
 
-  // Fixed auto-refetch to only run when waiting for response
+  // 🔄 Fixed auto-refetch with better conditions
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
-    if (currentConversationId && sendMessageMutation.isPending) {
+    // Only refetch when we're actively waiting for a response
+    if (currentConversationId && isSending && !sendMessageMutation.isPending) {
       console.log('🔄 Setting up auto-refetch for conversation:', currentConversationId);
       interval = setInterval(() => {
         console.log('🔄 Auto-refetching messages...');
         refetchMessages();
-      }, 2000);
+      }, 1500); // Reduced from 2000ms to 1500ms
     }
     
     return () => {
@@ -98,18 +101,28 @@ export default function AgriGPT() {
         clearInterval(interval);
       }
     };
-  }, [currentConversationId, sendMessageMutation.isPending, refetchMessages]);
+  }, [currentConversationId, isSending, sendMessageMutation.isPending, refetchMessages]);
+
+  // 🛑 Generate unique request ID for deduplication
+  const generateRequestId = useCallback(() => {
+    return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }, []);
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return;
+    if (!inputMessage.trim() || isSending) return;
 
     const messageContent = inputMessage.trim();
     console.log('🚀 handleSendMessage - Starting:', { 
       messageContent, 
       currentConversationId,
-      hasConversation: !!currentConversationId 
+      hasConversation: !!currentConversationId,
+      isSending 
     });
     
+    // 🛑 Prevent multiple sends
+    setIsSending(true);
+    const requestId = generateRequestId();
+    setPendingRequestId(requestId);
     setInputMessage('');
 
     try {
@@ -129,9 +142,12 @@ export default function AgriGPT() {
       }
 
       console.log('📤 Sending message to conversation:', conversationId);
+      
+      // 🛑 Use request ID for deduplication
       const response = await sendMessageMutation.mutateAsync({
         conversationId,
-        content: messageContent
+        content: messageContent,
+        requestId // Pass request ID to backend
       });
 
       // Check if we got a valid AI response
@@ -142,19 +158,24 @@ export default function AgriGPT() {
 
       console.log('✅ Message sent successfully:', {
         responseLength: response.response.length,
-        messageId: response.message_id
+        messageId: response.message_id,
+        requestId
       });
 
       // Force immediate refetch of messages
       setTimeout(() => {
         console.log('🔄 Manually refetching messages after success');
         refetchMessages();
-      }, 500);
+      }, 300); // Reduced from 500ms to 300ms
       
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('❌ handleSendMessage - Error:', error);
-      setInputMessage(messageContent); // Restore message on error
+      
+      // Only restore message if this is the most recent request
+      if (pendingRequestId === requestId) {
+        setInputMessage(messageContent);
+      }
 
       let errorMessage = 'Failed to send message';
       
@@ -164,6 +185,8 @@ export default function AgriGPT() {
         errorMessage = 'Service returned unexpected data format. Please contact support.';
       } else if (error?.response?.data?.error) {
         errorMessage = error.response.data.error;
+      } else if (error?.message?.includes('already being processed')) {
+        errorMessage = 'Your message is already being processed. Please wait.';
       } else if (error?.message) {
         errorMessage = error.message;
       }
@@ -175,11 +198,15 @@ export default function AgriGPT() {
         description: errorMessage,
         variant: "destructive"
       });
+    } finally {
+      // 🛑 Reset sending state
+      setIsSending(false);
+      setPendingRequestId(null);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !isSending) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -226,10 +253,8 @@ export default function AgriGPT() {
     }
   };
 
-  const isLoading = 
-    sendMessageMutation.isPending || 
-    createConversationMutation.isPending ||
-    messagesLoading;
+  // 🎯 Use both local state and mutation state for loading
+  const isLoading = isSending || sendMessageMutation.isPending || createConversationMutation.isPending;
 
   const quickQuestions = [
     "How do I treat tomato leaf curl disease?",
@@ -264,6 +289,7 @@ export default function AgriGPT() {
     currentConversationId,
     messagesCount: messages.length,
     isLoading,
+    isSending,
     sendMessagePending: sendMessageMutation.isPending,
     createConversationPending: createConversationMutation.isPending
   });
@@ -290,7 +316,7 @@ export default function AgriGPT() {
                     onClick={startNewConversation}
                     className="w-full mb-4"
                     variant="outline"
-                    disabled={createConversationMutation.isPending}
+                    disabled={createConversationMutation.isPending || isSending}
                   >
                     + New Chat
                   </Button>
@@ -323,7 +349,7 @@ export default function AgriGPT() {
                             variant="ghost"
                             className="h-6 w-6 absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity"
                             onClick={(e) => handleDeleteConversation(conv.id, e)}
-                            disabled={deleteConversationMutation.isPending}
+                            disabled={deleteConversationMutation.isPending || isSending}
                           >
                             {deleteConversationMutation.isPending ? (
                               <Loader2 className="h-3 w-3 animate-spin" />
@@ -365,7 +391,7 @@ export default function AgriGPT() {
                 {currentConversationId && (
                   <Badge variant="outline" className="text-xs">
                     {messages.length} messages
-                    {sendMessageMutation.isPending && (
+                    {(isSending || sendMessageMutation.isPending) && (
                       <Loader2 className="h-3 w-3 animate-spin ml-1" />
                     )}
                   </Badge>
@@ -398,7 +424,7 @@ export default function AgriGPT() {
                             key={index}
                             variant="secondary" 
                             className="p-3 text-center cursor-pointer hover:bg-primary/10 transition-colors"
-                            onClick={() => setInputMessage(`Tell me about ${topic.name.toLowerCase()}`)}
+                            onClick={() => !isSending && setInputMessage(`Tell me about ${topic.name.toLowerCase()}`)}
                           >
                             <span className="text-lg mr-2">{topic.emoji}</span>
                             {topic.name}
@@ -417,7 +443,8 @@ export default function AgriGPT() {
                           key={index}
                           variant="outline"
                           className="w-full text-left justify-start h-auto p-4 hover:bg-primary/5 hover:border-primary/30 transition-all"
-                          onClick={() => setInputMessage(question)}
+                          onClick={() => !isSending && setInputMessage(question)}
+                          disabled={isSending}
                         >
                           <span className="flex-1">{question}</span>
                         </Button>
@@ -503,7 +530,7 @@ export default function AgriGPT() {
                       </div>
                     ))}
 
-                    {isLoading && (
+                    {(isSending || sendMessageMutation.isPending) && (
                       <div className="flex gap-3">
                         <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-md bg-gradient-to-br from-green-500 to-emerald-600">
                           <Bot className="h-5 w-5 text-white" />
@@ -556,7 +583,7 @@ export default function AgriGPT() {
               </div>
               <div className="text-xs text-muted-foreground text-center mt-2">
                 Powered by OpenAI GPT-4 • Real-time agricultural expertise
-                {sendMessageMutation.isPending && (
+                {(isSending || sendMessageMutation.isPending) && (
                   <span className="ml-2 text-primary">• Generating response...</span>
                 )}
               </div>

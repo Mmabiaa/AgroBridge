@@ -155,7 +155,7 @@ export interface Product {
   is_active: boolean;
   created_at: string;
   updated_at: string;
-  nutritional_info?: Record<string, any>;
+  nutritional_info?: Record<string, string>;
   storage_instructions?: string;
   shipping_options?: string[];
 }
@@ -202,7 +202,7 @@ export interface Conversation {
   title: string;
   conversation_type: 'farming_advice' | 'crop_diagnosis' | 'market_analysis' | 'general';
   status: 'active' | 'archived' | 'deleted';
-  context_data: Record<string, any>;
+  context_data: Record<string, string>;
   language: string;
   voice_enabled: boolean;
   message_count: number;
@@ -217,7 +217,7 @@ export interface Message {
   conversation: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, string>;
   timestamp: string;
   tokens_used?: number;
   attachments?: Array<{
@@ -240,7 +240,7 @@ export interface SendMessageRequest {
   content: string;
   attachments?: File[];
   voice_input?: boolean;
-  context_data?: Record<string, any>;
+  context_data?: Record<string, string>;
 }
 
 export interface SendMessageResponse {
@@ -263,7 +263,7 @@ export interface Disease {
   typical_severity: 'low' | 'medium' | 'high' | 'critical';
   spread_rate: 'slow' | 'moderate' | 'fast';
   seasonal_pattern: string;
-  favorable_conditions: Record<string, any>;
+  favorable_conditions: Record<string, string>;
   prevention_methods: string;
   organic_treatments: string;
   chemical_treatments: string;
@@ -350,7 +350,7 @@ export interface DiseaseSearchParams {
 export interface ApiError {
   message: string;
   status: number;
-  details?: any;
+  details?: string;
   errors?: Record<string, string[]>;
 }
 
@@ -374,7 +374,7 @@ export interface Notification {
 // WebSocket message types
 export interface WebSocketMessage {
   type: 'notification' | 'cache_invalidation' | 'data_update' | 'auth' | 'heartbeat';
-  data?: any;
+  data?: string;
   timestamp?: string;
 }
 

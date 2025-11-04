@@ -59,11 +59,19 @@ export const useSendMessage = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ conversationId, content }: { 
+    mutationFn: async ({ 
+      conversationId, 
+      content, 
+      requestId 
+    }: { 
       conversationId: string; 
-      content: string 
+      content: string;
+      requestId?: string;
     }): Promise<SendMessageResponse> => {
-      const response = await aiService.sendMessage(conversationId, { content });
+      const response = await aiService.sendMessage(conversationId, { 
+        content,
+        requestId // 🆕 Pass request ID to service
+      });
       
       if (!response?.response) {
         throw new Error('AI service returned empty response');

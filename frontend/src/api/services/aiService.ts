@@ -28,13 +28,14 @@ class AIService {
     return apiClient.delete(`${this.baseUrl}/conversations/${conversationId}/`);
   }
 
-  async sendMessage(conversationId: string, data: SendMessageData): Promise<SendMessageResponse> {
+  async sendMessage(conversationId: string, data: SendMessageData & { requestId?: string }): Promise<SendMessageResponse> {
     const response = await apiClient.post<SendMessageResponse>(
       `${this.baseUrl}/conversations/${conversationId}/send_message/`, 
       {
         content: data.content,
         message_type: data.message_type || 'text',
-        attachments: data.attachments || []
+        attachments: data.attachments || [],
+        request_id: data.requestId // 🆕 Include request ID for deduplication
       }
     );
 
