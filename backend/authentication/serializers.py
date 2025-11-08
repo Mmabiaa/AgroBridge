@@ -227,15 +227,103 @@ class PasswordResetRequestSerializer(serializers.Serializer):
             self.user.password_reset_expires = timezone.now() + timezone.timedelta(hours=1)
             self.user.save()
             
-            # Simple email sending
-            reset_url = f"{settings.FRONTEND_URL}/reset-password/{reset_token}"
-            
+            # Call the better formatted email method
+            self.send_reset_email()
+    
+    def send_reset_email(self):
+        """Send password reset email to user"""
+        reset_url = f"{settings.FRONTEND_URL}/reset-password/{self.user.password_reset_token}"
+        
+        subject = 'Reset Your AgroBridge Password'
+        
+        # Plain text version
+        message = f"""Dear {self.user.first_name or 'User'},
+
+You have requested to reset your password for your AgroBridge account. 
+Click the link below to create a new password:
+
+{reset_url}
+
+This password reset link will expire in 1 hour.
+
+If you did not request this password reset, please ignore this email. 
+Your account remains secure.
+
+Best regards,
+The AgroBridge Team
+"""
+        
+        # HTML version (for better email clients)
+        html_message = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }}
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }}
+        .button {{
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }}
+        .footer {{
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #666;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Password Reset Request</h2>
+        <p>Dear {self.user.first_name or 'User'},</p>
+        <p>You have requested to reset your password for your AgroBridge account.</p>
+        <p>Click the button below to create a new password:</p>
+        <p style="text-align: center;">
+            <a href="{reset_url}" class="button">Reset Password</a>
+        </p>
+        <p>Or copy and paste this link in your browser:<br>
+        <code>{reset_url}</code></p>
+        <p><strong>Note:</strong> This password reset link will expire in 1 hour.</p>
+        <p>If you did not request this password reset, please ignore this email. Your account remains secure.</p>
+        <div class="footer">
+            <p>Best regards,<br>The AgroBridge Team</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+        
+        try:
             send_mail(
-                subject='Password Reset Request - AgroBridge',
-                message=f'Use this link to reset your password: {reset_url}',
+                subject=subject,
+                message=message,  # Plain text version
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[self.user.email],
+                html_message=html_message,  # HTML version
+                fail_silently=False,
             )
+            print(f"✅ Password reset email sent to: {self.user.email}")
+        except Exception as e:
+            print(f"❌ Failed to send email to {self.user.email}: {e}")
+            # In production, you might want to log this to a file or monitoring service
+            raise
 
 
 class PasswordResetSerializer(serializers.Serializer):
