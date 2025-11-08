@@ -232,12 +232,12 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     
     def send_reset_email(self):
         """Send password reset email to user"""
-        reset_url = f"{settings.FRONTEND_URL}/reset-password/{self.user.password_reset_token}"
-        
-        subject = 'Reset Your AgroBridge Password'
-        
-        # Plain text version
-        message = f"""Dear {self.user.first_name or 'User'},
+    reset_url = f"{settings.FRONTEND_URL}/reset-password/{self.user.password_reset_token}"
+    
+    subject = 'Reset Your AgroBridge Password'
+    
+    # Plain text version
+    message = f"""Dear {self.user.first_name or 'User'},
 
 You have requested to reset your password for your AgroBridge account. 
 Click the link below to create a new password:
@@ -252,9 +252,9 @@ Your account remains secure.
 Best regards,
 The AgroBridge Team
 """
-        
-        # HTML version (for better email clients)
-        html_message = f"""
+    
+    # HTML version (for better email clients)
+    html_message = f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -309,21 +309,23 @@ The AgroBridge Team
 </body>
 </html>
 """
-        
-        try:
-            send_mail(
-                subject=subject,
-                message=message,  # Plain text version
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[self.user.email],
-                html_message=html_message,  # HTML version
-                fail_silently=False,
-            )
-            print(f"✅ Password reset email sent to: {self.user.email}")
-        except Exception as e:
-            print(f"❌ Failed to send email to {self.user.email}: {e}")
-            # In production, you might want to log this to a file or monitoring service
-            raise
+    
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[self.user.email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+        print(f"✅ Password reset email sent to: {self.user.email}")
+        return True
+    except Exception as e:
+        print(f"❌ Failed to send email to {self.user.email}: {e}")
+        # Don't raise the exception - return False instead
+        # This prevents the 500 error but still logs the issue
+        return False
 
 
 class PasswordResetSerializer(serializers.Serializer):
