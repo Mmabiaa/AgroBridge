@@ -296,29 +296,20 @@ def verify_email(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@throttle_classes([PasswordResetRateThrottle])
 def request_password_reset(request):
-    """
-    Request password reset email
-    """
-    try:
-        serializer = PasswordResetRequestSerializer(data=request.data)
-        
-        if serializer.is_valid():
-            serializer.save()
-            
-            # Always return success to prevent email enumeration
-            return Response({
-                'message': 'If an account with this email exists, a password reset link has been sent.'
-            }, status=status.HTTP_200_OK)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    """Request password reset"""
+    serializer = PasswordResetRequestSerializer(data=request.data)
     
-    except Exception as e:
-        logger.error(f"Password reset request error: {str(e)}", exc_info=True)
+    if serializer.is_valid():
+        user = serializer.save()
+        
+        # Always return the same response regardless of whether user exists
+        # This prevents email enumeration attacks
         return Response({
-            'error': 'Password reset request failed'
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            'message': 'If an account with this email exists, a password reset link has been sent.'
+        }, status=status.HTTP_200_OK)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
