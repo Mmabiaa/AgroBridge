@@ -241,8 +241,8 @@ class PasswordResetRequestSerializer(serializers.Serializer):
 class PasswordResetSerializer(serializers.Serializer):
     """Serializer for password reset"""
     token = serializers.CharField()
-    new_password = serializers.CharField(write_only=True, min_length=6)
-    new_password_confirm = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, min_length=6)  # Changed from new_password
+    password_confirm = serializers.CharField(write_only=True)  # Changed from new_password_confirm
     
     def validate_token(self, value):
         """Validate reset token"""
@@ -258,43 +258,15 @@ class PasswordResetSerializer(serializers.Serializer):
     
     def validate(self, data):
         """Cross-field validation"""
-        if data['new_password'] != data['new_password_confirm']:
+        if data['password'] != data['password_confirm']:  # Updated field names
             raise serializers.ValidationError({
-                'new_password_confirm': 'Password confirmation does not match.'
+                'password_confirm': 'Password confirmation does not match.'
             })
         return data
     
     def save(self):
         """Reset user password"""
-        self.user.set_password(self.validated_data['new_password'])
-        self.user.password_reset_token = None
-        self.user.password_reset_expires = None
-        self.user.save()
-        return self.user
-    
-    def validate_token(self, value):
-        """Validate reset token"""
-        try:
-            user = User.objects.get(
-                password_reset_token=value,
-                password_reset_expires__gt=timezone.now()
-            )
-            self.user = user
-        except User.DoesNotExist:
-            raise serializers.ValidationError('Invalid or expired reset token.')
-        return value
-    
-    def validate(self, data):
-        """Cross-field validation"""
-        if data['new_password'] != data['new_password_confirm']:
-            raise serializers.ValidationError({
-                'new_password_confirm': 'Password confirmation does not match.'
-            })
-        return data
-    
-    def save(self):
-        """Reset user password"""
-        self.user.set_password(self.validated_data['new_password'])
+        self.user.set_password(self.validated_data['password'])  # Updated field name
         self.user.password_reset_token = None
         self.user.password_reset_expires = None
         self.user.save()
