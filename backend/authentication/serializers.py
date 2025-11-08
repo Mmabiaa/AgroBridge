@@ -222,6 +222,16 @@ class PasswordResetRequestSerializer(serializers.Serializer):
             self.user.password_reset_token = reset_token
             self.user.password_reset_expires = timezone.now() + timezone.timedelta(hours=1)
             self.user.save()
+            
+            # Simple email sending
+            reset_url = f"{settings.FRONTEND_URL}/reset-password/{reset_token}"
+            
+            send_mail(
+                subject='Password Reset Request - AgroBridge',
+                message=f'Use this link to reset your password: {reset_url}',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[self.user.email],
+            )
 
 
 class PasswordResetSerializer(serializers.Serializer):
