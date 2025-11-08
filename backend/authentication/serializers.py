@@ -4,6 +4,10 @@ from django.contrib.auth import authenticate
 from django.utils import timezone
 import uuid
 from .models import User
+from django.conf import settings
+from django.core.mail import send_mail
+
+
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
