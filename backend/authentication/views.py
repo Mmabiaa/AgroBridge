@@ -328,6 +328,8 @@ def reset_password(request):
     Reset password with token
     """
     try:
+        print(f"Reset password request data: {request.data}")  # Debugging
+        
         serializer = PasswordResetSerializer(data=request.data)
         
         if serializer.is_valid():
@@ -340,6 +342,7 @@ def reset_password(request):
                 'message': 'Password reset successfully'
             }, status=status.HTTP_200_OK)
         
+        print(f"Serializer errors: {serializer.errors}")  # Debugging
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     except Exception as e:
