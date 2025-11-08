@@ -271,6 +271,34 @@ class PasswordResetSerializer(serializers.Serializer):
         self.user.password_reset_expires = None
         self.user.save()
         return self.user
+    
+    def validate_token(self, value):
+        """Validate reset token"""
+        try:
+            user = User.objects.get(
+                password_reset_token=value,
+                password_reset_expires__gt=timezone.now()
+            )
+            self.user = user
+        except User.DoesNotExist:
+            raise serializers.ValidationError('Invalid or expired reset token.')
+        return value
+    
+    def validate(self, data):
+        """Cross-field validation"""
+        if data['new_password'] != data['new_password_confirm']:
+            raise serializers.ValidationError({
+                'new_password_confirm': 'Password confirmation does not match.'
+            })
+        return data
+    
+    def save(self):
+        """Reset user password"""
+        self.user.set_password(self.validated_data['new_password'])
+        self.user.password_reset_token = None
+        self.user.password_reset_expires = None
+        self.user.save()
+        return self.user
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
