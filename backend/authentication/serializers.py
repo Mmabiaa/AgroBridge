@@ -227,8 +227,15 @@ class PasswordResetRequestSerializer(serializers.Serializer):
             self.user.password_reset_expires = timezone.now() + timezone.timedelta(hours=1)
             self.user.save()
             
-            # Call the better formatted email method
-            self.send_reset_email()
+            # Try to send email, but don't crash if it fails
+            email_sent = self.send_reset_email()
+            
+            if not email_sent:
+                # Log this for debugging, but don't stop the process
+                print(f"⚠️  Password reset token generated but email failed: {reset_token}")
+                # You could also log this to a file or monitoring service
+            
+            return self.user
     
     def send_reset_email(self):
         """Send password reset email to user"""
