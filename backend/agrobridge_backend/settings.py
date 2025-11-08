@@ -281,9 +281,16 @@ LOGGING = {
     },
 }
 
-# Email configuration
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@agrobridge.com')
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # For Gmail
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env('EMAIL_HOST_USER',default='your-email@gmail.com')  # Your Gmail address
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD',default='')  # Your Gmail App Password (NOT your regular password)
+DEFAULT_FROM_EMAIL = env('EMAIL_FROM_USER', default='your-email@gmail.com')  # Should match EMAIL_HOST_USER
+
+# Your existing settings
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:8080')
 
 # OpenAI API Configuration
