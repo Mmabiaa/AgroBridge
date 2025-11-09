@@ -33,7 +33,7 @@ interface DashboardWidget {
   id: string;
   title: string;
   description: string;
-  icon: any;
+  icon: unknown;
   href: string;
   permission?: string;
   role?: string[];

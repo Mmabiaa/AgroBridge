@@ -123,54 +123,54 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-12 md:py-20 px-3 md:px-4">
-        <div className="container mx-auto text-center">
-          <div className="flex justify-center mb-4 md:mb-6">
-            <div className="p-3 md:p-4 rounded-full bg-gradient-primary shadow-glow">
-              <Wheat className="h-8 w-8 md:h-12 md:w-12 text-primary-foreground" />
-            </div>
-          </div>
-          
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-hero bg-clip-text text-transparent px-2">
-            Welcome to AgroBridge
-          </h1>
-          
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-6 md:mb-8 max-w-3xl mx-auto px-4">
-            Empowering African agriculture through AI-driven insights, smart monitoring, 
-            and direct market connections
-          </p>
+<section className="relative min-h-screen flex items-center justify-center overflow-hidden px-3 md:px-4">
+  <div className="container mx-auto text-center">
+    <div className="flex justify-center mb-4 md:mb-6">
+      <div className="p-3 md:p-4 rounded-full bg-gradient-primary shadow-glow">
+        <Wheat className="h-8 w-8 md:h-12 md:w-12 text-primary-foreground" />
+      </div>
+    </div>
+    
+    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-hero bg-clip-text text-transparent px-2">
+      Welcome to AgroBridge
+    </h1>
+    
+    <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-6 md:mb-8 max-w-3xl mx-auto px-4">
+      Empowering African agriculture through AI-driven insights, smart monitoring, 
+      and direct market connections
+    </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-8 md:mb-12 px-4">
-            <Link to="/register" className="w-full sm:w-auto">
-              <Button variant="farmer" size="lg" className="w-full sm:w-auto text-base md:text-lg px-6 md:px-8 py-4 md:py-6 hover-scale">
-                <ArrowRight className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                Get Started Today
-              </Button>
-            </Link>
-            <Link to="/login" className="w-full sm:w-auto">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto text-base md:text-lg px-6 md:px-8 py-4 md:py-6 hover-scale">
-                Sign In
-              </Button>
-            </Link>
-          </div>
+    <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-8 md:mb-12 px-4">
+      <Link to="/register" className="w-full sm:w-auto">
+        <Button variant="farmer" size="lg" className="w-full sm:w-auto text-base md:text-lg px-6 md:px-8 py-4 md:py-6 hover-scale">
+          <ArrowRight className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+          Get Started Today
+        </Button>
+      </Link>
+      <Link to="/login" className="w-full sm:w-auto">
+        <Button variant="outline" size="lg" className="w-full sm:w-auto text-base md:text-lg px-6 md:px-8 py-4 md:py-6 hover-scale">
+          Sign In
+        </Button>
+      </Link>
+    </div>
 
-          {/* Impact Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto px-4">
-            <div className="text-center p-4 bg-card/50 rounded-lg backdrop-blur-sm">
-              <div className="text-2xl md:text-3xl font-bold text-primary mb-1 md:mb-2">10,000+</div>
-              <div className="text-sm md:text-base text-muted-foreground">Farmers Connected</div>
-            </div>
-            <div className="text-center p-4 bg-card/50 rounded-lg backdrop-blur-sm">
-              <div className="text-2xl md:text-3xl font-bold text-primary mb-1 md:mb-2">500+</div>
-              <div className="text-sm md:text-base text-muted-foreground">Communities Served</div>
-            </div>
-            <div className="text-center p-4 bg-card/50 rounded-lg backdrop-blur-sm">
-              <div className="text-2xl md:text-3xl font-bold text-primary mb-1 md:mb-2">₦2M+</div>
-              <div className="text-sm md:text-base text-muted-foreground">Farmer Income Increased</div>
-            </div>
-          </div>
-        </div>
-      </section>
+    {/* Impact Stats */}
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto px-4">
+      <div className="text-center p-4 bg-card/50 rounded-lg backdrop-blur-sm">
+        <div className="text-2xl md:text-3xl font-bold text-primary mb-1 md:mb-2">10,000+</div>
+        <div className="text-sm md:text-base text-muted-foreground">Farmers Connected</div>
+      </div>
+      <div className="text-center p-4 bg-card/50 rounded-lg backdrop-blur-sm">
+        <div className="text-2xl md:text-3xl font-bold text-primary mb-1 md:mb-2">500+</div>
+        <div className="text-sm md:text-base text-muted-foreground">Communities Served</div>
+      </div>
+      <div className="text-center p-4 bg-card/50 rounded-lg backdrop-blur-sm">
+        <div className="text-2xl md:text-3xl font-bold text-primary mb-1 md:mb-2">₦2M+</div>
+        <div className="text-sm md:text-base text-muted-foreground">Farmer Income Increased</div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Role Selection */}
       <section className="py-12 md:py-20 px-3 md:px-4 bg-muted/30">
