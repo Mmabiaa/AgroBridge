@@ -5,6 +5,37 @@ import apiClient from '../api/axiosClient';
 
 export type UserRole = 'farmer' | 'buyer' | 'poultry_keeper' | 'expert' | 'ngo' | 'admin';
 
+// Define the actual API response types based on your backend
+interface ApiUser {
+  id: string;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  is_active: boolean;
+  // Optional fields that might not be present in all responses
+  phone?: string;
+  is_verified?: boolean;
+  email_verified?: boolean;
+  phone_verified?: boolean;
+  profile_completed?: boolean;
+  onboarding_completed?: boolean;
+  language?: string;
+  timezone?: string;
+}
+
+// Define the login response type
+interface LoginResponse {
+  user: ApiUser;
+  tokens?: {
+    access: string;
+    refresh: string;
+  };
+  message?: string;
+}
+
+// Your frontend User interface
 export interface User {
   id: string;
   username: string;
@@ -24,7 +55,7 @@ export interface User {
   isAuthenticated: boolean;
   permissions: string[];
   accessibleRoutes: string[];
-  profileData?: Record<string, any>;
+  profileData?: ApiUser;
 }
 
 interface AuthContextType {
@@ -51,6 +82,17 @@ interface RegisterUserData {
   phone?: string;
 }
 
+// Define the API client interface
+interface ApiClient {
+  getAccessToken: () => string | null;
+  isAuthenticated: () => boolean;
+  defaults?: {
+    headers?: {
+      Authorization?: string;
+    };
+  };
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
@@ -59,6 +101,113 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
+};
+
+// Helper function to safely map API user to frontend User
+const mapApiUserToUser = (apiUser: ApiUser, isAuthenticated: boolean = true): User => {
+  return {
+    id: apiUser.id,
+    username: apiUser.username,
+    email: apiUser.email,
+    first_name: apiUser.first_name,
+    last_name: apiUser.last_name,
+    name: `${apiUser.first_name} ${apiUser.last_name}`.trim() || apiUser.username,
+    role: apiUser.role as UserRole,
+    phone: apiUser.phone,
+    is_verified: apiUser.is_verified ?? false,
+    email_verified: apiUser.email_verified ?? false,
+    phone_verified: apiUser.phone_verified ?? false,
+    profile_completed: apiUser.profile_completed ?? false,
+    onboarding_completed: apiUser.onboarding_completed ?? false,
+    language: apiUser.language ?? 'en',
+    timezone: apiUser.timezone ?? 'UTC',
+    isAuthenticated,
+    permissions: getDefaultPermissions(apiUser.role as UserRole),
+    accessibleRoutes: getDefaultRoutes(apiUser.role as UserRole),
+    profileData: apiUser,
+  };
+};
+
+// Helper functions for default permissions and routes
+const getDefaultPermissions = (role: UserRole): string[] => {
+  const rolePermissions: Record<UserRole, string[]> = {
+    farmer: [
+      'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
+      'use_crop_detection', 'use_voice_commands', 'view_marketplace',
+      'place_orders', 'view_orders', 'view_learning', 'view_community',
+      'use_satellite_integration', 'use_iot_sensors', 'use_drone_integration',
+      'use_ar_visualization', 'view_financial_planning', 'create_plans',
+      'view_smart_scheduling'
+    ],
+    poultry_keeper: [
+      'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
+      'use_crop_detection', 'use_voice_commands', 'view_marketplace',
+      'place_orders', 'view_orders', 'view_learning', 'view_community',
+      'use_iot_sensors', 'view_financial_planning', 'create_plans',
+      'view_smart_scheduling'
+    ],
+    buyer: [
+      'view_dashboard', 'view_marketplace', 'place_orders', 'view_orders',
+      'view_learning', 'view_community', 'view_financial_planning', 'use_voice_commands'
+    ],
+    expert: [
+      'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
+      'view_marketplace', 'view_learning', 'view_community', 'moderate_community',
+      'create_content', 'edit_content', 'view_financial_planning', 'use_voice_commands'
+    ],
+    ngo: [
+      'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
+      'view_marketplace', 'view_learning', 'view_community', 'moderate_community',
+      'create_content', 'edit_content', 'use_satellite_integration',
+      'use_iot_sensors', 'view_financial_planning', 'manage_content', 'use_voice_commands'
+    ],
+    admin: [
+      'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
+      'use_crop_detection', 'use_voice_commands', 'view_marketplace',
+      'create_product', 'edit_product', 'delete_product', 'view_orders',
+      'view_learning', 'create_content', 'edit_content', 'delete_content',
+      'view_community', 'moderate_community', 'use_satellite_integration',
+      'use_iot_sensors', 'use_drone_integration', 'use_ar_visualization',
+      'use_blockchain', 'view_financial_planning', 'create_plans',
+      'view_smart_scheduling', 'manage_users', 'manage_system',
+      'view_admin_dashboard', 'manage_content', 'view_logs'
+    ]
+  };
+  return rolePermissions[role] || [];
+};
+
+const getDefaultRoutes = (role: UserRole): string[] => {
+  const roleRoutes: Record<UserRole, string[]> = {
+    farmer: [
+      '/dashboard', '/analytics', '/monitoring', '/agrigpt',
+      '/crop-disease-detection', '/voice-commands', '/marketplace',
+      '/learning', '/community', '/financial-planning', '/smart-scheduling'
+    ],
+    poultry_keeper: [
+      '/dashboard', '/analytics', '/monitoring', '/agrigpt',
+      '/crop-disease-detection', '/voice-commands', '/marketplace',
+      '/learning', '/community', '/financial-planning', '/smart-scheduling'
+    ],
+    buyer: [
+      '/dashboard', '/marketplace', '/learning', '/community',
+      '/financial-planning', '/voice-commands'
+    ],
+    expert: [
+      '/dashboard', '/analytics', '/monitoring', '/agrigpt',
+      '/marketplace', '/learning', '/community', '/financial-planning', '/voice-commands'
+    ],
+    ngo: [
+      '/dashboard', '/analytics', '/monitoring', '/agrigpt',
+      '/marketplace', '/learning', '/community', '/financial-planning', '/voice-commands'
+    ],
+    admin: [
+      '/dashboard', '/analytics', '/monitoring', '/agrigpt',
+      '/crop-disease-detection', '/voice-commands', '/marketplace',
+      '/learning', '/community', '/financial-planning', '/smart-scheduling',
+      '/admin'
+    ]
+  };
+  return roleRoutes[role] || [];
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -74,29 +223,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isLoading = userLoading || loginMutation.isPending || registerMutation.isPending || updateProfileMutation.isPending;
   const isAuthenticated = apiClient.isAuthenticated() && !!user;
 
+  const clearAuthData = (): void => {
+    // Clear tokens from localStorage
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    
+    // Type-safe apiClient access
+    const client = apiClient as unknown as ApiClient;
+    
+    // Clear any authorization headers if they exist
+    if (client.defaults?.headers) {
+      delete client.defaults.headers.Authorization;
+    }
+  };
+
+  // Effect to handle user authentication state
   useEffect(() => {
     if (currentUser) {
-      const mappedUser: User = {
-        id: currentUser.id,
-        username: currentUser.username,
-        email: currentUser.email,
-        first_name: currentUser.first_name,
-        last_name: currentUser.last_name,
-        name: `${currentUser.first_name} ${currentUser.last_name}`.trim() || currentUser.username,
-        role: currentUser.role as UserRole,
-        phone: (currentUser as any).phone,
-        is_verified: (currentUser as any).is_verified || false,
-        email_verified: (currentUser as any).email_verified || false,
-        phone_verified: (currentUser as any).phone_verified || false,
-        profile_completed: (currentUser as any).profile_completed || false,
-        onboarding_completed: (currentUser as any).onboarding_completed || false,
-        language: (currentUser as any).language || 'en',
-        timezone: (currentUser as any).timezone || 'UTC',
-        isAuthenticated: true,
-        permissions: getDefaultPermissions(currentUser.role as UserRole),
-        accessibleRoutes: getDefaultRoutes(currentUser.role as UserRole),
-        profileData: currentUser,
-      };
+      const mappedUser = mapApiUserToUser(currentUser as ApiUser, true);
       setUser(mappedUser);
       
       // Start WebSocket connection when user is authenticated
@@ -118,87 +263,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user, userLoading, refetchUser]);
 
-  const login = async (email: string, password: string) => {
-    try {
-      // The backend accepts either username or email in the username field
-      const result = await loginMutation.mutateAsync({ username: email, password });
-      
-      const mappedUser: User = {
-        id: result.user.id,
-        username: result.user.username,
-        email: result.user.email,
-        first_name: result.user.first_name,
-        last_name: result.user.last_name,
-        name: `${result.user.first_name} ${result.user.last_name}`.trim() || result.user.username,
-        role: result.user.role as UserRole,
-        phone: (result.user as any).phone,
-        is_verified: (result.user as any).is_verified || false,
-        email_verified: (result.user as any).email_verified || false,
-        phone_verified: (result.user as any).phone_verified || false,
-        profile_completed: (result.user as any).profile_completed || false,
-        onboarding_completed: (result.user as any).onboarding_completed || false,
-        language: (result.user as any).language || 'en',
-        timezone: (result.user as any).timezone || 'UTC',
-        isAuthenticated: true,
-        permissions: getDefaultPermissions(result.user.role as UserRole),
-        accessibleRoutes: getDefaultRoutes(result.user.role as UserRole),
-        profileData: result.user,
-      };
-      
-      setUser(mappedUser);
-      
-      // Start WebSocket connection after successful login
-      realTimeSync.startConnection();
-    } catch (error) {
-      throw error;
-    }
+  const login = async (email: string, password: string): Promise<void> => {
+    const result = await loginMutation.mutateAsync({ username: email, password }) as LoginResponse;
+    
+    const mappedUser = mapApiUserToUser(result.user, true);
+    setUser(mappedUser);
+    
+    // Start WebSocket connection after successful login
+    realTimeSync.startConnection();
   };
 
-  const register = async (userData: RegisterUserData) => {
-    try {
-      await registerMutation.mutateAsync(userData);
-      
-      // After successful registration, login automatically
-      await login(userData.email, userData.password);
-    } catch (error) {
-      throw error;
-    }
+  const register = async (userData: RegisterUserData): Promise<void> => {
+    await registerMutation.mutateAsync(userData);
+    
+    // After successful registration, login automatically
+    await login(userData.email, userData.password);
   };
 
-  // In your API service file
-const API_BASE = '/api/v1/auth';
-
-export const authService = {
-  async logout() {
-    const refreshToken = localStorage.getItem('refresh_token');
-    
+  const logout = async (): Promise<void> => {
     try {
-      const response = await this.$http.post(`${API_BASE}/logout/`, {
-        refresh: refreshToken
-      });
+      const refreshToken = localStorage.getItem('refresh_token');
       
-      // Handle successful logout
-      this.clearAuthData();
-      return response;
+      // Call logout API only if we have a refresh token
+      if (refreshToken) {
+        // Option 1: If your useLogout hook doesn't accept parameters, call the API directly
+        await apiClient.post('/api/v1/auth/logout/', { refresh: refreshToken });
+        
+        // Option 2: Or if you want to use the mutation without parameters
+        // await logoutMutation.mutateAsync();
+      } else {
+        // If no refresh token, just call the mutation without parameters
+        await logoutMutation.mutateAsync();
+      }
     } catch (error) {
-      console.error('Logout failed:', error);
-      // Still clear local data
-      this.clearAuthData();
-      throw error;
+      console.error('Logout API call failed:', error);
+      // Continue with cleanup even if API call fails
+    } finally {
+      // Always clear local data and stop WebSocket
+      clearAuthData();
+      setUser(null);
+      
+      // Stop WebSocket connection
+      realTimeSync.stopConnection();
     }
-  },
-  
-  clearAuthData() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user');
-    
-    // Close WebSocket if exists
-    if (this.$socket) {
-      this.$socket.close();
-    }
-  }
-};
+  };
 
   const hasPermission = (permission: string): boolean => {
     return user?.permissions.includes(permission) ?? false;
@@ -208,39 +316,17 @@ export const authService = {
     return user?.accessibleRoutes.includes(route) ?? false;
   };
 
-  const updateUserProfile = async (profileData: Partial<User>) => {
-    try {
-      const updatedUser = await updateProfileMutation.mutateAsync(profileData);
-      
-      // Update local user state with the response from server
-      if (user) {
-        const mappedUser: User = {
-          ...user,
-          id: updatedUser.id,
-          username: updatedUser.username,
-          email: updatedUser.email,
-          first_name: updatedUser.first_name,
-          last_name: updatedUser.last_name,
-          name: `${updatedUser.first_name} ${updatedUser.last_name}`.trim() || updatedUser.username,
-          role: updatedUser.role as UserRole,
-          phone: (updatedUser as any).phone,
-          is_verified: (updatedUser as any).is_verified || user.is_verified,
-          email_verified: (updatedUser as any).email_verified || user.email_verified,
-          phone_verified: (updatedUser as any).phone_verified || user.phone_verified,
-          profile_completed: (updatedUser as any).profile_completed || user.profile_completed,
-          onboarding_completed: (updatedUser as any).onboarding_completed || user.onboarding_completed,
-          language: (updatedUser as any).language || user.language,
-          timezone: (updatedUser as any).timezone || user.timezone,
-          profileData: updatedUser,
-        };
-        setUser(mappedUser);
-      }
-    } catch (error) {
-      throw error;
+  const updateUserProfile = async (profileData: Partial<User>): Promise<void> => {
+    const updatedUser = await updateProfileMutation.mutateAsync(profileData) as ApiUser;
+    
+    // Update local user state with the response from server
+    if (user) {
+      const mappedUser = mapApiUserToUser(updatedUser, true);
+      setUser(mappedUser);
     }
   };
 
-  const refreshToken = async () => {
+  const refreshToken = async (): Promise<void> => {
     try {
       const refreshToken = localStorage.getItem('refresh_token');
       if (refreshToken) {
@@ -255,101 +341,21 @@ export const authService = {
     }
   };
 
-  // Helper functions for default permissions and routes
-  const getDefaultPermissions = (role: UserRole): string[] => {
-    const rolePermissions: Record<UserRole, string[]> = {
-      farmer: [
-        'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
-        'use_crop_detection', 'use_voice_commands', 'view_marketplace',
-        'place_orders', 'view_orders', 'view_learning', 'view_community',
-        'use_satellite_integration', 'use_iot_sensors', 'use_drone_integration',
-        'use_ar_visualization', 'view_financial_planning', 'create_plans',
-        'view_smart_scheduling'
-      ],
-      poultry_keeper: [
-        'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
-        'use_crop_detection', 'use_voice_commands', 'view_marketplace',
-        'place_orders', 'view_orders', 'view_learning', 'view_community',
-        'use_iot_sensors', 'view_financial_planning', 'create_plans',
-        'view_smart_scheduling'
-      ],
-      buyer: [
-        'view_dashboard', 'view_marketplace', 'place_orders', 'view_orders',
-        'view_learning', 'view_community', 'view_financial_planning', 'use_voice_commands'
-      ],
-      expert: [
-        'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
-        'view_marketplace', 'view_learning', 'view_community', 'moderate_community',
-        'create_content', 'edit_content', 'view_financial_planning', 'use_voice_commands'
-      ],
-      ngo: [
-        'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
-        'view_marketplace', 'view_learning', 'view_community', 'moderate_community',
-        'create_content', 'edit_content', 'use_satellite_integration',
-        'use_iot_sensors', 'view_financial_planning', 'manage_content', 'use_voice_commands'
-      ],
-      admin: [
-        'view_dashboard', 'view_analytics', 'view_monitoring', 'use_agrigpt',
-        'use_crop_detection', 'use_voice_commands', 'view_marketplace',
-        'create_product', 'edit_product', 'delete_product', 'view_orders',
-        'view_learning', 'create_content', 'edit_content', 'delete_content',
-        'view_community', 'moderate_community', 'use_satellite_integration',
-        'use_iot_sensors', 'use_drone_integration', 'use_ar_visualization',
-        'use_blockchain', 'view_financial_planning', 'create_plans',
-        'view_smart_scheduling', 'manage_users', 'manage_system',
-        'view_admin_dashboard', 'manage_content', 'view_logs'
-      ]
-    };
-    return rolePermissions[role] || [];
-  };
-
-  const getDefaultRoutes = (role: UserRole): string[] => {
-    const roleRoutes: Record<UserRole, string[]> = {
-      farmer: [
-        '/dashboard', '/analytics', '/monitoring', '/agrigpt',
-        '/crop-disease-detection', '/voice-commands', '/marketplace',
-        '/learning', '/community', '/financial-planning', '/smart-scheduling'
-      ],
-      poultry_keeper: [
-        '/dashboard', '/analytics', '/monitoring', '/agrigpt',
-        '/crop-disease-detection', '/voice-commands', '/marketplace',
-        '/learning', '/community', '/financial-planning', '/smart-scheduling'
-      ],
-      buyer: [
-        '/dashboard', '/marketplace', '/learning', '/community',
-        '/financial-planning', '/voice-commands'
-      ],
-      expert: [
-        '/dashboard', '/analytics', '/monitoring', '/agrigpt',
-        '/marketplace', '/learning', '/community', '/financial-planning', '/voice-commands'
-      ],
-      ngo: [
-        '/dashboard', '/analytics', '/monitoring', '/agrigpt',
-        '/marketplace', '/learning', '/community', '/financial-planning', '/voice-commands'
-      ],
-      admin: [
-        '/dashboard', '/analytics', '/monitoring', '/agrigpt',
-        '/crop-disease-detection', '/voice-commands', '/marketplace',
-        '/learning', '/community', '/financial-planning', '/smart-scheduling',
-        '/admin'
-      ]
-    };
-    return roleRoutes[role] || [];
+  const contextValue: AuthContextType = {
+    user,
+    login,
+    register,
+    logout,
+    isLoading,
+    hasPermission,
+    canAccessRoute,
+    updateUserProfile,
+    refreshToken,
+    isAuthenticated
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      login, 
-      register, 
-      logout, 
-      isLoading, 
-      hasPermission, 
-      canAccessRoute,
-      updateUserProfile,
-      refreshToken,
-      isAuthenticated
-    }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
