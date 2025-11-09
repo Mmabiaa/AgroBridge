@@ -19,123 +19,59 @@ class JWTAuthMiddleware(BaseMiddleware):
     JWT authentication middleware for WebSocket connections
     """
     
-    def __init__(self, inner):
-        super().__init__(inner)
-    
     async def __call__(self, scope, receive, send):
         # Only process WebSocket connections
-        if scope['type'] != 'websocket':
-            return await super().__call__(scope, receive, send)
-        
-        # Get token from query parameters
-        query_string = scope.get('query_string', b'').decode()
-        query_params = parse_qs(query_string)
-        token = query_params.get('token', [None])[0]
-        
-        # Authenticate user
-        scope['user'] = await self.get_user_from_token(token)
+        if scope['type'] == 'websocket':
+            logger.info(f"🔐 WebSocket authentication for: {scope['path']}")
+            
+            # Get token from query parameters
+            query_string = scope.get('query_string', b'').decode()
+            query_params = parse_qs(query_string)
+            token = query_params.get('token', [None])[0]
+            
+            if token:
+                logger.info(f"📝 Token found: {token[:50]}...")
+                # Authenticate user
+                user = await self.get_user_from_token(token)
+                scope['user'] = user
+                
+                if user.is_anonymous:
+                    logger.warning("🚫 Authentication FAILED - anonymous user")
+                    # Don't reject immediately - let consumer handle it
+                else:
+                    logger.info(f"✅ Authentication SUCCESS - User: {user.username}")
+            else:
+                logger.warning("❌ No JWT token found in WebSocket connection")
+                scope['user'] = AnonymousUser()
         
         return await super().__call__(scope, receive, send)
     
     @database_sync_to_async
     def get_user_from_token(self, token):
         """Get user from JWT token"""
-        if not token:
-            return AnonymousUser()
-        
         try:
             # Validate token
+            logger.debug("🔍 Validating JWT token...")
             UntypedToken(token)
             
             # Decode token to get user
             access_token = AccessToken(token)
             user_id = access_token['user_id']
+            logger.debug(f"🔍 Token decoded - User ID: {user_id}")
             
             # Get user
             user = User.objects.get(id=user_id)
-            return user
-            
-        except (InvalidToken, TokenError, User.DoesNotExist) as e:
-            logger.warning(f"WebSocket authentication failed: {str(e)}")
-            return AnonymousUser()
-
-
-class TokenAuthMiddleware(BaseMiddleware):
-    """
-    Alternative token-based authentication middleware
-    """
-    
-    def __init__(self, inner):
-        super().__init__(inner)
-    
-    async def __call__(self, scope, receive, send):
-        # Only process WebSocket connections
-        if scope['type'] != 'websocket':
-            return await super().__call__(scope, receive, send)
-        
-        # Try multiple token sources
-        token = self.get_token_from_scope(scope)
-        
-        # Authenticate user
-        scope['user'] = await self.authenticate_token(token)
-        
-        return await super().__call__(scope, receive, send)
-    
-    def get_token_from_scope(self, scope):
-        """Extract token from various sources in the scope"""
-        # Try query parameters first
-        query_string = scope.get('query_string', b'').decode()
-        query_params = parse_qs(query_string)
-        token = query_params.get('token', [None])[0]
-        
-        if token:
-            return token
-        
-        # Try headers
-        headers = dict(scope.get('headers', []))
-        
-        # Check Authorization header
-        auth_header = headers.get(b'authorization', b'').decode()
-        if auth_header.startswith('Bearer '):
-            return auth_header[7:]  # Remove 'Bearer ' prefix
-        
-        # Check custom token header
-        token_header = headers.get(b'x-auth-token', b'').decode()
-        if token_header:
-            return token_header
-        
-        return None
-    
-    @database_sync_to_async
-    def authenticate_token(self, token):
-        """Authenticate token and return user"""
-        if not token:
-            return AnonymousUser()
-        
-        try:
-            # Validate JWT token
-            UntypedToken(token)
-            access_token = AccessToken(token)
-            user_id = access_token['user_id']
-            
-            # Get user
-            user = User.objects.select_related().get(id=user_id)
-            
-            # Check if user is active
-            if not user.is_active:
-                logger.warning(f"Inactive user attempted WebSocket connection: {user.username}")
-                return AnonymousUser()
-            
+            logger.info(f"✅ WebSocket user authenticated: {user.username} (ID: {user.id})")
             return user
             
         except (InvalidToken, TokenError) as e:
-            logger.warning(f"Invalid JWT token in WebSocket connection: {str(e)}")
+            logger.warning(f"❌ Invalid JWT token: {str(e)}")
             return AnonymousUser()
         except User.DoesNotExist:
-            logger.warning("User not found for JWT token in WebSocket connection")
+            logger.warning(f"❌ User not found for token")
             return AnonymousUser()
         except Exception as e:
-            logger.error(f"Unexpected error in WebSocket authentication: {str(e)}")
+            logger.error(f"💥 Unexpected error during authentication: {str(e)}")
             return AnonymousUser()
 
 
@@ -144,10 +80,3 @@ def JWTAuthMiddlewareStack(inner):
     Convenience function to create JWT auth middleware stack
     """
     return JWTAuthMiddleware(inner)
-
-
-def TokenAuthMiddlewareStack(inner):
-    """
-    Convenience function to create token auth middleware stack
-    """
-    return TokenAuthMiddleware(inner)

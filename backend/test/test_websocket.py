@@ -1,36 +1,64 @@
 #!/usr/bin/env python3
 """
-Simple WebSocket client test for AgroBridge backend
+Test script for WebSocket connections
 """
 import asyncio
 import websockets
 import json
+import sys
 
-async def test_websocket():
-    # Use the token from get_test_token.py
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxMjU2NTkwLCJpYXQiOjE3NjEyNTU2OTAsImp0aSI6ImYxOTNjNWE2Y2JjZjQzNTI5ZTM4OTg1ZTdkN2Q2YWJmIiwidXNlcl9pZCI6IjUiLCJhdWQiOiJhZ3JvYnJpZGdlLWFwaSIsImlzcyI6ImFncm9icmlkZ2UifQ.RR2jds7sqA7SYm1Cn458XxJ6lbvulEmZecCk4u_sS88"
-    uri = f"ws://localhost:8000/ws/?token={token}"
-    
+async def test_simple_websocket():
+    """Test simple WebSocket without authentication"""
     try:
-        print(f"Connecting to {uri}...")
-        async with websockets.connect(uri) as websocket:
-            print("Connected successfully!")
+        async with websockets.connect('ws://localhost:8000/ws/simple/') as websocket:
+            print("✅ Connected to simple WebSocket")
             
-            # Send a test message
-            test_message = {
-                "type": "ping",
-                "data": {"message": "Hello from test client"}
-            }
-            
-            await websocket.send(json.dumps(test_message))
-            print(f"Sent: {test_message}")
-            
-            # Wait for response
+            # Send ping
+            await websocket.send(json.dumps({'type': 'ping', 'data': 'test'}))
             response = await websocket.recv()
-            print(f"Received: {response}")
+            print(f"✅ Ping response: {response}")
+            
+            # Send echo
+            await websocket.send(json.dumps({'type': 'echo', 'data': {'message': 'Hello'}}))
+            response = await websocket.recv()
+            print(f"✅ Echo response: {response}")
             
     except Exception as e:
-        print(f"Connection failed: {e}")
+        print(f"❌ Simple WebSocket test failed: {e}")
+
+async def test_authenticated_websocket(token):
+    """Test authenticated WebSocket with JWT token"""
+    try:
+        async with websockets.connect(f'ws://localhost:8000/ws/?token={token}') as websocket:
+            print("✅ Connected to authenticated WebSocket")
+            
+            # Wait for connection message
+            response = await websocket.recv()
+            print(f"✅ Connection message: {response}")
+            
+            # Send ping
+            await websocket.send(json.dumps({'type': 'ping'}))
+            response = await websocket.recv()
+            print(f"✅ Ping response: {response}")
+            
+            # Get user info
+            await websocket.send(json.dumps({'type': 'user_info'}))
+            response = await websocket.recv()
+            print(f"✅ User info: {response}")
+            
+    except Exception as e:
+        print(f"❌ Authenticated WebSocket test failed: {e}")
 
 if __name__ == "__main__":
-    asyncio.run(test_websocket())
+    print("Testing WebSocket connections...")
+    
+    # Test simple WebSocket first
+    asyncio.run(test_simple_websocket())
+    
+    # Test authenticated if token provided
+    if len(sys.argv) > 1:
+        token = sys.argv[1]
+        asyncio.run(test_authenticated_websocket(token))
+    else:
+        print("ℹ️  No token provided, skipping authenticated WebSocket test")
+        print("ℹ️  Usage: python test_websocket.py <JWT_TOKEN>")

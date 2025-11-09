@@ -15,7 +15,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '0.0.0.0'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '0.0.0.0', '::1', '*'])
 
 # Application definition
 INSTALLED_APPS = [
@@ -139,7 +139,12 @@ CORS_ALLOWED_ORIGINS = [
     'https://agrobridge.com',  # Production frontend
     'https://www.agrobridge.com',  # Production frontend with www
     'https://app.agrobridge.com',  # Production app subdomain
-    'http://agro-bridge.vercel.app' # Vercel deployment
+    'http://agro-bridge.vercel.app', # Vercel deployment
+    "http://127.0.0.1:3000", 
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "ws://localhost:8000",
+    "ws://127.0.0.1:8000",
 ]
 
 # Allow credentials for authentication
@@ -147,6 +152,28 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Allow all headers for development only
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only in development
+
+# Additional CORS settings for WebSockets
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
 
 # Additional CORS settings for production
 if not DEBUG:

@@ -4,97 +4,74 @@ Base WebSocket consumers and utilities
 import json
 import logging
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.db import database_sync_to_async
-from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.tokens import UntypedToken
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from urllib.parse import parse_qs
+from django.contrib.auth.models import AnonymousUser
 
 logger = logging.getLogger(__name__)
-User = get_user_model()
 
 
 class BaseAuthenticatedConsumer(AsyncWebsocketConsumer):
     """
-    Base consumer class with JWT authentication support
+    Base consumer class that relies on middleware authentication
     """
     
     async def connect(self):
         """Handle WebSocket connection with authentication"""
-        # Get token from query parameters
-        query_string = self.scope['query_string'].decode()
-        query_params = parse_qs(query_string)
+        logger.info(f"🔗 BaseAuthenticatedConsumer.connect() called for path: {self.scope['path']}")
+        logger.info(f"🔗 Query string: {self.scope.get('query_string', b'').decode()}")
         
-        token = query_params.get('token', [None])[0]
+        # User should already be authenticated by middleware
+        user = self.scope.get('user')
         
-        if not token:
-            logger.warning("WebSocket connection rejected: No token provided")
-            await self.close(code=4001)  # Unauthorized
+        logger.info(f"🔗 User in scope: {user} (Anonymous: {user.is_anonymous if user else 'No user'})")
+        
+        if not user or user.is_anonymous:
+            logger.warning("🚫 WebSocket connection rejected: No authenticated user")
+            await self.close(code=4001)  # Custom code for unauthorized
             return
         
-        # Authenticate user
-        user = await self.authenticate_user(token)
-        if not user:
-            logger.warning("WebSocket connection rejected: Invalid token")
-            await self.close(code=4001)  # Unauthorized
-            return
-        
-        # Store user in scope
-        self.scope['user'] = user
+        # Store user reference
         self.user = user
         
         # Accept connection
         await self.accept()
+        logger.info(f"✅ WebSocket connection accepted for user: {user.username}")
         
         # Call custom connection handler
-        await self.on_connect()
+        await self.on_connected()
     
     async def disconnect(self, close_code):
         """Handle WebSocket disconnection"""
-        await self.on_disconnect(close_code)
+        username = self.user.username if hasattr(self, 'user') and self.user else 'unknown'
+        logger.info(f"WebSocket disconnected for user: {username}, code: {close_code}")
+        await self.on_disconnected(close_code)
     
     async def receive(self, text_data):
         """Handle incoming WebSocket messages"""
         try:
             data = json.loads(text_data)
+            logger.debug(f"Received WebSocket message: {data}")
             await self.on_message(data)
         except json.JSONDecodeError:
+            logger.warning("Invalid JSON received in WebSocket message")
             await self.send_error("Invalid JSON format")
         except Exception as e:
             logger.error(f"Error handling WebSocket message: {str(e)}")
             await self.send_error("Internal server error")
     
-    @database_sync_to_async
-    def authenticate_user(self, token):
-        """Authenticate user using JWT token"""
-        try:
-            # Validate token
-            UntypedToken(token)
-            
-            # Decode token to get user
-            from rest_framework_simplejwt.tokens import AccessToken
-            access_token = AccessToken(token)
-            user_id = access_token['user_id']
-            
-            # Get user
-            user = User.objects.get(id=user_id)
-            return user
-            
-        except (InvalidToken, TokenError, User.DoesNotExist) as e:
-            logger.warning(f"Authentication failed: {str(e)}")
-            return None
-    
     async def send_message(self, message_type, data):
         """Send structured message to WebSocket"""
-        await self.send(text_data=json.dumps({
+        message = {
             'type': message_type,
             'data': data,
             'timestamp': self.get_timestamp()
-        }))
+        }
+        await self.send(text_data=json.dumps(message))
+        logger.debug(f"Sent WebSocket message: {message_type}")
     
     async def send_error(self, error_message):
         """Send error message to WebSocket"""
         await self.send_message('error', {'message': error_message})
+        logger.warning(f"Sent WebSocket error: {error_message}")
     
     def get_timestamp(self):
         """Get current timestamp"""
@@ -102,11 +79,11 @@ class BaseAuthenticatedConsumer(AsyncWebsocketConsumer):
         return timezone.now().isoformat()
     
     # Override these methods in subclasses
-    async def on_connect(self):
+    async def on_connected(self):
         """Called after successful connection and authentication"""
         pass
     
-    async def on_disconnect(self, close_code):
+    async def on_disconnected(self, close_code):
         """Called when WebSocket disconnects"""
         pass
     
@@ -120,26 +97,29 @@ class TestConsumer(BaseAuthenticatedConsumer):
     Test WebSocket consumer for development and testing
     """
     
-    async def on_connect(self):
+    async def on_connected(self):
         """Handle successful connection"""
         await self.send_message('connected', {
-            'message': 'Successfully connected to test WebSocket',
-            'user': self.user.username
+            'message': 'Successfully connected to WebSocket',
+            'user': self.user.username,
+            'user_id': self.user.id,
+            'status': 'authenticated'
         })
-        logger.info(f"Test WebSocket connected for user: {self.user.username}")
+        logger.info(f"TestConsumer connected for user: {self.user.username}")
     
-    async def on_disconnect(self, close_code):
+    async def on_disconnected(self, close_code):
         """Handle disconnection"""
         username = self.user.username if hasattr(self, 'user') and self.user else 'unknown'
-        logger.info(f"Test WebSocket disconnected for user: {username}, code: {close_code}")
+        logger.info(f"TestConsumer disconnected for user: {username}, code: {close_code}")
     
     async def on_message(self, data):
         """Handle incoming messages"""
         message_type = data.get('type', 'unknown')
+        logger.info(f"TestConsumer received message type: {message_type}")
         
         if message_type == 'ping':
             await self.send_message('pong', {
-                'message': 'Pong response',
+                'message': 'Pong response from server',
                 'original_data': data
             })
         
@@ -154,46 +134,11 @@ class TestConsumer(BaseAuthenticatedConsumer):
                 'user_id': self.user.id,
                 'username': self.user.username,
                 'email': self.user.email,
-                'role': self.user.role
+                'is_authenticated': True
             })
         
         else:
             await self.send_error(f"Unknown message type: {message_type}")
-
-
-class NotificationMixin:
-    """
-    Mixin for consumers that need to send notifications
-    """
-    
-    async def send_notification(self, notification_type, title, message, data=None):
-        """Send notification to user"""
-        await self.send_message('notification', {
-            'notification_type': notification_type,
-            'title': title,
-            'message': message,
-            'data': data or {}
-        })
-    
-    async def send_system_notification(self, message):
-        """Send system notification"""
-        await self.send_notification('system', 'System Notification', message)
-    
-    async def send_farm_alert(self, farm_name, alert_message):
-        """Send farm-related alert"""
-        await self.send_notification(
-            'farm_alert', 
-            f'Farm Alert: {farm_name}', 
-            alert_message
-        )
-    
-    async def send_marketplace_update(self, update_message):
-        """Send marketplace update"""
-        await self.send_notification(
-            'marketplace', 
-            'Marketplace Update', 
-            update_message
-        )
 
 
 class SimpleTestConsumer(AsyncWebsocketConsumer):
@@ -203,11 +148,13 @@ class SimpleTestConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):
         """Accept connection without authentication"""
+        logger.info("SimpleTestConsumer connection attempt")
         await self.accept()
         await self.send(text_data=json.dumps({
             'type': 'connected',
-            'message': 'Simple WebSocket connected successfully',
-            'timestamp': self.get_timestamp()
+            'message': 'Simple WebSocket connected successfully (no auth)',
+            'timestamp': self.get_timestamp(),
+            'status': 'connected'
         }))
         logger.info("Simple WebSocket connected (no auth)")
     
@@ -220,11 +167,12 @@ class SimpleTestConsumer(AsyncWebsocketConsumer):
         try:
             data = json.loads(text_data)
             message_type = data.get('type', 'unknown')
+            logger.info(f"SimpleTestConsumer received message type: {message_type}")
             
             if message_type == 'ping':
                 await self.send(text_data=json.dumps({
                     'type': 'pong',
-                    'message': 'Pong response',
+                    'message': 'Pong response from simple WebSocket',
                     'original_data': data,
                     'timestamp': self.get_timestamp()
                 }))
@@ -232,8 +180,15 @@ class SimpleTestConsumer(AsyncWebsocketConsumer):
             elif message_type == 'echo':
                 await self.send(text_data=json.dumps({
                     'type': 'echo_response',
-                    'message': 'Echo response',
+                    'message': 'Echo response from simple WebSocket',
                     'echoed_data': data.get('data', {}),
+                    'timestamp': self.get_timestamp()
+                }))
+            
+            elif message_type == 'info':
+                await self.send(text_data=json.dumps({
+                    'type': 'info_response',
+                    'message': 'This is a simple WebSocket without authentication',
                     'timestamp': self.get_timestamp()
                 }))
             
@@ -262,35 +217,3 @@ class SimpleTestConsumer(AsyncWebsocketConsumer):
         """Get current timestamp"""
         from django.utils import timezone
         return timezone.now().isoformat()
-
-
-class BroadcastMixin:
-    """
-    Mixin for consumers that need to broadcast to groups
-    """
-    
-    async def join_group(self, group_name):
-        """Join a WebSocket group"""
-        await self.channel_layer.group_add(group_name, self.channel_name)
-    
-    async def leave_group(self, group_name):
-        """Leave a WebSocket group"""
-        await self.channel_layer.group_discard(group_name, self.channel_name)
-    
-    async def broadcast_to_group(self, group_name, message_type, data):
-        """Broadcast message to all consumers in a group"""
-        await self.channel_layer.group_send(
-            group_name,
-            {
-                'type': 'group_message',
-                'message_type': message_type,
-                'data': data
-            }
-        )
-    
-    async def group_message(self, event):
-        """Handle group broadcast messages"""
-        await self.send_message(
-            event['message_type'],
-            event['data']
-        )

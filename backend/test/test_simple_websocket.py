@@ -1,47 +1,54 @@
 #!/usr/bin/env python3
 """
-Simple WebSocket client test for AgroBridge backend (no auth)
+Simple WebSocket test that shows exactly what's happening
 """
 import asyncio
 import websockets
 import json
 
-async def test_simple_websocket():
-    uri = "ws://localhost:8000/ws/simple/"
+async def test_websocket_detailed():
+    print("Testing WebSocket connection...")
     
-    try:
-        print(f"Connecting to {uri}...")
-        async with websockets.connect(uri) as websocket:
-            print("Connected successfully!")
-            
-            # Send a test message
-            test_message = {
-                "type": "ping",
-                "data": {"message": "Hello from simple test client"}
-            }
-            
-            await websocket.send(json.dumps(test_message))
-            print(f"Sent: {test_message}")
-            
-            # Wait for response
-            response = await websocket.recv()
-            print(f"Received: {response}")
-            
-            # Send another message
-            echo_message = {
-                "type": "echo",
-                "data": {"message": "This is an echo test"}
-            }
-            
-            await websocket.send(json.dumps(echo_message))
-            print(f"Sent: {echo_message}")
-            
-            # Wait for response
-            response = await websocket.recv()
-            print(f"Received: {response}")
-            
-    except Exception as e:
-        print(f"Connection failed: {e}")
+    # Test multiple endpoints
+    endpoints = [
+        '/ws/',
+        '/ws/simple/',
+        '/ws/test/',
+    ]
+    
+    for endpoint in endpoints:
+        url = f'ws://localhost:8000{endpoint}'
+        print(f"\nTesting: {url}")
+        
+        try:
+            async with websockets.connect(url) as websocket:
+                print(f"✅ SUCCESS: Connected to {endpoint}")
+                
+                # Try to receive initial message
+                try:
+                    message = await asyncio.wait_for(websocket.recv(), timeout=2.0)
+                    print(f"📨 Received: {message}")
+                except asyncio.TimeoutError:
+                    print("⏰ No initial message received (timeout)")
+                
+                # Send a test message
+                test_msg = {'type': 'ping'}
+                await websocket.send(json.dumps(test_msg))
+                print(f"📤 Sent: {test_msg}")
+                
+                # Try to receive response
+                try:
+                    response = await asyncio.wait_for(websocket.recv(), timeout=2.0)
+                    print(f"📨 Response: {response}")
+                except asyncio.TimeoutError:
+                    print("⏰ No response received (timeout)")
+                    
+        except websockets.exceptions.InvalidStatusCode as e:
+            print(f"❌ HTTP Error {e.status_code} for {endpoint}")
+        except ConnectionRefusedError:
+            print(f"❌ Connection refused for {endpoint}")
+        except Exception as e:
+            print(f"❌ Error for {endpoint}: {e}")
 
 if __name__ == "__main__":
-    asyncio.run(test_simple_websocket())
+    asyncio.run(test_websocket_detailed())
