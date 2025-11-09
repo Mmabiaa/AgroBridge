@@ -161,19 +161,26 @@ def logout_user(request):
     """
     try:
         refresh_token = request.data.get('refresh')
+        user = request.user
         
         if refresh_token:
             try:
                 token = RefreshToken(refresh_token)
                 token.blacklist()
+                logger.info(f"Refresh token blacklisted for user: {user.username}")
             except Exception as e:
                 logger.warning(f"Token blacklist failed: {str(e)}")
         
+        # Optional: Broadcast logout to WebSocket (if you have channel layers)
+        # await broadcast_logout(user.id)
+        
         # Log logout
-        logger.info(f"User logged out: {request.user.username}")
+        logger.info(f"User logged out: {user.username}")
         
         return Response({
-            'message': 'Logout successful'
+            'message': 'Logout successful',
+            'user_id': user.id,
+            'username': user.username
         }, status=status.HTTP_200_OK)
     
     except Exception as e:

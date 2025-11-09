@@ -165,25 +165,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = async () => {
+  // In your API service file
+const API_BASE = '/api/v1/auth';
+
+export const authService = {
+  async logout() {
+    const refreshToken = localStorage.getItem('refresh_token');
+    
     try {
-      await logoutMutation.mutateAsync();
+      const response = await this.$http.post(`${API_BASE}/logout/`, {
+        refresh: refreshToken
+      });
+      
+      // Handle successful logout
+      this.clearAuthData();
+      return response;
     } catch (error) {
-      // Even if logout fails on server, clear local state
-      console.error('Logout error:', error);
-    } finally {
-      setUser(null);
-      
-      // Stop WebSocket connection on logout
-      realTimeSync.stopConnection();
-      
-      // Clear tokens using the API client
-      apiClient.clearTokens();
-      
-      // Clear any other auth-related localStorage items
-      localStorage.removeItem('agrobridge_user');
+      console.error('Logout failed:', error);
+      // Still clear local data
+      this.clearAuthData();
+      throw error;
     }
-  };
+  },
+  
+  clearAuthData() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    
+    // Close WebSocket if exists
+    if (this.$socket) {
+      this.$socket.close();
+    }
+  }
+};
 
   const hasPermission = (permission: string): boolean => {
     return user?.permissions.includes(permission) ?? false;
