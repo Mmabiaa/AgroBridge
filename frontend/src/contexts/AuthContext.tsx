@@ -287,7 +287,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Call logout API only if we have a refresh token
       if (refreshToken) {
         // Option 1: If your useLogout hook doesn't accept parameters, call the API directly
-        await apiClient.post('/api/v1/auth/logout/', { refresh: refreshToken });
+        await apiClient.post('auth/logout/', { refresh: refreshToken });
         
         // Option 2: Or if you want to use the mutation without parameters
         // await logoutMutation.mutateAsync();

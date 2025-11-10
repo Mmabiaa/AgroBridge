@@ -16,16 +16,16 @@ class BaseAuthenticatedConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):
         """Handle WebSocket connection with authentication"""
-        logger.info(f"🔗 BaseAuthenticatedConsumer.connect() called for path: {self.scope['path']}")
-        logger.info(f"🔗 Query string: {self.scope.get('query_string', b'').decode()}")
+        logger.info(f"BaseAuthenticatedConsumer.connect() called for path: {self.scope['path']}")
+        logger.info(f"Query string: {self.scope.get('query_string', b'').decode()}")
         
         # User should already be authenticated by middleware
         user = self.scope.get('user')
         
-        logger.info(f"🔗 User in scope: {user} (Anonymous: {user.is_anonymous if user else 'No user'})")
+        logger.info(f"User in scope: {user} (Anonymous: {user.is_anonymous if user else 'No user'})")
         
         if not user or user.is_anonymous:
-            logger.warning("🚫 WebSocket connection rejected: No authenticated user")
+            logger.warning("WebSocket connection rejected: No authenticated user")
             await self.close(code=4001)  # Custom code for unauthorized
             return
         
@@ -34,7 +34,7 @@ class BaseAuthenticatedConsumer(AsyncWebsocketConsumer):
         
         # Accept connection
         await self.accept()
-        logger.info(f"✅ WebSocket connection accepted for user: {user.username}")
+        logger.info(f"WebSocket connection accepted for user: {user.username}")
         
         # Call custom connection handler
         await self.on_connected()
