@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { useCreateProductWithImages, useCategories } from '@/api/hooks/useMarketplace';
 import { ProductCreateData } from '@/types/basicTypes';
-import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Loader2, Folder, FolderOpen } from 'lucide-react';
 
 interface CreateProductModalProps {
   isOpen: boolean;
@@ -31,6 +31,15 @@ interface ProductFormData {
   organic_certified?: boolean;
 }
 
+interface Category {
+  id: number;
+  name: string;
+  description?: string;
+  parent?: number | null;
+  subcategories?: Category[];
+  is_expanded?: boolean;
+}
+
 export const CreateProductModal: React.FC<CreateProductModalProps> = ({
   isOpen,
   onClose,
@@ -39,6 +48,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   
   const {
     register,
@@ -60,6 +70,102 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
 
   const createProductMutation = useCreateProductWithImages();
   const { data: categoriesData, isLoading: categoriesLoading, error: categoriesError } = useCategories();
+
+  // Fallback categories in case API returns empty
+  const fallbackCategories: Category[] = [
+    { id: 1, name: 'Fruits', description: 'Fresh fruits' },
+    { id: 2, name: 'Vegetables', description: 'Fresh vegetables' },
+    { id: 3, name: 'Grains', description: 'Various grains' },
+    { id: 4, name: 'Dairy', description: 'Dairy products' },
+    { id: 5, name: 'Meat & Poultry', description: 'Meat and poultry products' },
+    { id: 6, name: 'Seafood', description: 'Fresh and frozen seafood' },
+    { id: 7, name: 'Herbs & Spices', description: 'Fresh and dried herbs and spices' },
+    { id: 8, name: 'Nuts & Seeds', description: 'Various nuts and seeds' },
+    { id: 9, name: 'Organic Products', description: 'Certified organic products' },
+    { id: 10, name: 'Processed Foods', description: 'Processed food items' },
+  ];
+
+  // Process categories with comprehensive debugging
+  const processedCategories = (() => {
+    console.log('=== CATEGORIES PROCESSING START ===');
+    console.log('categoriesData:', categoriesData);
+    console.log('categoriesLoading:', categoriesLoading);
+    console.log('categoriesError:', categoriesError);
+
+    if (categoriesLoading) {
+      console.log('Categories still loading...');
+      return [];
+    }
+
+    if (categoriesError) {
+      console.log('Categories error, using fallback');
+      return fallbackCategories;
+    }
+
+    if (!categoriesData) {
+      console.log('No categories data, using fallback');
+      return fallbackCategories;
+    }
+
+    // Debug the structure of the response
+    console.log('Categories data type:', typeof categoriesData);
+    console.log('Is array:', Array.isArray(categoriesData));
+    
+    if (categoriesData && typeof categoriesData === 'object') {
+      console.log('Object keys:', Object.keys(categoriesData));
+    }
+
+    // Handle different response structures
+    let categories: Category[] = [];
+
+    // Case 1: Direct array
+    if (Array.isArray(categoriesData)) {
+      console.log('Direct array with length:', categoriesData.length);
+      categories = categoriesData;
+    }
+    // Case 2: Paginated response (results)
+    else if (categoriesData.results && Array.isArray(categoriesData.results)) {
+      console.log('Paginated results with length:', categoriesData.results.length);
+      categories = categoriesData.results;
+    }
+    // Case 3: Data property
+    else if (categoriesData.data && Array.isArray(categoriesData.data)) {
+      console.log('Data property with length:', categoriesData.data.length);
+      categories = categoriesData.data;
+    }
+    // Case 4: Categories property
+    else if (categoriesData.categories && Array.isArray(categoriesData.categories)) {
+      console.log('Categories property with length:', categoriesData.categories.length);
+      categories = categoriesData.categories;
+    }
+    // Case 5: Empty object but has count
+    else if (categoriesData.count === 0) {
+      console.log('Empty paginated response (count: 0)');
+      categories = fallbackCategories;
+    }
+    // Case 6: Single category object
+    else if (categoriesData.id && categoriesData.name) {
+      console.log('Single category object');
+      categories = [categoriesData];
+    }
+    // Case 7: No recognizable structure
+    else {
+      console.log('Unrecognized response structure, using fallback');
+      categories = fallbackCategories;
+    }
+
+    console.log('Final processed categories count:', categories.length);
+    console.log('=== CATEGORIES PROCESSING END ===');
+
+    return categories.length > 0 ? categories : fallbackCategories;
+  })();
+
+  // Handle category selection
+  const handleCategoryChange = (value: string) => {
+    console.log('Category selected:', value);
+    setSelectedCategory(value);
+    setValue('category', value);
+  };
 
   // Handle image upload
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +215,9 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         organic_certified: data.organic_certified,
       };
 
+      console.log('Submitting product data:', productData);
+      console.log('With images:', images.length);
+
       await createProductMutation.mutateAsync({
         productData,
         images
@@ -117,6 +226,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
       reset();
       setImages([]);
       setImagePreviews([]);
+      setSelectedCategory('');
       onSuccess?.();
       onClose();
     } catch (error) {
@@ -130,27 +240,9 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     reset();
     setImages([]);
     setImagePreviews([]);
+    setSelectedCategory('');
     onClose();
   };
-
-  // Simple predefined categories
-  const predefinedCategories = [
-    { id: 1, name: 'Vegetables' },
-    { id: 2, name: 'Fruits' },
-    { id: 3, name: 'Legumes' },
-    { id: 4, name: 'Grains & Cereals' },
-    { id: 5, name: 'Livestock & Poultry' },
-    { id: 6, name: 'Dairy Products' },
-    { id: 7, name: 'Herbs & Spices' },
-    { id: 8, name: 'Nuts & Seeds' },
-    { id: 9, name: 'Tubers & Roots' },
-    { id: 10, name: 'Other Products' }
-  ];
-
-  // Use API categories if available, otherwise use predefined ones
-  const categories = categoriesData?.results && categoriesData.results.length > 0 
-    ? categoriesData.results 
-    : predefinedCategories;
 
   // Use exact unit types from your Django model
   const unitTypes = [
@@ -167,7 +259,6 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     { value: 'gallon', label: 'Gallon' }
   ];
 
-  // Use exact quality grades from your Django model
   const qualityGrades = [
     { value: 'premium', label: 'Premium' },
     { value: 'grade_a', label: 'Grade A' },
@@ -263,7 +354,8 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
               <div>
                 <Label htmlFor="category">Category *</Label>
                 <Select 
-                  onValueChange={(value) => setValue('category', value)}
+                  value={selectedCategory}
+                  onValueChange={handleCategoryChange}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder={
@@ -278,7 +370,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                         Loading categories...
                       </div>
                     ) : (
-                      categories.map((category) => (
+                      processedCategories.map((category) => (
                         <SelectItem key={category.id} value={category.id.toString()}>
                           {category.name}
                         </SelectItem>
@@ -289,6 +381,11 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                 {errors.category && (
                   <p className="text-sm text-red-500 mt-1">Category is required</p>
                 )}
+                <p className="text-xs text-gray-500 mt-1">
+                  {processedCategories.length} categories available
+                  {categoriesError && " (using fallback categories)"}
+                  {!categoriesData && !categoriesLoading && " (using fallback categories)"}
+                </p>
               </div>
             </div>
           </div>
@@ -438,7 +535,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || categoriesLoading}
+              disabled={isSubmitting || categoriesLoading || !selectedCategory}
             >
               {isSubmitting ? (
                 <>
