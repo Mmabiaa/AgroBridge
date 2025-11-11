@@ -103,11 +103,17 @@ export const useUserOrders = (params?: OrderListParams) => {
 
 // Category query hooks
 export const useCategories = () => {
-    return useQuery({
-        queryKey: ['marketplace', 'categories'],
-        queryFn: () => marketplaceService.getCategories(),
-        staleTime: 5 * 60 * 1000, // 5 minutes
-    });
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: async (): Promise<any> => {
+      console.log('Fetching categories from API...');
+      const response = await api.get('/marketplace/categories/');
+      console.log('Categories API response:', response);
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2,
+  });
 };
 
 // Product mutation hooks
