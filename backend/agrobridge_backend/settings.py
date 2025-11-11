@@ -15,7 +15,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '0.0.0.0', '::1', '*'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '0.0.0.0', '::1', 'xt7lct5c-8080.uks1.devtunnels.ms', '*'])
 
 # Application definition
 INSTALLED_APPS = [
@@ -145,13 +145,21 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "ws://localhost:8000",
     "ws://127.0.0.1:8000",
+    "https://xt7lct5c-8080.uks1.devtunnels.ms",  # Frontend Dev Tunnel
+    "wss://xt7lct5c-8080.uks1.devtunnels.ms",  # Frontend Dev Tunnel WebSocket
+    "https://xt7lct5c-8000.uks1.devtunnels.ms",  # Backend Dev Tunnel (for direct access)
 ]
 
 # Allow credentials for authentication
 CORS_ALLOW_CREDENTIALS = True
 
 # Allow all headers for development only
+# For Dev Tunnels, we need to allow all origins in development
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only in development
+
+# Explicitly allow Dev Tunnel origins even if DEBUG is False (for testing)
+if 'devtunnels.ms' in str(ALLOWED_HOSTS):
+    CORS_ALLOW_ALL_ORIGINS = True
 
 # Additional CORS settings for WebSockets
 CORS_ALLOW_HEADERS = [
@@ -164,6 +172,7 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'x-request-id',
 ]
 
 CORS_ALLOW_METHODS = [
@@ -174,6 +183,16 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
+# Explicitly expose headers that might be needed
+CORS_EXPOSE_HEADERS = [
+    'content-type',
+    'x-request-id',
+    'x-api-version',
+]
+
+# Preflight cache duration (in seconds)
+CORS_PREFLIGHT_MAX_AGE = 86400
 
 # Additional CORS settings for production
 if not DEBUG:
