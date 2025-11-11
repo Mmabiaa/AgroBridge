@@ -85,15 +85,10 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     { id: 10, name: 'Processed Foods', description: 'Processed food items' },
   ];
 
-  // Process categories with comprehensive debugging
+  // SIMPLIFIED categories processing - FIXED VERSION
   const processedCategories = (() => {
-    console.log('=== CATEGORIES PROCESSING START ===');
-    console.log('categoriesData:', categoriesData);
-    console.log('categoriesLoading:', categoriesLoading);
-    console.log('categoriesError:', categoriesError);
-
     if (categoriesLoading) {
-      console.log('Categories still loading...');
+      console.log('Categories loading...');
       return [];
     }
 
@@ -107,57 +102,22 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
       return fallbackCategories;
     }
 
-    // Debug the structure of the response
-    console.log('Categories data type:', typeof categoriesData);
-    console.log('Is array:', Array.isArray(categoriesData));
-    
-    if (categoriesData && typeof categoriesData === 'object') {
-      console.log('Object keys:', Object.keys(categoriesData));
+    console.log('Raw categories data:', categoriesData);
+
+    // Your API returns {count, next, previous, results: [...]}
+    if (categoriesData.results && Array.isArray(categoriesData.results)) {
+      console.log(`✅ Found ${categoriesData.results.length} categories in 'results' array`);
+      return categoriesData.results;
     }
 
-    // Handle different response structures
-    let categories: Category[] = [];
-
-    // Case 1: Direct array
+    // Fallback to direct array if available
     if (Array.isArray(categoriesData)) {
-      console.log('Direct array with length:', categoriesData.length);
-      categories = categoriesData;
-    }
-    // Case 2: Paginated response (results)
-    else if (categoriesData.results && Array.isArray(categoriesData.results)) {
-      console.log('Paginated results with length:', categoriesData.results.length);
-      categories = categoriesData.results;
-    }
-    // Case 3: Data property
-    else if (categoriesData.data && Array.isArray(categoriesData.data)) {
-      console.log('Data property with length:', categoriesData.data.length);
-      categories = categoriesData.data;
-    }
-    // Case 4: Categories property
-    else if (categoriesData.categories && Array.isArray(categoriesData.categories)) {
-      console.log('Categories property with length:', categoriesData.categories.length);
-      categories = categoriesData.categories;
-    }
-    // Case 5: Empty object but has count
-    else if (categoriesData.count === 0) {
-      console.log('Empty paginated response (count: 0)');
-      categories = fallbackCategories;
-    }
-    // Case 6: Single category object
-    else if (categoriesData.id && categoriesData.name) {
-      console.log('Single category object');
-      categories = [categoriesData];
-    }
-    // Case 7: No recognizable structure
-    else {
-      console.log('Unrecognized response structure, using fallback');
-      categories = fallbackCategories;
+      console.log(`✅ Found ${categoriesData.length} categories in direct array`);
+      return categoriesData;
     }
 
-    console.log('Final processed categories count:', categories.length);
-    console.log('=== CATEGORIES PROCESSING END ===');
-
-    return categories.length > 0 ? categories : fallbackCategories;
+    console.log('❌ No categories found in expected format, using fallback');
+    return fallbackCategories;
   })();
 
   // Handle category selection
@@ -360,6 +320,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                   <SelectTrigger>
                     <SelectValue placeholder={
                       categoriesLoading ? "Loading categories..." : 
+                      processedCategories.length === 0 ? "No categories available" :
                       "Select category"
                     } />
                   </SelectTrigger>
@@ -368,6 +329,10 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                       <div className="flex items-center justify-center p-4">
                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
                         Loading categories...
+                      </div>
+                    ) : processedCategories.length === 0 ? (
+                      <div className="text-center p-4 text-gray-500 text-sm">
+                        No categories available
                       </div>
                     ) : (
                       processedCategories.map((category) => (
@@ -381,11 +346,12 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                 {errors.category && (
                   <p className="text-sm text-red-500 mt-1">Category is required</p>
                 )}
-                <p className="text-xs text-gray-500 mt-1">
-                  {processedCategories.length} categories available
-                  {categoriesError && " (using fallback categories)"}
-                  {!categoriesData && !categoriesLoading && " (using fallback categories)"}
-                </p>
+                {!categoriesLoading && processedCategories.length > 0 && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {processedCategories.length} categories available
+                    {categoriesError && " (using fallback)"}
+                  </p>
+                )}
               </div>
             </div>
           </div>

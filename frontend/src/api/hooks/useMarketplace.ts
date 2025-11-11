@@ -3,7 +3,6 @@
  */
 import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import marketplaceService from '../services/marketplaceService';
-import { api } from '@/lib/axios';
 import type {
     Product,
     ProductCreateData,
@@ -17,42 +16,43 @@ import type {
     Category,
 } from '@/types/basicTypes';
 
-// Category query hooks - FIXED VERSION
+// Category query hooks - FIXED VERSION (using marketplaceService)
 export const useCategories = () => {
   return useQuery({
     queryKey: ['marketplace', 'categories'],
     queryFn: async (): Promise<Category[]> => {
       console.log('🔄 Fetching categories from API...');
       try {
-        const response = await api.get('/marketplace/categories/');
-        console.log('✅ Categories API raw response:', response.data);
+        // Use marketplaceService instead of direct axios call
+        const response = await marketplaceService.getCategories();
+        console.log('✅ Categories API response received:', response);
         
         // Handle paginated response structure
         let categories: Category[] = [];
         
-        if (response.data && typeof response.data === 'object') {
+        if (response && typeof response === 'object') {
           // Case 1: Paginated response with results array
-          if (response.data.results && Array.isArray(response.data.results)) {
-            categories = response.data.results;
+          if (response.results && Array.isArray(response.results)) {
+            categories = response.results;
             console.log(`📊 Found ${categories.length} categories in 'results' array`);
           }
           // Case 2: Direct array
-          else if (Array.isArray(response.data)) {
-            categories = response.data;
+          else if (Array.isArray(response)) {
+            categories = response;
             console.log(`📊 Found ${categories.length} categories in direct array`);
           }
           // Case 3: Data property
-          else if (response.data.data && Array.isArray(response.data.data)) {
-            categories = response.data.data;
+          else if (response.data && Array.isArray(response.data)) {
+            categories = response.data;
             console.log(`📊 Found ${categories.length} categories in 'data' array`);
           }
           // Case 4: Categories property
-          else if (response.data.categories && Array.isArray(response.data.categories)) {
-            categories = response.data.categories;
+          else if (response.categories && Array.isArray(response.categories)) {
+            categories = response.categories;
             console.log(`📊 Found ${categories.length} categories in 'categories' array`);
           }
           else {
-            console.warn('⚠️ Unexpected categories response structure:', response.data);
+            console.warn('⚠️ Unexpected categories response structure:', response);
             categories = [];
           }
         }
@@ -74,7 +74,7 @@ export const useCategories = () => {
   });
 };
 
-// Rest of your hooks remain the same...
+// Product query hooks
 export const useProducts = (params?: ProductListParams) => {
     return useQuery({
         queryKey: ['marketplace', 'products', 'list', params],
