@@ -20,5 +20,9 @@ urlpatterns = [
     
     # Add explicit routes for the endpoints your frontend expects
     path('products/my-products/', views.ProductViewSet.as_view({'get': 'my_products'}), name='my-products'),
-    path('orders/my-orders/', views.OrderViewSet.as_view({'get': 'my_purchases'}), name='my-orders'),
+    
+    # ✅ CORRECT - Add all three endpoints with proper mappings
+    path('orders/my-orders/', views.OrderViewSet.as_view({'get': 'my_orders'}), name='my-orders'),
+    path('orders/my-purchases/', views.OrderViewSet.as_view({'get': 'my_purchases'}), name='my-purchases'),
+    path('orders/my-sales/', views.OrderViewSet.as_view({'get': 'my_sales'}), name='my-sales'),
 ]
