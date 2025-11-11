@@ -36,8 +36,8 @@ export default function Register() {
      if (!formData.firstName.trim()) {
       errors.firstName = 'Firstname is required';
     }
-     if (!formData.username.trim()) {
-      errors.username = 'Username is required';
+     if (!formData.lastName.trim()) {
+      errors.lastName = 'Lastname is required';
     }
     if (!formData.username.trim()) {
       errors.username = 'Username is required';
