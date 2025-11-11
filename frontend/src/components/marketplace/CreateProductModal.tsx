@@ -66,7 +66,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     const files = event.target.files;
     if (!files) return;
 
-    const newImages = Array.from(files).slice(0, 5 - images.length); // Limit to 5 images
+    const newImages = Array.from(files).slice(0, 5 - images.length);
     const newImagePreviews = newImages.map(file => URL.createObjectURL(file));
 
     setImages(prev => [...prev, ...newImages]);
@@ -77,7 +77,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
     setImagePreviews(prev => {
-      URL.revokeObjectURL(prev[index]); // Clean up memory
+      URL.revokeObjectURL(prev[index]);
       return prev.filter((_, i) => i !== index);
     });
   };
@@ -85,11 +85,10 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
   const onSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
     try {
-      // Create location JSON string if location is provided
       const locationJson = data.location ? JSON.stringify({
         address: data.location,
         coordinates: { 
-          latitude: 5.6037, // Default to Accra coordinates
+          latitude: 5.6037,
           longitude: -0.1870 
         }
       }) : undefined;
@@ -104,7 +103,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         status: data.status || 'active',
         is_active: true,
         quality_grade: data.quality_grade,
-        location: locationJson, // Now it's a string (JSON)
+        location: locationJson,
         delivery_available: data.delivery_available,
         pickup_available: data.pickup_available,
         organic_certified: data.organic_certified,
@@ -115,7 +114,6 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         images
       });
       
-      // Reset form and images
       reset();
       setImages([]);
       setImagePreviews([]);
@@ -135,8 +133,24 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     onClose();
   };
 
-  // Use actual categories from API or fallback to empty array
-  const categories = categoriesData?.results || [];
+  // Simple predefined categories
+  const predefinedCategories = [
+    { id: 1, name: 'Vegetables' },
+    { id: 2, name: 'Fruits' },
+    { id: 3, name: 'Legumes' },
+    { id: 4, name: 'Grains & Cereals' },
+    { id: 5, name: 'Livestock & Poultry' },
+    { id: 6, name: 'Dairy Products' },
+    { id: 7, name: 'Herbs & Spices' },
+    { id: 8, name: 'Nuts & Seeds' },
+    { id: 9, name: 'Tubers & Roots' },
+    { id: 10, name: 'Other Products' }
+  ];
+
+  // Use API categories if available, otherwise use predefined ones
+  const categories = categoriesData?.results && categoriesData.results.length > 0 
+    ? categoriesData.results 
+    : predefinedCategories;
 
   // Use exact unit types from your Django model
   const unitTypes = [
@@ -254,7 +268,6 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                   <SelectTrigger>
                     <SelectValue placeholder={
                       categoriesLoading ? "Loading categories..." : 
-                      categoriesError ? "Error loading categories" : 
                       "Select category"
                     } />
                   </SelectTrigger>
@@ -263,14 +276,6 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                       <div className="flex items-center justify-center p-4">
                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
                         Loading categories...
-                      </div>
-                    ) : categoriesError ? (
-                      <div className="text-center p-4 text-red-500">
-                        Failed to load categories
-                      </div>
-                    ) : categories.length === 0 ? (
-                      <div className="text-center p-4 text-gray-500">
-                        No categories available
                       </div>
                     ) : (
                       categories.map((category) => (
