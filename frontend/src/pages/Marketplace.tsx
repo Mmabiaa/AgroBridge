@@ -35,56 +35,107 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
+import { CreateProductModal } from '@/components/marketplace/CreateProductModal';
 
-// Mock data and hooks (replace with your actual implementations)
-const mockProducts = [
-  {
-    id: '1',
-    name: 'Fresh Tomatoes',
-    description: 'Organic vine-ripened tomatoes',
-    price_per_unit: 15.50,
-    unit_type: 'kg',
-    quantity_available: 100,
-    quality_grade: 'grade_a',
-    organic_certified: true,
-    delivery_available: true,
-    pickup_available: true,
-    is_active: true,
-    images: ['https://images.unsplash.com/photo-1546470427-227a87e3e2c6?w=400'],
-    seller: { id: 'user1', username: 'FarmFresh', business_name: 'Farm Fresh Produce' },
-    location: { city: 'Accra' }
-  },
-  {
-    id: '2',
-    name: 'Sweet Corn',
-    description: 'Fresh yellow corn',
-    price_per_unit: 8.00,
-    unit_type: 'dozen',
-    quantity_available: 50,
-    quality_grade: 'grade_b',
-    organic_certified: false,
-    delivery_available: true,
-    pickup_available: false,
-    is_active: true,
-    images: [{ image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400' }],
-    seller: { id: 'user2', username: 'CornKing', business_name: 'Corn King Farms' },
-    location: { city: 'Kumasi' }
+// API functions to replace mock data
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+
+const fetchProducts = async (search = '', category = '', token = null) => {
+  try {
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    if (category && category !== 'all') params.append('category', category);
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    const response = await fetch(`${API_BASE_URL}/marketplace/products/?${params}`, {
+      headers,
+    });
+    if (!response.ok) throw new Error('Failed to fetch products');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error;
   }
-];
+};
 
-const mockUser = {
-  id: 'user1',
-  username: 'FarmFresh',
-  email: 'farm@example.com',
-  role: 'farmer',
-  permissions: ['create_product', 'delete_product']
+const fetchUserProducts = async (token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/marketplace/my-products/`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) throw new Error('Failed to fetch user products');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user products:', error);
+    throw error;
+  }
+};
+
+const fetchUserOrders = async (token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/marketplace/my-orders/`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) throw new Error('Failed to fetch user orders');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user orders:', error);
+    throw error;
+  }
+};
+
+const deleteProduct = async (productId, token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/marketplace/products/${productId}/`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) throw new Error('Failed to delete product');
+    return true;
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    throw error;
+  }
 };
 
 // Product Grid Component
-const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct }) => {
+const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshKey = 0 }) => {
+  const { user, token } = useAuth();
   const [viewMode, setViewMode] = useState('grid');
   const [localSearch, setLocalSearch] = useState(searchTerm);
-  const [products] = useState(mockProducts);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await fetchProducts(localSearch, category, token);
+      setProducts(data.results || data || []);
+    } catch (err) {
+      setError('Failed to load products');
+      toast.error('Failed to load products');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, [localSearch, category, refreshKey]);
 
   const getProductImageUrl = (product) => {
     if (!product.images || product.images.length === 0) {
@@ -105,7 +156,7 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct }) => {
   };
 
   const isProductOwner = (product) => {
-    return product.seller && product.seller.id === mockUser.id;
+    return product.seller && product.seller.id === user?.id;
   };
 
   const getSellerName = (product) => {
@@ -126,6 +177,37 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct }) => {
     product.name.toLowerCase().includes(localSearch.toLowerCase()) ||
     product.description.toLowerCase().includes(localSearch.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {[...Array(8)].map((_, i) => (
+          <Card key={i} className="animate-pulse">
+            <div className="h-48 bg-gray-200 rounded-t-lg"></div>
+            <CardContent className="p-4">
+              <div className="h-4 bg-gray-200 rounded mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-3/4 mb-4"></div>
+              <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <AlertCircle className="h-12 w-12 mx-auto mb-4 text-red-500" />
+        <h3 className="text-lg font-semibold mb-2">Failed to load products</h3>
+        <p className="text-muted-foreground mb-4">{error}</p>
+        <Button onClick={loadProducts}>
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Try Again
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -311,33 +393,141 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct }) => {
           );
         })}
       </div>
+
+      {filteredProducts.length === 0 && !loading && (
+        <div className="text-center py-12">
+          <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <h3 className="text-lg font-semibold mb-2">No products found</h3>
+          <p className="text-muted-foreground">
+            Try adjusting your search terms or filters
+          </p>
+        </div>
+      )}
     </div>
   );
 };
 
 // Main Marketplace Component
 export default function Marketplace() {
+  const { user, token } = useAuth();
   const [activeTab, setActiveTab] = useState('browse');
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [productToDelete, setProductToDelete] = useState(null);
-  const [userProducts, setUserProducts] = useState(mockProducts.filter(p => p.seller.id === mockUser.id));
+  const [userProducts, setUserProducts] = useState([]);
+  const [userOrders, setUserOrders] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [loading, setLoading] = useState({
+    products: false,
+    orders: false
+  });
+  const [error, setError] = useState({
+    products: null,
+    orders: null
+  });
+
+  const categories = [
+    { label: 'All Categories', value: 'all' },
+    { label: 'Vegetables', value: 'vegetables' },
+    { label: 'Fruits', value: 'fruits' },
+    { label: 'Grains', value: 'grains' },
+    { label: 'Legumes', value: 'legumes' },
+    { label: 'Herbs & Spices', value: 'herbs-spices' },
+    { label: 'Livestock', value: 'livestock' },
+    { label: 'Dairy', value: 'dairy' },
+    { label: 'Poultry', value: 'poultry' }
+  ];
+
+  const loadUserProducts = async () => {
+    if (!user || !token) return;
+    
+    try {
+      setLoading(prev => ({ ...prev, products: true }));
+      setError(prev => ({ ...prev, products: null }));
+      const data = await fetchUserProducts(token);
+      setUserProducts(data.results || data || []);
+    } catch (err) {
+      setError(prev => ({ ...prev, products: 'Failed to load your products' }));
+      toast.error('Failed to load your products');
+    } finally {
+      setLoading(prev => ({ ...prev, products: false }));
+    }
+  };
+
+  const loadUserOrders = async () => {
+    if (!user || !token) return;
+    
+    try {
+      setLoading(prev => ({ ...prev, orders: true }));
+      setError(prev => ({ ...prev, orders: null }));
+      const data = await fetchUserOrders(token);
+      setUserOrders(data.results || data || []);
+    } catch (err) {
+      setError(prev => ({ ...prev, orders: 'Failed to load your orders' }));
+      toast.error('Failed to load your orders');
+    } finally {
+      setLoading(prev => ({ ...prev, orders: false }));
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'my-products') {
+      loadUserProducts();
+    } else if (activeTab === 'orders') {
+      loadUserOrders();
+    }
+  }, [activeTab, user, token]);
 
   const handleDeleteProduct = (product) => {
     setProductToDelete(product);
   };
 
-  const confirmDelete = () => {
-    if (productToDelete) {
-      // Here you would call your API to delete the product
-      console.log('Deleting product:', productToDelete.id);
-      
-      // Update local state
-      setUserProducts(prev => prev.filter(p => p.id !== productToDelete.id));
-      
-      // Show success message
-      alert('Product deleted successfully!');
-      
-      setProductToDelete(null);
+  const confirmDelete = async () => {
+    if (productToDelete && token) {
+      try {
+        await deleteProduct(productToDelete.id, token);
+        
+        // Update local state
+        setUserProducts(prev => prev.filter(p => p.id !== productToDelete.id));
+        // Refresh browse list
+        setRefreshKey(prev => prev + 1);
+        
+        toast.success('Product deleted successfully!');
+        setProductToDelete(null);
+      } catch (err) {
+        toast.error('Failed to delete product');
+      }
+    }
+  };
+
+  const canCreateProduct = user && (
+    user.permissions?.includes('create_product') || 
+    user.role === 'farmer' || 
+    user.role === 'seller' ||
+    user.is_staff ||
+    user.is_superuser
+  );
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'confirmed': return 'bg-blue-100 text-blue-800';
+      case 'shipped': return 'bg-purple-100 text-purple-800';
+      case 'delivered': return 'bg-green-100 text-green-800';
+      case 'cancelled': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'pending': return <Clock className="h-3 w-3" />;
+      case 'confirmed': return <CheckCircle className="h-3 w-3" />;
+      case 'shipped': return <Package className="h-3 w-3" />;
+      case 'delivered': return <CheckCircle className="h-3 w-3" />;
+      case 'cancelled': return <AlertCircle className="h-3 w-3" />;
+      default: return <Clock className="h-3 w-3" />;
     }
   };
 
@@ -352,11 +542,50 @@ export default function Marketplace() {
           </p>
         </div>
         
-        <Button onClick={() => setCreateModalOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Product
-        </Button>
+        {canCreateProduct && (
+          <Button onClick={() => setCreateModalOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Product
+          </Button>
+        )}
       </div>
+
+      {/* Search and Filters */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search products, farmers, or locations..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Button variant="outline">
+              <Filter className="h-4 w-4 mr-2" />
+              Filters
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -369,7 +598,12 @@ export default function Marketplace() {
 
         {/* Browse Products */}
         <TabsContent value="browse" className="space-y-6">
-          <ProductGrid onDeleteProduct={handleDeleteProduct} />
+          <ProductGrid 
+            searchTerm={searchTerm} 
+            category={selectedCategory} 
+            onDeleteProduct={handleDeleteProduct}
+            refreshKey={refreshKey}
+          />
         </TabsContent>
 
         {/* My Products */}
@@ -379,20 +613,58 @@ export default function Marketplace() {
               <CardTitle className="flex items-center gap-2">
                 <Package className="h-5 w-5" />
                 My Products
+                {error.products && (
+                  <Badge variant="outline" className="text-yellow-600 border-yellow-300">
+                    Error
+                  </Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {userProducts.length === 0 ? (
+              {loading.products ? (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-32 bg-gray-200 rounded-lg mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-1"></div>
+                      <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : !user ? (
+                <div className="text-center py-12">
+                  <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">Sign in required</h3>
+                  <p className="text-muted-foreground">
+                    Please sign in to view your products
+                  </p>
+                </div>
+              ) : userProducts.length === 0 ? (
                 <div className="text-center py-12">
                   <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <h3 className="text-lg font-semibold mb-2">No products listed</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    {error.products ? 'Unable to load products' : 'No products listed'}
+                  </h3>
                   <p className="text-muted-foreground mb-4">
-                    Start selling by listing your first product
+                    {error.products 
+                      ? 'There was an issue loading your products.' 
+                      : 'Start selling by listing your first product'
+                    }
                   </p>
-                  <Button onClick={() => setCreateModalOpen(true)}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    List Product
-                  </Button>
+                  <div className="flex gap-2 justify-center">
+                    {canCreateProduct && (
+                      <Button onClick={() => setCreateModalOpen(true)}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        List Product
+                      </Button>
+                    )}
+                    {error.products && (
+                      <Button variant="outline" onClick={loadUserProducts}>
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Retry
+                      </Button>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -452,16 +724,111 @@ export default function Marketplace() {
               <CardTitle className="flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5" />
                 My Orders
+                {error.orders && (
+                  <Badge variant="outline" className="text-yellow-600 border-yellow-300">
+                    Error
+                  </Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12">
-                <ShoppingCart className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <h3 className="text-lg font-semibold mb-2">No orders yet</h3>
-                <p className="text-muted-foreground">
-                  Browse products to place your first order
-                </p>
-              </div>
+              {loading.orders ? (
+                <div className="space-y-4">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="animate-pulse flex items-center space-x-4 p-4 border rounded-lg">
+                      <div className="h-12 w-12 bg-gray-200 rounded"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                      </div>
+                      <div className="h-6 w-20 bg-gray-200 rounded"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : !user ? (
+                <div className="text-center py-12">
+                  <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">Sign in required</h3>
+                  <p className="text-muted-foreground">
+                    Please sign in to view your orders
+                  </p>
+                </div>
+              ) : userOrders.length === 0 ? (
+                <div className="text-center py-12">
+                  <ShoppingCart className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">
+                    {error.orders ? 'Unable to load orders' : 'No orders yet'}
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    {error.orders 
+                      ? 'There was an issue loading your orders.' 
+                      : 'Browse products to place your first order'
+                    }
+                  </p>
+                  <div className="flex gap-2 justify-center">
+                    <Button onClick={() => setActiveTab('browse')}>
+                      Browse Products
+                    </Button>
+                    {error.orders && (
+                      <Button variant="outline" onClick={loadUserOrders}>
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Retry
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {userOrders.map((order) => (
+                    <Card key={order.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h4 className="font-semibold">{order.product_name}</h4>
+                            <p className="text-sm text-muted-foreground">
+                              Order #{order.id?.slice(-8) || 'N/A'}
+                            </p>
+                          </div>
+                          <Badge className={getStatusColor(order.status)}>
+                            <div className="flex items-center gap-1">
+                              {getStatusIcon(order.status)}
+                              <span className="capitalize">{order.status}</span>
+                            </div>
+                          </Badge>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <span className="text-muted-foreground">Quantity:</span>
+                            <span className="ml-2 font-medium">
+                              {order.quantity} {order.unit || 'units'}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Total:</span>
+                            <span className="ml-2 font-medium">
+                              GHS {order.total_price || order.total_amount}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Seller:</span>
+                            <span className="ml-2">{order.seller_name || 'Unknown'}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Date:</span>
+                            <span className="ml-2">
+                              {order.created_at 
+                                ? new Date(order.created_at).toLocaleDateString()
+                                : 'Unknown date'
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -477,8 +844,15 @@ export default function Marketplace() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">GHS 0</div>
+                <div className="text-2xl font-bold">
+                  GHS {userOrders.reduce((sum, order) => sum + (order.total_price || 0), 0).toLocaleString()}
+                </div>
                 <p className="text-sm text-muted-foreground">Total sales</p>
+                <div className="mt-2">
+                  <Badge variant="default" className="bg-green-100 text-green-800">
+                    {userOrders.length} orders
+                  </Badge>
+                </div>
               </CardContent>
             </Card>
 
@@ -492,6 +866,11 @@ export default function Marketplace() {
               <CardContent>
                 <div className="text-2xl font-bold">{userProducts.length}</div>
                 <p className="text-sm text-muted-foreground">Your listings</p>
+                <div className="mt-2">
+                  <Badge variant="outline">
+                    {userProducts.filter(p => p.is_active).length} active
+                  </Badge>
+                </div>
               </CardContent>
             </Card>
 
@@ -503,8 +882,13 @@ export default function Marketplace() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
+                <div className="text-2xl font-bold">{userOrders.length}</div>
                 <p className="text-sm text-muted-foreground">Total orders</p>
+                <div className="mt-2">
+                  <Badge variant="outline">
+                    {userOrders.filter(o => o.status === 'delivered' || o.status === 'completed').length} completed
+                  </Badge>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -531,6 +915,21 @@ export default function Marketplace() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      
+      {/* Create Product Modal */}
+      <CreateProductModal
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onSuccess={() => {
+          // Close modal, switch to browse, and refresh product grid so new product + image show
+          setActiveTab('browse');
+          setRefreshKey(prev => prev + 1);
+          // Also refresh "My Products" if currently on that tab
+          if (activeTab === 'my-products') {
+            loadUserProducts();
+          }
+        }}
+      />
     </div>
   );
 }

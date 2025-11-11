@@ -16,7 +16,7 @@ router.register(r'inquiries', views.InquiryViewSet, basename='inquiry')
 router.register(r'wishlist', views.WishlistViewSet, basename='wishlist')
 
 urlpatterns = [
-    # Specific paths first to avoid conflicts with UUID patterns
+    # Specific paths first to avoid conflicts
     path('products/my-products/', views.ProductViewSet.as_view({'get': 'my_products'}), name='my-products'),
     path('orders/my-orders/', views.OrderViewSet.as_view({'get': 'my_orders'}), name='my-orders'),
     path('orders/my-purchases/', views.OrderViewSet.as_view({'get': 'my_purchases'}), name='my-purchases'),

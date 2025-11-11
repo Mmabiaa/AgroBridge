@@ -95,6 +95,25 @@ class ProductViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'price_per_unit', 'created_at', 'view_count']
     ordering = ['-created_at']
     
+    def get_permissions(self):
+        """
+        Allow anonymous access for read-only marketplace endpoints while
+        requiring authentication for creating/updating/deleting resources
+        and for user-specific endpoints.
+        """
+        public_actions = [
+            'list',
+            'retrieve',
+            'featured',
+            'search',
+            'search_suggestions',
+            'recommendations',
+            'similar',
+        ]
+        if self.action in public_actions:
+            return [AllowAny(), IsSellerOrReadOnly()]
+        return [IsAuthenticated(), IsSellerOrReadOnly()]
+    
     def perform_create(self, serializer):
         """Automatically set the seller to the current user"""
         serializer.save(seller=self.request.user)
