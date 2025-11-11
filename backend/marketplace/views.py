@@ -86,7 +86,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing products
     """
-    queryset = Product.objects.all()  # Add base queryset
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated, IsSellerOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -95,13 +95,21 @@ class ProductViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'price_per_unit', 'created_at', 'view_count']
     ordering = ['-created_at']
     
+    def perform_create(self, serializer):
+        """Automatically set the seller to the current user"""
+        serializer.save(seller=self.request.user)
+    
     def get_queryset(self):
         """Filter products based on user and visibility"""
         user = self.request.user
         
         if self.action == 'list':
-            # Public listing - only active products
+            # Public listing - only active products, exclude user's own products
             queryset = Product.objects.filter(status='active')
+            
+            # If user is authenticated, exclude their own products
+            if user.is_authenticated:
+                queryset = queryset.exclude(seller=user)
         else:
             # Detail view or user's own products
             if user.is_authenticated:
@@ -344,7 +352,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing orders
     """
-    queryset = Order.objects.all()  # Add base queryset
+    queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -362,7 +370,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         ).select_related('buyer', 'seller').prefetch_related('items__product')
     
     def create(self, request, *args, **kwargs):
-        """Create a new order"""
+        """Create a new order with validation"""
         serializer = OrderCreateSerializer(data=request.data)
         
         if not serializer.is_valid():
@@ -371,6 +379,15 @@ class OrderViewSet(viewsets.ModelViewSet):
         validated_data = serializer.validated_data
         
         try:
+            # Validate that user is not ordering their own products
+            for item_data in validated_data['items']:
+                product = Product.objects.get(id=item_data['product_id'])
+                if product.seller == request.user:
+                    return Response(
+                        {'error': 'You cannot order your own products'}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            
             # Create order with items
             order = self._create_order_with_items(request.user, validated_data)
             
@@ -396,6 +413,10 @@ class OrderViewSet(viewsets.ModelViewSet):
         sellers_items = {}
         for item_data in items_data:
             product = Product.objects.get(id=item_data['product_id'])
+            
+            # Additional validation - ensure product is available and not user's own
+            if product.seller == buyer:
+                raise ValueError("Cannot order your own product")
             
             if product.seller not in sellers_items:
                 sellers_items[product.seller] = []
@@ -604,7 +625,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing reviews
     """
-    queryset = Review.objects.all()  # Add base queryset
+    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -647,7 +668,7 @@ class WishlistViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing user wishlists
     """
-    queryset = Wishlist.objects.all()  # Add base queryset
+    queryset = Wishlist.objects.all()
     serializer_class = WishlistSerializer
     permission_classes = [IsAuthenticated]
     
@@ -660,7 +681,7 @@ class InquiryViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing product inquiries
     """
-    queryset = Inquiry.objects.all()  # Add base queryset
+    queryset = Inquiry.objects.all()
     serializer_class = InquirySerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
