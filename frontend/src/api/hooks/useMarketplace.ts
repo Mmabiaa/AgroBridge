@@ -3,7 +3,7 @@
  */
 import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import marketplaceService from '../services/marketplaceService';
-import { api } from '@/lib/axios'; // Make sure you have this import
+import { api } from '@/lib/axios';
 import type {
     Product,
     ProductCreateData,
@@ -17,7 +17,7 @@ import type {
     Category,
 } from '@/types/basicTypes';
 
-// Category query hooks - UPDATED VERSION
+// Category query hooks - FIXED VERSION
 export const useCategories = () => {
   return useQuery({
     queryKey: ['marketplace', 'categories'],
@@ -25,25 +25,43 @@ export const useCategories = () => {
       console.log('🔄 Fetching categories from API...');
       try {
         const response = await api.get('/marketplace/categories/');
-        console.log('✅ Categories API response received:', response);
+        console.log('✅ Categories API raw response:', response.data);
         
-        // Handle different response structures
+        // Handle paginated response structure
         let categories: Category[] = [];
         
-        if (Array.isArray(response.data)) {
-          categories = response.data;
-        } else if (response.data?.results && Array.isArray(response.data.results)) {
-          categories = response.data.results;
-        } else if (response.data?.data && Array.isArray(response.data.data)) {
-          categories = response.data.data;
-        } else if (response.data?.categories && Array.isArray(response.data.categories)) {
-          categories = response.data.categories;
-        } else {
-          console.warn('⚠️ Unexpected categories response structure:', response.data);
-          categories = [];
+        if (response.data && typeof response.data === 'object') {
+          // Case 1: Paginated response with results array
+          if (response.data.results && Array.isArray(response.data.results)) {
+            categories = response.data.results;
+            console.log(`📊 Found ${categories.length} categories in 'results' array`);
+          }
+          // Case 2: Direct array
+          else if (Array.isArray(response.data)) {
+            categories = response.data;
+            console.log(`📊 Found ${categories.length} categories in direct array`);
+          }
+          // Case 3: Data property
+          else if (response.data.data && Array.isArray(response.data.data)) {
+            categories = response.data.data;
+            console.log(`📊 Found ${categories.length} categories in 'data' array`);
+          }
+          // Case 4: Categories property
+          else if (response.data.categories && Array.isArray(response.data.categories)) {
+            categories = response.data.categories;
+            console.log(`📊 Found ${categories.length} categories in 'categories' array`);
+          }
+          else {
+            console.warn('⚠️ Unexpected categories response structure:', response.data);
+            categories = [];
+          }
         }
         
-        console.log(`📊 Processed ${categories.length} categories`);
+        console.log(`🎯 Final categories count: ${categories.length}`);
+        categories.forEach((cat, index) => {
+          console.log(`   ${index + 1}. ${cat.name} (ID: ${cat.id})`);
+        });
+        
         return categories;
       } catch (error) {
         console.error('❌ Categories API error:', error);
@@ -56,15 +74,14 @@ export const useCategories = () => {
   });
 };
 
-// Product query hooks
+// Rest of your hooks remain the same...
 export const useProducts = (params?: ProductListParams) => {
     return useQuery({
         queryKey: ['marketplace', 'products', 'list', params],
         queryFn: () => marketplaceService.getProducts(params),
-        staleTime: 1 * 60 * 1000, // 1 minute for product listings
+        staleTime: 1 * 60 * 1000,
         placeholderData: (previousData) => previousData,
         retry: (failureCount, error: any) => {
-            // Don't retry on 404 errors for products
             if (error?.response?.status === 404) return false;
             return failureCount < 3;
         },
@@ -93,7 +110,7 @@ export const useProduct = (id: string, enabled = true) => {
         queryKey: ['marketplace', 'products', 'detail', id],
         queryFn: () => marketplaceService.getProduct(id),
         enabled: enabled && !!id,
-        staleTime: 3 * 60 * 1000, // 3 minutes for individual products
+        staleTime: 3 * 60 * 1000,
     });
 };
 
@@ -101,9 +118,8 @@ export const useUserProducts = (params?: ProductListParams) => {
     return useQuery({
         queryKey: ['marketplace', 'products', 'user', params],
         queryFn: () => marketplaceService.getUserProducts(params),
-        staleTime: 30 * 1000, // 30 seconds for user's own products
+        staleTime: 30 * 1000,
         retry: (failureCount, error: any) => {
-            // Don't retry on 404 errors - these endpoints might not exist
             if (error?.response?.status === 404) return false;
             return failureCount < 2;
         },
@@ -115,7 +131,7 @@ export const useOrders = (params?: OrderListParams) => {
     return useQuery({
         queryKey: ['marketplace', 'orders', 'list', params],
         queryFn: () => marketplaceService.getOrders(params),
-        staleTime: 30 * 1000, // 30 seconds for orders
+        staleTime: 30 * 1000,
     });
 };
 
@@ -124,7 +140,7 @@ export const useOrder = (id: string, enabled = true) => {
         queryKey: ['marketplace', 'orders', 'detail', id],
         queryFn: () => marketplaceService.getOrder(id),
         enabled: enabled && !!id,
-        staleTime: 1 * 60 * 1000, // 1 minute for individual orders
+        staleTime: 1 * 60 * 1000,
     });
 };
 
@@ -132,9 +148,8 @@ export const useUserOrders = (params?: OrderListParams) => {
     return useQuery({
         queryKey: ['marketplace', 'orders', 'user', params],
         queryFn: () => marketplaceService.getUserOrders(params),
-        staleTime: 30 * 1000, // 30 seconds for user's orders
+        staleTime: 30 * 1000,
         retry: (failureCount, error: any) => {
-            // Don't retry on 404 errors - these endpoints might not exist
             if (error?.response?.status === 404) return false;
             return failureCount < 2;
         },
@@ -149,11 +164,8 @@ export const useCreateProduct = () => {
         mutationKey: ['create_product'],
         mutationFn: (productData: ProductCreateData) => marketplaceService.createProduct(productData),
         onSuccess: (newProduct: Product) => {
-            // Invalidate product lists
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'products', 'list'] });
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'products', 'user'] });
-
-            // Add to cache
             queryClient.setQueryData(['marketplace', 'products', 'detail', newProduct.id], newProduct);
         },
     });
@@ -167,11 +179,8 @@ export const useCreateProductWithImages = () => {
         mutationFn: ({ productData, images }: { productData: ProductCreateData; images: File[] }) => 
             marketplaceService.createProductWithImages(productData, images),
         onSuccess: (newProduct: Product) => {
-            // Invalidate product lists
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'products', 'list'] });
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'products', 'user'] });
-
-            // Add to cache
             queryClient.setQueryData(['marketplace', 'products', 'detail', newProduct.id], newProduct);
         },
     });
@@ -185,7 +194,6 @@ export const useUpdateProduct = () => {
         mutationFn: ({ id, data }: { id: string; data: ProductUpdateData }) =>
             marketplaceService.updateProduct(id, data),
         onSuccess: (updatedProduct: Product) => {
-            // Update cache
             queryClient.setQueryData(['marketplace', 'products', 'detail', updatedProduct.id], updatedProduct);
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'products', 'list'] });
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'products', 'user'] });
@@ -200,7 +208,6 @@ export const useDeleteProduct = () => {
         mutationKey: ['delete_product'],
         mutationFn: (id: string) => marketplaceService.deleteProduct(id),
         onSuccess: (_, id) => {
-            // Remove from cache
             queryClient.removeQueries({ queryKey: ['marketplace', 'products', 'detail', id] });
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'products', 'list'] });
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'products', 'user'] });
@@ -216,11 +223,8 @@ export const useCreateOrder = () => {
         mutationKey: ['create_order'],
         mutationFn: (orderData: OrderCreateData) => marketplaceService.createOrder(orderData),
         onSuccess: (newOrder: Order) => {
-            // Invalidate order lists
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'orders', 'list'] });
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'orders', 'user'] });
-
-            // Add to cache
             queryClient.setQueryData(['marketplace', 'orders', 'detail', newOrder.id], newOrder);
         },
     });
@@ -234,7 +238,6 @@ export const useUpdateOrder = () => {
         mutationFn: ({ id, data }: { id: string; data: OrderUpdateData }) =>
             marketplaceService.updateOrder(id, data),
         onSuccess: (updatedOrder: Order) => {
-            // Update cache
             queryClient.setQueryData(['marketplace', 'orders', 'detail', updatedOrder.id], updatedOrder);
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'orders', 'list'] });
             queryClient.invalidateQueries({ queryKey: ['marketplace', 'orders', 'user'] });
@@ -248,7 +251,7 @@ export const useProductSearch = (searchTerm: string, enabled = true) => {
         queryKey: ['marketplace', 'products', 'search', searchTerm],
         queryFn: () => marketplaceService.getProducts({ search: searchTerm }),
         enabled: enabled && searchTerm.length > 2,
-        staleTime: 30 * 1000, // 30 seconds for search results
+        staleTime: 30 * 1000,
     });
 };
 
@@ -257,7 +260,7 @@ export const useProductsByCategory = (category: string, enabled = true) => {
         queryKey: ['marketplace', 'products', 'category', category],
         queryFn: () => marketplaceService.getProducts({ category }),
         enabled: enabled && !!category,
-        staleTime: 2 * 60 * 1000, // 2 minutes for category listings
+        staleTime: 2 * 60 * 1000,
     });
 };
 
