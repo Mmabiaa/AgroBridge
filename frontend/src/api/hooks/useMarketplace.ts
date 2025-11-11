@@ -3,6 +3,7 @@
  */
 import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import marketplaceService from '../services/marketplaceService';
+import { api } from '@/lib/axios'; // Make sure you have this import
 import type {
     Product,
     ProductCreateData,
@@ -15,6 +16,45 @@ import type {
     OrderListParams,
     Category,
 } from '@/types/basicTypes';
+
+// Category query hooks - UPDATED VERSION
+export const useCategories = () => {
+  return useQuery({
+    queryKey: ['marketplace', 'categories'],
+    queryFn: async (): Promise<Category[]> => {
+      console.log('🔄 Fetching categories from API...');
+      try {
+        const response = await api.get('/marketplace/categories/');
+        console.log('✅ Categories API response received:', response);
+        
+        // Handle different response structures
+        let categories: Category[] = [];
+        
+        if (Array.isArray(response.data)) {
+          categories = response.data;
+        } else if (response.data?.results && Array.isArray(response.data.results)) {
+          categories = response.data.results;
+        } else if (response.data?.data && Array.isArray(response.data.data)) {
+          categories = response.data.data;
+        } else if (response.data?.categories && Array.isArray(response.data.categories)) {
+          categories = response.data.categories;
+        } else {
+          console.warn('⚠️ Unexpected categories response structure:', response.data);
+          categories = [];
+        }
+        
+        console.log(`📊 Processed ${categories.length} categories`);
+        return categories;
+      } catch (error) {
+        console.error('❌ Categories API error:', error);
+        throw error;
+      }
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    retry: 2,
+    retryDelay: 1000,
+  });
+};
 
 // Product query hooks
 export const useProducts = (params?: ProductListParams) => {
@@ -99,21 +139,6 @@ export const useUserOrders = (params?: OrderListParams) => {
             return failureCount < 2;
         },
     });
-};
-
-// Category query hooks
-export const useCategories = () => {
-  return useQuery({
-    queryKey: ['categories'],
-    queryFn: async (): Promise<any> => {
-      console.log('Fetching categories from API...');
-      const response = await api.get('/marketplace/categories/');
-      console.log('Categories API response:', response);
-      return response.data;
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 2,
-  });
 };
 
 // Product mutation hooks
