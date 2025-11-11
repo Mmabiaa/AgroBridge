@@ -29,6 +29,8 @@ interface ProductFormData {
   delivery_available?: boolean;
   pickup_available?: boolean;
   organic_certified?: boolean;
+  delivery_radius_km?: number; // ADDED FIELD
+  delivery_cost_per_km?: number; // ADDED FIELD
 }
 
 interface Category {
@@ -65,8 +67,13 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
       delivery_available: false,
       pickup_available: true,
       organic_certified: false,
+      delivery_radius_km: 0, // DEFAULT VALUE
+      delivery_cost_per_km: 0, // DEFAULT VALUE
     },
   });
+
+  // Watch delivery_available to conditionally show delivery fields
+  const deliveryAvailable = watch('delivery_available');
 
   const createProductMutation = useCreateProductWithImages();
   const { data: categoriesData, isLoading: categoriesLoading, error: categoriesError } = useCategories();
@@ -173,6 +180,11 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         delivery_available: data.delivery_available,
         pickup_available: data.pickup_available,
         organic_certified: data.organic_certified,
+        // ADD DELIVERY FIELDS - only include if delivery is available
+        ...(data.delivery_available && {
+          delivery_radius_km: Number(data.delivery_radius_km) || 0,
+          delivery_cost_per_km: Number(data.delivery_cost_per_km) || 0,
+        }),
       };
 
       console.log('Submitting product data:', productData);
@@ -454,6 +466,44 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                 </p>
               </div>
             </div>
+
+            {/* Delivery Options - CONDITIONALLY RENDERED */}
+            {deliveryAvailable && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                <div>
+                  <Label htmlFor="delivery_radius_km">Delivery Radius (km) *</Label>
+                  <Input
+                    id="delivery_radius_km"
+                    type="number"
+                    min="1"
+                    max="1000"
+                    {...register('delivery_radius_km', { 
+                      required: deliveryAvailable ? 'Delivery radius is required when delivery is available' : false,
+                      min: { value: 1, message: 'Delivery radius must be at least 1 km' }
+                    })}
+                    placeholder="e.g., 10"
+                  />
+                  {errors.delivery_radius_km && (
+                    <p className="text-sm text-red-500 mt-1">{errors.delivery_radius_km.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="delivery_cost_per_km">Delivery Cost per km (optional)</Label>
+                  <Input
+                    id="delivery_cost_per_km"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    {...register('delivery_cost_per_km')}
+                    placeholder="0.00"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Cost per kilometer for delivery
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Checkboxes */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">

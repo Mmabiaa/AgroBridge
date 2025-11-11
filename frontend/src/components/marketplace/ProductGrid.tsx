@@ -13,7 +13,8 @@ import {
     Search,
     Grid,
     List,
-    Plus
+    Plus,
+    Image as ImageIcon
 } from 'lucide-react';
 import { useProducts, useCreateOrder } from '@/api/hooks/useMarketplace';
 import { useAuth } from '@/contexts/AuthContext';
@@ -88,6 +89,29 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
     const formatDistance = (location: any) => {
         // Mock distance calculation
         return `${Math.floor(Math.random() * 50) + 1} km away`;
+    };
+
+    // Function to get the correct image URL
+    const getProductImageUrl = (product: Product) => {
+        if (!product.images || product.images.length === 0) {
+            return null;
+        }
+
+        // Handle different image data structures
+        const firstImage = product.images[0];
+        
+        if (typeof firstImage === 'string') {
+            // If it's a direct URL string
+            return firstImage;
+        } else if (firstImage?.image) {
+            // If it's an object with image property
+            return firstImage.image;
+        } else if (firstImage?.url) {
+            // If it's an object with url property
+            return firstImage.url;
+        }
+        
+        return null;
     };
 
     if (isLoading) {
@@ -184,106 +208,143 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                 ? "grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                 : "space-y-4"
             }>
-                {products.map((product) => (
-                    <Card key={product.id} className="group hover:shadow-lg transition-shadow">
-                        {product.images && product.images.length > 0 ? (
-                            <div className="h-48 bg-gray-100 rounded-t-lg overflow-hidden">
-                                <img
-                                    src={typeof product.images[0] === 'string' ? product.images[0] : product.images[0]?.image || ''}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                />
-                            </div>
-                        ) : (
-                            <div className="h-48 bg-gradient-to-br from-green-100 to-green-200 rounded-t-lg flex items-center justify-center">
-                                <ShoppingCart className="h-12 w-12 text-green-600 opacity-50" />
-                            </div>
-                        )}
-
-                        <CardHeader className="pb-2">
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <CardTitle className="text-lg line-clamp-1">{product.name}</CardTitle>
-                                    <CardDescription className="line-clamp-2">
-                                        {product.description}
-                                    </CardDescription>
-                                </div>
-                                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-red-500">
-                                    <Heart className="h-4 w-4" />
-                                </Button>
-                            </div>
-
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <MapPin className="h-3 w-3" />
-                                <span>{formatDistance(product.location)}</span>
-                                <span>•</span>
-                                <span>{product.seller?.business_name || product.seller?.username || 'Seller'}</span>
-                            </div>
-                        </CardHeader>
-
-                        <CardContent className="pt-0">
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <div className="text-2xl font-bold text-primary">
-                                            {formatPrice(product.price_per_unit)}
-                                        </div>
-                                        <div className="text-sm text-muted-foreground">
-                                            per {product.unit_type}
-                                        </div>
+                {products.map((product) => {
+                    const imageUrl = getProductImageUrl(product);
+                    
+                    return (
+                        <Card key={product.id} className="group hover:shadow-lg transition-shadow">
+                            {/* Product Image */}
+                            <div className="h-48 bg-gray-100 rounded-t-lg overflow-hidden relative">
+                                {imageUrl ? (
+                                    <img
+                                        src={imageUrl}
+                                        alt={product.name}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                        onError={(e) => {
+                                            // Fallback if image fails to load
+                                            e.currentTarget.style.display = 'none';
+                                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="w-full h-full bg-gradient-to-br from-green-100 to-green-200 flex flex-col items-center justify-center text-green-600">
+                                        <ImageIcon className="h-12 w-12 mb-2 opacity-50" />
+                                        <span className="text-sm opacity-70">No Image</span>
                                     </div>
-                                    <div className="text-right">
-                                        <Badge variant={product.quantity_available > 0 ? 'default' : 'secondary'}>
-                                            {product.quantity_available > 0
-                                                ? `${product.quantity_available} ${product.unit_type} available`
-                                                : 'Out of stock'
-                                            }
+                                )}
+                                
+                                {/* Fallback placeholder - hidden by default */}
+                                <div className={`hidden w-full h-full bg-gradient-to-br from-green-100 to-green-200 flex flex-col items-center justify-center text-green-600 ${!imageUrl ? '!flex' : ''}`}>
+                                    <ImageIcon className="h-12 w-12 mb-2 opacity-50" />
+                                    <span className="text-sm opacity-70">No Image</span>
+                                </div>
+
+                                {/* Quality Grade Badge */}
+                                {product.quality_grade && (
+                                    <div className="absolute top-2 left-2">
+                                        <Badge variant="secondary" className="text-xs">
+                                            {product.quality_grade.replace('_', ' ').toUpperCase()}
                                         </Badge>
                                     </div>
-                                </div>
+                                )}
 
-                                <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="text-xs">
-                                        Grade {product.quality_grade || 'A'}
-                                    </Badge>
-                                    {product.organic && (
-                                        <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                                {/* Organic Badge */}
+                                {product.organic_certified && (
+                                    <div className="absolute top-2 right-2">
+                                        <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
                                             Organic
                                         </Badge>
-                                    )}
-                                    {product.delivery_available && (
-                                        <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">
-                                            Delivery
-                                        </Badge>
-                                    )}
-                                    {product.pickup_available && (
-                                        <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700">
-                                            Pickup
-                                        </Badge>
-                                    )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <CardHeader className="pb-2">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                        <CardTitle className="text-lg line-clamp-1">{product.name}</CardTitle>
+                                        <CardDescription className="line-clamp-2">
+                                            {product.description}
+                                        </CardDescription>
+                                    </div>
+                                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-red-500">
+                                        <Heart className="h-4 w-4" />
+                                    </Button>
                                 </div>
 
-                                <Button
-                                    className="w-full"
-                                    disabled={product.quantity_available === 0 || createOrderMutation.isPending}
-                                    onClick={() => handleOrder(product)}
-                                >
-                                    {createOrderMutation.isPending ? (
-                                        <>
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                            Ordering...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <ShoppingCart className="h-4 w-4 mr-2" />
-                                            Order Now
-                                        </>
-                                    )}
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <MapPin className="h-3 w-3" />
+                                    <span>{formatDistance(product.location)}</span>
+                                    <span>•</span>
+                                    <span>{product.seller?.business_name || product.seller?.username || 'Seller'}</span>
+                                </div>
+                            </CardHeader>
+
+                            <CardContent className="pt-0">
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="text-2xl font-bold text-primary">
+                                                {formatPrice(product.price_per_unit)}
+                                            </div>
+                                            <div className="text-sm text-muted-foreground">
+                                                per {product.unit_type}
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <Badge variant={product.quantity_available > 0 ? 'default' : 'secondary'}>
+                                                {product.quantity_available > 0
+                                                    ? `${product.quantity_available} ${product.unit_type} available`
+                                                    : 'Out of stock'
+                                                }
+                                            </Badge>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        {product.quality_grade && (
+                                            <Badge variant="outline" className="text-xs">
+                                                Grade {product.quality_grade.replace('_', ' ')}
+                                            </Badge>
+                                        )}
+                                        {product.organic_certified && (
+                                            <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                                                Organic
+                                            </Badge>
+                                        )}
+                                        {product.delivery_available && (
+                                            <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">
+                                                Delivery
+                                            </Badge>
+                                        )}
+                                        {product.pickup_available && (
+                                            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700">
+                                                Pickup
+                                            </Badge>
+                                        )}
+                                    </div>
+
+                                    <Button
+                                        className="w-full"
+                                        disabled={product.quantity_available === 0 || createOrderMutation.isPending}
+                                        onClick={() => handleOrder(product)}
+                                    >
+                                        {createOrderMutation.isPending ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                                Ordering...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ShoppingCart className="h-4 w-4 mr-2" />
+                                                Order Now
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    );
+                })}
             </div>
 
             {/* Load More */}
