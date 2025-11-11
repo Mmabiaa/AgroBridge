@@ -49,8 +49,8 @@ export default function Register() {
     
     if (!formData.password) {
       errors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters';
+    } else if (formData.password.length < 8) {
+      errors.password = 'Password must be at least 8 characters';
     }
     
     if (formData.password !== formData.confirmPassword) {
@@ -260,7 +260,7 @@ export default function Register() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name (Optional)</Label>
+                  <Label htmlFor="firstName">First Name *</Label>
                   <Input 
                     id="firstName" 
                     name="firstName"
@@ -275,11 +275,11 @@ export default function Register() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name (Optional)</Label>
-                  <Input 
-                    id="lastName" 
+                  <Label htmlFor="lastName">Last Name *</Label>
+                  <Input
+                    id="lastName"
                     name="lastName"
-                    type="text" 
+                    type="text"
                     placeholder="Last name"
                     value={formData.lastName}
                     onChange={handleInputChange}
@@ -342,7 +342,7 @@ export default function Register() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password * (min. 6 characters)</Label>
+                <Label htmlFor="password">Password * (min. 8 characters)</Label>
                 <div className="relative">
                   <Input 
                     id="password" 
