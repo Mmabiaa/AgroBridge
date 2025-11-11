@@ -91,6 +91,15 @@ export default function Marketplace() {
   const userProducts: Product[] = (productsHasError ? { results: [] } : userProductsData)?.results || [];
   const userOrders: Order[] = (ordersHasError ? { results: [] } : userOrdersData)?.results || [];
 
+  // Check if user can create products - SIMPLIFIED PERMISSION CHECK
+  const canCreateProduct = user && (
+    user.permissions?.includes('create_product') || 
+    user.role === 'farmer' || 
+    user.role === 'seller' ||
+    user.is_staff ||
+    user.is_superuser
+  );
+
   const categories = [
     { label: 'All Categories', value: 'all' },
     { label: 'Vegetables', value: 'vegetables' },
@@ -166,10 +175,11 @@ export default function Marketplace() {
           </p>
         </div>
         
-        {user?.permissions?.includes('create_product') && (
+        {/* ALWAYS SHOW BUTTON FOR AUTHENTICATED USERS */}
+        {user && (
           <Button onClick={() => setCreateModalOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            List Product
+            Add Product
           </Button>
         )}
       </div>
@@ -181,6 +191,7 @@ export default function Marketplace() {
         onSuccess={() => {
           setCreateModalOpen(false);
           refetchProducts();
+          toast.success('Product created successfully!');
         }}
       />
 
