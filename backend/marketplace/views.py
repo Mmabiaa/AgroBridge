@@ -40,6 +40,33 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['name', 'sort_order']
     ordering = ['sort_order', 'name']
     
+    def list(self, request, *args, **kwargs):
+        """Override list to add debugging"""
+        print("=== CATEGORIES API ENDPOINT CALLED ===")
+        print(f"User: {request.user}")
+        print(f"Authenticated: {request.user.is_authenticated}")
+        
+        # Get the base queryset
+        queryset = self.filter_queryset(self.get_queryset())
+        
+        print(f"Total categories in database: {Category.objects.count()}")
+        print(f"Active categories: {queryset.count()}")
+        
+        # Log each category
+        for category in queryset:
+            print(f" - {category.id}: {category.name}")
+        
+        # Continue with normal list behavior
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            print(f"Returning {len(serializer.data)} categories in response")
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        print(f"Returning {len(serializer.data)} categories in response")
+        return Response(serializer.data)
+    
     def get_queryset(self):
         """Filter categories"""
         queryset = super().get_queryset()
