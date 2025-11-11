@@ -109,22 +109,6 @@ const roleInformation: Record<UserRole, RoleInfo> = {
     color: 'bg-orange-500',
     badgeColor: 'bg-orange-100 text-orange-800'
   },
-  admin: {
-    role: 'admin',
-    title: 'Administrator',
-    description: 'Full system access and management capabilities',
-    icon: Shield,
-    features: [
-      'User management',
-      'System administration',
-      'Content management',
-      'System monitoring',
-      'All platform features',
-      'Advanced analytics and logs'
-    ],
-    color: 'bg-red-500',
-    badgeColor: 'bg-red-100 text-red-800'
-  }
 };
 
 export const RoleSelection = ({ onRoleSelect, selectedRole, showDescription = true }: RoleSelectionProps) => {

@@ -33,6 +33,12 @@ export default function Register() {
     const errors: Record<string, string> = {};
     
     // Minimal validation matching backend requirements
+     if (!formData.firstName.trim()) {
+      errors.firstName = 'Firstname is required';
+    }
+     if (!formData.username.trim()) {
+      errors.username = 'Username is required';
+    }
     if (!formData.username.trim()) {
       errors.username = 'Username is required';
     }
