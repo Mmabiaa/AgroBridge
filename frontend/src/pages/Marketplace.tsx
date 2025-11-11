@@ -38,9 +38,10 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { CreateProductModal } from '@/components/marketplace/CreateProductModal';
+import apiClient from '@/api/axiosClient';
 
-// API functions to replace mock data
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+// API helpers (legacy fetches kept minimal)
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 const fetchProducts = async (search = '', category = '', token = null) => {
   try {
@@ -64,7 +65,7 @@ const fetchProducts = async (search = '', category = '', token = null) => {
 
 const fetchUserProducts = async (token) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/marketplace/my-products/`, {
+    const response = await fetch(`${API_BASE_URL}/marketplace/products/my-products/`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -112,7 +113,7 @@ const deleteProduct = async (productId, token) => {
 
 // Product Grid Component
 const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshKey = 0 }) => {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const [viewMode, setViewMode] = useState('grid');
   const [localSearch, setLocalSearch] = useState(searchTerm);
   const [products, setProducts] = useState([]);
@@ -123,7 +124,8 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchProducts(localSearch, category, token);
+      // Public listing does not require auth token
+      const data = await fetchProducts(localSearch, category, null);
       setProducts(data.results || data || []);
     } catch (err) {
       setError('Failed to load products');
@@ -145,14 +147,28 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
     const firstImage = product.images[0];
     
     if (typeof firstImage === 'string') {
-      return firstImage;
+      return normalizeImageUrl(firstImage);
     } else if (firstImage?.image) {
-      return firstImage.image;
+      return normalizeImageUrl(firstImage.image);
     } else if (firstImage?.url) {
-      return firstImage.url;
+      return normalizeImageUrl(firstImage.url);
+    } else if (firstImage?.image_url) {
+      return normalizeImageUrl(firstImage.image_url);
+    } else if (firstImage?.file) {
+      return normalizeImageUrl(firstImage.file);
     }
     
     return null;
+  };
+  
+  const normalizeImageUrl = (url) => {
+    if (!url) return null;
+    // If backend returns relative path, prefix with server origin (strip trailing slash)
+    if (url.startsWith('/')) {
+      const base = API_BASE_URL.replace(/\/api\/?v?1?\/?$/, '').replace(/\/$/, '');
+      return `${base}${url}`;
+    }
+    return url;
   };
 
   const isProductOwner = (product) => {
@@ -409,7 +425,7 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
 
 // Main Marketplace Component
 export default function Marketplace() {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('browse');
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -440,6 +456,7 @@ export default function Marketplace() {
   ];
 
   const loadUserProducts = async () => {
+    const token = apiClient.getAccessToken();
     if (!user || !token) return;
     
     try {
@@ -456,6 +473,7 @@ export default function Marketplace() {
   };
 
   const loadUserOrders = async () => {
+    const token = apiClient.getAccessToken();
     if (!user || !token) return;
     
     try {
@@ -477,36 +495,37 @@ export default function Marketplace() {
     } else if (activeTab === 'orders') {
       loadUserOrders();
     }
-  }, [activeTab, user, token]);
+  }, [activeTab, user]);
 
   const handleDeleteProduct = (product) => {
     setProductToDelete(product);
   };
 
   const confirmDelete = async () => {
-    if (productToDelete && token) {
-      try {
-        await deleteProduct(productToDelete.id, token);
-        
-        // Update local state
-        setUserProducts(prev => prev.filter(p => p.id !== productToDelete.id));
-        // Refresh browse list
-        setRefreshKey(prev => prev + 1);
-        
-        toast.success('Product deleted successfully!');
-        setProductToDelete(null);
-      } catch (err) {
-        toast.error('Failed to delete product');
-      }
+    if (!productToDelete) return;
+    const token = apiClient.getAccessToken();
+    if (!token) {
+      toast.error('Please sign in to delete your product.');
+      return;
+    }
+    try {
+      await deleteProduct(productToDelete.id, token);
+      
+      // Update local state
+      setUserProducts(prev => prev.filter(p => p.id !== productToDelete.id));
+      // Refresh browse list
+      setRefreshKey(prev => prev + 1);
+      
+      toast.success('Product deleted successfully!');
+      setProductToDelete(null);
+    } catch (err) {
+      toast.error('Failed to delete product');
     }
   };
 
-  const canCreateProduct = user && (
-    user.permissions?.includes('create_product') || 
-    user.role === 'farmer' || 
-    user.role === 'seller' ||
-    user.is_staff ||
-    user.is_superuser
+  const canCreateProduct = !!user && (
+    user.role === 'farmer' ||
+    user.permissions?.includes('create_product')
   );
 
   const getStatusColor = (status) => {
