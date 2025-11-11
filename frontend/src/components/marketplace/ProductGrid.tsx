@@ -14,7 +14,8 @@ import {
     Grid,
     List,
     Plus,
-    Image as ImageIcon
+    Image as ImageIcon,
+    User
 } from 'lucide-react';
 import { useProducts, useCreateOrder } from '@/api/hooks/useMarketplace';
 import { useAuth } from '@/contexts/AuthContext';
@@ -48,8 +49,26 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
 
     const products = productsData?.results || [];
 
+    // Check if current user is the product seller
+    const isProductOwner = (product: Product) => {
+        return user && product.seller && (
+            product.seller.id === user.id || 
+            product.seller.username === user.username
+        );
+    };
+
     const handleOrder = async (product: Product) => {
-        if (!user) return;
+        if (!user) {
+            // Handle user not logged in
+            console.log('User must be logged in to order');
+            return;
+        }
+
+        // Prevent users from ordering their own products
+        if (isProductOwner(product)) {
+            console.log('Cannot order your own product');
+            return;
+        }
 
         try {
             const orderData: OrderCreateData = {
@@ -74,6 +93,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
             };
 
             await createOrderMutation.mutateAsync(orderData);
+            console.log('Order created successfully');
         } catch (error) {
             console.error('Order creation failed:', error);
         }
@@ -112,6 +132,14 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
         }
         
         return null;
+    };
+
+    // Get seller display name
+    const getSellerName = (product: Product) => {
+        if (isProductOwner(product)) {
+            return 'You';
+        }
+        return product.seller?.business_name || product.seller?.username || 'Seller';
     };
 
     if (isLoading) {
@@ -210,6 +238,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
             }>
                 {products.map((product) => {
                     const imageUrl = getProductImageUrl(product);
+                    const isOwner = isProductOwner(product);
                     
                     return (
                         <Card key={product.id} className="group hover:shadow-lg transition-shadow">
@@ -239,9 +268,19 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                                     <span className="text-sm opacity-70">No Image</span>
                                 </div>
 
+                                {/* Owner Badge */}
+                                {isOwner && (
+                                    <div className="absolute top-2 left-2">
+                                        <Badge variant="default" className="text-xs bg-blue-500">
+                                            <User className="h-3 w-3 mr-1" />
+                                            Your Product
+                                        </Badge>
+                                    </div>
+                                )}
+
                                 {/* Quality Grade Badge */}
                                 {product.quality_grade && (
-                                    <div className="absolute top-2 left-2">
+                                    <div className={`absolute top-2 ${isOwner ? 'left-20' : 'left-2'}`}>
                                         <Badge variant="secondary" className="text-xs">
                                             {product.quality_grade.replace('_', ' ').toUpperCase()}
                                         </Badge>
@@ -266,16 +305,20 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                                             {product.description}
                                         </CardDescription>
                                     </div>
-                                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-red-500">
-                                        <Heart className="h-4 w-4" />
-                                    </Button>
+                                    {!isOwner && (
+                                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-red-500">
+                                            <Heart className="h-4 w-4" />
+                                        </Button>
+                                    )}
                                 </div>
 
                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                     <MapPin className="h-3 w-3" />
                                     <span>{formatDistance(product.location)}</span>
                                     <span>•</span>
-                                    <span>{product.seller?.business_name || product.seller?.username || 'Seller'}</span>
+                                    <span className={isOwner ? "text-blue-600 font-medium" : ""}>
+                                        {getSellerName(product)}
+                                    </span>
                                 </div>
                             </CardHeader>
 
@@ -323,23 +366,40 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                                         )}
                                     </div>
 
-                                    <Button
-                                        className="w-full"
-                                        disabled={product.quantity_available === 0 || createOrderMutation.isPending}
-                                        onClick={() => handleOrder(product)}
-                                    >
-                                        {createOrderMutation.isPending ? (
-                                            <>
-                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                                Ordering...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <ShoppingCart className="h-4 w-4 mr-2" />
-                                                Order Now
-                                            </>
-                                        )}
-                                    </Button>
+                                    {isOwner ? (
+                                        <div className="text-center py-2">
+                                            <Badge variant="outline" className="text-sm text-muted-foreground">
+                                                This is your product
+                                            </Badge>
+                                        </div>
+                                    ) : (
+                                        <Button
+                                            className="w-full"
+                                            disabled={
+                                                product.quantity_available === 0 || 
+                                                createOrderMutation.isPending ||
+                                                !user
+                                            }
+                                            onClick={() => handleOrder(product)}
+                                        >
+                                            {!user ? (
+                                                <>
+                                                    <User className="h-4 w-4 mr-2" />
+                                                    Login to Order
+                                                </>
+                                            ) : createOrderMutation.isPending ? (
+                                                <>
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                                    Ordering...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <ShoppingCart className="h-4 w-4 mr-2" />
+                                                    Order Now
+                                                </>
+                                            )}
+                                        </Button>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>
