@@ -18,16 +18,21 @@ django_asgi_app = get_asgi_application()
 
 # Import after Django initialization
 from channels.routing import ProtocolTypeRouter, URLRouter
-from .routing import websocket_urlpatterns
-from .websocket_auth import JWTAuthMiddlewareStack
+from channels.auth import AuthMiddlewareStack
+from agrobridge_backend.websocket_auth import JWTAuthMiddlewareStack
+from agrobridge_backend.routing import websocket_urlpatterns
 
 logger.info("ASGI application configured with WebSocket support")
 logger.info(f"WebSocket routes: {[str(p.pattern) for p in websocket_urlpatterns]}")
 
-# Development configuration - no origin validation
+# Main ASGI application
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
     "websocket": JWTAuthMiddlewareStack(
-        URLRouter(websocket_urlpatterns)
+        URLRouter(
+            websocket_urlpatterns
+        )
     ),
 })
+
+logger.info("ASGI application setup complete")

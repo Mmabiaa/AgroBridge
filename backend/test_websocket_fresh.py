@@ -31,7 +31,7 @@ async def test_websocket_with_fresh_token():
         print(f"Using token: {token[:50]}...")
         
         # Test WebSocket connection
-        uri = f"ws://localhost:8000/ws/?token={token}"
+        uri = f"wss://xt7lct5c-8000.uks1.devtunnels.ms/ws/={token}"
         
         print(f"Connecting to {uri}...")
         async with websockets.connect(uri) as websocket:

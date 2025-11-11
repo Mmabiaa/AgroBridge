@@ -10,7 +10,7 @@ import sys
 async def test_simple_websocket():
     """Test simple WebSocket without authentication"""
     try:
-        async with websockets.connect('ws://localhost:8000/ws/simple/') as websocket:
+        async with websockets.connect('wss://xt7lct5c-8000.uks1.devtunnels.ms/ws/simple/') as websocket:
             print("✅ Connected to simple WebSocket")
             
             # Send ping

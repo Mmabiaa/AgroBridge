@@ -5,6 +5,7 @@ import json
 import logging
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +76,6 @@ class BaseAuthenticatedConsumer(AsyncWebsocketConsumer):
     
     def get_timestamp(self):
         """Get current timestamp"""
-        from django.utils import timezone
         return timezone.now().isoformat()
     
     # Override these methods in subclasses
@@ -215,5 +215,143 @@ class SimpleTestConsumer(AsyncWebsocketConsumer):
     
     def get_timestamp(self):
         """Get current timestamp"""
-        from django.utils import timezone
         return timezone.now().isoformat()
+
+
+class NotificationConsumer(BaseAuthenticatedConsumer):
+    """
+    Consumer for real-time notifications
+    """
+    
+    async def on_connected(self):
+        """Handle successful connection"""
+        # Add user to notification group
+        await self.channel_layer.group_add(
+            f"user_{self.user.id}",
+            self.channel_name
+        )
+        
+        await self.send_message('connected', {
+            'message': 'Connected to notifications',
+            'user_id': self.user.id,
+            'channel': 'notifications'
+        })
+        logger.info(f"NotificationConsumer connected for user: {self.user.username}")
+    
+    async def on_disconnected(self, close_code):
+        """Handle disconnection"""
+        # Remove user from notification group
+        await self.channel_layer.group_discard(
+            f"user_{self.user.id}",
+            self.channel_name
+        )
+        logger.info(f"NotificationConsumer disconnected for user: {self.user.username}")
+    
+    async def on_message(self, data):
+        """Handle incoming messages"""
+        message_type = data.get('type', 'unknown')
+        
+        if message_type == 'subscribe':
+            # Subscribe to specific notification types
+            notification_types = data.get('types', [])
+            for nt in notification_types:
+                await self.channel_layer.group_add(
+                    f"notifications_{nt}",
+                    self.channel_name
+                )
+            await self.send_message('subscribed', {
+                'types': notification_types,
+                'message': 'Subscribed to notification types'
+            })
+        
+        elif message_type == 'unsubscribe':
+            # Unsubscribe from specific notification types
+            notification_types = data.get('types', [])
+            for nt in notification_types:
+                await self.channel_layer.group_discard(
+                    f"notifications_{nt}",
+                    self.channel_name
+                )
+            await self.send_message('unsubscribed', {
+                'types': notification_types,
+                'message': 'Unsubscribed from notification types'
+            })
+        
+        else:
+            await self.send_error(f"Unknown message type: {message_type}")
+    
+    async def notification_message(self, event):
+        """Handle notification messages from channel layer"""
+        await self.send_message('notification', event['data'])
+
+
+class ChatConsumer(BaseAuthenticatedConsumer):
+    """
+    Consumer for real-time chat functionality
+    """
+    
+    async def on_connected(self):
+        """Handle successful connection"""
+        await self.send_message('connected', {
+            'message': 'Connected to chat service',
+            'user_id': self.user.id,
+            'channel': 'chat'
+        })
+        logger.info(f"ChatConsumer connected for user: {self.user.username}")
+    
+    async def on_message(self, data):
+        """Handle incoming chat messages"""
+        message_type = data.get('type', 'unknown')
+        
+        if message_type == 'join_room':
+            room_name = data.get('room_name')
+            if room_name:
+                # Join room group
+                await self.channel_layer.group_add(
+                    room_name,
+                    self.channel_name
+                )
+                await self.send_message('room_joined', {
+                    'room_name': room_name,
+                    'message': f'Joined room: {room_name}'
+                })
+        
+        elif message_type == 'leave_room':
+            room_name = data.get('room_name')
+            if room_name:
+                # Leave room group
+                await self.channel_layer.group_discard(
+                    room_name,
+                    self.channel_name
+                )
+                await self.send_message('room_left', {
+                    'room_name': room_name,
+                    'message': f'Left room: {room_name}'
+                })
+        
+        elif message_type == 'chat_message':
+            room_name = data.get('room_name')
+            message = data.get('message')
+            
+            if room_name and message:
+                # Send message to room group
+                await self.channel_layer.group_send(
+                    room_name,
+                    {
+                        'type': 'chat_message',
+                        'data': {
+                            'room_name': room_name,
+                            'message': message,
+                            'sender': self.user.username,
+                            'sender_id': self.user.id,
+                            'timestamp': self.get_timestamp()
+                        }
+                    }
+                )
+        
+        else:
+            await self.send_error(f"Unknown message type: {message_type}")
+    
+    async def chat_message(self, event):
+        """Handle chat messages from channel layer"""
+        await self.send_message('chat_message', event['data'])

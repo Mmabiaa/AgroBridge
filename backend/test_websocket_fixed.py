@@ -11,7 +11,7 @@ async def test_simple_websocket():
     """Test simple WebSocket without authentication"""
     print("Testing simple WebSocket (no auth)...")
     try:
-        async with websockets.connect('ws://localhost:8000/ws/simple/') as websocket:
+        async with websockets.connect('wss://xt7lct5c-8000.uks1.devtunnels.ms/ws//ws/simple/') as websocket:
             print("✅ SUCCESS: Connected to simple WebSocket")
             
             # Wait for connection message
@@ -39,7 +39,7 @@ async def test_authenticated_websocket(token):
     """Test authenticated WebSocket with JWT token"""
     print(f"Testing authenticated WebSocket with token...")
     try:
-        async with websockets.connect(f'ws://localhost:8000/ws/?token={token}') as websocket:
+        async with websockets.connect(f'wss://xt7lct5c-8000.uks1.devtunnels.ms/ws//ws/?token={token}') as websocket:
             print("✅ SUCCESS: Connected to authenticated WebSocket")
             
             # Wait for connection message

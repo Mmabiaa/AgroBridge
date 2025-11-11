@@ -345,7 +345,7 @@ export default function Register() {
                 <Label htmlFor="password">Password * (min. 8 characters)</Label>
                 <div className="relative">
                   <Input 
-                    id="password" 
+                    id="password"
                     name="password"
                     type={showPassword ? "text" : "password"} 
                     placeholder="Create a password"

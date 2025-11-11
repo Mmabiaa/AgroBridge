@@ -17,7 +17,7 @@ async def test_websocket_detailed():
     ]
     
     for endpoint in endpoints:
-        url = f'ws://localhost:8000{endpoint}'
+        url = f'wss://xt7lct5c-8000.uks1.devtunnels.ms/ws/{endpoint}'
         print(f"\nTesting: {url}")
         
         try:

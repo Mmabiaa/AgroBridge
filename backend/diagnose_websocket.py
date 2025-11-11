@@ -67,12 +67,12 @@ else:
 
 # Check 5: Check if routing exists
 print("\n5. Routing Configuration:")
-routing_file = os.path.join('ai_assistant', 'routing.py')
+routing_file = os.path.join('agrobridge_backend', 'routing.py')
 if os.path.exists(routing_file):
     print(f"   ✓ {routing_file} exists")
     
     try:
-        from ai_assistant import routing
+        from agrobridge_backend import routing
         if hasattr(routing, 'websocket_urlpatterns'):
             patterns = routing.websocket_urlpatterns
             print(f"   ✓ websocket_urlpatterns defined with {len(patterns)} pattern(s)")
@@ -87,12 +87,12 @@ else:
 
 # Check 6: Check if consumers exist
 print("\n6. WebSocket Consumer:")
-consumers_file = os.path.join('ai_assistant', 'consumers.py')
+consumers_file = os.path.join('agrobridge_backend', 'consumers.py')
 if os.path.exists(consumers_file):
     print(f"   ✓ {consumers_file} exists")
     
     try:
-        from ai_assistant import consumers
+        from agrobridge_backend import consumers
         if hasattr(consumers, 'ChatConsumer'):
             print("   ✓ ChatConsumer class is defined")
         else:
@@ -104,12 +104,12 @@ else:
 
 # Check 7: Check if websocket_auth exists
 print("\n7. WebSocket Authentication:")
-auth_file = os.path.join('ai_assistant', 'websocket_auth.py')
+auth_file = os.path.join('agrobridge_backend', 'websocket_auth.py')
 if os.path.exists(auth_file):
     print(f"   ✓ {auth_file} exists")
     
     try:
-        from ai_assistant import websocket_auth
+        from agrobridge_backend import websocket_auth
         if hasattr(websocket_auth, 'JWTAuthMiddlewareStack'):
             print("   ✓ JWTAuthMiddlewareStack is defined")
         else:
@@ -133,11 +133,11 @@ if not channel_layers:
 if not os.path.exists(asgi_file):
     issues.append("Create agrobridge_backend/asgi.py")
 if not os.path.exists(routing_file):
-    issues.append("Create ai_assistant/routing.py")
+    issues.append("Create agrobridge_backend/routing.py")
 if not os.path.exists(consumers_file):
-    issues.append("Create ai_assistant/consumers.py")
+    issues.append("Create agrobridge_backend/consumers.py")
 if not os.path.exists(auth_file):
-    issues.append("Create ai_assistant/websocket_auth.py")
+    issues.append("Create agrobridge_backend/websocket_auth.py")
 
 if issues:
     print("\n⚠ Issues Found:")

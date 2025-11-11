@@ -56,13 +56,13 @@ class RealTimeSync {
     try {
       // Use environment variable if available, otherwise fallback to localhost
       const wsBaseUrl = import.meta.env.VITE_WEBSOCKET_URL 
-        ? import.meta.env.VITE_WEBSOCKET_URL
-        : (import.meta.env.PROD 
-          ? 'wss://api.agrobridge.com/ws/'
-          : 'ws://localhost:8000/ws/');
-      
-      // Always add token as query parameter for authenticated connections
-      const wsUrl = `${wsBaseUrl}?token=${token}`;
+    ? import.meta.env.VITE_WEBSOCKET_URL
+    : (import.meta.env.PROD 
+      ? 'wss://api.agrobridge.com'
+      : 'ws://localhost:8000');
+  
+      // ✅ FIXED - Add /ws/ to the path
+      const wsUrl = `${wsBaseUrl}/ws/?token=${token}`;
       
       this.ws = new WebSocket(wsUrl);
       
