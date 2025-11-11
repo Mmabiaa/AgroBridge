@@ -548,6 +548,29 @@ class OrderViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(filtered_queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def my_orders(self, request):
+        """Get all orders for current user (both purchases and sales)"""
+        # Get orders where user is buyer
+        buyer_orders = Order.objects.filter(buyer=request.user)
+        
+        # Get orders where user is seller (through products)
+        seller_orders = Order.objects.filter(seller=request.user)
+        
+        # Combine both querysets
+        all_orders = (buyer_orders | seller_orders).distinct()
+        
+        # Apply filters
+        filtered_queryset = self.filter_queryset(all_orders)
+        
+        page = self.paginate_queryset(filtered_queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
+        serializer = self.get_serializer(filtered_queryset, many=True)
+        return Response(serializer.data)
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
