@@ -17,12 +17,6 @@ router.register(r'wishlist', views.WishlistViewSet, basename='wishlist')
 router.register(r'notifications', views.NotificationViewSet, basename='notification')
 
 urlpatterns = [
-    # Specific paths first to avoid conflicts
-    path('products/my-products/', views.ProductViewSet.as_view({'get': 'my_products'}), name='my-products'),
-    path('orders/my-purchases/', views.OrderViewSet.as_view({'get': 'my_purchases'}), name='my-purchases'),
-    path('orders/my-sales/', views.OrderViewSet.as_view({'get': 'my_sales'}), name='my-sales'),
-    path('orders/my-orders/', views.OrderViewSet.as_view({'get': 'my_orders'}), name='my-orders'),
-    path('api/orders/', views.OrderCreateView.as_view(), name='order-create'),
-    # Then include router URLs
+    # Include router URLs (provides all CRUD operations)
     path('', include(router.urls)),
 ]
