@@ -160,8 +160,7 @@ class IsProductSeller(permissions.BasePermission):
         return request.user.is_staff
 
 
-c
-lass OrderPermission(permissions.BasePermission):
+class OrderPermission(permissions.BasePermission):
     """
     Custom permission for order operations in the simplified workflow
     
