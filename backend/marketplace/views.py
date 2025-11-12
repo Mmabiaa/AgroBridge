@@ -28,23 +28,92 @@ from .search import ProductSearchEngine, RecommendationEngine, MarketplaceAnalyt
 
 logger = logging.getLogger(__name__)
 
-# NotificationViewSet will be implemented in Task 7 after Notification model is created
-# class NotificationViewSet(viewsets.ModelViewSet):
-#     """
-#     ViewSet for managing user notifications
-#     """
-#     serializer_class = NotificationSerializer
-#     permission_classes = [IsAuthenticated]
-#     
-#     def get_queryset(self):
-#         """Get current user's notifications"""
-#         return Notification.objects.filter(recipient=self.request.user).order_by('-timestamp')
-#     
-#     @action(detail=False, methods=['post'])
-#     def mark_all_read(self, request):
-#         """Mark all notifications as read"""
-#         Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
-#         return Response({'message': 'All notifications marked as read'})
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing user notifications
+    """
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'patch', 'head', 'options']  # No create/delete
+    
+    def get_queryset(self):
+        """
+        Get current user's notifications
+        
+        Query parameters:
+        - is_read: Filter by read status (true/false)
+        """
+        queryset = Notification.objects.filter(
+            recipient=self.request.user
+        ).select_related('related_order').order_by('-timestamp')
+        
+        # Apply is_read filter if provided
+        is_read = self.request.query_params.get('is_read')
+        if is_read is not None:
+            is_read_bool = is_read.lower() in ['true', '1', 'yes']
+            queryset = queryset.filter(is_read=is_read_bool)
+        
+        return queryset
+    
+    def list(self, request, *args, **kwargs):
+        """
+        List notifications with unread count
+        """
+        queryset = self.filter_queryset(self.get_queryset())
+        
+        # Get unread count
+        unread_count = Notification.objects.filter(
+            recipient=request.user,
+            is_read=False
+        ).count()
+        
+        # Apply pagination
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            response = self.get_paginated_response(serializer.data)
+            response.data['unread_count'] = unread_count
+            return response
+        
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            'count': queryset.count(),
+            'unread_count': unread_count,
+            'results': serializer.data
+        })
+    
+    def partial_update(self, request, *args, **kwargs):
+        """
+        Mark notification as read
+        """
+        notification = self.get_object()
+        
+        is_read = request.data.get('is_read')
+        if is_read is None:
+            return Response(
+                {'error': 'is_read field is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        notification.is_read = bool(is_read)
+        notification.save()
+        
+        serializer = self.get_serializer(notification)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['post'])
+    def mark_all_read(self, request):
+        """Mark all notifications as read"""
+        updated_count = Notification.objects.filter(
+            recipient=request.user,
+            is_read=False
+        ).update(is_read=True)
+        
+        return Response({
+            'message': 'All notifications marked as read',
+            'updated_count': updated_count
+        })
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
