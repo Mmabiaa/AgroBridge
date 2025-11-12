@@ -11,6 +11,7 @@ from .models import (
 
 User = get_user_model()
 
+# NotificationSerializer will be added after Notification model is created (Task 2)
 
 class CategorySerializer(serializers.ModelSerializer):
     """Serializer for Category model"""

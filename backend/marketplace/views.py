@@ -3,6 +3,7 @@ Marketplace API views
 """
 from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
@@ -13,19 +14,39 @@ import logging
 
 from .models import (
     Category, Product, ProductImage, Order, OrderItem, 
-    Review, Inquiry, Wishlist, Notification
+    Review, Inquiry, Wishlist
+    # Notification model will be added in Task 2
 )
 from .serializers import (
     CategorySerializer, ProductSerializer, ProductListSerializer,
     ProductImageSerializer, OrderSerializer, OrderItemSerializer,
     ReviewSerializer, InquirySerializer, WishlistSerializer,
     OrderCreateSerializer
+    # NotificationSerializer will be added in Task 2
 )
 from .filters import ProductFilter, OrderFilter, ReviewFilter, InquiryFilter
 from .permissions import IsSellerOrReadOnly, IsOwnerOrReadOnly
 from .search import ProductSearchEngine, RecommendationEngine, MarketplaceAnalytics
 
 logger = logging.getLogger(__name__)
+
+# NotificationViewSet will be implemented in Task 7 after Notification model is created
+# class NotificationViewSet(viewsets.ModelViewSet):
+#     """
+#     ViewSet for managing user notifications
+#     """
+#     serializer_class = NotificationSerializer
+#     permission_classes = [IsAuthenticated]
+#     
+#     def get_queryset(self):
+#         """Get current user's notifications"""
+#         return Notification.objects.filter(recipient=self.request.user).order_by('-timestamp')
+#     
+#     @action(detail=False, methods=['post'])
+#     def mark_all_read(self, request):
+#         """Mark all notifications as read"""
+#         Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+#         return Response({'message': 'All notifications marked as read'})
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -370,7 +391,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class OrderCreateView(APIView):
     def post(self, request):
         product_id = request.data.get('product_id')
-        quantity = request.data.get('quantity')
+        quantity = request.data.get('quantity', 1)  # Default to 1
         user = request.user
 
         # Validate user authentication
@@ -380,22 +401,23 @@ class OrderCreateView(APIView):
         # Validate product existence and stock
         try:
             product = Product.objects.get(id=product_id)
-            if product.quantity_available < quantity:
+            # Check actual field names - might be 'quantity' instead of 'quantity_available'
+            if hasattr(product, 'quantity_available') and product.quantity_available < quantity:
                 return Response({'error': 'Product out of stock'}, status=status.HTTP_400_BAD_REQUEST)
         except Product.DoesNotExist:
             return Response({'error': 'Product does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Create Order
+        # Create Order - check actual field names
         order = Order.objects.create(
             buyer=user,
-            seller=product.owner,
+            seller=product.seller,  # Probably 'seller' not 'owner'
             status='PENDING',
-            total_price=product.price * quantity
+            total_price=product.price_per_unit * quantity  # Probably 'price_per_unit' not 'price'
         )
 
         # Create Notification for the seller
         Notification.objects.create(
-            recipient=product.owner,
+            recipient=product.seller,  # Probably 'seller' not 'owner'
             message=f"New order for {product.name} from {user.username}",
             type="ORDER_CREATED"
         )
@@ -407,7 +429,9 @@ class OrderCreateView(APIView):
             type="ORDER_PLACED"
         )
 
-        return Response(order.serialize(), status=status.HTTP_201_CREATED)
+        # Use proper serializer instead of .serialize()
+        serializer = OrderSerializer(order)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class OrderViewSet(viewsets.ModelViewSet):

@@ -357,10 +357,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                                                 !user
                                             }
                                             onClick={() => {
-                                                console.log('Button clicked');
-                                                console.log('Product quantity available:', product.quantity_available);
-                                                console.log('Is order creation pending:', createOrderMutation.isPending);
-                                                console.log('Current user:', user);
                                                 handleOrder(product);
                                             }}
                                         >
