@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,16 +12,14 @@ import {
   TrendingUp, 
   TrendingDown, 
   Search,
-  Filter,
   MapPin,
   Star,
   Phone,
-  Clock,
   Truck,
   Minus,
   Plus
 } from 'lucide-react';
-import { getProducts } from '@/lib/api';
+import { OrderButton } from './OrderButton';
 
 interface Product {
   id: string;
@@ -292,12 +290,22 @@ export function LiveMarketplace({ products, searchFilters, onBuyProduct, userBal
         {sortedProducts.map((product) => (
           <Card key={product.id} className="shadow-soft hover:shadow-strong transition-all duration-300">
             <CardHeader className="pb-3">
-              <div className="aspect-video bg-muted rounded-lg mb-3 flex items-center justify-center">
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className="w-full h-full object-cover rounded-lg"
-                />
+              <div className="aspect-video bg-muted rounded-lg mb-3 flex items-center justify-center overflow-hidden">
+                {product.image ? (
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover rounded-lg"
+                    onError={(e) => {
+                      // Fallback to placeholder if image fails to load
+                      e.currentTarget.src = 'https://via.placeholder.com/400x300?text=No+Image';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center text-green-600">
+                    <span className="text-sm">No Image</span>
+                  </div>
+                )}
               </div>
               
               <div className="space-y-2">
@@ -405,14 +413,26 @@ export function LiveMarketplace({ products, searchFilters, onBuyProduct, userBal
                   </Button>
                 </div>
                 
-                <Button 
-                  className="flex-1"
-                  onClick={() => handleBuyNow(product)}
-                  disabled={userBalance < (product.price * (selectedQuantities[product.id] || product.minOrder || 1))}
-                >
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  Buy Now
-                </Button>
+                <div className="flex-1">
+                  <OrderButton
+                    productId={product.id}
+                    productName={product.name}
+                    price={product.price}
+                    availableQuantity={product.quantity}
+                    onOrderSuccess={(order) => {
+                      console.log('Order placed:', order);
+                      // Reset quantity after purchase
+                      setSelectedQuantities(prev => {
+                        const newState = { ...prev };
+                        delete newState[product.id];
+                        return newState;
+                      });
+                    }}
+                    onOrderError={(error) => {
+                      console.error('Order failed:', error);
+                    }}
+                  />
+                </div>
                 
                 <Button 
                   variant="outline"

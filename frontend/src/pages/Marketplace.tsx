@@ -38,6 +38,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { CreateProductModal } from '@/components/marketplace/CreateProductModal';
+import { OrderButton } from '@/components/marketplace/OrderButton';
 import apiClient from '@/api/axiosClient';
 
 // API helpers (legacy fetches kept minimal)
@@ -395,13 +396,20 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
                       </Button>
                     </div>
                   ) : (
-                    <Button
-                      className="w-full"
-                      disabled={product.quantity_available === 0}
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      Order Now
-                    </Button>
+                    <OrderButton
+                      productId={product.id}
+                      productName={product.name}
+                      price={product.price_per_unit}
+                      availableQuantity={product.quantity_available}
+                      onOrderSuccess={(order) => {
+                        console.log('Order placed successfully:', order);
+                        // Optionally refresh products
+                        loadProducts();
+                      }}
+                      onOrderError={(error) => {
+                        console.error('Order failed:', error);
+                      }}
+                    />
                   )}
                 </div>
               </CardContent>
@@ -658,6 +666,7 @@ export default function Marketplace() {
         {/* Browse Products */}
         <TabsContent value="browse" className="space-y-6">
           <ProductGrid
+            key={refreshKey}
             searchTerm={searchTerm}
             category={selectedCategory}
             onDeleteProduct={handleDeleteProduct}

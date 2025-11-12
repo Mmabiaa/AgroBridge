@@ -84,6 +84,7 @@ export interface Product {
   delivery_available?: boolean;
   pickup_available?: boolean;
   organic?: boolean;
+  organic_certified?: boolean;
 }
 
 export interface ProductCreateData {
