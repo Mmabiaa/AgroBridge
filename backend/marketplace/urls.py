@@ -14,8 +14,7 @@ router.register(r'orders', views.OrderViewSet, basename='order')
 router.register(r'reviews', views.ReviewViewSet, basename='review')
 router.register(r'inquiries', views.InquiryViewSet, basename='inquiry')
 router.register(r'wishlist', views.WishlistViewSet, basename='wishlist')
-# NotificationViewSet will be registered in Task 7
-# router.register(r'notifications', views.NotificationViewSet, basename='notification')
+router.register(r'notifications', views.NotificationViewSet, basename='notification')
 
 urlpatterns = [
     # Specific paths first to avoid conflicts
