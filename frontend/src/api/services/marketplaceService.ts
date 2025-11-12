@@ -120,7 +120,7 @@ class MarketplaceService {
         try {
             // Try the custom endpoint first (the one we defined in Django URLs)
             const response = await apiClient.get<PaginatedResponse<Order>>(
-                `${this.basePath}/orders/my-orders/`,
+                `${this.basePath}/orders/myorders/`,
                 { params }
             );
             return response;

@@ -81,7 +81,7 @@ const fetchUserProducts = async (token) => {
 
 const fetchUserOrders = async (token) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/marketplace/my-orders/`, {
+    const response = await fetch(`${API_BASE_URL}/marketplace/orders/myorders/`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -145,7 +145,7 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
     }
 
     const firstImage = product.images[0];
-    
+
     if (typeof firstImage === 'string') {
       return normalizeImageUrl(firstImage);
     } else if (firstImage?.image) {
@@ -157,10 +157,10 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
     } else if (firstImage?.file) {
       return normalizeImageUrl(firstImage.file);
     }
-    
+
     return null;
   };
-  
+
   const normalizeImageUrl = (url) => {
     if (!url) return null;
     // If backend returns relative path, prefix with server origin (strip trailing slash)
@@ -189,7 +189,7 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
     }).format(price);
   };
 
-  const filteredProducts = products.filter(product => 
+  const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(localSearch.toLowerCase()) ||
     product.description.toLowerCase().includes(localSearch.toLowerCase())
   );
@@ -267,7 +267,7 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
         {filteredProducts.map((product) => {
           const imageUrl = getProductImageUrl(product);
           const isOwner = isProductOwner(product);
-          
+
           return (
             <Card key={product.id} className="group hover:shadow-lg transition-shadow">
               {/* Product Image */}
@@ -287,7 +287,7 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
                     }}
                   />
                 ) : null}
-                
+
                 {/* Fallback placeholder */}
                 <div className={`fallback-image absolute inset-0 w-full h-full bg-gradient-to-br from-green-100 to-green-200 flex flex-col items-center justify-center text-green-600 ${imageUrl ? 'hidden' : ''}`}>
                   <ImageIcon className="h-12 w-12 mb-2 opacity-50" />
@@ -384,9 +384,9 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
                         <Edit className="h-4 w-4 mr-2" />
                         Edit
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50" 
+                      <Button
+                        variant="outline"
+                        className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
                         size="sm"
                         onClick={() => onDeleteProduct(product)}
                       >
@@ -498,7 +498,7 @@ export default function Marketplace() {
   const loadUserProducts = async () => {
     const token = apiClient.getAccessToken();
     if (!user || !token) return;
-    
+
     try {
       setLoading(prev => ({ ...prev, products: true }));
       setError(prev => ({ ...prev, products: null }));
@@ -515,7 +515,7 @@ export default function Marketplace() {
   const loadUserOrders = async () => {
     const token = apiClient.getAccessToken();
     if (!user || !token) return;
-    
+
     try {
       setLoading(prev => ({ ...prev, orders: true }));
       setError(prev => ({ ...prev, orders: null }));
@@ -550,12 +550,12 @@ export default function Marketplace() {
     }
     try {
       await deleteProduct(productToDelete.id, token);
-      
+
       // Update local state
       setUserProducts(prev => prev.filter(p => p.id !== productToDelete.id));
       // Refresh browse list
       setRefreshKey(prev => prev + 1);
-      
+
       toast.success('Product deleted successfully!');
       setProductToDelete(null);
     } catch (err) {
@@ -600,7 +600,7 @@ export default function Marketplace() {
             Connect with farmers and buyers across Ghana
           </p>
         </div>
-        
+
         {canCreateProduct && (
           <Button onClick={() => setCreateModalOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
@@ -624,7 +624,7 @@ export default function Marketplace() {
                 />
               </div>
             </div>
-            
+
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger className="w-full sm:w-48">
                 <SelectValue placeholder="Category" />
@@ -637,7 +637,7 @@ export default function Marketplace() {
                 ))}
               </SelectContent>
             </Select>
-            
+
             <Button variant="outline">
               <Filter className="h-4 w-4 mr-2" />
               Filters
@@ -657,9 +657,9 @@ export default function Marketplace() {
 
         {/* Browse Products */}
         <TabsContent value="browse" className="space-y-6">
-          <ProductGrid 
-            searchTerm={searchTerm} 
-            category={selectedCategory} 
+          <ProductGrid
+            searchTerm={searchTerm}
+            category={selectedCategory}
             onDeleteProduct={handleDeleteProduct}
             refreshKey={refreshKey}
           />
@@ -705,8 +705,8 @@ export default function Marketplace() {
                     {error.products ? 'Unable to load products' : 'No products listed'}
                   </h3>
                   <p className="text-muted-foreground mb-4">
-                    {error.products 
-                      ? 'There was an issue loading your products.' 
+                    {error.products
+                      ? 'There was an issue loading your products.'
                       : 'Start selling by listing your first product'
                     }
                   </p>
@@ -757,9 +757,9 @@ export default function Marketplace() {
                             <Edit className="h-4 w-4 mr-2" />
                             Edit
                           </Button>
-                          <Button 
-                            variant="outline" 
-                            className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50" 
+                          <Button
+                            variant="outline"
+                            className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
                             size="sm"
                             onClick={() => handleDeleteProduct(product)}
                           >
@@ -819,8 +819,8 @@ export default function Marketplace() {
                     {error.orders ? 'Unable to load orders' : 'No orders yet'}
                   </h3>
                   <p className="text-muted-foreground mb-4">
-                    {error.orders 
-                      ? 'There was an issue loading your orders.' 
+                    {error.orders
+                      ? 'There was an issue loading your orders.'
                       : 'Browse products to place your first order'
                     }
                   </p>
@@ -855,7 +855,7 @@ export default function Marketplace() {
                             </div>
                           </Badge>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
                             <span className="text-muted-foreground">Quantity:</span>
@@ -876,7 +876,7 @@ export default function Marketplace() {
                           <div>
                             <span className="text-muted-foreground">Date:</span>
                             <span className="ml-2">
-                              {order.created_at 
+                              {order.created_at
                                 ? new Date(order.created_at).toLocaleDateString()
                                 : 'Unknown date'
                               }
@@ -970,7 +970,7 @@ export default function Marketplace() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={confirmDelete}
               className="bg-red-600 hover:bg-red-700"
             >
@@ -979,7 +979,7 @@ export default function Marketplace() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      
+
       {/* Create Product Modal */}
       <CreateProductModal
         isOpen={createModalOpen}

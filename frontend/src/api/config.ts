@@ -77,7 +77,7 @@ export const API_ENDPOINTS = {
       CREATE: '/marketplace/orders/',
       UPDATE: (id: string) => `/marketplace/orders/${id}/`,
       CANCEL: (id: string) => `/marketplace/orders/${id}/cancel/`,
-      MY_ORDERS: '/marketplace/orders/my-orders/',
+      MY_ORDERS: '/marketplace/orders/myorders/',
       MY_SALES: '/marketplace/orders/my-sales/',
     },
     ANALYTICS: '/marketplace/analytics/',
