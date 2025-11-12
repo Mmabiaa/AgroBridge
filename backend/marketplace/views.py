@@ -13,7 +13,7 @@ import logging
 
 from .models import (
     Category, Product, ProductImage, Order, OrderItem, 
-    Review, Inquiry, Wishlist
+    Review, Inquiry, Wishlist, Notification
 )
 from .serializers import (
     CategorySerializer, ProductSerializer, ProductListSerializer,
@@ -367,6 +367,49 @@ class ProductViewSet(viewsets.ModelViewSet):
         return self.my_products(request)
 
 
+class OrderCreateView(APIView):
+    def post(self, request):
+        product_id = request.data.get('product_id')
+        quantity = request.data.get('quantity')
+        user = request.user
+
+        # Validate user authentication
+        if not user.is_authenticated:
+            return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Validate product existence and stock
+        try:
+            product = Product.objects.get(id=product_id)
+            if product.quantity_available < quantity:
+                return Response({'error': 'Product out of stock'}, status=status.HTTP_400_BAD_REQUEST)
+        except Product.DoesNotExist:
+            return Response({'error': 'Product does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Create Order
+        order = Order.objects.create(
+            buyer=user,
+            seller=product.owner,
+            status='PENDING',
+            total_price=product.price * quantity
+        )
+
+        # Create Notification for the seller
+        Notification.objects.create(
+            recipient=product.owner,
+            message=f"New order for {product.name} from {user.username}",
+            type="ORDER_CREATED"
+        )
+
+        # Create a notification for the buyer
+        Notification.objects.create(
+            recipient=user,
+            message=f"Your order for {product.name} has been placed.",
+            type="ORDER_PLACED"
+        )
+
+        return Response(order.serialize(), status=status.HTTP_201_CREATED)
+
+
 class OrderViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing orders
@@ -389,40 +432,18 @@ class OrderViewSet(viewsets.ModelViewSet):
         ).select_related('buyer', 'seller').prefetch_related('items__product')
     
     def create(self, request, *args, **kwargs):
-        """Create a new order with validation"""
-        serializer = OrderCreateSerializer(data=request.data)
-        
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        validated_data = serializer.validated_data
-        
-        try:
-            # Validate that user is not ordering their own products
-            for item_data in validated_data['items']:
-                product = Product.objects.get(id=item_data['product_id'])
-                if product.seller == request.user:
-                    return Response(
-                        {'error': 'You cannot order your own products'}, 
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-            
-            # Create order with items
-            order = self._create_order_with_items(request.user, validated_data)
-            
-            # Serialize and return the created order
-            order_serializer = OrderSerializer(order, context={'request': request})
-            
-            logger.info(f"Order {order.order_number} created by {request.user.username}")
-            
-            return Response(order_serializer.data, status=status.HTTP_201_CREATED)
-        
-        except Exception as e:
-            logger.error(f"Order creation failed: {str(e)}")
-            return Response(
-                {'error': 'Order creation failed. Please try again.'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+
+        # Create a notification for the product owner
+        Notification.objects.create(
+            recipient=order.seller,
+            message=f'New order placed: {order.id}',
+            related_order=order
+        )
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def _create_order_with_items(self, buyer, validated_data):
         """Create order with items"""
@@ -619,24 +640,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def my_orders(self, request):
         """Get all orders for current user (both purchases and sales)"""
-        # Get orders where user is buyer
-        buyer_orders = Order.objects.filter(buyer=request.user)
-        
-        # Get orders where user is seller (through products)
-        seller_orders = Order.objects.filter(seller=request.user)
-        
-        # Combine both querysets
-        all_orders = (buyer_orders | seller_orders).distinct()
-        
-        # Apply filters
-        filtered_queryset = self.filter_queryset(all_orders)
-        
-        page = self.paginate_queryset(filtered_queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        
-        serializer = self.get_serializer(filtered_queryset, many=True)
+        orders = self.queryset.filter(Q(buyer=request.user) | Q(seller=request.user))
+        serializer = self.get_serializer(orders, many=True)
         return Response(serializer.data)
 
 

@@ -20,6 +20,7 @@ import {
 import { useProducts, useCreateOrder } from '@/api/hooks/useMarketplace';
 import { useAuth } from '@/contexts/AuthContext';
 import { Product, OrderCreateData } from '@/types/basicTypes';
+import apiClient from '@/api/axiosClient';
 
 interface ProductGridProps {
     searchTerm?: string;
@@ -58,44 +59,19 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
     };
 
     const handleOrder = async (product: Product) => {
-        if (!user) {
-            // Handle user not logged in
-            console.log('User must be logged in to order');
-            return;
-        }
-
-        // Prevent users from ordering their own products
-        if (isProductOwner(product)) {
-            console.log('Cannot order your own product');
-            return;
-        }
-
+        createOrderMutation.setPending(true);
         try {
-            const orderData: OrderCreateData = {
-                items: [
-                    {
-                        product_id: product.id,
-                        quantity: 1,
-                        special_instructions: `Order for ${product.name}`
-                    }
-                ],
-                delivery_method: 'delivery',
-                delivery_address: {
-                    address: '123 Main St',
-                    city: 'Accra',
-                    state: 'Greater Accra',
-                    coordinates: { latitude: 5.6037, longitude: -0.1870 }
-                },
-                delivery_notes: `Order for ${product.name}`,
-                buyer_phone: user.phone || '',
-                buyer_email: user.email,
-                buyer_notes: `Order for ${product.name}`,
-            };
-
-            await createOrderMutation.mutateAsync(orderData);
-            console.log('Order created successfully');
+            const response = await apiClient.post('/api/orders/', {
+                product_id: product.id,
+                quantity: 1,
+            });
+            console.log('Order created:', response.data);
+            // Update local state logic here to reflect the new order
         } catch (error) {
-            console.error('Order creation failed:', error);
+            console.error('Error creating order:', error);
+            // Show specific error message
+        } finally {
+            createOrderMutation.setPending(false);
         }
     };
 
@@ -380,7 +356,13 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                                                 createOrderMutation.isPending ||
                                                 !user
                                             }
-                                            onClick={() => handleOrder(product)}
+                                            onClick={() => {
+                                                console.log('Button clicked');
+                                                console.log('Product quantity available:', product.quantity_available);
+                                                console.log('Is order creation pending:', createOrderMutation.isPending);
+                                                console.log('Current user:', user);
+                                                handleOrder(product);
+                                            }}
                                         >
                                             {!user ? (
                                                 <>

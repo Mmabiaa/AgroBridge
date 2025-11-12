@@ -150,7 +150,7 @@ class MarketplaceService {
 
     async createOrder(orderData: OrderCreateData): Promise<Order> {
         const response = await apiClient.post<Order>(`${this.basePath}/orders/`, orderData);
-        return response;
+        return response.data;
     }
 
     async updateOrder(id: string, data: OrderUpdateData): Promise<Order> {

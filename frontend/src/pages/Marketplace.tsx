@@ -423,6 +423,46 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
   );
 };
 
+const MyOrders = ({ token }) => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetchUserOrders(token);
+        setOrders(response);
+      } catch (err) {
+        setError('Failed to fetch orders.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrders();
+  }, [token]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
+  return (
+    <div>
+      <h2>My Orders</h2>
+      <ul>
+        {orders.map(order => (
+          <li key={order.id}>
+            <h3>Order ID: {order.id}</h3>
+            <p>Product Name: {order.product_name}</p>
+            <p>Date: {new Date(order.created_at).toLocaleDateString()}</p>
+            <p>Status: {order.status}</p>
+            <p>Total Price: ${order.total_price}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
 // Main Marketplace Component
 export default function Marketplace() {
   const { user } = useAuth();
@@ -911,6 +951,11 @@ export default function Marketplace() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* My Orders Tab */}
+        <TabsContent value="my-orders" className="space-y-6">
+          <MyOrders token={apiClient.getAccessToken()} />
         </TabsContent>
       </Tabs>
 
