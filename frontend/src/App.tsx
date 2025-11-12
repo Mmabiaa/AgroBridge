@@ -17,6 +17,7 @@ import AgriGPT from "./pages/AgriGPT";
 import Monitoring from "./pages/Monitoring";
 import Analytics from "./pages/Analytics";
 import Marketplace from "./pages/Marketplace";
+import MyOrders from "./pages/MyOrders";
 import Learning from "./pages/Learning";
 import Community from "./pages/Community";
 import Settings from "./pages/Settings";
