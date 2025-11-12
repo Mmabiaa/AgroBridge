@@ -227,16 +227,12 @@ class Order(models.Model):
     """
     Orders placed by buyers
     """
+    # Simplified status choices for MVP
     STATUS_CHOICES = [
         ('pending', 'Pending'),
-        ('confirmed', 'Confirmed'),
-        ('preparing', 'Preparing'),
-        ('ready', 'Ready for Pickup/Delivery'),
-        ('in_transit', 'In Transit'),
-        ('delivered', 'Delivered'),
-        ('completed', 'Completed'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
         ('cancelled', 'Cancelled'),
-        ('refunded', 'Refunded'),
     ]
     
     PAYMENT_STATUS_CHOICES = [
@@ -306,6 +302,12 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     confirmed_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
+    
+    # New status transition timestamps
+    approved_at = models.DateTimeField(null=True, blank=True)
+    rejected_at = models.DateTimeField(null=True, blank=True)
+    cancelled_at = models.DateTimeField(null=True, blank=True)
+    rejection_reason = models.TextField(blank=True)
     
     class Meta:
         ordering = ['-created_at']
