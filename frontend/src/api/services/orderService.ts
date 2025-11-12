@@ -61,7 +61,7 @@ export interface UpdateOrderStatusRequest {
  * Create a new order
  */
 export const createOrder = async (data: CreateOrderRequest): Promise<CreateOrderResponse> => {
-    const response = await apiClient.post('/api/v1/marketplace/orders/', data);
+    const response = await apiClient.post('/marketplace/orders/', data);
     return response.data;
 };
 
@@ -73,7 +73,7 @@ export const getMyOrders = async (params?: {
     page?: number;
     page_size?: number;
 }): Promise<MyOrdersResponse> => {
-    const response = await apiClient.get('/api/v1/marketplace/orders/myorders/', { params });
+    const response = await apiClient.get('/marketplace/orders/myorders/', { params });
     return response.data;
 };
 
@@ -84,7 +84,7 @@ export const updateOrderStatus = async (
     orderId: string,
     data: UpdateOrderStatusRequest
 ): Promise<Order> => {
-    const response = await apiClient.patch(`/api/v1/marketplace/orders/${orderId}/`, data);
+    const response = await apiClient.patch(`/marketplace/orders/${orderId}/`, data);
     return response.data;
 };
 
