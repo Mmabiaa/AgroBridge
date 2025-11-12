@@ -158,3 +158,66 @@ class IsProductSeller(permissions.BasePermission):
             return obj.seller == request.user or request.user.is_staff
         
         return request.user.is_staff
+
+
+c
+lass OrderPermission(permissions.BasePermission):
+    """
+    Custom permission for order operations in the simplified workflow
+    
+    Rules:
+    - Customers can create orders and view their own orders
+    - Customers can cancel their own pending orders
+    - Sellers can view orders for their products
+    - Sellers can approve/reject orders for their products
+    - Admins can do everything
+    """
+    
+    def has_permission(self, request, view):
+        """
+        Check if user has permission to access the view
+        """
+        # All authenticated users can list/create orders
+        if not request.user or not request.user.is_authenticated:
+            return False
+        
+        # For create action, only customers (non-sellers in this context) can create
+        # But we'll allow all authenticated users and validate in the view
+        return True
+    
+    def has_object_permission(self, request, view, obj):
+        """
+        Check if user has permission to access the specific order
+        """
+        user = request.user
+        
+        # Admins can do everything
+        if user.is_staff:
+            return True
+        
+        # GET requests - both buyer and seller can view
+        if request.method == 'GET':
+            return obj.buyer == user or obj.seller == user
+        
+        # PATCH/PUT requests - status updates
+        if request.method in ['PATCH', 'PUT']:
+            # Customers can cancel their own pending orders
+            if obj.buyer == user:
+                # Check if trying to cancel
+                new_status = request.data.get('status')
+                if new_status == 'cancelled' and obj.status == 'pending':
+                    return True
+                return False
+            
+            # Sellers can approve/reject orders for their products
+            if obj.seller == user:
+                new_status = request.data.get('status')
+                if new_status in ['approved', 'rejected'] and obj.status == 'pending':
+                    return True
+                return False
+        
+        # DELETE requests - not allowed in this workflow
+        if request.method == 'DELETE':
+            return False
+        
+        return False
