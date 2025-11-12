@@ -244,13 +244,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const mappedUser = mapApiUserToUser(currentUser as ApiUser, true);
       setUser(mappedUser);
       
-      // Start WebSocket connection when user is authenticated
-      realTimeSync.startConnection();
+      // DISABLED: realTimeSync WebSocket - using NotificationContext instead
+      // realTimeSync.startConnection();
     } else if (userError || !apiClient.isAuthenticated()) {
       setUser(null);
       
-      // Stop WebSocket connection when user is not authenticated
-      realTimeSync.stopConnection();
+      // DISABLED: realTimeSync WebSocket - using NotificationContext instead
+      // realTimeSync.stopConnection();
     }
   }, [currentUser, userError]);
 
@@ -269,8 +269,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const mappedUser = mapApiUserToUser(result.user, true);
     setUser(mappedUser);
     
-    // Start WebSocket connection after successful login
-    realTimeSync.startConnection();
+    // DISABLED: realTimeSync WebSocket - using NotificationContext instead
+    // realTimeSync.startConnection();
   };
 
   const register = async (userData: RegisterUserData): Promise<void> => {

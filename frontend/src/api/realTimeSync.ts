@@ -25,6 +25,12 @@ class RealTimeSync {
   }
 
   private connect() {
+    // DISABLED: This WebSocket connection is not needed as we use NotificationContext
+    // The /ws/ endpoint doesn't exist - only /ws/notifications/ is available
+    console.log('RealTimeSync WebSocket connection is disabled - using NotificationContext instead');
+    return;
+    
+    /* DISABLED CODE:
     if (this.isConnecting || this.ws?.readyState === WebSocket.OPEN) {
       return;
     }
@@ -65,7 +71,8 @@ class RealTimeSync {
       const wsUrl = `${wsBaseUrl}/ws/?token=${token}`;
       
       this.ws = new WebSocket(wsUrl);
-      
+    */
+      /*
       this.ws.onopen = () => {
         console.log('WebSocket connected for real-time sync');
         this.isConnecting = false;
@@ -97,6 +104,7 @@ class RealTimeSync {
       this.isConnecting = false;
       this.scheduleReconnect();
     }
+    */
   }
 
   private scheduleReconnect() {
