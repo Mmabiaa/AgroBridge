@@ -61,6 +61,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     """Serializer for Product model"""
+    seller = serializers.SerializerMethodField()
     seller_name = serializers.CharField(source='seller.username', read_only=True)
     seller_rating = serializers.SerializerMethodField()
     category_name = serializers.CharField(source='category.name', read_only=True)
@@ -82,7 +83,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'quality_grade', 'harvest_date', 'expiry_date', 'organic_certified',
             'certifications', 'status', 'is_featured', 'is_negotiable', 'slug',
             'tags', 'view_count', 'inquiry_count', 'created_at', 'updated_at',
-            'published_at', 'seller_name', 'seller_rating', 'category_name',
+            'published_at', 'seller', 'seller_name', 'seller_rating', 'category_name',
             'category_path', 'images', 'average_rating', 'review_count',
             'is_available', 'total_value', 'days_until_expiry', 'is_wishlisted'
         ]
@@ -94,6 +95,14 @@ class ProductSerializer(serializers.ModelSerializer):
         """Create product with current user as seller"""
         validated_data['seller'] = self.context['request'].user
         return super().create(validated_data)
+    
+    def get_seller(self, obj):
+        """Get seller information"""
+        return {
+            'id': obj.seller.id,
+            'username': obj.seller.username,
+            'business_name': getattr(obj.seller, 'business_name', None),
+        }
     
     def get_seller_rating(self, obj):
         """Get seller's average rating"""
