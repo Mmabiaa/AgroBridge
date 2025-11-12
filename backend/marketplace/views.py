@@ -982,7 +982,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(filtered_queryset, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], url_path='myorders')
     def my_orders(self, request):
         """
         Get customer's order history

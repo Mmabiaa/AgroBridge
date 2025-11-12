@@ -73,7 +73,7 @@ export const getMyOrders = async (params?: {
     page?: number;
     page_size?: number;
 }): Promise<MyOrdersResponse> => {
-    const response = await apiClient.get('/api/v1/marketplace/orders/my-orders/', { params });
+    const response = await apiClient.get('/api/v1/marketplace/orders/myorders/', { params });
     return response.data;
 };
 
