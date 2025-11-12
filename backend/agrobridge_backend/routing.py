@@ -3,7 +3,8 @@ WebSocket URL routing for the AgroBridge backend
 """
 import logging
 from django.urls import re_path
-from .consumers import TestConsumer, SimpleTestConsumer, NotificationConsumer, ChatConsumer
+from .consumers import TestConsumer, SimpleTestConsumer, ChatConsumer
+from marketplace.consumers import NotificationConsumer  # Use marketplace NotificationConsumer
 
 logger = logging.getLogger(__name__)
 

@@ -25,7 +25,14 @@ class NotificationService:
         """
         try:
             channel_layer = get_channel_layer()
+            
+            if channel_layer is None:
+                logger.error("Channel layer is None - WebSocket notifications disabled")
+                return
+            
             group_name = f"notifications_{notification.recipient.id}"
+            
+            logger.info(f"Attempting to send notification to group: {group_name}")
             
             # Serialize notification data
             notification_data = {
@@ -38,6 +45,8 @@ class NotificationService:
                 'order_number': notification.related_order.order_number if notification.related_order else None,
             }
             
+            logger.info(f"Notification data: {notification_data}")
+            
             # Send to user's WebSocket group
             async_to_sync(channel_layer.group_send)(
                 group_name,
@@ -47,9 +56,11 @@ class NotificationService:
                 }
             )
             
-            logger.info(f"Real-time notification sent to user {notification.recipient.username}")
+            logger.info(f"Real-time notification sent to user {notification.recipient.username} (ID: {notification.recipient.id})")
         except Exception as e:
             logger.error(f"Failed to send real-time notification: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())
             # Don't raise - notification is still saved in database
     
     @staticmethod

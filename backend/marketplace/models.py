@@ -580,6 +580,7 @@ class Notification(models.Model):
     """
     NOTIFICATION_TYPES = [
         ('order_created', 'Order Created'),
+        ('order_placed', 'Order Placed'),
         ('order_approved', 'Order Approved'),
         ('order_rejected', 'Order Rejected'),
         ('order_cancelled', 'Order Cancelled'),
