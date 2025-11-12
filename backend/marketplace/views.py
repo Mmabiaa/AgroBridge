@@ -456,18 +456,142 @@ class OrderViewSet(viewsets.ModelViewSet):
         ).select_related('buyer', 'seller').prefetch_related('items__product')
     
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        order = serializer.save()
-
-        # Create a notification for the product owner
-        Notification.objects.create(
-            recipient=order.seller,
-            message=f'New order placed: {order.id}',
-            related_order=order
-        )
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        """
+        Create a new order
+        
+        Validates:
+        - Product exists and is active
+        - Quantity is positive and available
+        - Customer is not ordering their own product
+        """
+        from .services import NotificationService
+        from django.db import transaction
+        
+        # Get product_id and quantity from request
+        product_id = request.data.get('product_id')
+        quantity = request.data.get('quantity')
+        
+        if not product_id or not quantity:
+            return Response(
+                {'error': 'product_id and quantity are required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            quantity = Decimal(str(quantity))
+            if quantity <= 0:
+                return Response(
+                    {'error': 'Quantity must be positive'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        except (ValueError, TypeError):
+            return Response(
+                {'error': 'Invalid quantity format'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Get product
+        try:
+            product = Product.objects.select_related('seller').get(id=product_id)
+        except Product.DoesNotExist:
+            return Response(
+                {'error': 'Product not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        # Validate product is active
+        if not product.is_available:
+            return Response(
+                {'error': 'Product is not available'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Validate customer is not ordering their own product
+        if product.seller == request.user:
+            return Response(
+                {'error': 'Cannot order your own products'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Validate quantity available
+        if quantity > product.quantity_available:
+            return Response(
+                {
+                    'error': 'Insufficient stock',
+                    'available_quantity': float(product.quantity_available),
+                    'requested_quantity': float(quantity)
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Create order with transaction
+        try:
+            with transaction.atomic():
+                # Calculate totals
+                unit_price = product.price_per_unit
+                subtotal = unit_price * quantity
+                delivery_cost = Decimal('0')  # Simplified for MVP
+                tax_amount = Decimal('0')  # Simplified for MVP
+                total_amount = subtotal + delivery_cost + tax_amount
+                
+                # Create order
+                order = Order.objects.create(
+                    buyer=request.user,
+                    seller=product.seller,
+                    status='pending',
+                    payment_status='pending',
+                    subtotal=subtotal,
+                    delivery_cost=delivery_cost,
+                    tax_amount=tax_amount,
+                    total_amount=total_amount,
+                    delivery_method='pickup',  # Default for MVP
+                    delivery_address={}
+                )
+                
+                # Create order item
+                OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    product_name=product.name,
+                    unit_price=unit_price,
+                    quantity=quantity,
+                    unit_type=product.unit_type,
+                    line_total=subtotal,
+                    quality_grade=product.quality_grade
+                )
+                
+                # Create notification for seller
+                NotificationService.notify_order_created(order)
+                
+                logger.info(f"Order {order.order_number} created by {request.user.username}")
+        
+        except Exception as e:
+            logger.error(f"Error creating order: {str(e)}")
+            return Response(
+                {'error': 'Failed to create order. Please try again.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+        # Return order data with product details
+        order_data = {
+            'id': str(order.id),
+            'order_number': order.order_number,
+            'product': {
+                'id': str(product.id),
+                'name': product.name,
+                'image_url': product.images.filter(is_primary=True).first().image.url if product.images.filter(is_primary=True).exists() else None,
+                'seller': {
+                    'id': product.seller.id,
+                    'name': product.seller.username
+                }
+            },
+            'quantity': float(quantity),
+            'total_price': str(total_amount),
+            'status': order.status,
+            'created_at': order.created_at.isoformat()
+        }
+        
+        return Response(order_data, status=status.HTTP_201_CREATED)
     
     def _create_order_with_items(self, buyer, validated_data):
         """Create order with items"""
