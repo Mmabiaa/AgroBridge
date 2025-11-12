@@ -29,7 +29,9 @@ import {
   Calculator,
   Clock,
   AlertTriangle,
-  HelpCircle
+  HelpCircle,
+  Package,
+  Store
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -101,6 +103,20 @@ export const useRoleBasedNavigation = () => {
       icon: ShoppingCart, 
       permission: 'view_marketplace',
       description: 'Buy and sell agricultural products'
+    },
+    { 
+      href: '/my-orders', 
+      label: 'My Orders', 
+      icon: Package, 
+      permission: 'view_marketplace',
+      description: 'Track your order history'
+    },
+    { 
+      href: '/my-sales', 
+      label: 'My Sales', 
+      icon: Store, 
+      permission: 'view_marketplace',
+      description: 'Manage incoming orders'
     },
     
     // Planning and Management
@@ -265,7 +281,7 @@ export const useRoleBasedNavigation = () => {
         ['/crop-disease-detection', '/voice-commands', '/crop-calendar', '/smart-scheduling'].includes(item.href)
       ),
       commerce: filteredItems.filter(item => 
-        ['/marketplace', '/financial-planning'].includes(item.href)
+        ['/marketplace', '/my-orders', '/my-sales', '/financial-planning'].includes(item.href)
       ),
       learning: filteredItems.filter(item => 
         ['/learning', '/community', '/farmer-stories'].includes(item.href)

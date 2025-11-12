@@ -627,8 +627,9 @@ class OrderViewSet(viewsets.ModelViewSet):
                     quality_grade=product.quality_grade
                 )
                 
-                # Create notification for seller
-                NotificationService.notify_order_created(order)
+                # Create notifications
+                NotificationService.notify_order_created(order)  # Notify seller
+                NotificationService.notify_order_placed(order)   # Notify customer
                 
                 logger.info(f"Order {order.order_number} created by {request.user.username}")
         

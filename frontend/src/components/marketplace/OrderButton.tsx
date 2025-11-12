@@ -60,10 +60,12 @@ export const OrderButton: React.FC<OrderButtonProps> = ({
 
             // Show success state
             setShowSuccess(true);
+
+            const orderNumber = order?.order_number || order?.id || 'N/A';
             
             toast({
                 title: 'Order Placed Successfully!',
-                description: `Your order for ${productName} has been placed. Order #${order.order_number}`,
+                description: `Your order for ${productName} has been placed. Order #${orderNumber}`,
             });
 
             // Call success callback
@@ -81,7 +83,7 @@ export const OrderButton: React.FC<OrderButtonProps> = ({
 
             // Extract error message
             let errorMessage = 'Failed to place order. Please try again.';
-            
+
             if (error.response?.data?.error) {
                 errorMessage = error.response.data.error;
             } else if (error.message) {

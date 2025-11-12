@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { Navigation } from "@/components/Navigation";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ApiProvider } from "@/contexts/ApiProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import ErrorBoundary from "@/components/ErrorBoundary"; // Import the ErrorBoundary
@@ -18,6 +19,7 @@ import Monitoring from "./pages/Monitoring";
 import Analytics from "./pages/Analytics";
 import Marketplace from "./pages/Marketplace";
 import MyOrders from "./pages/MyOrders";
+import MySales from "./pages/MySales";
 import Learning from "./pages/Learning";
 import Community from "./pages/Community";
 import Settings from "./pages/Settings";
@@ -81,7 +83,8 @@ const App = () => (
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <FeatureFlagsProvider>
           <AuthProvider>
-            <TooltipProvider>
+            <NotificationProvider>
+              <TooltipProvider>
               <Toaster />
               <Sonner />
               <BrowserRouter>
@@ -160,6 +163,14 @@ const App = () => (
                           <ProtectedRoute requiredPermission="view_marketplace">
                             <ErrorBoundary>
                               <MyOrders />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        
+                        <Route path="/my-sales" element={
+                          <ProtectedRoute requiredPermission="view_marketplace">
+                            <ErrorBoundary>
+                              <MySales />
                             </ErrorBoundary>
                           </ProtectedRoute>
                         } />
@@ -320,6 +331,7 @@ const App = () => (
                 </Routes>
               </BrowserRouter>
             </TooltipProvider>
+            </NotificationProvider>
           </AuthProvider>
         </FeatureFlagsProvider>
       </ThemeProvider>

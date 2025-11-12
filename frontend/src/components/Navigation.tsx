@@ -9,6 +9,7 @@ import {
   User
 } from 'lucide-react';
 import { notifySystemUpdate } from '@/components/notifications/NotificationCenter';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useRoleBasedNavigation } from './RoleBasedNavigation';
 import { useAuth, User as AuthUser } from '@/contexts/AuthContext';
 import { useFeatureFlags } from '@/contexts/FeatureFlagsContext';
@@ -167,6 +168,7 @@ export const Navigation = () => {
           <div className="hidden lg:flex items-center space-x-4">
             <NavItems />
             <div className="border-l pl-4 flex items-center gap-2">
+              <NotificationBell />
               <LanguageSelector />
               <ThemeToggle />
               <UserMenu />
@@ -197,6 +199,7 @@ export const Navigation = () => {
                       
                       <div className="border-t pt-6">
                         <div className="flex items-center justify-between mb-6">
+                          <NotificationBell />
                           <LanguageSelector />
                           <ThemeToggle />
                         </div>

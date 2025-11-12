@@ -43,6 +43,10 @@ export interface Order {
     rejected_at?: string;
     cancelled_at?: string;
     rejection_reason?: string;
+    buyer_name?: string;
+    seller_name?: string;
+    buyer_notes?: string;
+    seller_notes?: string;
 }
 
 export interface MyOrdersResponse {
@@ -74,6 +78,18 @@ export const getMyOrders = async (params?: {
     page_size?: number;
 }): Promise<MyOrdersResponse> => {
     const response = await apiClient.get('/marketplace/orders/myorders/', { params });
+    return response.data;
+};
+
+/**
+ * Get seller's sales orders
+ */
+export const getMySales = async (params?: {
+    status?: string;
+    page?: number;
+    page_size?: number;
+}): Promise<MyOrdersResponse> => {
+    const response = await apiClient.get('/marketplace/orders/my_sales/', { params });
     return response.data;
 };
 

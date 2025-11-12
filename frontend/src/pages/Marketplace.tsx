@@ -190,10 +190,15 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
     }).format(price);
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(localSearch.toLowerCase()) ||
-    product.description.toLowerCase().includes(localSearch.toLowerCase())
-  );
+  const filteredProducts = products.filter(product => {
+    // Exclude user's own products from Browse tab
+    if (isProductOwner(product)) {
+      return false;
+    }
+    // Apply search filter
+    return product.name.toLowerCase().includes(localSearch.toLowerCase()) ||
+           product.description.toLowerCase().includes(localSearch.toLowerCase());
+  });
 
   if (loading) {
     return (
