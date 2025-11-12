@@ -155,6 +155,14 @@ const App = () => (
                           </ProtectedRoute>
                         } />
                         
+                        <Route path="/my-orders" element={
+                          <ProtectedRoute requiredPermission="view_marketplace">
+                            <ErrorBoundary>
+                              <MyOrders />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        
                         {/* Planning and Management */}
                         <Route path="/crop-calendar" element={
                           <ProtectedRoute requiredPermission="view_smart_scheduling">
