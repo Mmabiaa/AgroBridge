@@ -312,8 +312,8 @@ class Order(models.Model):
     class Meta:
         ordering = ['-created_at']
         indexes = [
-            models.Index(fields=['buyer']),
-            models.Index(fields=['seller']),
+            models.Index(fields=['buyer', 'status']),  # Combined index for my-orders queries
+            models.Index(fields=['seller', 'status']),  # Combined index for seller order queries
             models.Index(fields=['status']),
             models.Index(fields=['payment_status']),
             models.Index(fields=['created_at']),
@@ -340,15 +340,73 @@ class Order(models.Model):
             if not Order.objects.filter(order_number=order_number).exists():
                 return order_number
     
+    def can_transition_to(self, new_status):
+        """
+        Validate if status transition is allowed
+        
+        Valid transitions:
+        - pending -> approved, rejected, cancelled
+        - approved -> cancelled (if allowed by business rules)
+        - rejected -> (no transitions)
+        - cancelled -> (no transitions)
+        """
+        current = self.status
+        
+        # Define valid transitions
+        valid_transitions = {
+            'pending': ['approved', 'rejected', 'cancelled'],
+            'approved': ['cancelled'],  # Can be cancelled if needed
+            'rejected': [],  # Terminal state
+            'cancelled': [],  # Terminal state
+        }
+        
+        return new_status in valid_transitions.get(current, [])
+    
+    def transition_to(self, new_status, user, reason=''):
+        """
+        Perform status transition with validation and timestamp updates
+        
+        Args:
+            new_status: Target status
+            user: User performing the transition
+            reason: Optional reason (required for rejection)
+        
+        Returns:
+            bool: True if transition successful, False otherwise
+        """
+        if not self.can_transition_to(new_status):
+            return False
+        
+        # Update status
+        old_status = self.status
+        self.status = new_status
+        
+        # Set appropriate timestamp
+        now = timezone.now()
+        if new_status == 'approved':
+            self.approved_at = now
+        elif new_status == 'rejected':
+            self.rejected_at = now
+            self.rejection_reason = reason
+        elif new_status == 'cancelled':
+            self.cancelled_at = now
+        
+        self.save()
+        
+        # Trigger notification (will be implemented in NotificationService)
+        # This will be called from the view layer
+        
+        return True
+    
     @property
     def can_be_cancelled(self):
         """Check if order can be cancelled"""
-        return self.status in ['pending', 'confirmed']
+        return self.status in ['pending', 'approved']
     
     @property
     def is_completed(self):
         """Check if order is completed"""
-        return self.status in ['completed', 'delivered']
+        return self.status == 'approved'  # In simplified model, approved means completed
 
 
 class OrderItem(models.Model):
@@ -520,11 +578,26 @@ class Notification(models.Model):
     """
     User notifications for order events
     """
+    NOTIFICATION_TYPES = [
+        ('order_created', 'Order Created'),
+        ('order_approved', 'Order Approved'),
+        ('order_rejected', 'Order Rejected'),
+        ('order_cancelled', 'Order Cancelled'),
+    ]
+    
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
     message = models.CharField(max_length=255)
-    related_order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    type = models.CharField(max_length=50, choices=NOTIFICATION_TYPES, default='order_created')
+    related_order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='notifications')
     is_read = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['recipient', 'is_read']),  # For unread count queries
+            models.Index(fields=['timestamp']),  # For chronological sorting
+        ]
 
     def __str__(self):
         return f"Notification for {self.recipient.username}: {self.message}"
