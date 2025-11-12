@@ -6,12 +6,21 @@ from django.contrib.auth import get_user_model
 from django.db.models import Avg, Count
 from .models import (
     Category, Product, ProductImage, Order, OrderItem, 
-    Review, Inquiry, Wishlist
+    Review, Inquiry, Wishlist, Notification
 )
 
 User = get_user_model()
 
-# NotificationSerializer will be added after Notification model is created (Task 2)
+
+class NotificationSerializer(serializers.ModelSerializer):
+    """Serializer for Notification model"""
+    order_number = serializers.CharField(source='related_order.order_number', read_only=True)
+    
+    class Meta:
+        model = Notification
+        fields = ['id', 'message', 'type', 'is_read', 'timestamp', 'related_order', 'order_number']
+        read_only_fields = ['id', 'timestamp', 'message', 'type', 'related_order']
+
 
 class CategorySerializer(serializers.ModelSerializer):
     """Serializer for Category model"""
