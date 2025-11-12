@@ -787,9 +787,34 @@ class OrderViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def my_orders(self, request):
-        """Get all orders for current user (both purchases and sales)"""
-        orders = self.queryset.filter(Q(buyer=request.user) | Q(seller=request.user))
-        serializer = self.get_serializer(orders, many=True)
+        """
+        Get customer's order history
+        
+        Query parameters:
+        - status: Filter by status (pending, approved, rejected, cancelled)
+        - page: Page number for pagination
+        - page_size: Items per page (default: 20, max: 100)
+        """
+        # Filter orders where user is the buyer (customer)
+        queryset = Order.objects.filter(buyer=request.user).select_related(
+            'seller', 'buyer'
+        ).prefetch_related('items__product')
+        
+        # Apply status filter if provided
+        status_filter = request.query_params.get('status')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+        
+        # Order by created_at descending (most recent first)
+        queryset = queryset.order_by('-created_at')
+        
+        # Apply pagination
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 
