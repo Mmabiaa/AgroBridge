@@ -593,6 +593,136 @@ class OrderViewSet(viewsets.ModelViewSet):
         
         return Response(order_data, status=status.HTTP_201_CREATED)
     
+    def partial_update(self, request, *args, **kwargs):
+        """
+        Update order status (approve/reject/cancel)
+        
+        Permissions:
+        - Sellers can approve/reject pending orders for their products
+        - Customers can cancel their own pending orders
+        """
+        from .services import NotificationService
+        from django.db import transaction
+        
+        order = self.get_object()
+        new_status = request.data.get('status')
+        
+        if not new_status:
+            return Response(
+                {'error': 'status field is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Validate status transition
+        if not order.can_transition_to(new_status):
+            return Response(
+                {
+                    'error': 'Invalid status transition',
+                    'current_status': order.status,
+                    'requested_status': new_status,
+                    'allowed_transitions': {
+                        'pending': ['approved', 'rejected', 'cancelled'],
+                        'approved': ['cancelled'],
+                        'rejected': [],
+                        'cancelled': []
+                    }.get(order.status, [])
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Permission checks
+        user = request.user
+        
+        if new_status == 'approved':
+            # Only seller can approve
+            if user != order.seller and not user.is_staff:
+                return Response(
+                    {'error': 'Only the seller can approve this order'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
+            # Perform transition
+            try:
+                with transaction.atomic():
+                    order.transition_to('approved', user)
+                    NotificationService.notify_order_approved(order)
+                    logger.info(f"Order {order.order_number} approved by {user.username}")
+            except Exception as e:
+                logger.error(f"Error approving order: {str(e)}")
+                return Response(
+                    {'error': 'Failed to approve order'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            
+            message = 'Order approved successfully. Customer has been notified.'
+        
+        elif new_status == 'rejected':
+            # Only seller can reject
+            if user != order.seller and not user.is_staff:
+                return Response(
+                    {'error': 'Only the seller can reject this order'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
+            # Rejection reason is required
+            rejection_reason = request.data.get('rejection_reason', '')
+            if not rejection_reason:
+                return Response(
+                    {'error': 'rejection_reason is required when rejecting an order'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Perform transition
+            try:
+                with transaction.atomic():
+                    order.transition_to('rejected', user, reason=rejection_reason)
+                    NotificationService.notify_order_rejected(order, rejection_reason)
+                    logger.info(f"Order {order.order_number} rejected by {user.username}")
+            except Exception as e:
+                logger.error(f"Error rejecting order: {str(e)}")
+                return Response(
+                    {'error': 'Failed to reject order'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            
+            message = 'Order rejected successfully. Customer has been notified.'
+        
+        elif new_status == 'cancelled':
+            # Only buyer can cancel
+            if user != order.buyer and not user.is_staff:
+                return Response(
+                    {'error': 'Only the customer can cancel this order'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
+            # Perform transition
+            try:
+                with transaction.atomic():
+                    order.transition_to('cancelled', user)
+                    NotificationService.notify_order_cancelled(order)
+                    logger.info(f"Order {order.order_number} cancelled by {user.username}")
+            except Exception as e:
+                logger.error(f"Error cancelling order: {str(e)}")
+                return Response(
+                    {'error': 'Failed to cancel order'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            
+            message = 'Order cancelled successfully. Seller has been notified.'
+        
+        else:
+            return Response(
+                {'error': f'Unsupported status: {new_status}'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Return updated order
+        serializer = self.get_serializer(order)
+        response_data = serializer.data
+        response_data['message'] = message
+        
+        return Response(response_data, status=status.HTTP_200_OK)
+    
     def _create_order_with_items(self, buyer, validated_data):
         """Create order with items"""
         items_data = validated_data.pop('items')
