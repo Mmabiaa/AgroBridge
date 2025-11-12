@@ -17,10 +17,10 @@ import {
     Image as ImageIcon,
     User
 } from 'lucide-react';
-import { useProducts, useCreateOrder } from '@/api/hooks/useMarketplace';
+import { useProducts } from '@/api/hooks/useMarketplace';
 import { useAuth } from '@/contexts/AuthContext';
-import { Product, OrderCreateData } from '@/types/basicTypes';
-import apiClient from '@/api/axiosClient';
+import { Product } from '@/types/basicTypes';
+import { OrderButton } from './OrderButton';
 
 interface ProductGridProps {
     searchTerm?: string;
@@ -46,8 +46,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
         page_size: 12,
     });
 
-    const createOrderMutation = useCreateOrder();
-
     const products = productsData?.results || [];
 
     // Check if current user is the product seller
@@ -58,21 +56,14 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
         );
     };
 
-    const handleOrder = async (product: Product) => {
-        createOrderMutation.setPending(true);
-        try {
-            const response = await apiClient.post('/api/orders/', {
-                product_id: product.id,
-                quantity: 1,
-            });
-            console.log('Order created:', response.data);
-            // Update local state logic here to reflect the new order
-        } catch (error) {
-            console.error('Error creating order:', error);
-            // Show specific error message
-        } finally {
-            createOrderMutation.setPending(false);
-        }
+    const handleOrderSuccess = (order: any) => {
+        console.log('Order created successfully:', order);
+        // Optionally refetch products to update quantities
+        refetch();
+    };
+
+    const handleOrderError = (error: Error) => {
+        console.error('Order creation failed:', error);
     };
 
     const formatPrice = (price: number, currency = 'GHS') => {
@@ -349,34 +340,14 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                                             </Badge>
                                         </div>
                                     ) : (
-                                        <Button
-                                            className="w-full"
-                                            disabled={
-                                                product.quantity_available === 0 || 
-                                                createOrderMutation.isPending ||
-                                                !user
-                                            }
-                                            onClick={() => {
-                                                handleOrder(product);
-                                            }}
-                                        >
-                                            {!user ? (
-                                                <>
-                                                    <User className="h-4 w-4 mr-2" />
-                                                    Login to Order
-                                                </>
-                                            ) : createOrderMutation.isPending ? (
-                                                <>
-                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                                    Ordering...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <ShoppingCart className="h-4 w-4 mr-2" />
-                                                    Order Now
-                                                </>
-                                            )}
-                                        </Button>
+                                        <OrderButton
+                                            productId={product.id}
+                                            productName={product.name}
+                                            price={product.price_per_unit}
+                                            availableQuantity={product.quantity_available}
+                                            onOrderSuccess={handleOrderSuccess}
+                                            onOrderError={handleOrderError}
+                                        />
                                     )}
                                 </div>
                             </CardContent>
