@@ -14,15 +14,13 @@ import logging
 
 from .models import (
     Category, Product, ProductImage, Order, OrderItem, 
-    Review, Inquiry, Wishlist
-    # Notification model will be added in Task 2
+    Review, Inquiry, Wishlist, Notification
 )
 from .serializers import (
     CategorySerializer, ProductSerializer, ProductListSerializer,
     ProductImageSerializer, OrderSerializer, OrderItemSerializer,
     ReviewSerializer, InquirySerializer, WishlistSerializer,
-    OrderCreateSerializer
-    # NotificationSerializer will be added in Task 2
+    OrderCreateSerializer, NotificationSerializer
 )
 from .filters import ProductFilter, OrderFilter, ReviewFilter, InquiryFilter
 from .permissions import IsSellerOrReadOnly, IsOwnerOrReadOnly
