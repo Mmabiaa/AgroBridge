@@ -257,13 +257,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Check for existing authentication on app startup
   useEffect(() => {
     const token = apiClient.getAccessToken();
-    if (token && !user && !userLoading && apiClient.isAuthenticated()) {
-      // Token exists but no user data, trigger user fetch
-      refetchUser();
+    
+    // Check if token exists and is valid
+    if (token) {
+      // Verify token is not expired
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Date.now() / 1000;
+        
+        if (payload.exp < currentTime) {
+          // Token is expired, clear it
+          console.log('Token expired on startup, clearing...');
+          clearAuthData();
+          setUser(null);
+          return;
+        }
+      } catch (error) {
+        // Invalid token format, clear it
+        console.error('Invalid token format on startup:', error);
+        clearAuthData();
+        setUser(null);
+        return;
+      }
+      
+      // Token is valid, fetch user if needed
+      if (!user && !userLoading && apiClient.isAuthenticated()) {
+        refetchUser();
+      }
     }
   }, [user, userLoading, refetchUser]);
 
   const login = async (email: string, password: string): Promise<void> => {
+    // Clear any existing expired tokens before login
+    clearAuthData();
+    
     const result = await loginMutation.mutateAsync({ username: email, password }) as LoginResponse;
     
     const mappedUser = mapApiUserToUser(result.user, true);

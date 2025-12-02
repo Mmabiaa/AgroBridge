@@ -178,6 +178,21 @@ export const useWebSocket = (options: UseWebSocketOptions = {}): UseWebSocketRet
             return;
         }
 
+        // Check if token is expired before connecting
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const currentTime = Date.now() / 1000;
+            if (payload.exp < currentTime) {
+                console.log('Cannot connect WebSocket: Token is expired');
+                localStorage.removeItem('access_token');
+                return;
+            }
+        } catch (error) {
+            console.error('Invalid token format:', error);
+            localStorage.removeItem('access_token');
+            return;
+        }
+
         if (wsRef.current?.readyState === WebSocket.OPEN || 
             wsRef.current?.readyState === WebSocket.CONNECTING) {
             console.log('WebSocket already connected or connecting');

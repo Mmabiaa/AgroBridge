@@ -155,7 +155,7 @@ class MarketplaceService {
 
     async updateOrder(id: string, data: OrderUpdateData): Promise<Order> {
         const response = await apiClient.patch<Order>(`${this.basePath}/orders/${id}/`, data);
-        return response;
+        return response.data;
     }
 
     // Category methods

@@ -51,7 +51,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
     // Check if current user is the product seller
     const isProductOwner = (product: Product) => {
         return user && product.seller && (
-            product.seller.id === user.id || 
+            product.seller.id === user.id ||
             product.seller.username === user.username
         );
     };
@@ -86,7 +86,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
 
         // Handle different image data structures
         const firstImage = product.images[0];
-        
+
         if (typeof firstImage === 'string') {
             // If it's a direct URL string
             return firstImage;
@@ -97,7 +97,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
             // If it's an object with url property
             return firstImage.url;
         }
-        
+
         return null;
     };
 
@@ -206,7 +206,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                 {products.map((product) => {
                     const imageUrl = getProductImageUrl(product);
                     const isOwner = isProductOwner(product);
-                    
+
                     return (
                         <Card key={product.id} className="group hover:shadow-lg transition-shadow">
                             {/* Product Image */}
@@ -228,7 +228,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
                                         <span className="text-sm opacity-70">No Image</span>
                                     </div>
                                 )}
-                                
+
                                 {/* Fallback placeholder - hidden by default */}
                                 <div className={`hidden w-full h-full bg-gradient-to-br from-green-100 to-green-200 flex flex-col items-center justify-center text-green-600 ${!imageUrl ? '!flex' : ''}`}>
                                     <ImageIcon className="h-12 w-12 mb-2 opacity-50" />

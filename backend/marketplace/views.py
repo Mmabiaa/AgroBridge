@@ -204,7 +204,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         """Automatically set the seller to the current user"""
-        serializer.save(seller=self.request.user)
+        product = serializer.save(seller=self.request.user)
+        
+        # Handle image uploads
+        self._handle_image_uploads(product, self.request)
     
     def get_queryset(self):
         """Filter products based on user and visibility"""
@@ -244,6 +247,172 @@ class ProductViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+    
+    def perform_update(self, serializer):
+        """Handle product update with images"""
+        product = serializer.save()
+        
+        # Handle image uploads
+        self._handle_image_uploads(product, self.request)
+    
+    def _handle_image_uploads(self, product, request):
+        """
+        Handle image uploads for product
+        
+        Supports:
+        - Single image: 'image' field
+        - Multiple images: 'images' field (list)
+        - Image URLs: 'image_url' or 'image_urls' fields
+        """
+        from .models import ProductImage
+        
+        # Handle single image file upload
+        if 'image' in request.FILES:
+            image_file = request.FILES['image']
+            # Set as primary if no primary image exists
+            is_primary = not product.images.filter(is_primary=True).exists()
+            ProductImage.objects.create(
+                product=product,
+                image=image_file,
+                is_primary=is_primary,
+                alt_text=request.data.get('image_alt_text', product.name)
+            )
+        
+        # Handle multiple image files
+        if 'images' in request.FILES:
+            images = request.FILES.getlist('images')
+            has_primary = product.images.filter(is_primary=True).exists()
+            
+            for idx, image_file in enumerate(images):
+                ProductImage.objects.create(
+                    product=product,
+                    image=image_file,
+                    is_primary=(not has_primary and idx == 0),
+                    sort_order=idx,
+                    alt_text=request.data.get(f'image_alt_text_{idx}', product.name)
+                )
+        
+        # Handle image URL (for external images)
+        if 'image_url' in request.data:
+            image_url = request.data.get('image_url')
+            if image_url:
+                # Store URL in a text field or download and save
+                # For now, we'll create a placeholder
+                logger.info(f"Image URL provided for product {product.id}: {image_url}")
+        
+        # Handle multiple image URLs
+        if 'image_urls' in request.data:
+            image_urls = request.data.get('image_urls', [])
+            if isinstance(image_urls, list):
+                for url in image_urls:
+                    logger.info(f"Image URL provided for product {product.id}: {url}")
+    
+    @action(detail=True, methods=['post'])
+    def upload_images(self, request, pk=None):
+        """
+        Upload images for a product
+        
+        Accepts:
+        - image: Single image file
+        - images: Multiple image files
+        - is_primary: Boolean to set as primary image
+        """
+        from .models import ProductImage
+        
+        product = self.get_object()
+        
+        # Check if user is the seller
+        if product.seller != request.user:
+            return Response(
+                {'error': 'Only the seller can upload images'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        uploaded_images = []
+        
+        # Handle single image
+        if 'image' in request.FILES:
+            image_file = request.FILES['image']
+            is_primary = request.data.get('is_primary', 'false').lower() == 'true'
+            
+            # If setting as primary, unset other primary images
+            if is_primary:
+                product.images.update(is_primary=False)
+            
+            image_obj = ProductImage.objects.create(
+                product=product,
+                image=image_file,
+                is_primary=is_primary,
+                alt_text=request.data.get('alt_text', product.name)
+            )
+            uploaded_images.append({
+                'id': image_obj.id,
+                'url': image_obj.image.url,
+                'is_primary': image_obj.is_primary
+            })
+        
+        # Handle multiple images
+        if 'images' in request.FILES:
+            images = request.FILES.getlist('images')
+            has_primary = product.images.filter(is_primary=True).exists()
+            
+            for idx, image_file in enumerate(images):
+                image_obj = ProductImage.objects.create(
+                    product=product,
+                    image=image_file,
+                    is_primary=(not has_primary and idx == 0),
+                    sort_order=product.images.count() + idx,
+                    alt_text=request.data.get(f'alt_text_{idx}', product.name)
+                )
+                uploaded_images.append({
+                    'id': image_obj.id,
+                    'url': image_obj.image.url,
+                    'is_primary': image_obj.is_primary
+                })
+        
+        if not uploaded_images:
+            return Response(
+                {'error': 'No images provided'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        return Response({
+            'message': f'{len(uploaded_images)} image(s) uploaded successfully',
+            'images': uploaded_images
+        })
+    
+    @action(detail=True, methods=['delete'], url_path='images/(?P<image_id>[^/.]+)')
+    def delete_image(self, request, pk=None, image_id=None):
+        """Delete a product image"""
+        from .models import ProductImage
+        
+        product = self.get_object()
+        
+        # Check if user is the seller
+        if product.seller != request.user:
+            return Response(
+                {'error': 'Only the seller can delete images'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            image = ProductImage.objects.get(id=image_id, product=product)
+            was_primary = image.is_primary
+            image.delete()
+            
+            # If deleted image was primary, set another image as primary
+            if was_primary:
+                first_image = product.images.first()
+                if first_image:
+                    first_image.is_primary = True
+                    first_image.save()
+            
+            return Response({'message': 'Image deleted successfully'})
+        except ProductImage.DoesNotExist:
+            return Response(
+                {'error': 'Image not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
     
     @action(detail=True, methods=['post'])
     def add_to_wishlist(self, request, pk=None):

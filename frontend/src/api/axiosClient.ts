@@ -199,10 +199,25 @@ const axiosClient: AxiosInstance = axios.create({
 // Request interceptor
 axiosClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        // Add authentication token
-        const token = TokenManager.getAccessToken();
-        if (token && !TokenManager.isTokenExpired(token)) {
-            config.headers.Authorization = `Bearer ${token}`;
+        // Skip auth for login, register, and password reset endpoints
+        const isAuthEndpoint = config.url?.includes('/auth/login') || 
+                              config.url?.includes('/auth/register') ||
+                              config.url?.includes('/auth/request-password-reset') ||
+                              config.url?.includes('/auth/reset-password');
+        
+        if (!isAuthEndpoint) {
+            // Add authentication token
+            const token = TokenManager.getAccessToken();
+            if (token) {
+                // Check if token is expired
+                if (TokenManager.isTokenExpired(token)) {
+                    // Token is expired, clear it
+                    TokenManager.clearTokens();
+                    // Don't add Authorization header
+                } else {
+                    config.headers.Authorization = `Bearer ${token}`;
+                }
+            }
         }
 
         // Add request timestamp for performance monitoring
