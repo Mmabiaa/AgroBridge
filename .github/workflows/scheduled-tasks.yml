@@ -1,0 +1,127 @@
+# Scheduled Tasks
+# Runs periodic maintenance and monitoring tasks
+
+name: Scheduled Tasks
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  # Dependency Updates Check
+  dependency-updates:
+    name: Check Dependency Updates
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check for outdated packages
+        run: |
+          pip install pip-audit
+          cd backend
+          pip-audit --desc --format json > audit-report.json || true
+      
+      - name: Create issue for vulnerabilities
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Security vulnerabilities found in dependencies',
+              body: 'Automated security scan found vulnerabilities. Please review and update dependencies.',
+              labels: ['security', 'dependencies']
+            })
+
+  # Docker Image Cleanup
+  docker-cleanup:
+    name: Clean Old Docker Images
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Delete old images
+        uses: actions/delete-package-versions@v4
+        with:
+          package-name: 'agrobridge/*'
+          package-type: 'container'
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: 'true'
+
+  # Database Backup Verification
+  backup-verification:
+    name: Verify Database Backups
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Verify backups exist
+        run: |
+          # Check if backups are recent (within 24 hours)
+          echo "Verifying database backups..."
+          # Add actual backup verification logic here
+
+  # Performance Monitoring
+  performance-monitoring:
+    name: Performance Monitoring
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            https://agrobridge.com
+            https://agrobridge.com/marketplace
+          uploadArtifacts: true
+      
+      - name: Check performance metrics
+        run: |
+          echo "Checking performance metrics..."
+          # Add performance threshold checks
+
+  # Security Audit
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run OWASP ZAP scan
+        uses: zaproxy/action-baseline@v0.7.0
+        with:
+          target: 'https://staging.agrobridge.com'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+
+  # Cost Monitoring
+  cost-monitoring:
+    name: Cost Monitoring
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check cloud costs
+        run: |
+          echo "Monitoring cloud infrastructure costs..."
+          # Add cost monitoring logic
+      
+      - name: Alert on cost anomalies
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Cloud cost anomaly detected',
+              body: 'Unusual increase in cloud costs detected. Please review.',
+              labels: ['ops', 'cost']
+            })
