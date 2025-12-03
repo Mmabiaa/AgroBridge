@@ -204,6 +204,32 @@ services:
     profiles:
       - dev
 
+  # RabbitMQ - Message broker for async tasks and event-driven communication
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: agrobridge-rabbitmq
+    hostname: agrobridge-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-agrobridge}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-agrobridge_password}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-agrobridge}
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: -rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"      # AMQP port
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"  # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./config/rabbitmq-definitions.json:/etc/rabbitmq/definitions.json:ro
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
 volumes:
   postgres_data:
     driver: local
@@ -220,6 +246,8 @@ volumes:
   elasticsearch_data:
     driver: local
   pgadmin_data:
+    driver: local
+  rabbitmq_data:
     driver: local
 
 networks:
