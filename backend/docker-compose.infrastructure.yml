@@ -352,6 +352,32 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # Vault - Secrets management
+  vault:
+    image: hashicorp/vault:1.15
+    container_name: agrobridge-vault
+    command: server
+    environment:
+      VAULT_ADDR: http://0.0.0.0:8200
+      VAULT_API_ADDR: http://vault:8200
+      VAULT_LOCAL_CONFIG: '{"backend": {"file": {"path": "/vault/data"}}, "listener": {"tcp": {"address": "0.0.0.0:8200", "tls_disable": 1}}, "ui": true, "disable_mlock": true}'
+    ports:
+      - "${VAULT_PORT:-8200}:8200"          # HTTP API and UI
+    volumes:
+      - vault_data:/vault/data
+      - vault_logs:/vault/logs
+      - ./secrets_management/vault-config.hcl:/vault/config/vault-config.hcl:ro
+    networks:
+      - agrobridge-network
+    cap_add:
+      - IPC_LOCK
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8200/v1/sys/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 volumes:
   postgres_data:
     driver: local
@@ -374,6 +400,10 @@ volumes:
   kong_data:
     driver: local
   consul_data:
+    driver: local
+  vault_data:
+    driver: local
+  vault_logs:
     driver: local
 
 networks:

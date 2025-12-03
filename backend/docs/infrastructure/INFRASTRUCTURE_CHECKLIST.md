@@ -47,12 +47,14 @@ This checklist tracks the completion of all infrastructure tasks for the AgroBri
 - **Status**: COMPLETED
 - **Documentation**: backend/docs/tasks/TASK_1_5_COMPLETION.md
 
-### Task 1.6: Secrets Management ⏳
-- [ ] HashiCorp Vault setup
-- [ ] Secret paths for all services
-- [ ] Automatic secret rotation
-- [ ] Service authentication
-- **Status**: PENDING
+### Task 1.6: Secrets Management ✅
+- [x] HashiCorp Vault setup
+- [x] Secret paths for all services
+- [x] Automatic secret rotation
+- [x] Service authentication
+- [x] Audit logging
+- **Status**: COMPLETED
+- **Documentation**: backend/docs/tasks/TASK_1_6_COMPLETION.md
 
 ### Task 1.7: Monitoring Infrastructure ⏳
 - [ ] Prometheus for metrics
@@ -103,6 +105,11 @@ This checklist tracks the completion of all infrastructure tasks for the AgroBri
 |-----------|--------|------|--------------|
 | Consul | ✅ Running | 8500 | Healthy |
 | Consul DNS | ✅ Running | 8600 | Healthy |
+
+### Secrets Management
+| Component | Status | Port | Health Check |
+|-----------|--------|------|--------------|
+| Vault | ✅ Running | 8200 | Healthy |
 
 ### Development Tools
 | Component | Status | Port | Access |
@@ -164,6 +171,7 @@ docker-compose -f docker-compose.infrastructure.yml down
 | Kong Admin GUI | http://localhost:8002 | N/A |
 | Kong Proxy | http://localhost:8000 | N/A |
 | Consul UI | http://localhost:8500 | N/A |
+| Vault UI | http://localhost:8200 | Root token in vault-keys.json |
 | RabbitMQ Management | http://localhost:15672 | agrobridge / agrobridge_password |
 | PgAdmin | http://localhost:5050 | admin@agrobridge.com / admin |
 | Mongo Express | http://localhost:8081 | admin / admin |
@@ -179,9 +187,9 @@ docker-compose -f docker-compose.infrastructure.yml down
 
 ## Progress Summary
 
-- **Completed**: 5/9 infrastructure tasks (56%)
+- **Completed**: 6/9 infrastructure tasks (67%)
 - **In Progress**: 0/9 tasks
-- **Pending**: 4/9 tasks (44%)
+- **Pending**: 3/9 tasks (33%)
 
 ### Completed Components
 ✅ Project structure and setup  
@@ -189,9 +197,9 @@ docker-compose -f docker-compose.infrastructure.yml down
 ✅ Message queue (RabbitMQ + Celery)  
 ✅ API Gateway (Kong)  
 ✅ Service Discovery (Consul)  
+✅ Secrets Management (Vault)  
 
 ### Pending Components
-⏳ Secrets management (Vault)  
 ⏳ Monitoring (Prometheus, Grafana, ELK, Jaeger)  
 ⏳ Docker configurations  
 ⏳ CI/CD pipeline  
