@@ -1,0 +1,44 @@
+{
+  "datacenter": "agrobridge-dc1",
+  "data_dir": "/consul/data",
+  "log_level": "INFO",
+  "node_name": "agrobridge-consul-server",
+  "server": true,
+  "bootstrap_expect": 1,
+  "ui_config": {
+    "enabled": true
+  },
+  "client_addr": "0.0.0.0",
+  "bind_addr": "0.0.0.0",
+  "advertise_addr": "{{ GetInterfaceIP \"eth0\" }}",
+  "ports": {
+    "dns": 8600,
+    "http": 8500,
+    "https": -1,
+    "grpc": 8502,
+    "serf_lan": 8301,
+    "serf_wan": 8302,
+    "server": 8300
+  },
+  "enable_script_checks": false,
+  "enable_local_script_checks": true,
+  "disable_remote_exec": true,
+  "disable_update_check": true,
+  "performance": {
+    "raft_multiplier": 1
+  },
+  "telemetry": {
+    "prometheus_retention_time": "60s",
+    "disable_hostname": false
+  },
+  "dns_config": {
+    "enable_truncate": true,
+    "only_passing": true,
+    "service_ttl": {
+      "*": "5s"
+    }
+  },
+  "connect": {
+    "enabled": true
+  }
+}

@@ -323,6 +323,35 @@ services:
     profiles:
       - sync
 
+  # Consul - Service discovery and configuration
+  consul:
+    image: hashicorp/consul:1.17
+    container_name: agrobridge-consul
+    command: agent -server -ui -bootstrap-expect=1 -client=0.0.0.0 -config-file=/consul/config/consul-config.json
+    environment:
+      CONSUL_BIND_INTERFACE: eth0
+      CONSUL_CLIENT_INTERFACE: eth0
+    ports:
+      - "${CONSUL_HTTP_PORT:-8500}:8500"    # HTTP API and UI
+      - "${CONSUL_DNS_PORT:-8600}:8600/tcp" # DNS TCP
+      - "${CONSUL_DNS_PORT:-8600}:8600/udp" # DNS UDP
+      - "8301:8301"                          # Serf LAN
+      - "8302:8302"                          # Serf WAN
+      - "8300:8300"                          # Server RPC
+      - "8502:8502"                          # gRPC
+    volumes:
+      - consul_data:/consul/data
+      - ./service_discovery/consul-config.json:/consul/config/consul-config.json:ro
+      - ./service_discovery/service-defaults.hcl:/consul/config/service-defaults.hcl:ro
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 volumes:
   postgres_data:
     driver: local
@@ -343,6 +372,8 @@ volumes:
   rabbitmq_data:
     driver: local
   kong_data:
+    driver: local
+  consul_data:
     driver: local
 
 networks:
