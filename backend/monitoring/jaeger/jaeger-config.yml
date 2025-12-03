@@ -1,0 +1,46 @@
+# Jaeger Configuration for AgroBridge
+# Distributed tracing for all microservices
+
+# Collector configuration
+collector:
+  zipkin:
+    host-port: ":9411"
+  
+  grpc:
+    host-port: ":14250"
+  
+  http:
+    host-port: ":14268"
+
+# Query configuration
+query:
+  base-path: /
+  static-files: /go/jaeger-ui/
+  ui-config: /etc/jaeger/ui-config.json
+
+# Storage configuration
+storage:
+  type: elasticsearch
+  options:
+    es:
+      server-urls: http://elasticsearch:9200
+      index-prefix: jaeger
+      username: ""
+      password: ""
+
+# Sampling configuration
+sampling:
+  default_strategy:
+    type: probabilistic
+    param: 1.0  # Sample 100% of traces in development
+
+# Agent configuration
+agent:
+  http-server:
+    host-port: ":5778"
+  
+  processor:
+    jaeger-compact:
+      server-host-port: ":6831"
+    jaeger-binary:
+      server-host-port: ":6832"
