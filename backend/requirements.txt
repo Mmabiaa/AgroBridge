@@ -20,6 +20,8 @@ opentelemetry-sdk==1.21.0
 opentelemetry-instrumentation-django==0.42b0
 opentelemetry-instrumentation-requests==0.42b0
 opentelemetry-exporter-jaeger==1.21.0
+gunicorn==21.2.0
+gevent==23.9.1
 PyJWT==2.10.1
 python-decouple==3.8
 pytz==2025.2

@@ -1,16 +1,518 @@
+# Docker Compose for AgroBridge Microservices
+# Local development environment with all services
+
+version: '3.8'
+
 services:
-  web:
-    build: .
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
+  # Authentication Service
+  authentication-service:
+    build:
+      context: .
+      dockerfile: authentication/Dockerfile
+    container_name: agrobridge-auth
     environment:
-      - DEBUG=False
-      - SECRET_KEY=${SECRET_KEY}
-      - ALLOWED_HOSTS=localhost,127.0.0.1
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000
-  redis:
-    image: redis:alpine
+      - SERVICE_NAME=authentication
+      - SERVICE_PORT=8001
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_auth
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/0
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
     ports:
-      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - ./authentication:/app/authentication
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - consul
+      - vault
+    restart: unless-stopped
+
+  # User Service
+  user-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: user
+        SERVICE_PORT: 8002
+    container_name: agrobridge-user
+    environment:
+      - SERVICE_NAME=user
+      - SERVICE_PORT=8002
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_user
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/1
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./user:/app/user
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    restart: unless-stopped
+
+  # Farm Management Service
+  farm-management-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: farm_management
+        SERVICE_PORT: 8003
+    container_name: agrobridge-farm
+    environment:
+      - SERVICE_NAME=farm_management
+      - SERVICE_PORT=8003
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_farm
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/2
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./farm_management:/app/farm_management
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # Marketplace Service
+  marketplace-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: marketplace
+        SERVICE_PORT: 8004
+    container_name: agrobridge-marketplace
+    environment:
+      - SERVICE_NAME=marketplace
+      - SERVICE_PORT=8004
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_marketplace
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/3
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8004:8004"
+    volumes:
+      - ./marketplace:/app/marketplace
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    restart: unless-stopped
+
+  # AI Assistant Service
+  ai-assistant-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: ai_assistant
+        SERVICE_PORT: 8005
+    container_name: agrobridge-ai
+    environment:
+      - SERVICE_NAME=ai_assistant
+      - SERVICE_PORT=8005
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_ai
+      - MONGODB_URL=mongodb://agrobridge:agrobridge_password@mongodb:27017/agrobridge_ai
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/4
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8005:8005"
+    volumes:
+      - ./ai_assistant:/app/ai_assistant
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+    restart: unless-stopped
+
+  # Crop Detection Service
+  crop-detection-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: crop_detection
+        SERVICE_PORT: 8006
+    container_name: agrobridge-crop
+    environment:
+      - SERVICE_NAME=crop_detection
+      - SERVICE_PORT=8006
+      - MONGODB_URL=mongodb://agrobridge:agrobridge_password@mongodb:27017/agrobridge_crop
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/5
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8006:8006"
+    volumes:
+      - ./crop_detection:/app/crop_detection
+      - ./shared:/app/shared
+      - ./models:/app/models  # ML models
+    networks:
+      - agrobridge-network
+    depends_on:
+      - mongodb
+      - redis
+    restart: unless-stopped
+
+  # IoT Service
+  iot-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: iot
+        SERVICE_PORT: 8007
+    container_name: agrobridge-iot
+    environment:
+      - SERVICE_NAME=iot
+      - SERVICE_PORT=8007
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@timescaledb:5432/agrobridge_iot_timeseries
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/6
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8007:8007"
+    volumes:
+      - ./iot:/app/iot
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - timescaledb
+      - redis
+      - rabbitmq
+    restart: unless-stopped
+
+  # Notification Service
+  notification-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: notification
+        SERVICE_PORT: 8008
+    container_name: agrobridge-notification
+    environment:
+      - SERVICE_NAME=notification
+      - SERVICE_PORT=8008
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_notification
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/7
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8008:8008"
+    volumes:
+      - ./notification:/app/notification
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    restart: unless-stopped
+
+  # Financial Service
+  financial-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: financial
+        SERVICE_PORT: 8009
+    container_name: agrobridge-financial
+    environment:
+      - SERVICE_NAME=financial
+      - SERVICE_PORT=8009
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_financial
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/8
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8009:8009"
+    volumes:
+      - ./financial:/app/financial
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # Learning Service
+  learning-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: learning
+        SERVICE_PORT: 8010
+    container_name: agrobridge-learning
+    environment:
+      - SERVICE_NAME=learning
+      - SERVICE_PORT=8010
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_learning
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/9
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8010:8010"
+    volumes:
+      - ./learning:/app/learning
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # Community Service
+  community-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: community
+        SERVICE_PORT: 8011
+    container_name: agrobridge-community
+    environment:
+      - SERVICE_NAME=community
+      - SERVICE_PORT=8011
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_community
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/10
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8011:8011"
+    volumes:
+      - ./community:/app/community
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # Scheduling Service
+  scheduling-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: scheduling
+        SERVICE_PORT: 8012
+    container_name: agrobridge-scheduling
+    environment:
+      - SERVICE_NAME=scheduling
+      - SERVICE_PORT=8012
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_scheduling
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/11
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8012:8012"
+    volumes:
+      - ./scheduling:/app/scheduling
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # Analytics Service
+  analytics-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: analytics
+        SERVICE_PORT: 8013
+    container_name: agrobridge-analytics
+    environment:
+      - SERVICE_NAME=analytics
+      - SERVICE_PORT=8013
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_analytics
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/12
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8013:8013"
+    volumes:
+      - ./analytics:/app/analytics
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # Payment Service
+  payment-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: payment
+        SERVICE_PORT: 8014
+    container_name: agrobridge-payment
+    environment:
+      - SERVICE_NAME=payment
+      - SERVICE_PORT=8014
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_payment
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/13
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8014:8014"
+    volumes:
+      - ./payment:/app/payment
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # Admin Service
+  admin-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: admin
+        SERVICE_PORT: 8015
+    container_name: agrobridge-admin
+    environment:
+      - SERVICE_NAME=admin
+      - SERVICE_PORT=8015
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_admin
+      - REDIS_URL=redis://:agrobridge_redis@redis:6379/14
+      - RABBITMQ_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CONSUL_HOST=consul
+      - VAULT_ADDR=http://vault:8200
+      - JAEGER_AGENT_HOST=jaeger
+    ports:
+      - "8015:8015"
+    volumes:
+      - ./admin:/app/admin
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # Celery Worker (for async tasks)
+  celery-worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: celery
+    container_name: agrobridge-celery-worker
+    command: celery -A shared.celery worker --loglevel=info --concurrency=4
+    environment:
+      - CELERY_BROKER_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CELERY_RESULT_BACKEND=redis://:agrobridge_redis@redis:6379/15
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_default
+    volumes:
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - rabbitmq
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  # Celery Beat (for scheduled tasks)
+  celery-beat:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+      args:
+        SERVICE_NAME: celery
+    container_name: agrobridge-celery-beat
+    command: celery -A shared.celery beat --loglevel=info
+    environment:
+      - CELERY_BROKER_URL=amqp://agrobridge:agrobridge_password@rabbitmq:5672/agrobridge
+      - CELERY_RESULT_BACKEND=redis://:agrobridge_redis@redis:6379/15
+      - DATABASE_URL=postgresql://agrobridge:agrobridge_password@postgres:5432/agrobridge_default
+    volumes:
+      - ./shared:/app/shared
+    networks:
+      - agrobridge-network
+    depends_on:
+      - rabbitmq
+      - redis
+      - celery-worker
+    restart: unless-stopped
+
+networks:
+  agrobridge-network:
+    external: true
+
+volumes:
+  models:
+    driver: local

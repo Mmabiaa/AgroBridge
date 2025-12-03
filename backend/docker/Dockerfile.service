@@ -1,0 +1,42 @@
+# Service-Specific Dockerfile Template
+# This template should be copied and customized for each microservice
+
+# Use base image
+FROM agrobridge-base:latest
+
+# Set service-specific environment variables
+ARG SERVICE_NAME
+ARG SERVICE_PORT=8000
+ENV SERVICE_NAME=${SERVICE_NAME} \
+    SERVICE_PORT=${SERVICE_PORT}
+
+# Copy service code
+COPY ${SERVICE_NAME}/ /app/${SERVICE_NAME}/
+COPY manage.py /app/
+
+# Copy configuration files
+COPY config/ /app/config/
+
+# Change ownership
+USER root
+RUN chown -R appuser:appuser /app
+USER appuser
+
+# Expose service port
+EXPOSE ${SERVICE_PORT}
+
+# Health check on service port
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:${SERVICE_PORT}/health || exit 1
+
+# Run migrations and start server
+CMD python manage.py migrate --noinput && \
+    python manage.py collectstatic --noinput && \
+    gunicorn ${SERVICE_NAME}.wsgi:application \
+        --bind 0.0.0.0:${SERVICE_PORT} \
+        --workers 4 \
+        --threads 2 \
+        --timeout 60 \
+        --access-logfile - \
+        --error-logfile - \
+        --log-level info
