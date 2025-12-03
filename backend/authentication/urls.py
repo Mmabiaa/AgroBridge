@@ -1,7 +1,16 @@
 from django.urls import path
 from . import views
+import sys
+import os
+
+# Add parent directory to path to import shared modules
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from shared.health_check import create_health_check_view
 
 urlpatterns = [
+    # Health check endpoint
+    path('health/', create_health_check_view('authentication-service', '1.0.0'), name='health-check'),
+    
     # Authentication endpoints
     path('register/', views.register_user, name='register'),
     path('login/', views.login_user, name='login'),
