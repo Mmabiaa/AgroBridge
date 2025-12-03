@@ -1,0 +1,1135 @@
+_format_version: "3.0"
+_transform: true
+
+# Kong Gateway Configuration for AgroBridge Microservices
+# This configuration defines all services, routes, and plugins
+# Requirements: 21.1, 21.2, 26.1, 26.3, 26.5, 26.6
+
+# Global Plugins - Applied to all routes
+plugins:
+  - name: correlation-id
+    config:
+      header_name: X-Request-ID
+      generator: uuid
+      echo_downstream: true
+  
+  - name: request-size-limiting
+    config:
+      allowed_payload_size: 10
+      size_unit: megabytes
+  
+  - name: response-transformer
+    config:
+      add:
+        headers:
+          - X-Content-Type-Options:nosniff
+          - X-Frame-Options:DENY
+          - X-XSS-Protection:1; mode=block
+          - Strict-Transport-Security:max-age=31536000; includeSubDomains
+          - Content-Security-Policy:default-src 'self'
+
+services:
+  # ============================================================================
+  # Authentication Service
+  # ============================================================================
+  - name: authentication-service
+    url: http://authentication:8001
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: auth-register
+        paths:
+          - /api/v1/auth/register
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 10
+              hour: 50
+              policy: local
+              hide_client_headers: false
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - POST
+                - OPTIONS
+              headers:
+                - Accept
+                - Authorization
+                - Content-Type
+              exposed_headers:
+                - X-Auth-Token
+              credentials: true
+              max_age: 3600
+          - name: request-transformer
+            config:
+              add:
+                headers:
+                  - X-Service:authentication
+      
+      - name: auth-login
+        paths:
+          - /api/v1/auth/login
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 20
+              hour: 100
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - POST
+                - OPTIONS
+              credentials: true
+      
+      - name: auth-refresh
+        paths:
+          - /api/v1/auth/refresh
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 30
+              hour: 200
+              policy: local
+      
+      - name: auth-logout
+        paths:
+          - /api/v1/auth/logout
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+      
+      - name: auth-verify-email
+        paths:
+          - /api/v1/auth/verify-email
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 5
+              hour: 20
+              policy: local
+      
+      - name: auth-password-reset
+        paths:
+          - /api/v1/auth/password-reset
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 3
+              hour: 10
+              policy: local
+
+  # ============================================================================
+  # User Service
+  # ============================================================================
+  - name: user-service
+    url: http://users:8002
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: user-profile
+        paths:
+          - /api/v1/users/profile
+        methods:
+          - GET
+          - PUT
+          - PATCH
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - PUT
+                - PATCH
+                - OPTIONS
+              credentials: true
+      
+      - name: user-preferences
+        paths:
+          - /api/v1/users/preferences
+        methods:
+          - GET
+          - PUT
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 50
+              hour: 1000
+              policy: local
+      
+      - name: user-search
+        paths:
+          - /api/v1/users/search
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 60
+              hour: 1000
+              policy: local
+      
+      - name: user-data-export
+        paths:
+          - /api/v1/users/data-export
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 1
+              hour: 5
+              policy: local
+
+  # ============================================================================
+  # Farm Management Service
+  # ============================================================================
+  - name: farm-service
+    url: http://farms:8003
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: farms
+        paths:
+          - /api/v1/farms
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+              credentials: true
+      
+      - name: farm-detail
+        paths:
+          - /api/v1/farms/~
+        methods:
+          - GET
+          - PUT
+          - DELETE
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+      
+      - name: farm-fields
+        paths:
+          - /api/v1/farms/.*/fields
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+      
+      - name: farm-crops
+        paths:
+          - /api/v1/farms/.*/crops
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+
+  # ============================================================================
+  # Marketplace Service
+  # ============================================================================
+  - name: marketplace-service
+    url: http://marketplace:8004
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: marketplace-products
+        paths:
+          - /api/v1/marketplace/products
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 200
+              hour: 5000
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+              credentials: true
+      
+      - name: marketplace-product-detail
+        paths:
+          - /api/v1/marketplace/products/~
+        methods:
+          - GET
+          - PUT
+          - DELETE
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 200
+              hour: 5000
+              policy: local
+      
+      - name: marketplace-orders
+        paths:
+          - /api/v1/marketplace/orders
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+      
+      - name: marketplace-reviews
+        paths:
+          - /api/v1/marketplace/reviews
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 50
+              hour: 1000
+              policy: local
+
+  # ============================================================================
+  # AI Assistant Service
+  # ============================================================================
+  - name: ai-assistant-service
+    url: http://ai-assistant:8005
+    retries: 3
+    connect_timeout: 10000
+    write_timeout: 120000
+    read_timeout: 120000
+    routes:
+      - name: ai-chat
+        paths:
+          - /api/v1/ai/chat
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 30
+              hour: 500
+              policy: local
+          - name: request-size-limiting
+            config:
+              allowed_payload_size: 5
+              size_unit: megabytes
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - POST
+                - OPTIONS
+              credentials: true
+      
+      - name: ai-voice
+        paths:
+          - /api/v1/ai/voice
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 20
+              hour: 300
+              policy: local
+          - name: request-size-limiting
+            config:
+              allowed_payload_size: 10
+              size_unit: megabytes
+      
+      - name: ai-conversations
+        paths:
+          - /api/v1/ai/conversations
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 60
+              hour: 1000
+              policy: local
+
+  # ============================================================================
+  # Crop Detection Service
+  # ============================================================================
+  - name: crop-detection-service
+    url: http://crop-detection:8006
+    retries: 3
+    connect_timeout: 10000
+    write_timeout: 120000
+    read_timeout: 120000
+    routes:
+      - name: crop-detect
+        paths:
+          - /api/v1/crop-detection/detect
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 20
+              hour: 300
+              policy: local
+          - name: request-size-limiting
+            config:
+              allowed_payload_size: 20
+              size_unit: megabytes
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - POST
+                - OPTIONS
+              credentials: true
+      
+      - name: crop-detection-history
+        paths:
+          - /api/v1/crop-detection/history
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 60
+              hour: 1000
+              policy: local
+
+  # ============================================================================
+  # IoT Service
+  # ============================================================================
+  - name: iot-service
+    url: http://iot:8007
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: iot-devices
+        paths:
+          - /api/v1/iot/devices
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+              credentials: true
+      
+      - name: iot-sensor-data
+        paths:
+          - /api/v1/iot/sensor-data
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 1000
+              hour: 50000
+              policy: local
+          - name: request-size-limiting
+            config:
+              allowed_payload_size: 1
+              size_unit: megabytes
+      
+      - name: iot-readings
+        paths:
+          - /api/v1/iot/readings
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 200
+              hour: 5000
+              policy: local
+
+  # ============================================================================
+  # Notification Service
+  # ============================================================================
+  - name: notification-service
+    url: http://notifications:8008
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: notifications
+        paths:
+          - /api/v1/notifications
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+              credentials: true
+      
+      - name: notification-mark-read
+        paths:
+          - /api/v1/notifications/.*/read
+        methods:
+          - PUT
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+      
+      - name: notification-preferences
+        paths:
+          - /api/v1/notifications/preferences
+        methods:
+          - GET
+          - PUT
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 50
+              hour: 1000
+              policy: local
+
+  # ============================================================================
+  # Financial Management Service
+  # ============================================================================
+  - name: financial-service
+    url: http://financial:8009
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: financial-records
+        paths:
+          - /api/v1/financial/records
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+              credentials: true
+      
+      - name: financial-budgets
+        paths:
+          - /api/v1/financial/budgets
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+      
+      - name: financial-reports
+        paths:
+          - /api/v1/financial/reports
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 50
+              hour: 500
+              policy: local
+
+  # ============================================================================
+  # Learning Service
+  # ============================================================================
+  - name: learning-service
+    url: http://learning:8010
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: learning-courses
+        paths:
+          - /api/v1/learning/courses
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - POST
+                - OPTIONS
+              credentials: true
+      
+      - name: learning-enrollment
+        paths:
+          - /api/v1/learning/enrollment
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 50
+              hour: 500
+              policy: local
+      
+      - name: learning-progress
+        paths:
+          - /api/v1/learning/progress
+        methods:
+          - GET
+          - PUT
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+
+  # ============================================================================
+  # Community Service
+  # ============================================================================
+  - name: community-service
+    url: http://community:8011
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: community-posts
+        paths:
+          - /api/v1/community/posts
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+              credentials: true
+      
+      - name: community-messages
+        paths:
+          - /api/v1/community/messages
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 200
+              hour: 5000
+              policy: local
+
+  # ============================================================================
+  # Scheduling Service
+  # ============================================================================
+  - name: scheduling-service
+    url: http://scheduling:8012
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: scheduling-tasks
+        paths:
+          - /api/v1/scheduling/tasks
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+              credentials: true
+
+  # ============================================================================
+  # Analytics Service
+  # ============================================================================
+  - name: analytics-service
+    url: http://analytics:8013
+    retries: 3
+    connect_timeout: 10000
+    write_timeout: 120000
+    read_timeout: 120000
+    routes:
+      - name: analytics-dashboard
+        paths:
+          - /api/v1/analytics/dashboard
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 60
+              hour: 1000
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - OPTIONS
+              credentials: true
+      
+      - name: analytics-predictions
+        paths:
+          - /api/v1/analytics/predictions
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 30
+              hour: 500
+              policy: local
+
+  # ============================================================================
+  # Payment Service
+  # ============================================================================
+  - name: payment-service
+    url: http://payments:8014
+    retries: 3
+    connect_timeout: 10000
+    write_timeout: 120000
+    read_timeout: 120000
+    routes:
+      - name: payment-initiate
+        paths:
+          - /api/v1/payments/initiate
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 30
+              hour: 500
+              policy: local
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - POST
+                - OPTIONS
+              credentials: true
+      
+      - name: payment-webhook
+        paths:
+          - /api/v1/payments/webhook
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 1000
+              hour: 50000
+              policy: local
+      
+      - name: payment-transactions
+        paths:
+          - /api/v1/payments/transactions
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+
+  # ============================================================================
+  # Admin Service
+  # ============================================================================
+  - name: admin-service
+    url: http://admin:8015
+    retries: 3
+    connect_timeout: 5000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: admin-users
+        paths:
+          - /api/v1/admin/users
+        methods:
+          - GET
+          - PUT
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+          - name: ip-restriction
+            config:
+              allow:
+                - 127.0.0.1
+                - 10.0.0.0/8
+                - 172.16.0.0/12
+                - 192.168.0.0/16
+          - name: cors
+            config:
+              origins:
+                - "*"
+              methods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+              credentials: true
+      
+      - name: admin-moderation
+        paths:
+          - /api/v1/admin/moderation
+        methods:
+          - GET
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              claims_to_verify:
+                - exp
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+
+  # ============================================================================
+  # Health Check Routes (No Authentication Required)
+  # ============================================================================
+  - name: health-check-service
+    url: http://localhost:8000
+    routes:
+      - name: health-check
+        paths:
+          - /health
+          - /api/v1/health
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 100
+              hour: 2000
+              policy: local
+   
