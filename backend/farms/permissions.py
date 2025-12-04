@@ -32,6 +32,11 @@ class IsFarmOwnerOrReadOnly(permissions.BasePermission):
                 return (obj.farm.is_public or 
                        obj.farm.owner == request.user or 
                        request.user.is_staff)
+            elif hasattr(obj, 'field'):
+                # For Field-related objects (SatelliteImagery, etc.)
+                return (obj.field.farm.is_public or 
+                       obj.field.farm.owner == request.user or 
+                       request.user.is_staff)
             elif hasattr(obj, 'owner'):
                 # For Farm objects
                 return (obj.is_public or 
@@ -45,6 +50,9 @@ class IsFarmOwnerOrReadOnly(permissions.BasePermission):
         if hasattr(obj, 'farm'):
             # For related objects (Crop, Livestock, etc.)
             return obj.farm.owner == request.user or request.user.is_staff
+        elif hasattr(obj, 'field'):
+            # For Field-related objects (SatelliteImagery, etc.)
+            return obj.field.farm.owner == request.user or request.user.is_staff
         elif hasattr(obj, 'owner'):
             # For Farm objects
             return obj.owner == request.user or request.user.is_staff

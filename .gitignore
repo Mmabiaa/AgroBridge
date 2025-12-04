@@ -26,7 +26,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.kiro/*
-.kiro
-kiro
-kiro/*

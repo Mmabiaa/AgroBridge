@@ -3,7 +3,7 @@ Filters for farm management models
 """
 import django_filters
 from django.db.models import Q
-from .models import Farm, Crop, Livestock, FarmActivity, Equipment
+from .models import Farm, Field, Crop, Livestock, FarmActivity, Equipment, SatelliteImagery
 
 
 class FarmFilter(django_filters.FilterSet):
@@ -26,10 +26,68 @@ class FarmFilter(django_filters.FilterSet):
         ]
 
 
+class FieldFilter(django_filters.FilterSet):
+    """Filter for Field model"""
+    
+    farm = django_filters.UUIDFilter(field_name='farm__id')
+    soil_type = django_filters.ChoiceFilter(choices=Field.SOIL_TYPE_CHOICES)
+    irrigation_type = django_filters.ChoiceFilter(choices=Field.IRRIGATION_TYPE_CHOICES)
+    area_min = django_filters.NumberFilter(field_name='area_hectares', lookup_expr='gte')
+    area_max = django_filters.NumberFilter(field_name='area_hectares', lookup_expr='lte')
+    ph_min = django_filters.NumberFilter(field_name='soil_ph', lookup_expr='gte')
+    ph_max = django_filters.NumberFilter(field_name='soil_ph', lookup_expr='lte')
+    elevation_min = django_filters.NumberFilter(field_name='elevation_meters', lookup_expr='gte')
+    elevation_max = django_filters.NumberFilter(field_name='elevation_meters', lookup_expr='lte')
+    has_drainage = django_filters.BooleanFilter()
+    has_fencing = django_filters.BooleanFilter()
+    is_active = django_filters.BooleanFilter()
+    
+    class Meta:
+        model = Field
+        fields = [
+            'farm', 'soil_type', 'irrigation_type', 'area_min', 'area_max',
+            'ph_min', 'ph_max', 'elevation_min', 'elevation_max',
+            'has_drainage', 'has_fencing', 'is_active'
+        ]
+
+
+class SatelliteImageryFilter(django_filters.FilterSet):
+    """Filter for SatelliteImagery model"""
+    
+    field = django_filters.UUIDFilter(field_name='field__id')
+    farm = django_filters.UUIDFilter(field_name='field__farm__id')
+    satellite_name = django_filters.ChoiceFilter(choices=SatelliteImagery.SATELLITE_CHOICES)
+    imagery_type = django_filters.ChoiceFilter(choices=SatelliteImagery.IMAGERY_TYPE_CHOICES)
+    
+    # Date filters
+    acquired_after = django_filters.DateTimeFilter(field_name='acquisition_date', lookup_expr='gte')
+    acquired_before = django_filters.DateTimeFilter(field_name='acquisition_date', lookup_expr='lte')
+    
+    # Quality filters
+    cloud_coverage_max = django_filters.NumberFilter(field_name='cloud_coverage_percentage', lookup_expr='lte')
+    resolution_max = django_filters.NumberFilter(field_name='resolution_meters', lookup_expr='lte')
+    
+    # Health filters
+    health_score_min = django_filters.NumberFilter(field_name='crop_health_score', lookup_expr='gte')
+    health_score_max = django_filters.NumberFilter(field_name='crop_health_score', lookup_expr='lte')
+    
+    # Processing status
+    is_processed = django_filters.BooleanFilter()
+    
+    class Meta:
+        model = SatelliteImagery
+        fields = [
+            'field', 'farm', 'satellite_name', 'imagery_type',
+            'acquired_after', 'acquired_before', 'cloud_coverage_max',
+            'resolution_max', 'health_score_min', 'health_score_max', 'is_processed'
+        ]
+
+
 class CropFilter(django_filters.FilterSet):
     """Filter for Crop model"""
     
     farm = django_filters.UUIDFilter(field_name='farm__id')
+    field = django_filters.UUIDFilter(field_name='field__id')
     status = django_filters.ChoiceFilter(choices=Crop.STATUS_CHOICES)
     season = django_filters.ChoiceFilter(choices=Crop.SEASON_CHOICES)
     planted_after = django_filters.DateFilter(field_name='planting_date', lookup_expr='gte')
@@ -46,7 +104,7 @@ class CropFilter(django_filters.FilterSet):
     class Meta:
         model = Crop
         fields = [
-            'farm', 'status', 'season', 'planted_after', 'planted_before',
+            'farm', 'field', 'status', 'season', 'planted_after', 'planted_before',
             'harvest_after', 'harvest_before', 'area_min', 'area_max',
             'ready_for_harvest', 'overdue_harvest'
         ]

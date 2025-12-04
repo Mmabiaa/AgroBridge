@@ -2,7 +2,7 @@
 Farm management API views
 """
 from rest_framework import viewsets, status, filters, serializers
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
@@ -11,13 +11,13 @@ from django.utils import timezone
 from datetime import timedelta
 import logging
 
-from .models import Farm, Crop, Livestock, FarmActivity, Equipment
+from .models import Farm, Field, Crop, Livestock, FarmActivity, Equipment, SatelliteImagery
 from .serializers import (
-    FarmSerializer, CropSerializer, LivestockSerializer, 
-    FarmActivitySerializer, EquipmentSerializer, FarmSummarySerializer,
-    CropSummarySerializer, FarmAnalyticsSerializer
+    FarmSerializer, FieldSerializer, CropSerializer, LivestockSerializer, 
+    FarmActivitySerializer, EquipmentSerializer, SatelliteImagerySerializer,
+    FarmSummarySerializer, CropSummarySerializer, FarmAnalyticsSerializer
 )
-from .filters import FarmFilter, CropFilter, LivestockFilter, FarmActivityFilter, EquipmentFilter
+from .filters import FarmFilter, FieldFilter, CropFilter, LivestockFilter, FarmActivityFilter, EquipmentFilter, SatelliteImageryFilter
 from .permissions import IsFarmOwnerOrReadOnly
 from .analytics import FarmAnalytics, FarmPerformanceMonitor
 
@@ -480,6 +480,242 @@ class EquipmentViewSet(viewsets.ModelViewSet):
         logger.info(f"Maintenance recorded for equipment {equipment.name}")
         
         return Response(EquipmentSerializer(equipment).data)
+
+
+class FieldViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing farm fields
+    """
+    serializer_class = FieldSerializer
+    permission_classes = [IsAuthenticated, IsFarmOwnerOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = FieldFilter
+    search_fields = ['name', 'description', 'soil_type']
+    ordering_fields = ['name', 'area_hectares', 'created_at']
+    ordering = ['name']
+    
+    def get_queryset(self):
+        """Filter fields based on user's farms"""
+        user = self.request.user
+        if user.is_staff:
+            return Field.objects.all()
+        return Field.objects.filter(
+            farm__owner=user
+        ).select_related('farm')
+    
+    def perform_create(self, serializer):
+        """Ensure field is created for user's farm"""
+        farm_id = self.request.data.get('farm')
+        if farm_id:
+            try:
+                farm = Farm.objects.get(id=farm_id, owner=self.request.user)
+                serializer.save(farm=farm)
+            except Farm.DoesNotExist:
+                raise serializers.ValidationError("Invalid farm selected")
+        else:
+            raise serializers.ValidationError("Farm is required")
+    
+    @action(detail=True, methods=['get'])
+    def crops(self, request, pk=None):
+        """Get all crops in this field"""
+        field = self.get_object()
+        crops = field.crops.all()
+        serializer = CropSerializer(crops, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def satellite_images(self, request, pk=None):
+        """Get satellite imagery for this field"""
+        field = self.get_object()
+        images = field.satellite_images.all()
+        serializer = SatelliteImagerySerializer(images, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'])
+    def validate_boundary(self, request, pk=None):
+        """Validate field boundary GeoJSON"""
+        field = self.get_object()
+        is_valid, message = field.validate_geojson()
+        
+        return Response({
+            'is_valid': is_valid,
+            'message': message,
+            'center_coordinates': field.center_coordinates,
+            'perimeter_meters': field.perimeter_meters
+        })
+
+
+class SatelliteImageryViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing satellite imagery
+    """
+    serializer_class = SatelliteImagerySerializer
+    permission_classes = [IsAuthenticated, IsFarmOwnerOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = SatelliteImageryFilter
+    search_fields = ['satellite_name', 'imagery_type']
+    ordering_fields = ['acquisition_date', 'cloud_coverage_percentage', 'crop_health_score']
+    ordering = ['-acquisition_date']
+    
+    def get_queryset(self):
+        """Filter satellite imagery based on user's fields"""
+        user = self.request.user
+        if user.is_staff:
+            return SatelliteImagery.objects.all()
+        return SatelliteImagery.objects.filter(
+            field__farm__owner=user
+        ).select_related('field', 'field__farm')
+    
+    def perform_create(self, serializer):
+        """Ensure satellite imagery is created for user's field"""
+        field_id = self.request.data.get('field')
+        if field_id:
+            try:
+                field = Field.objects.get(id=field_id, farm__owner=self.request.user)
+                serializer.save(field=field)
+            except Field.DoesNotExist:
+                raise serializers.ValidationError("Invalid field selected")
+        else:
+            raise serializers.ValidationError("Field is required")
+    
+    @action(detail=True, methods=['post'])
+    def process_imagery(self, request, pk=None):
+        """Process satellite imagery to calculate vegetation indices"""
+        imagery = self.get_object()
+        
+        # Get band data from request
+        red_band = request.data.get('red_band')
+        nir_band = request.data.get('nir_band')
+        blue_band = request.data.get('blue_band')
+        
+        if red_band is not None and nir_band is not None:
+            indices = imagery.calculate_vegetation_indices(
+                red_band=float(red_band),
+                nir_band=float(nir_band),
+                blue_band=float(blue_band) if blue_band is not None else None
+            )
+            
+            imagery.is_processed = True
+            imagery.save()
+            
+            logger.info(f"Processed satellite imagery {imagery.id}: {indices}")
+            
+            return Response({
+                'message': 'Imagery processed successfully',
+                'vegetation_indices': indices
+            })
+        else:
+            return Response(
+                {'error': 'Red and NIR band data are required'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
+    @action(detail=True, methods=['post'])
+    def analyze_crop_health(self, request, pk=None):
+        """Analyze crop health from satellite imagery"""
+        imagery = self.get_object()
+        
+        # Simple crop health analysis based on NDVI
+        ndvi = imagery.ndvi_average
+        if ndvi is not None:
+            if ndvi > 0.7:
+                health_score = 90 + (ndvi - 0.7) * 33.33  # 90-100%
+                stress_level = 'low'
+            elif ndvi > 0.5:
+                health_score = 70 + (ndvi - 0.5) * 100  # 70-90%
+                stress_level = 'moderate'
+            elif ndvi > 0.3:
+                health_score = 40 + (ndvi - 0.3) * 150  # 40-70%
+                stress_level = 'high'
+            else:
+                health_score = ndvi * 133.33  # 0-40%
+                stress_level = 'severe'
+            
+            imagery.crop_health_score = min(100, max(0, health_score))
+            
+            # Update stress indicators
+            stress_indicators = []
+            if stress_level in ['high', 'severe']:
+                stress_indicators.append('low_vegetation_vigor')
+            if imagery.cloud_coverage_percentage > 30:
+                stress_indicators.append('high_cloud_coverage')
+            
+            imagery.stress_indicators = stress_indicators
+            imagery.save()
+            
+            return Response({
+                'crop_health_score': imagery.crop_health_score,
+                'stress_level': stress_level,
+                'stress_indicators': stress_indicators,
+                'ndvi_value': ndvi
+            })
+        else:
+            return Response(
+                {'error': 'NDVI data not available. Process imagery first.'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
+    @action(detail=False, methods=['get'])
+    def latest_by_field(self, request):
+        """Get latest satellite imagery for each field"""
+        user_fields = Field.objects.filter(farm__owner=request.user)
+        latest_images = []
+        
+        for field in user_fields:
+            latest_image = field.satellite_images.first()  # Already ordered by -acquisition_date
+            if latest_image:
+                latest_images.append(latest_image)
+        
+        serializer = self.get_serializer(latest_images, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
+def health_check(request):
+    """
+    Health check endpoint for farm service monitoring
+    """
+    from django.db import connection
+    from django.core.cache import cache
+    
+    health_status = {
+        'service': 'farm-service',
+        'status': 'healthy',
+        'timestamp': timezone.now().isoformat(),
+        'version': '1.0.0',
+        'checks': {}
+    }
+    
+    # Database check
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+        health_status['checks']['database'] = 'healthy'
+    except Exception as e:
+        health_status['checks']['database'] = f'unhealthy: {str(e)}'
+        health_status['status'] = 'unhealthy'
+    
+    # Cache check
+    try:
+        cache.set('health_check', 'test', 30)
+        cache.get('health_check')
+        health_status['checks']['cache'] = 'healthy'
+    except Exception as e:
+        health_status['checks']['cache'] = f'unhealthy: {str(e)}'
+        health_status['status'] = 'degraded'
+    
+    # Model checks
+    try:
+        Farm.objects.count()
+        Field.objects.count()
+        Crop.objects.count()
+        health_status['checks']['models'] = 'healthy'
+    except Exception as e:
+        health_status['checks']['models'] = f'unhealthy: {str(e)}'
+        health_status['status'] = 'unhealthy'
+    
+    status_code = status.HTTP_200_OK if health_status['status'] == 'healthy' else status.HTTP_503_SERVICE_UNAVAILABLE
+    return Response(health_status, status=status_code)
     
     @action(detail=False, methods=['get'])
     def needs_maintenance(self, request):

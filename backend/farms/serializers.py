@@ -3,7 +3,7 @@ Serializers for farm management models
 """
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Farm, Crop, Livestock, FarmActivity, Equipment
+from .models import Farm, Field, Crop, Livestock, FarmActivity, Equipment, SatelliteImagery
 
 User = get_user_model()
 
@@ -50,9 +50,92 @@ class FarmSerializer(serializers.ModelSerializer):
         return value
 
 
+class FieldSerializer(serializers.ModelSerializer):
+    """Serializer for Field model"""
+    farm_name = serializers.CharField(source='farm.name', read_only=True)
+    center_coordinates = serializers.ReadOnlyField()
+    perimeter_meters = serializers.ReadOnlyField()
+    total_crops = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Field
+        fields = [
+            'id', 'name', 'description', 'boundary_geojson', 'area_hectares',
+            'soil_type', 'soil_ph', 'elevation_meters', 'slope_percentage',
+            'irrigation_type', 'has_drainage', 'has_fencing', 'is_active',
+            'last_cultivation_date', 'notes', 'created_at', 'updated_at',
+            'farm_name', 'center_coordinates', 'perimeter_meters', 'total_crops'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_total_crops(self, obj):
+        """Get total number of active crops in this field"""
+        return obj.crops.filter(status__in=['planted', 'growing', 'flowering', 'fruiting']).count()
+    
+    def validate_boundary_geojson(self, value):
+        """Validate GeoJSON structure"""
+        if not isinstance(value, dict):
+            raise serializers.ValidationError("Boundary must be a valid GeoJSON object")
+        
+        if value.get('type') != 'Polygon':
+            raise serializers.ValidationError("GeoJSON must be a Polygon")
+        
+        coordinates = value.get('coordinates', [])
+        if not coordinates or len(coordinates) < 1:
+            raise serializers.ValidationError("Polygon must have coordinates")
+        
+        # Check if first ring has at least 4 points
+        first_ring = coordinates[0]
+        if len(first_ring) < 4:
+            raise serializers.ValidationError("Polygon must have at least 4 coordinate points")
+        
+        # Check if polygon is closed
+        if first_ring[0] != first_ring[-1]:
+            raise serializers.ValidationError("Polygon must be closed")
+        
+        return value
+    
+    def validate_area_hectares(self, value):
+        """Validate field area"""
+        if value <= 0:
+            raise serializers.ValidationError("Field area must be greater than 0")
+        return value
+
+
+class SatelliteImagerySerializer(serializers.ModelSerializer):
+    """Serializer for SatelliteImagery model"""
+    field_name = serializers.CharField(source='field.name', read_only=True)
+    ndvi_average = serializers.ReadOnlyField()
+    evi_average = serializers.ReadOnlyField()
+    
+    class Meta:
+        model = SatelliteImagery
+        fields = [
+            'id', 'satellite_name', 'imagery_type', 'acquisition_date',
+            'cloud_coverage_percentage', 'resolution_meters', 'image_url',
+            'thumbnail_url', 'vegetation_indices', 'crop_health_score',
+            'stress_indicators', 'is_processed', 'processing_notes',
+            'created_at', 'updated_at', 'field_name', 'ndvi_average', 'evi_average'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def validate_vegetation_indices(self, value):
+        """Validate vegetation indices data"""
+        if not isinstance(value, dict):
+            raise serializers.ValidationError("Vegetation indices must be a valid JSON object")
+        return value
+    
+    def validate_stress_indicators(self, value):
+        """Validate stress indicators data"""
+        if not isinstance(value, list):
+            raise serializers.ValidationError("Stress indicators must be a list")
+        return value
+
+
 class CropSerializer(serializers.ModelSerializer):
     """Serializer for Crop model"""
     farm_name = serializers.CharField(source='farm.name', read_only=True)
+    field_name = serializers.CharField(source='field.name', read_only=True)
     days_to_harvest = serializers.ReadOnlyField()
     growth_stage_percentage = serializers.ReadOnlyField()
     yield_efficiency = serializers.ReadOnlyField()
@@ -60,11 +143,11 @@ class CropSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crop
         fields = [
-            'id', 'name', 'variety', 'scientific_name', 'planting_date',
+            'id', 'field', 'name', 'variety', 'scientific_name', 'planting_date',
             'expected_harvest_date', 'actual_harvest_date', 'area_hectares',
             'plants_per_hectare', 'status', 'season', 'expected_yield_kg',
             'actual_yield_kg', 'notes', 'created_at', 'updated_at',
-            'farm_name', 'days_to_harvest', 'growth_stage_percentage', 'yield_efficiency'
+            'farm_name', 'field_name', 'days_to_harvest', 'growth_stage_percentage', 'yield_efficiency'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
     

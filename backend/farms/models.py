@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from decimal import Decimal
 import uuid
+import json
 
 User = get_user_model()
 
@@ -89,6 +90,271 @@ class Farm(models.Model):
         return (timezone.now().date() - self.established_date).days // 365
 
 
+class Field(models.Model):
+    """
+    Field model representing individual fields within a farm with GeoJSON boundaries
+    """
+    SOIL_TYPE_CHOICES = [
+        ('clay', 'Clay'),
+        ('sandy', 'Sandy'),
+        ('loam', 'Loam'),
+        ('silt', 'Silt'),
+        ('peat', 'Peat'),
+        ('chalk', 'Chalk'),
+        ('mixed', 'Mixed'),
+    ]
+    
+    IRRIGATION_TYPE_CHOICES = [
+        ('none', 'No Irrigation'),
+        ('drip', 'Drip Irrigation'),
+        ('sprinkler', 'Sprinkler'),
+        ('flood', 'Flood Irrigation'),
+        ('furrow', 'Furrow Irrigation'),
+        ('center_pivot', 'Center Pivot'),
+        ('manual', 'Manual Watering'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    farm = models.ForeignKey(Farm, on_delete=models.CASCADE, related_name='fields')
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    
+    # GeoJSON boundary data
+    boundary_geojson = models.JSONField(
+        help_text="GeoJSON polygon defining field boundaries"
+    )
+    
+    # Field characteristics
+    area_hectares = models.DecimalField(
+        max_digits=10, 
+        decimal_places=4,
+        validators=[MinValueValidator(Decimal('0.0001'))]
+    )
+    soil_type = models.CharField(max_length=20, choices=SOIL_TYPE_CHOICES, blank=True)
+    soil_ph = models.DecimalField(
+        max_digits=4, decimal_places=2,
+        null=True, blank=True,
+        validators=[MinValueValidator(Decimal('0')), MaxValueValidator(Decimal('14'))]
+    )
+    elevation_meters = models.DecimalField(
+        max_digits=8, decimal_places=2,
+        null=True, blank=True
+    )
+    slope_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2,
+        null=True, blank=True,
+        validators=[MinValueValidator(Decimal('0')), MaxValueValidator(Decimal('100'))]
+    )
+    
+    # Infrastructure
+    irrigation_type = models.CharField(
+        max_length=20, 
+        choices=IRRIGATION_TYPE_CHOICES, 
+        default='none'
+    )
+    has_drainage = models.BooleanField(default=False)
+    has_fencing = models.BooleanField(default=False)
+    
+    # Status
+    is_active = models.BooleanField(default=True)
+    last_cultivation_date = models.DateField(null=True, blank=True)
+    
+    # Additional data
+    notes = models.TextField(blank=True)
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['farm']),
+            models.Index(fields=['is_active']),
+            models.Index(fields=['soil_type']),
+            models.Index(fields=['irrigation_type']),
+        ]
+    
+    def __str__(self):
+        return f"{self.name} - {self.farm.name}"
+    
+    @property
+    def center_coordinates(self):
+        """Calculate center coordinates from GeoJSON boundary"""
+        try:
+            if self.boundary_geojson and 'coordinates' in self.boundary_geojson:
+                coords = self.boundary_geojson['coordinates'][0]  # First ring of polygon
+                if coords:
+                    # Calculate centroid
+                    x_coords = [coord[0] for coord in coords]
+                    y_coords = [coord[1] for coord in coords]
+                    center_x = sum(x_coords) / len(x_coords)
+                    center_y = sum(y_coords) / len(y_coords)
+                    return {'latitude': center_y, 'longitude': center_x}
+        except (KeyError, IndexError, TypeError):
+            pass
+        return None
+    
+    @property
+    def perimeter_meters(self):
+        """Calculate field perimeter from GeoJSON boundary"""
+        try:
+            if self.boundary_geojson and 'coordinates' in self.boundary_geojson:
+                coords = self.boundary_geojson['coordinates'][0]
+                if len(coords) > 2:
+                    # Simple perimeter calculation (not geodesic)
+                    perimeter = 0
+                    for i in range(len(coords) - 1):
+                        x1, y1 = coords[i]
+                        x2, y2 = coords[i + 1]
+                        # Approximate distance (not accurate for large distances)
+                        distance = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+                        perimeter += distance * 111000  # Rough conversion to meters
+                    return perimeter
+        except (KeyError, IndexError, TypeError):
+            pass
+        return None
+    
+    def validate_geojson(self):
+        """Validate GeoJSON structure"""
+        if not self.boundary_geojson:
+            return False, "GeoJSON boundary is required"
+        
+        try:
+            geojson = self.boundary_geojson
+            if geojson.get('type') != 'Polygon':
+                return False, "GeoJSON must be a Polygon"
+            
+            coordinates = geojson.get('coordinates', [])
+            if not coordinates or len(coordinates) < 1:
+                return False, "Polygon must have coordinates"
+            
+            # Check if first ring has at least 4 points (closed polygon)
+            first_ring = coordinates[0]
+            if len(first_ring) < 4:
+                return False, "Polygon must have at least 4 coordinate points"
+            
+            # Check if polygon is closed
+            if first_ring[0] != first_ring[-1]:
+                return False, "Polygon must be closed (first and last points must be the same)"
+            
+            return True, "Valid GeoJSON"
+        
+        except (KeyError, TypeError, IndexError):
+            return False, "Invalid GeoJSON structure"
+
+
+class SatelliteImagery(models.Model):
+    """
+    Model for storing satellite imagery data and metadata
+    """
+    IMAGERY_TYPE_CHOICES = [
+        ('optical', 'Optical'),
+        ('radar', 'Radar'),
+        ('multispectral', 'Multispectral'),
+        ('hyperspectral', 'Hyperspectral'),
+        ('thermal', 'Thermal'),
+    ]
+    
+    SATELLITE_CHOICES = [
+        ('sentinel2', 'Sentinel-2'),
+        ('landsat8', 'Landsat 8'),
+        ('landsat9', 'Landsat 9'),
+        ('modis', 'MODIS'),
+        ('planet', 'Planet'),
+        ('worldview', 'WorldView'),
+        ('other', 'Other'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    field = models.ForeignKey(Field, on_delete=models.CASCADE, related_name='satellite_images')
+    
+    # Image metadata
+    satellite_name = models.CharField(max_length=20, choices=SATELLITE_CHOICES)
+    imagery_type = models.CharField(max_length=20, choices=IMAGERY_TYPE_CHOICES)
+    acquisition_date = models.DateTimeField()
+    cloud_coverage_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2,
+        validators=[MinValueValidator(Decimal('0')), MaxValueValidator(Decimal('100'))]
+    )
+    resolution_meters = models.DecimalField(
+        max_digits=8, decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.1'))]
+    )
+    
+    # Image data
+    image_url = models.URLField(blank=True, help_text="URL to the satellite image")
+    thumbnail_url = models.URLField(blank=True, help_text="URL to image thumbnail")
+    
+    # Processed data
+    vegetation_indices = models.JSONField(
+        default=dict,
+        help_text="Calculated vegetation indices (NDVI, EVI, etc.)"
+    )
+    
+    # Analysis results
+    crop_health_score = models.DecimalField(
+        max_digits=5, decimal_places=2,
+        null=True, blank=True,
+        validators=[MinValueValidator(Decimal('0')), MaxValueValidator(Decimal('100'))]
+    )
+    stress_indicators = models.JSONField(
+        default=list,
+        help_text="List of detected stress indicators"
+    )
+    
+    # Processing status
+    is_processed = models.BooleanField(default=False)
+    processing_notes = models.TextField(blank=True)
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-acquisition_date']
+        indexes = [
+            models.Index(fields=['field']),
+            models.Index(fields=['satellite_name']),
+            models.Index(fields=['acquisition_date']),
+            models.Index(fields=['is_processed']),
+        ]
+    
+    def __str__(self):
+        return f"{self.satellite_name} - {self.field.name} - {self.acquisition_date.date()}"
+    
+    @property
+    def ndvi_average(self):
+        """Get average NDVI value"""
+        return self.vegetation_indices.get('ndvi_average')
+    
+    @property
+    def evi_average(self):
+        """Get average EVI value"""
+        return self.vegetation_indices.get('evi_average')
+    
+    def calculate_vegetation_indices(self, red_band=None, nir_band=None, blue_band=None):
+        """Calculate vegetation indices from band data"""
+        indices = {}
+        
+        if red_band is not None and nir_band is not None:
+            # NDVI calculation
+            if (nir_band + red_band) != 0:
+                ndvi = (nir_band - red_band) / (nir_band + red_band)
+                indices['ndvi_average'] = float(ndvi)
+        
+        if red_band is not None and nir_band is not None and blue_band is not None:
+            # EVI calculation (simplified)
+            if (nir_band + 6 * red_band - 7.5 * blue_band + 1) != 0:
+                evi = 2.5 * (nir_band - red_band) / (nir_band + 6 * red_band - 7.5 * blue_band + 1)
+                indices['evi_average'] = float(evi)
+        
+        self.vegetation_indices.update(indices)
+        self.save()
+        
+        return indices
+
+
 class Crop(models.Model):
     """
     Crop model for tracking individual crops on a farm
@@ -112,6 +378,14 @@ class Crop(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     farm = models.ForeignKey(Farm, on_delete=models.CASCADE, related_name='crops')
+    field = models.ForeignKey(
+        Field, 
+        on_delete=models.CASCADE, 
+        related_name='crops',
+        null=True, 
+        blank=True,
+        help_text="Specific field where crop is planted"
+    )
     name = models.CharField(max_length=100)
     variety = models.CharField(max_length=100, blank=True)
     scientific_name = models.CharField(max_length=150, blank=True)

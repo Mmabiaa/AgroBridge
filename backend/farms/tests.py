@@ -8,7 +8,7 @@ from decimal import Decimal
 from datetime import date, timedelta
 import uuid
 
-from .models import Farm, Crop, Livestock, FarmActivity, Equipment
+from .models import Farm, Field, Crop, Livestock, FarmActivity, Equipment, SatelliteImagery
 from .analytics import FarmAnalytics, FarmPerformanceMonitor
 
 User = get_user_model()
@@ -514,3 +514,345 @@ class FarmPerformanceMonitorTest(TestCase):
         self.assertIsNotNone(metrics['yield_efficiency'])
         self.assertGreaterEqual(metrics['yield_efficiency'], 0)
         self.assertEqual(metrics['total_farm_area'], Decimal('10.00'))
+
+
+class FieldModelTest(TestCase):
+    """Test Field model functionality"""
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='farmer1',
+            email='farmer1@test.com',
+            password='testpass123'
+        )
+        
+        self.farm = Farm.objects.create(
+            owner=self.user,
+            name='Test Farm',
+            location={},
+            size_hectares=Decimal('10.00'),
+            farm_type='crop',
+            established_date=date(2020, 1, 1)
+        )
+        
+        self.field_data = {
+            'name': 'North Field',
+            'description': 'Northern section of the farm',
+            'boundary_geojson': {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-0.1870, 5.6037],
+                    [-0.1860, 5.6037],
+                    [-0.1860, 5.6047],
+                    [-0.1870, 5.6047],
+                    [-0.1870, 5.6037]
+                ]]
+            },
+            'area_hectares': Decimal('2.50'),
+            'soil_type': 'loam',
+            'irrigation_type': 'drip'
+        }
+    
+    def test_create_field(self):
+        """Test field creation"""
+        field = Field.objects.create(farm=self.farm, **self.field_data)
+        
+        self.assertEqual(field.name, 'North Field')
+        self.assertEqual(field.farm, self.farm)
+        self.assertEqual(field.area_hectares, Decimal('2.50'))
+        self.assertEqual(field.soil_type, 'loam')
+    
+    def test_field_str_representation(self):
+        """Test field string representation"""
+        field = Field.objects.create(farm=self.farm, **self.field_data)
+        self.assertEqual(str(field), 'North Field - Test Farm')
+    
+    def test_geojson_validation(self):
+        """Test GeoJSON validation"""
+        field = Field.objects.create(farm=self.farm, **self.field_data)
+        is_valid, message = field.validate_geojson()
+        
+        self.assertTrue(is_valid)
+        self.assertEqual(message, "Valid GeoJSON")
+    
+    def test_center_coordinates_calculation(self):
+        """Test center coordinates calculation"""
+        field = Field.objects.create(farm=self.farm, **self.field_data)
+        center = field.center_coordinates
+        
+        self.assertIsNotNone(center)
+        self.assertIn('latitude', center)
+        self.assertIn('longitude', center)
+    
+    def test_invalid_geojson(self):
+        """Test invalid GeoJSON validation"""
+        invalid_data = self.field_data.copy()
+        invalid_data['boundary_geojson'] = {
+            "type": "Point",  # Should be Polygon
+            "coordinates": [-0.1870, 5.6037]
+        }
+        
+        field = Field(farm=self.farm, **invalid_data)
+        is_valid, message = field.validate_geojson()
+        
+        self.assertFalse(is_valid)
+        self.assertIn("Polygon", message)
+
+
+class SatelliteImageryModelTest(TestCase):
+    """Test SatelliteImagery model functionality"""
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='farmer1',
+            email='farmer1@test.com',
+            password='testpass123'
+        )
+        
+        self.farm = Farm.objects.create(
+            owner=self.user,
+            name='Test Farm',
+            location={},
+            size_hectares=Decimal('10.00'),
+            farm_type='crop',
+            established_date=date(2020, 1, 1)
+        )
+        
+        self.field = Field.objects.create(
+            farm=self.farm,
+            name='Test Field',
+            boundary_geojson={
+                "type": "Polygon",
+                "coordinates": [[[-1, 1], [1, 1], [1, -1], [-1, -1], [-1, 1]]]
+            },
+            area_hectares=Decimal('2.00')
+        )
+        
+        self.imagery_data = {
+            'satellite_name': 'sentinel2',
+            'imagery_type': 'optical',
+            'acquisition_date': timezone.now(),
+            'cloud_coverage_percentage': Decimal('15.5'),
+            'resolution_meters': Decimal('10.0'),
+            'image_url': 'https://example.com/image.tif'
+        }
+    
+    def test_create_satellite_imagery(self):
+        """Test satellite imagery creation"""
+        imagery = SatelliteImagery.objects.create(field=self.field, **self.imagery_data)
+        
+        self.assertEqual(imagery.field, self.field)
+        self.assertEqual(imagery.satellite_name, 'sentinel2')
+        self.assertEqual(imagery.imagery_type, 'optical')
+        self.assertFalse(imagery.is_processed)
+    
+    def test_imagery_str_representation(self):
+        """Test imagery string representation"""
+        imagery = SatelliteImagery.objects.create(field=self.field, **self.imagery_data)
+        expected_str = f"sentinel2 - Test Field - {imagery.acquisition_date.date()}"
+        self.assertEqual(str(imagery), expected_str)
+    
+    def test_vegetation_indices_calculation(self):
+        """Test vegetation indices calculation"""
+        imagery = SatelliteImagery.objects.create(field=self.field, **self.imagery_data)
+        
+        # Calculate indices
+        indices = imagery.calculate_vegetation_indices(
+            red_band=0.3,
+            nir_band=0.7,
+            blue_band=0.2
+        )
+        
+        self.assertIn('ndvi_average', indices)
+        self.assertIn('evi_average', indices)
+        
+        # NDVI should be (0.7 - 0.3) / (0.7 + 0.3) = 0.4
+        self.assertAlmostEqual(indices['ndvi_average'], 0.4, places=2)
+        
+        # Verify data was saved
+        imagery.refresh_from_db()
+        self.assertAlmostEqual(imagery.ndvi_average, 0.4, places=2)
+    
+    def test_ndvi_property(self):
+        """Test NDVI property access"""
+        imagery = SatelliteImagery.objects.create(
+            field=self.field,
+            vegetation_indices={'ndvi_average': 0.75},
+            **self.imagery_data
+        )
+        
+        self.assertEqual(imagery.ndvi_average, 0.75)
+
+
+class FieldAPITest(APITestCase):
+    """Test Field API endpoints"""
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='farmer1',
+            email='farmer1@test.com',
+            password='testpass123'
+        )
+        
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+        
+        self.farm = Farm.objects.create(
+            owner=self.user,
+            name='Test Farm',
+            location={},
+            size_hectares=Decimal('10.00'),
+            farm_type='crop',
+            established_date=date(2020, 1, 1)
+        )
+        
+        self.field_data = {
+            'farm': str(self.farm.id),
+            'name': 'North Field',
+            'boundary_geojson': {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-0.1870, 5.6037],
+                    [-0.1860, 5.6037],
+                    [-0.1860, 5.6047],
+                    [-0.1870, 5.6047],
+                    [-0.1870, 5.6037]
+                ]]
+            },
+            'area_hectares': '2.50',
+            'soil_type': 'loam',
+            'irrigation_type': 'drip'
+        }
+    
+    def test_create_field(self):
+        """Test field creation via API"""
+        url = reverse('field-list')
+        response = self.client.post(url, self.field_data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Field.objects.count(), 1)
+        
+        field = Field.objects.first()
+        self.assertEqual(field.farm, self.farm)
+        self.assertEqual(field.name, 'North Field')
+    
+    def test_validate_boundary(self):
+        """Test boundary validation endpoint"""
+        field = Field.objects.create(
+            farm=self.farm,
+            name='Test Field',
+            boundary_geojson=self.field_data['boundary_geojson'],
+            area_hectares=Decimal('2.50')
+        )
+        
+        url = reverse('field-validate-boundary', kwargs={'pk': field.id})
+        response = self.client.post(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['is_valid'])
+        self.assertIn('center_coordinates', response.data)
+
+
+class SatelliteImageryAPITest(APITestCase):
+    """Test SatelliteImagery API endpoints"""
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='farmer1',
+            email='farmer1@test.com',
+            password='testpass123'
+        )
+        
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+        
+        self.farm = Farm.objects.create(
+            owner=self.user,
+            name='Test Farm',
+            location={},
+            size_hectares=Decimal('10.00'),
+            farm_type='crop',
+            established_date=date(2020, 1, 1)
+        )
+        
+        self.field = Field.objects.create(
+            farm=self.farm,
+            name='Test Field',
+            boundary_geojson={
+                "type": "Polygon",
+                "coordinates": [[[-1, 1], [1, 1], [1, -1], [-1, -1], [-1, 1]]]
+            },
+            area_hectares=Decimal('2.00')
+        )
+        
+        self.imagery_data = {
+            'field': str(self.field.id),
+            'satellite_name': 'sentinel2',
+            'imagery_type': 'optical',
+            'acquisition_date': timezone.now().isoformat(),
+            'cloud_coverage_percentage': '15.5',
+            'resolution_meters': '10.0',
+            'image_url': 'https://example.com/image.tif'
+        }
+    
+    def test_create_satellite_imagery(self):
+        """Test satellite imagery creation via API"""
+        url = reverse('satelliteimagery-list')
+        response = self.client.post(url, self.imagery_data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(SatelliteImagery.objects.count(), 1)
+        
+        imagery = SatelliteImagery.objects.first()
+        self.assertEqual(imagery.field, self.field)
+        self.assertEqual(imagery.satellite_name, 'sentinel2')
+    
+    def test_process_imagery(self):
+        """Test imagery processing endpoint"""
+        imagery = SatelliteImagery.objects.create(
+            field=self.field,
+            satellite_name='sentinel2',
+            imagery_type='optical',
+            acquisition_date=timezone.now(),
+            cloud_coverage_percentage=Decimal('10.0'),
+            resolution_meters=Decimal('10.0')
+        )
+        
+        url = reverse('satelliteimagery-process-imagery', kwargs={'pk': imagery.id})
+        data = {
+            'red_band': 0.3,
+            'nir_band': 0.7,
+            'blue_band': 0.2
+        }
+        
+        response = self.client.post(url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('vegetation_indices', response.data)
+        
+        # Verify imagery was processed
+        imagery.refresh_from_db()
+        self.assertTrue(imagery.is_processed)
+    
+    def test_analyze_crop_health(self):
+        """Test crop health analysis endpoint"""
+        imagery = SatelliteImagery.objects.create(
+            field=self.field,
+            satellite_name='sentinel2',
+            imagery_type='optical',
+            acquisition_date=timezone.now(),
+            cloud_coverage_percentage=Decimal('10.0'),
+            resolution_meters=Decimal('10.0'),
+            vegetation_indices={'ndvi_average': 0.8}
+        )
+        
+        url = reverse('satelliteimagery-analyze-crop-health', kwargs={'pk': imagery.id})
+        response = self.client.post(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('crop_health_score', response.data)
+        self.assertIn('stress_level', response.data)
+        
+        # Verify health score was calculated
+        imagery.refresh_from_db()
+        self.assertIsNotNone(imagery.crop_health_score)
