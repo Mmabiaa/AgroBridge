@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'marketplace',
     'ai_assistant',
     'crop_detection',
+    'iot_service',
 ]
 
 MIDDLEWARE = [
