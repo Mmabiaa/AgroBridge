@@ -123,18 +123,47 @@ class AIService:
 
     def generate_response(self, message: str, conversation, user) -> Dict:
         """
-        Generate AI response for a user message
+        Generate AI response for a user message with multi-language support
         """
+        # Import language service
+        from .language_service import LanguageService
+        language_service = LanguageService()
+        
+        # Detect language if not specified in conversation
+        conversation_language = getattr(conversation, 'language', 'en')
+        if conversation_language == 'en':
+            # Try to detect language from message
+            detection_result = language_service.detect_language(message)
+            if detection_result['confidence'] > 0.7 and detection_result['supported']:
+                conversation_language = detection_result['language']
+        
         # Build conversation history
         messages = self._build_conversation_history(conversation)
         
-        # Add system prompt for agriculture
+        # Create language-aware system prompt
+        base_prompt = '''You are AgriGPT, an expert agricultural advisor specializing in farming practices, 
+        crop management, pest control, soil health, and sustainable agriculture. Provide practical, 
+        actionable advice based on agricultural best practices. Be concise, helpful, and supportive.'''
+        
+        # Enhance prompt for specific language
+        enhanced_prompt = language_service.enhance_prompt_for_language(
+            base_prompt, 
+            conversation_language
+        )
+        
         system_prompt = {
             'role': 'system',
-            'content': '''You are AgriGPT, an expert agricultural advisor specializing in farming practices, 
-            crop management, pest control, soil health, and sustainable agriculture. Provide practical, 
-            actionable advice based on agricultural best practices. Be concise, helpful, and supportive.'''
+            'content': enhanced_prompt
         }
+        
+        # Add farm context if available
+        farm_context = self._get_farm_context(user)
+        if farm_context:
+            context_prompt = {
+                'role': 'system',
+                'content': f"User's farm context: {farm_context}"
+            }
+            messages.insert(0, context_prompt)
         
         # Add user message
         messages.insert(0, system_prompt)
@@ -151,7 +180,12 @@ class AIService:
             'tokens_used': ai_response['tokens_used'],
             'confidence_score': ai_response['confidence_score'],
             'model_used': self.model_name,
-            'metadata': ai_response['metadata']
+            'language': conversation_language,
+            'metadata': {
+                **ai_response['metadata'],
+                'language_detected': conversation_language,
+                'farm_context_used': bool(farm_context)
+            }
         }
 
     def _build_conversation_history(self, conversation) -> List[Dict]:
@@ -238,6 +272,53 @@ class AIService:
     # -------------------------------------------------------------------------
     # 🔄 Fallback Response
     # -------------------------------------------------------------------------
+    def _get_farm_context(self, user) -> str:
+        """
+        Get user's farm context for personalized recommendations
+        """
+        try:
+            # Import here to avoid circular imports
+            from farms.models import Farm, Crop
+            
+            context_parts = []
+            
+            # Get user's farms
+            farms = Farm.objects.filter(owner=user)[:3]  # Limit to 3 farms
+            
+            if farms.exists():
+                context_parts.append("User's farms:")
+                for farm in farms:
+                    farm_info = f"- {farm.name}: {farm.size_hectares}ha in {farm.location}"
+                    if farm.soil_type:
+                        farm_info += f", soil type: {farm.soil_type}"
+                    context_parts.append(farm_info)
+                
+                # Get current crops
+                current_crops = Crop.objects.filter(
+                    field__farm__in=farms,
+                    status='growing'
+                )[:5]  # Limit to 5 crops
+                
+                if current_crops.exists():
+                    context_parts.append("Current crops:")
+                    for crop in current_crops:
+                        crop_info = f"- {crop.crop_type} planted on {crop.planting_date}"
+                        if crop.expected_harvest_date:
+                            crop_info += f", harvest expected: {crop.expected_harvest_date}"
+                        context_parts.append(crop_info)
+            
+            # Get user location from profile
+            if hasattr(user, 'profile'):
+                location = getattr(user.profile, 'location', None)
+                if location:
+                    context_parts.append(f"Location: {location}")
+            
+            return "\n".join(context_parts) if context_parts else ""
+            
+        except Exception as e:
+            logger.error(f"Failed to get farm context: {str(e)}")
+            return ""
+    
     def _get_agricultural_fallback_response(self, user_message: str) -> Dict:
         """
         Provide fallback responses when OpenAI API fails

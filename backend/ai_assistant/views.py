@@ -550,6 +550,261 @@ class VoiceInteractionViewSet(viewsets.ModelViewSet):
                 {'error': 'Failed to create voice interaction'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+    
+    @action(detail=False, methods=['post'])
+    def transcribe(self, request):
+        """Transcribe audio to text"""
+        try:
+            from .voice_service import VoiceService
+            voice_service = VoiceService()
+            
+            audio_file = request.FILES.get('audio_file')
+            if not audio_file:
+                return Response(
+                    {'error': 'Audio file is required'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            language = request.data.get('language', 'en')
+            
+            result = voice_service.transcribe_audio(audio_file, language)
+            
+            return Response(result, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Audio transcription failed: {str(e)}")
+            return Response(
+                {'error': 'Transcription failed'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['post'])
+    def synthesize(self, request):
+        """Convert text to speech"""
+        try:
+            from .voice_service import VoiceService
+            voice_service = VoiceService()
+            
+            text = request.data.get('text')
+            if not text:
+                return Response(
+                    {'error': 'Text is required'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            language = request.data.get('language', 'en')
+            voice_model = request.data.get('voice_model', 'default')
+            
+            result = voice_service.synthesize_speech(text, language, voice_model)
+            
+            return Response(result, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Speech synthesis failed: {str(e)}")
+            return Response(
+                {'error': 'Speech synthesis failed'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['post'])
+    def process_command(self, request):
+        """Process complete voice command (transcribe + respond + synthesize)"""
+        try:
+            from .voice_service import VoiceService
+            voice_service = VoiceService()
+            
+            audio_file = request.FILES.get('audio_file')
+            if not audio_file:
+                return Response(
+                    {'error': 'Audio file is required'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            conversation_id = request.data.get('conversation_id')
+            conversation = None
+            
+            if conversation_id:
+                try:
+                    conversation = ChatConversation.objects.get(
+                        id=conversation_id, 
+                        user=request.user
+                    )
+                except ChatConversation.DoesNotExist:
+                    return Response(
+                        {'error': 'Conversation not found'}, 
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+            
+            result = voice_service.process_voice_command(
+                audio_file, 
+                request.user, 
+                conversation
+            )
+            
+            return Response(result, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Voice command processing failed: {str(e)}")
+            return Response(
+                {'error': 'Voice command processing failed'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['get'])
+    def supported_languages(self, request):
+        """Get supported languages for voice processing"""
+        try:
+            from .voice_service import VoiceService
+            voice_service = VoiceService()
+            
+            languages = voice_service.get_supported_languages()
+            
+            return Response({
+                'supported_languages': languages
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Failed to get supported languages: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve supported languages'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['get'])
+    def voice_models(self, request):
+        """Get available voice models for a language"""
+        try:
+            from .voice_service import VoiceService
+            voice_service = VoiceService()
+            
+            language = request.query_params.get('language', 'en')
+            models = voice_service.get_voice_models(language)
+            
+            return Response({
+                'language': language,
+                'voice_models': models
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Failed to get voice models: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve voice models'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class LanguageViewSet(viewsets.ViewSet):
+    """
+    ViewSet for language support functionality
+    """
+    permission_classes = [IsAuthenticated]
+    
+    @action(detail=False, methods=['get'])
+    def supported_languages(self, request):
+        """Get list of supported languages"""
+        try:
+            from .language_service import LanguageService
+            language_service = LanguageService()
+            
+            languages = language_service.get_supported_languages()
+            
+            return Response({
+                'supported_languages': languages
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Failed to get supported languages: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve supported languages'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['post'])
+    def detect_language(self, request):
+        """Detect language from text"""
+        try:
+            from .language_service import LanguageService
+            language_service = LanguageService()
+            
+            text = request.data.get('text')
+            if not text:
+                return Response(
+                    {'error': 'Text is required'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            result = language_service.detect_language(text)
+            
+            return Response(result, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Language detection failed: {str(e)}")
+            return Response(
+                {'error': 'Language detection failed'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['post'])
+    def translate_term(self, request):
+        """Translate agricultural terms between languages"""
+        try:
+            from .language_service import LanguageService
+            language_service = LanguageService()
+            
+            term = request.data.get('term')
+            from_lang = request.data.get('from_language', 'en')
+            to_lang = request.data.get('to_language', 'en')
+            
+            if not term:
+                return Response(
+                    {'error': 'Term is required'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            translated = language_service.translate_agricultural_term(
+                term, from_lang, to_lang
+            )
+            
+            return Response({
+                'original_term': term,
+                'translated_term': translated,
+                'from_language': from_lang,
+                'to_language': to_lang
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Term translation failed: {str(e)}")
+            return Response(
+                {'error': 'Translation failed'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['get'])
+    def suggest_languages(self, request):
+        """Suggest languages based on user location"""
+        try:
+            from .language_service import LanguageService
+            language_service = LanguageService()
+            
+            country = request.query_params.get('country')
+            region = request.query_params.get('region')
+            
+            suggested = language_service.suggest_language_from_location(
+                country, region
+            )
+            
+            return Response({
+                'suggested_languages': suggested,
+                'country': country,
+                'region': region
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Language suggestion failed: {str(e)}")
+            return Response(
+                {'error': 'Language suggestion failed'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class AIAnalyticsViewSet(viewsets.ViewSet):

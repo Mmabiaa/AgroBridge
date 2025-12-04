@@ -12,6 +12,8 @@ router.register(r'recommendations', views.AIRecommendationViewSet, basename='rec
 router.register(r'voice', views.VoiceInteractionViewSet, basename='voice')
 router.register(r'knowledge', views.KnowledgeBaseViewSet, basename='knowledge')
 router.register(r'statistics', views.AIUsageStatisticsViewSet, basename='statistics')
+router.register(r'language', views.LanguageViewSet, basename='language')
+router.register(r'analytics', views.AIAnalyticsViewSet, basename='analytics')
 
 app_name = 'ai_assistant'
 

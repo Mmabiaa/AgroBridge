@@ -46,7 +46,7 @@ class AIAssistantModelTests(TestCase):
         
         self.assertEqual(conversation.user, self.user)
         self.assertEqual(conversation.title, 'Test Conversation')
-        self.assertEqual(conversation.conversation_type, 'crop_advice')
+        self.assertEqual(conversation.conversation_type, 'farming_advice')
         self.assertEqual(conversation.message_count, 0)
         self.assertEqual(conversation.status, 'active')
         self.assertIsInstance(conversation.id, uuid.UUID)
@@ -281,7 +281,7 @@ class ChatConversationAPITests(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['title'], 'Test Conversation')
-        self.assertEqual(response.data['conversation_type'], 'crop_advice')
+        self.assertEqual(response.data['conversation_type'], 'farming_advice')
         
         # Check conversation was created in database
         conversation = ChatConversation.objects.get(id=response.data['id'])
@@ -668,3 +668,253 @@ class AIUsageStatisticsAPITests(APITestCase):
         self.assertIn('summary', response.data)
         self.assertIn('daily_stats', response.data)
         self.assertEqual(response.data['period_days'], 7)
+
+
+class LanguageServiceTests(TestCase):
+    """Test language service functionality"""
+    
+    def setUp(self):
+        from .language_service import LanguageService
+        self.language_service = LanguageService()
+    
+    def test_language_detection(self):
+        """Test language detection from text"""
+        # Test English
+        result = self.language_service.detect_language("What fertilizer should I use for tomatoes?")
+        self.assertEqual(result['language'], 'en')
+        
+        # Test Twi
+        result = self.language_service.detect_language("Akwaaba! Ɛdeɛn na metumi aboa wo nnɛ?")
+        self.assertEqual(result['language'], 'tw')
+        
+        # Test Hausa
+        result = self.language_service.detect_language("Sannu! Yaya zan taimake ka wajen noma?")
+        self.assertEqual(result['language'], 'ha')
+    
+    def test_agricultural_term_translation(self):
+        """Test agricultural term translation"""
+        # Test English to Twi
+        result = self.language_service.translate_agricultural_term('crop', 'en', 'tw')
+        self.assertEqual(result, 'nnɔbae')
+        
+        # Test English to Hausa
+        result = self.language_service.translate_agricultural_term('farm', 'en', 'ha')
+        self.assertEqual(result, 'gona')
+        
+        # Test unknown term
+        result = self.language_service.translate_agricultural_term('unknown', 'en', 'tw')
+        self.assertEqual(result, 'unknown')  # Should return original
+    
+    def test_localized_responses(self):
+        """Test getting localized responses"""
+        # Test English greeting
+        result = self.language_service.get_localized_response('greeting', 'en')
+        self.assertIn('AgriGPT', result)
+        
+        # Test Twi greeting
+        result = self.language_service.get_localized_response('greeting', 'tw')
+        self.assertIn('Akwaaba', result)
+        
+        # Test fallback for unsupported language
+        result = self.language_service.get_localized_response('greeting', 'xyz')
+        self.assertIn('AgriGPT', result)  # Should fallback to English
+    
+    def test_supported_languages(self):
+        """Test getting supported languages"""
+        languages = self.language_service.get_supported_languages()
+        
+        self.assertIsInstance(languages, list)
+        self.assertGreater(len(languages), 0)
+        
+        # Check English is included
+        english_found = any(lang['code'] == 'en' for lang in languages)
+        self.assertTrue(english_found)
+    
+    def test_language_suggestion_by_location(self):
+        """Test language suggestion based on location"""
+        # Test Ghana
+        result = self.language_service.suggest_language_from_location('Ghana')
+        self.assertIn('tw', result)
+        self.assertIn('en', result)
+        
+        # Test Nigeria
+        result = self.language_service.suggest_language_from_location('Nigeria')
+        self.assertIn('ha', result)
+        self.assertIn('en', result)
+        
+        # Test unknown country
+        result = self.language_service.suggest_language_from_location('Unknown')
+        self.assertEqual(result, ['en'])  # Should default to English
+
+
+class LanguageAPITests(APITestCase):
+    """Test Language API endpoints"""
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123',
+            role='farmer'
+        )
+        self.client = APIClient()
+        
+        # Get JWT token
+        refresh = RefreshToken.for_user(self.user)
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
+    
+    def test_supported_languages_endpoint(self):
+        """Test getting supported languages via API"""
+        url = reverse('ai_assistant:language-supported-languages')
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('supported_languages', response.data)
+        self.assertIsInstance(response.data['supported_languages'], list)
+    
+    def test_detect_language_endpoint(self):
+        """Test language detection via API"""
+        url = reverse('ai_assistant:language-detect-language')
+        data = {
+            'text': 'What fertilizer should I use for my tomatoes?'
+        }
+        
+        response = self.client.post(url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('language', response.data)
+        self.assertIn('confidence', response.data)
+    
+    def test_translate_term_endpoint(self):
+        """Test term translation via API"""
+        url = reverse('ai_assistant:language-translate-term')
+        data = {
+            'term': 'crop',
+            'from_language': 'en',
+            'to_language': 'tw'
+        }
+        
+        response = self.client.post(url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('translated_term', response.data)
+        self.assertIn('original_term', response.data)
+    
+    def test_suggest_languages_endpoint(self):
+        """Test language suggestion via API"""
+        url = reverse('ai_assistant:language-suggest-languages')
+        response = self.client.get(url, {'country': 'Ghana'})
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('suggested_languages', response.data)
+        self.assertIsInstance(response.data['suggested_languages'], list)
+
+
+class FarmContextIntegrationTests(TestCase):
+    """Test farm context integration in AI responses"""
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123',
+            role='farmer'
+        )
+        
+        # Create test farm data
+        from farms.models import Farm, Field, Crop
+        
+        self.farm = Farm.objects.create(
+            owner=self.user,
+            name='Test Farm',
+            location='Test Location',
+            size_hectares=10.5,
+            soil_type='loamy'
+        )
+        
+        self.field = Field.objects.create(
+            farm=self.farm,
+            name='Test Field',
+            size_hectares=5.0
+        )
+        
+        self.crop = Crop.objects.create(
+            field=self.field,
+            crop_type='tomato',
+            variety='Roma',
+            planting_date=timezone.now().date(),
+            status='growing'
+        )
+        
+        self.ai_service = AIService()
+    
+    def test_farm_context_retrieval(self):
+        """Test retrieving farm context for user"""
+        context = self.ai_service._get_farm_context(self.user)
+        
+        self.assertIn('Test Farm', context)
+        self.assertIn('10.5ha', context)
+        self.assertIn('loamy', context)
+        self.assertIn('tomato', context)
+    
+    def test_ai_response_with_farm_context(self):
+        """Test AI response generation with farm context"""
+        conversation = ChatConversation.objects.create(
+            user=self.user,
+            title='Test Conversation'
+        )
+        
+        response = self.ai_service.generate_response(
+            message='What should I do for my tomatoes?',
+            conversation=conversation,
+            user=self.user
+        )
+        
+        self.assertIn('response', response)
+        self.assertIn('metadata', response)
+        self.assertTrue(response['metadata'].get('farm_context_used', False))
+
+
+class EnhancedVoiceProcessingTests(TestCase):
+    """Test enhanced voice processing functionality"""
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123',
+            role='farmer'
+        )
+        self.voice_service = VoiceService()
+    
+    def test_multi_language_voice_processing(self):
+        """Test voice processing with different languages"""
+        # Create mock audio file
+        audio_file = SimpleUploadedFile(
+            "test_audio_twi.wav",
+            b"fake twi audio content",
+            content_type="audio/wav"
+        )
+        
+        result = self.voice_service.process_voice_command(
+            audio_file, 
+            self.user, 
+            None
+        )
+        
+        self.assertTrue(result['success'])
+        self.assertIn('transcription', result)
+        self.assertIn('command_interpretation', result)
+        self.assertIn('text_response', result)
+    
+    def test_voice_command_interpretation(self):
+        """Test voice command interpretation with agricultural context"""
+        text = "My tomato plants have brown spots on the leaves"
+        
+        interpretation = self.voice_service._interpret_voice_command(
+            text, self.user, None
+        )
+        
+        self.assertEqual(interpretation['intent'], 'disease_diagnosis')
+        self.assertIn('entities', interpretation)
+        self.assertGreater(interpretation['confidence'], 0.5)
