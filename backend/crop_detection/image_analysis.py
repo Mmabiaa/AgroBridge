@@ -131,7 +131,7 @@ class ImageAnalysisService:
         """
         # Get diseases that affect this crop type
         relevant_diseases = Disease.objects.filter(
-            affected_crops__contains=[crop_type],
+            affected_crops__icontains=crop_type,
             is_active=True
         )
         
@@ -285,7 +285,7 @@ class ImageAnalysisService:
                 treatments = Treatment.objects.filter(
                     disease=disease,
                     is_recommended=True,
-                    suitable_crops__contains=[crop_type]
+                    suitable_crops__icontains=crop_type
                 ).order_by('-effectiveness_rating')[:3]
                 
                 recommendation = {

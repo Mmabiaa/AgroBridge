@@ -54,6 +54,7 @@ class DiseaseViewSet(viewsets.ReadOnlyModelViewSet):
         # Apply filters
         query = serializer.validated_data.get('query')
         if query:
+            from django.db.models import Q
             queryset = queryset.filter(
                 Q(name__icontains=query) |
                 Q(scientific_name__icontains=query) |
@@ -67,7 +68,8 @@ class DiseaseViewSet(viewsets.ReadOnlyModelViewSet):
         
         crop_type = serializer.validated_data.get('crop_type')
         if crop_type:
-            queryset = queryset.filter(affected_crops__contains=[crop_type])
+            # Use icontains for SQLite compatibility
+            queryset = queryset.filter(affected_crops__icontains=crop_type)
         
         severity = serializer.validated_data.get('severity')
         if severity:
@@ -146,7 +148,8 @@ class TreatmentViewSet(viewsets.ReadOnlyModelViewSet):
         )
         
         if crop_type:
-            treatments = treatments.filter(suitable_crops__contains=[crop_type])
+            # Use icontains for SQLite compatibility
+            treatments = treatments.filter(suitable_crops__icontains=crop_type)
         
         if organic_only:
             treatments = treatments.filter(method='organic')
