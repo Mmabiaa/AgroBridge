@@ -19,4 +19,7 @@ router.register(r'notifications', views.NotificationViewSet, basename='notificat
 urlpatterns = [
     # Include router URLs (provides all CRUD operations)
     path('', include(router.urls)),
+    
+    # Payment callback endpoint
+    path('payment-callback/', views.PaymentCallbackView.as_view(), name='payment-callback'),
 ]

@@ -1,11 +1,12 @@
 """
 Advanced search and recommendation engine for marketplace
 """
-from django.db.models import Q, Count, Avg, F, Case, When, Value, IntegerField
+from django.db.models import Q, Count, Avg, F, Case, When, Value, IntegerField, Sum
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.utils import timezone
 from datetime import timedelta
 from collections import defaultdict
+from decimal import Decimal
 import math
 
 from .models import Product, Order, Review, Wishlist, Category
@@ -254,8 +255,8 @@ class RecommendationEngine:
                 When(seller=product.seller, then=Value(1)),
                 # Similar price range gets higher score
                 When(
-                    price_per_unit__gte=product.price_per_unit * 0.8,
-                    price_per_unit__lte=product.price_per_unit * 1.2,
+                    price_per_unit__gte=product.price_per_unit * Decimal('0.8'),
+                    price_per_unit__lte=product.price_per_unit * Decimal('1.2'),
                     then=Value(3)
                 ),
                 # Same quality grade gets higher score

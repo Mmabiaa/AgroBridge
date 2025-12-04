@@ -309,6 +309,12 @@ class Order(models.Model):
     cancelled_at = models.DateTimeField(null=True, blank=True)
     rejection_reason = models.TextField(blank=True)
     
+    # Payment integration fields
+    payment_id = models.CharField(max_length=100, blank=True, help_text="External payment ID")
+    escrow_id = models.CharField(max_length=100, blank=True, help_text="Escrow transaction ID")
+    payment_url = models.URLField(blank=True, help_text="Payment gateway URL")
+    payment_expires_at = models.DateTimeField(null=True, blank=True)
+    
     class Meta:
         ordering = ['-created_at']
         indexes = [
@@ -406,7 +412,7 @@ class Order(models.Model):
     @property
     def is_completed(self):
         """Check if order is completed"""
-        return self.status == 'approved'  # In simplified model, approved means completed
+        return self.status in ['approved', 'delivered', 'completed']  # Multiple completion states
 
 
 class OrderItem(models.Model):

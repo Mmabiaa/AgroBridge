@@ -198,9 +198,19 @@ class ProductViewSet(viewsets.ModelViewSet):
             'recommendations',
             'similar',
         ]
+        
+        # Wishlist actions require authentication but not seller permissions
+        wishlist_actions = [
+            'add_to_wishlist',
+            'remove_from_wishlist',
+        ]
+        
         if self.action in public_actions:
-            return [AllowAny(), IsSellerOrReadOnly()]
-        return [IsAuthenticated(), IsSellerOrReadOnly()]
+            return [AllowAny()]
+        elif self.action in wishlist_actions:
+            return [IsAuthenticated()]
+        else:
+            return [IsAuthenticated(), IsSellerOrReadOnly()]
     
     def perform_create(self, serializer):
         """Automatically set the seller to the current user"""
@@ -798,37 +808,20 @@ class OrderViewSet(viewsets.ModelViewSet):
                 
                 # Create notifications
                 NotificationService.notify_order_created(order)  # Notify seller
-                NotificationService.notify_order_placed(order)   # Notify customer
+                NotificationService.notify_order_placed(order)  # Notify buyer
                 
                 logger.info(f"Order {order.order_number} created by {request.user.username}")
-        
+                
+                # Serialize and return order
+                serializer = self.get_serializer(order)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                
         except Exception as e:
             logger.error(f"Error creating order: {str(e)}")
             return Response(
-                {'error': 'Failed to create order. Please try again.'},
+                {'error': 'Failed to create order'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        
-        # Return order data with product details
-        order_data = {
-            'id': str(order.id),
-            'order_number': order.order_number,
-            'product': {
-                'id': str(product.id),
-                'name': product.name,
-                'image_url': product.images.filter(is_primary=True).first().image.url if product.images.filter(is_primary=True).exists() else None,
-                'seller': {
-                    'id': product.seller.id,
-                    'name': product.seller.username
-                }
-            },
-            'quantity': float(quantity),
-            'total_price': str(total_amount),
-            'status': order.status,
-            'created_at': order.created_at.isoformat()
-        }
-        
-        return Response(order_data, status=status.HTTP_201_CREATED)
     
     def partial_update(self, request, *args, **kwargs):
         """
@@ -1183,6 +1176,161 @@ class OrderViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'])
+    def initiate_payment(self, request, pk=None):
+        """
+        Initiate payment for an order
+        """
+        from .payment_integration import initiate_order_payment, PaymentServiceError
+        
+        order = self.get_object()
+        
+        # Only buyer can initiate payment
+        if request.user != order.buyer:
+            return Response(
+                {'error': 'Only the buyer can initiate payment for this order'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Order must be approved to proceed with payment
+        if order.status != 'approved':
+            return Response(
+                {'error': 'Order must be approved before payment can be initiated'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Check if payment already initiated
+        if order.payment_id:
+            return Response(
+                {'error': 'Payment already initiated for this order'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Initiate payment
+            payment_response = initiate_order_payment(order)
+            
+            # Update order with payment details
+            order.payment_id = payment_response.get('payment_id')
+            order.payment_url = payment_response.get('payment_url')
+            order.payment_expires_at = payment_response.get('expires_at')
+            order.save()
+            
+            logger.info(f"Payment initiated for order {order.order_number}")
+            
+            return Response({
+                'message': 'Payment initiated successfully',
+                'payment_id': payment_response.get('payment_id'),
+                'payment_url': payment_response.get('payment_url'),
+                'expires_at': payment_response.get('expires_at')
+            })
+            
+        except PaymentServiceError as e:
+            logger.error(f"Payment initiation failed for order {order.order_number}: {str(e)}")
+            return Response(
+                {'error': f'Payment initiation failed: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=True, methods=['post'])
+    def verify_payment(self, request, pk=None):
+        """
+        Verify payment status for an order
+        """
+        from .payment_integration import verify_order_payment, PaymentServiceError
+        
+        order = self.get_object()
+        
+        # Only buyer or seller can verify payment
+        if request.user not in [order.buyer, order.seller]:
+            return Response(
+                {'error': 'You do not have permission to verify payment for this order'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        if not order.payment_id:
+            return Response(
+                {'error': 'No payment initiated for this order'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Verify payment
+            verification_response = verify_order_payment(order.payment_id)
+            
+            # Update order payment status based on verification
+            payment_status = verification_response.get('status')
+            if payment_status == 'completed':
+                order.payment_status = 'paid'
+                order.save()
+                
+                logger.info(f"Payment verified and completed for order {order.order_number}")
+            
+            return Response({
+                'message': 'Payment verification completed',
+                'payment_status': payment_status,
+                'verification_details': verification_response
+            })
+            
+        except PaymentServiceError as e:
+            logger.error(f"Payment verification failed for order {order.order_number}: {str(e)}")
+            return Response(
+                {'error': f'Payment verification failed: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=True, methods=['post'])
+    def process_refund(self, request, pk=None):
+        """
+        Process refund for an order
+        """
+        from .payment_integration import process_order_refund, PaymentServiceError
+        
+        order = self.get_object()
+        
+        # Only seller or admin can process refunds
+        if request.user != order.seller and not request.user.is_staff:
+            return Response(
+                {'error': 'Only the seller can process refunds for this order'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        if not order.payment_id or order.payment_status != 'paid':
+            return Response(
+                {'error': 'Order must have a completed payment to process refund'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        refund_amount = request.data.get('amount')
+        reason = request.data.get('reason', 'Seller initiated refund')
+        
+        try:
+            # Process refund
+            refund_response = process_order_refund(
+                order.payment_id, 
+                Decimal(str(refund_amount)) if refund_amount else None,
+                reason
+            )
+            
+            # Update order status
+            order.payment_status = 'refunded'
+            order.status = 'cancelled'
+            order.save()
+            
+            logger.info(f"Refund processed for order {order.order_number}")
+            
+            return Response({
+                'message': 'Refund processed successfully',
+                'refund_details': refund_response
+            })
+            
+        except PaymentServiceError as e:
+            logger.error(f"Refund processing failed for order {order.order_number}: {str(e)}")
+            return Response(
+                {'error': f'Refund processing failed: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -1239,6 +1387,71 @@ class WishlistViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Get current user's wishlist"""
         return Wishlist.objects.filter(user=self.request.user).select_related('product')
+
+
+class PaymentCallbackView(APIView):
+    """
+    Handle payment callbacks from payment service
+    """
+    permission_classes = [AllowAny]  # Payment service callbacks don't have user auth
+    
+    def post(self, request):
+        """
+        Handle payment callback
+        """
+        from .payment_integration import PaymentServiceError
+        
+        try:
+            # Extract callback data
+            payment_id = request.data.get('payment_id')
+            order_id = request.data.get('order_id')
+            status = request.data.get('status')
+            amount = request.data.get('amount')
+            
+            if not all([payment_id, order_id, status]):
+                return Response(
+                    {'error': 'Missing required callback data'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Find the order
+            try:
+                order = Order.objects.get(id=order_id, payment_id=payment_id)
+            except Order.DoesNotExist:
+                logger.error(f"Order not found for payment callback: {order_id}")
+                return Response(
+                    {'error': 'Order not found'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Update order based on payment status
+            if status == 'completed':
+                order.payment_status = 'paid'
+                logger.info(f"Payment completed for order {order.order_number}")
+                
+                # Notify both buyer and seller
+                from .services import NotificationService
+                # Could add specific payment completion notifications here
+                
+            elif status == 'failed':
+                order.payment_status = 'failed'
+                logger.info(f"Payment failed for order {order.order_number}")
+                
+            elif status == 'cancelled':
+                order.payment_status = 'failed'
+                order.status = 'cancelled'
+                logger.info(f"Payment cancelled for order {order.order_number}")
+            
+            order.save()
+            
+            return Response({'message': 'Callback processed successfully'})
+            
+        except Exception as e:
+            logger.error(f"Payment callback processing failed: {str(e)}")
+            return Response(
+                {'error': 'Callback processing failed'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class InquiryViewSet(viewsets.ModelViewSet):

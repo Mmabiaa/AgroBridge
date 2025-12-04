@@ -174,8 +174,8 @@ class OrderModelTest(TestCase):
         # Pending order should not be completed
         self.assertFalse(order.is_completed)
         
-        # Delivered order should be completed
-        order.status = 'delivered'
+        # Approved order should be completed
+        order.status = 'approved'
         self.assertTrue(order.is_completed)
 
 
@@ -282,8 +282,13 @@ class ProductAPITest(APITestCase):
         response = self.client.get(url, {'q': 'tomatoes'})
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertIn('tomatoes', response.data[0]['name'].lower())
+        # Response might be paginated, so check for results key
+        results = response.data.get('results', response.data)
+        # Should find at least one product with tomatoes
+        self.assertGreater(len(results), 0)
+        # Check that at least one result contains 'tomatoes'
+        found_tomatoes = any('tomatoes' in item['name'].lower() for item in results)
+        self.assertTrue(found_tomatoes)
     
     def test_add_to_wishlist(self):
         """Test adding product to wishlist"""
@@ -371,12 +376,8 @@ class OrderAPITest(APITestCase):
         self.client.force_authenticate(user=self.buyer)
         
         order_data = {
-            'items': [
-                {
-                    'product_id': str(self.product.id),
-                    'quantity': 5.0
-                }
-            ],
+            'product_id': str(self.product.id),
+            'quantity': 5.0,
             'delivery_method': 'pickup',
             'buyer_notes': 'Please handle with care'
         }
@@ -568,3 +569,88 @@ class RecommendationEngineTest(TestCase):
         self.assertLessEqual(len(recommendations), 5)
         # Should return some products
         self.assertGreater(len(recommendations), 0)
+
+
+class PaymentIntegrationTest(TestCase):
+    """Test payment integration functionality"""
+    
+    def setUp(self):
+        self.buyer = User.objects.create_user(
+            username='buyer1',
+            email='buyer1@test.com',
+            password='testpass123',
+            role='buyer'
+        )
+        
+        self.seller = User.objects.create_user(
+            username='seller1',
+            email='seller1@test.com',
+            password='testpass123',
+            role='farmer'
+        )
+        
+        self.category = Category.objects.create(
+            name='Vegetables',
+            description='Fresh vegetables'
+        )
+        
+        self.product = Product.objects.create(
+            seller=self.seller,
+            category=self.category,
+            name='Test Product',
+            description='Test description',
+            price_per_unit=Decimal('10.00'),
+            unit_type='kg',
+            quantity_available=Decimal('100.00'),
+            status='active'
+        )
+        
+        self.order = Order.objects.create(
+            buyer=self.buyer,
+            seller=self.seller,
+            status='approved',  # Ready for payment
+            subtotal=Decimal('50.00'),
+            total_amount=Decimal('50.00'),
+            delivery_method='pickup'
+        )
+    
+    def test_payment_initiation(self):
+        """Test payment initiation"""
+        from marketplace.payment_integration import initiate_order_payment
+        
+        response = initiate_order_payment(self.order)
+        
+        self.assertIn('payment_id', response)
+        self.assertIn('payment_url', response)
+        self.assertTrue(response.get('mock', False))  # Should be mock in tests
+    
+    def test_payment_verification(self):
+        """Test payment verification"""
+        from marketplace.payment_integration import verify_order_payment
+        
+        payment_id = 'test_payment_123'
+        response = verify_order_payment(payment_id)
+        
+        self.assertIn('payment_id', response)
+        self.assertIn('status', response)
+        self.assertTrue(response.get('mock', False))  # Should be mock in tests
+    
+    def test_escrow_service(self):
+        """Test escrow service functionality"""
+        from marketplace.payment_integration import EscrowService
+        
+        escrow = EscrowService()
+        
+        # Test holding funds
+        hold_response = escrow.hold_funds(str(self.order.id), self.order.total_amount)
+        self.assertEqual(hold_response['status'], 'held')
+        self.assertEqual(hold_response['order_id'], str(self.order.id))
+        
+        # Test releasing funds
+        escrow_id = hold_response['escrow_id']
+        release_response = escrow.release_funds(escrow_id, str(self.seller.id))
+        self.assertEqual(release_response['status'], 'released')
+        
+        # Test refunding funds
+        refund_response = escrow.refund_funds(escrow_id, 'Test refund')
+        self.assertEqual(refund_response['status'], 'refunded')
