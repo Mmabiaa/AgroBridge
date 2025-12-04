@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'learning',
     'community',
     'scheduling',
+    'analytics',
 ]
 
 MIDDLEWARE = [

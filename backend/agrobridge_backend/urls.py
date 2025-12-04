@@ -45,6 +45,7 @@ schema_view = get_schema_view(
             path('learning/', include('learning.urls')),
             path('community/', include('community.urls')),
             path('scheduling/', include('scheduling.urls')),
+            path('analytics/', include('analytics.urls')),
         ])),
     ],
 )
@@ -65,6 +66,7 @@ urlpatterns = [
     path('api/v1/learning/', include('learning.urls')),
     path('api/v1/community/', include('community.urls')),
     path('api/v1/scheduling/', include('scheduling.urls')),
+    path('api/v1/analytics/', include('analytics.urls')),
     
     # API Documentation
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
