@@ -2,9 +2,10 @@
 WebSocket URL routing for the AgroBridge backend
 """
 import logging
-from django.urls import re_path
+from django.urls import re_path, path
 from .consumers import TestConsumer, SimpleTestConsumer, ChatConsumer
-from marketplace.consumers import NotificationConsumer  # Use marketplace NotificationConsumer
+from notifications.consumers import NotificationConsumer, AdminNotificationConsumer
+from marketplace.consumers import NotificationConsumer as MarketplaceNotificationConsumer
 
 logger = logging.getLogger(__name__)
 
@@ -19,14 +20,15 @@ websocket_urlpatterns = [
     # Simple test endpoint without authentication
     re_path(r'^ws/simple/$', SimpleTestConsumer.as_asgi(), name='ws_simple'),
     
-    # Notification WebSocket endpoint
+    # Notification Service WebSocket endpoints
     re_path(r'^ws/notifications/$', NotificationConsumer.as_asgi(), name='ws_notifications'),
+    re_path(r'^ws/notifications/admin/$', AdminNotificationConsumer.as_asgi(), name='ws_admin_notifications'),
+    
+    # Marketplace notifications (legacy)
+    re_path(r'^ws/marketplace/notifications/$', MarketplaceNotificationConsumer.as_asgi(), name='ws_marketplace_notifications'),
     
     # Chat WebSocket endpoint
     re_path(r'^ws/chat/(?P<room_name>\w+)/$', ChatConsumer.as_asgi(), name='ws_chat'),
-    
-    # User-specific notifications
-    re_path(r'^ws/notifications/(?P<user_id>\w+)/$', NotificationConsumer.as_asgi(), name='ws_user_notifications'),
 ]
 
 logger.info("WebSocket URL patterns configured")

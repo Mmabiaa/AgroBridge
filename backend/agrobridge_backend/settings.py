@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'ai_assistant',
     'crop_detection',
     'iot_service',
+    'notifications',
 ]
 
 MIDDLEWARE = [

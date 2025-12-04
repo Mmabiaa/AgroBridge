@@ -592,7 +592,7 @@ class Notification(models.Model):
         ('order_cancelled', 'Order Cancelled'),
     ]
     
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='marketplace_notifications')
     message = models.CharField(max_length=255)
     type = models.CharField(max_length=50, choices=NOTIFICATION_TYPES, default='order_created')
     related_order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='notifications')
