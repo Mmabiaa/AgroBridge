@@ -41,6 +41,7 @@ schema_view = get_schema_view(
             path('crop-detection/', include('crop_detection.urls')),
             path('iot/', include('iot_service.urls')),
             path('notifications/', include('notifications.urls')),
+            path('financial/', include('financial.urls')),
         ])),
     ],
 )
@@ -57,6 +58,7 @@ urlpatterns = [
     path('api/v1/crop-detection/', include('crop_detection.urls')),
     path('api/v1/iot/', include('iot_service.urls')),
     path('api/v1/notifications/', include('notifications.urls')),
+    path('api/v1/financial/', include('financial.urls')),
     
     # API Documentation
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
