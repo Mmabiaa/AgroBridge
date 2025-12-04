@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'iot_service',
     'notifications',
     'financial',
+    'learning',
+    'community',
 ]
 
 MIDDLEWARE = [
