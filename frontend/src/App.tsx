@@ -18,6 +18,7 @@ import AgriGPT from "./pages/AgriGPT";
 import Monitoring from "./pages/Monitoring";
 import Analytics from "./pages/Analytics";
 import Marketplace from "./pages/Marketplace";
+import ProductDetails from "./pages/ProductDetails";
 import MyOrders from "./pages/MyOrders";
 import MySales from "./pages/MySales";
 import Farms from "./pages/Farms";
@@ -191,6 +192,14 @@ const App = () => (
                           <ProtectedRoute requiredPermission="view_marketplace">
                             <ErrorBoundary>
                               <Marketplace />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        
+                        <Route path="/marketplace/products/:id" element={
+                          <ProtectedRoute requiredPermission="view_marketplace">
+                            <ErrorBoundary>
+                              <ProductDetails />
                             </ErrorBoundary>
                           </ProtectedRoute>
                         } />

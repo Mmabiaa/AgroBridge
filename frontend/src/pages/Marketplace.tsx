@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -82,6 +83,7 @@ const ProductGrid = ({
   onDeleteProduct 
 }: ProductGridProps) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   // Build query params
@@ -230,9 +232,15 @@ const ProductGrid = ({
           const isOwner = isProductOwner(product);
 
           return (
-            <Card key={product.id} className="group hover:shadow-lg transition-shadow">
+            <Card 
+              key={product.id} 
+              className="group hover:shadow-lg transition-shadow"
+            >
               {/* Product Image */}
-              <div className="h-48 bg-gray-100 rounded-t-lg overflow-hidden relative">
+              <div 
+                className="h-48 bg-gray-100 rounded-t-lg overflow-hidden relative cursor-pointer"
+                onClick={() => navigate(`/marketplace/products/${product.id}`)}
+              >
                 {imageUrl ? (
                   <img
                     src={imageUrl}
@@ -278,7 +286,12 @@ const ProductGrid = ({
               <CardHeader className="pb-2">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="text-lg line-clamp-1">{product.name}</CardTitle>
+                    <CardTitle 
+                      className="text-lg line-clamp-1 cursor-pointer hover:text-primary transition-colors"
+                      onClick={() => navigate(`/marketplace/products/${product.id}`)}
+                    >
+                      {product.name}
+                    </CardTitle>
                     <CardDescription className="line-clamp-2">
                       {product.description}
                     </CardDescription>
