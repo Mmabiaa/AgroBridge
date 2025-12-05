@@ -366,14 +366,17 @@ This implementation plan breaks down the frontend development into discrete, man
   - Create "My Products" page for sellers
   - _Requirements: 4.2, 4.5_
 
-- [ ] 6.4 Build shopping cart and checkout
+- [x] 6.4 Build shopping cart and checkout
+
+
   - Create Cart component with item management
   - Implement checkout flow with delivery details
   - Integrate with /api/v1/marketplace/orders/ POST endpoint
   - Add order confirmation page
   - _Requirements: 4.4_
 
-- [ ] 6.5 Create orders management pages
+- [x] 6.5 Create orders management pages
+
   - Build MyOrders page fetching from /api/v1/marketplace/orders/myorders/
   - Build MySales page fetching from /api/v1/marketplace/orders/my-sales/
   - Implement order status tracking
