@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'blockchain',
     'export_docs',
     'emergency_response',
+    'file_storage',
 ]
 
 MIDDLEWARE = [
