@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: agrobridge-service-account
+  namespace: agrobridge
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: agrobridge-role
+  namespace: agrobridge
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: agrobridge-rolebinding
+  namespace: agrobridge
+subjects:
+- kind: ServiceAccount
+  name: agrobridge-service-account
+  namespace: agrobridge
+roleRef:
+  kind: Role
+  name: agrobridge-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: agrobridge-cluster-role
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "persistentvolumes"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: agrobridge-cluster-rolebinding
+subjects:
+- kind: ServiceAccount
+  name: agrobridge-service-account
+  namespace: agrobridge
+roleRef:
+  kind: ClusterRole
+  name: agrobridge-cluster-role
+  apiGroup: rbac.authorization.k8s.io

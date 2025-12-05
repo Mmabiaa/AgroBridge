@@ -1,0 +1,277 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: agrobridge-gateway
+  namespace: agrobridge
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "api.agrobridge.com"
+    - "*.agrobridge.com"
+    tls:
+      httpsRedirect: true
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    hosts:
+    - "api.agrobridge.com"
+    - "*.agrobridge.com"
+    tls:
+      mode: SIMPLE
+      credentialName: agrobridge-tls-cert
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: agrobridge-routes
+  namespace: agrobridge
+spec:
+  hosts:
+  - "api.agrobridge.com"
+  gateways:
+  - agrobridge-gateway
+  http:
+  # Authentication routes
+  - match:
+    - uri:
+        prefix: /api/v1/auth
+    route:
+    - destination:
+        host: authentication.agrobridge.svc.cluster.local
+        port:
+          number: 8001
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
+      retryOn: 5xx,reset,connect-failure,refused-stream
+  
+  # User routes
+  - match:
+    - uri:
+        prefix: /api/v1/users
+    route:
+    - destination:
+        host: users.agrobridge.svc.cluster.local
+        port:
+          number: 8002
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
+  
+  # Farm routes
+  - match:
+    - uri:
+        prefix: /api/v1/farms
+    route:
+    - destination:
+        host: farms.agrobridge.svc.cluster.local
+        port:
+          number: 8003
+    timeout: 30s
+  
+  # Marketplace routes
+  - match:
+    - uri:
+        prefix: /api/v1/marketplace
+    route:
+    - destination:
+        host: marketplace.agrobridge.svc.cluster.local
+        port:
+          number: 8004
+    timeout: 30s
+  
+  # AI Assistant routes
+  - match:
+    - uri:
+        prefix: /api/v1/ai
+    route:
+    - destination:
+        host: ai-assistant.agrobridge.svc.cluster.local
+        port:
+          number: 8005
+    timeout: 120s
+  
+  # Crop Detection routes
+  - match:
+    - uri:
+        prefix: /api/v1/crop-detection
+    route:
+    - destination:
+        host: crop-detection.agrobridge.svc.cluster.local
+        port:
+          number: 8006
+    timeout: 120s
+  
+  # IoT routes
+  - match:
+    - uri:
+        prefix: /api/v1/iot
+    route:
+    - destination:
+        host: iot.agrobridge.svc.cluster.local
+        port:
+          number: 8007
+    timeout: 30s
+  
+  # Notification routes
+  - match:
+    - uri:
+        prefix: /api/v1/notifications
+    route:
+    - destination:
+        host: notifications.agrobridge.svc.cluster.local
+        port:
+          number: 8008
+    timeout: 30s
+  
+  # Financial routes
+  - match:
+    - uri:
+        prefix: /api/v1/financial
+    route:
+    - destination:
+        host: financial.agrobridge.svc.cluster.local
+        port:
+          number: 8009
+    timeout: 30s
+  
+  # Learning routes
+  - match:
+    - uri:
+        prefix: /api/v1/learning
+    route:
+    - destination:
+        host: learning.agrobridge.svc.cluster.local
+        port:
+          number: 8010
+    timeout: 30s
+  
+  # Community routes
+  - match:
+    - uri:
+        prefix: /api/v1/community
+    route:
+    - destination:
+        host: community.agrobridge.svc.cluster.local
+        port:
+          number: 8011
+    timeout: 30s
+  
+  # Scheduling routes
+  - match:
+    - uri:
+        prefix: /api/v1/scheduling
+    route:
+    - destination:
+        host: scheduling.agrobridge.svc.cluster.local
+        port:
+          number: 8012
+    timeout: 30s
+  
+  # Analytics routes
+  - match:
+    - uri:
+        prefix: /api/v1/analytics
+    route:
+    - destination:
+        host: analytics.agrobridge.svc.cluster.local
+        port:
+          number: 8013
+    timeout: 120s
+  
+  # Payment routes
+  - match:
+    - uri:
+        prefix: /api/v1/payments
+    route:
+    - destination:
+        host: payments.agrobridge.svc.cluster.local
+        port:
+          number: 8014
+    timeout: 60s
+  
+  # Admin routes
+  - match:
+    - uri:
+        prefix: /api/v1/admin
+    route:
+    - destination:
+        host: admin.agrobridge.svc.cluster.local
+        port:
+          number: 8015
+    timeout: 30s
+  
+  # Health check
+  - match:
+    - uri:
+        exact: /health
+    route:
+    - destination:
+        host: api-gateway.agrobridge.svc.cluster.local
+        port:
+          number: 8000
+    timeout: 5s
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: authentication-destination
+  namespace: agrobridge
+spec:
+  host: authentication.agrobridge.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 50
+        http2MaxRequests: 100
+        maxRequestsPerConnection: 2
+    loadBalancer:
+      simple: LEAST_REQUEST
+    outlierDetection:
+      consecutiveErrors: 5
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
+      minHealthPercent: 40
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: agrobridge
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-authenticated
+  namespace: agrobridge
+spec:
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/agrobridge/sa/agrobridge-service-account"]
+    to:
+    - operation:
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]

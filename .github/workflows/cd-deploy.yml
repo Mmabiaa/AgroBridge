@@ -1,0 +1,302 @@
+name: CD - Deploy
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      service:
+        description: 'Service to deploy (leave empty for all)'
+        required: false
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/agrobridge
+
+jobs:
+  # Job 1: Build and Push Docker Images
+  build-and-push:
+    name: Build and Push Images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        service:
+          - authentication
+          - users
+          - farms
+          - marketplace
+          - ai-assistant
+          - crop-detection
+          - iot
+          - notifications
+          - financial
+          - learning
+          - community
+          - scheduling
+          - analytics
+          - payments
+          - admin
+          - blockchain
+          - export-docs
+          - emergency
+          - file-storage
+          - api-gateway
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_PREFIX }}-${{ matrix.service }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/${{ matrix.service }}
+          file: ./backend/${{ matrix.service }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+            VERSION=${{ github.ref_name }}
+
+  # Job 2: Deploy to Staging
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-and-push]
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment:
+      name: staging
+      url: https://staging.agrobridge.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > $HOME/.kube/config
+
+      - name: Update image tags
+        run: |
+          cd backend/kubernetes/overlays/staging
+          kustomize edit set image agrobridge/*=${{ env.IMAGE_PREFIX }}-*:${{ github.sha }}
+
+      - name: Deploy to staging
+        run: |
+          kubectl apply -k backend/kubernetes/overlays/staging
+          kubectl rollout status deployment -n agrobridge-staging --timeout=10m
+
+      - name: Run smoke tests
+        run: |
+          chmod +x backend/tests/smoke-tests.sh
+          ./backend/tests/smoke-tests.sh https://staging.agrobridge.com
+
+      - name: Notify deployment
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Staging deployment completed'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        if: always()
+
+  # Job 3: Deploy to Production (with approval)
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-and-push, deploy-staging]
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    environment:
+      name: production
+      url: https://api.agrobridge.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > $HOME/.kube/config
+
+      - name: Create backup
+        run: |
+          kubectl get all -n agrobridge -o yaml > backup-${{ github.sha }}.yaml
+
+      - name: Update image tags
+        run: |
+          cd backend/kubernetes/overlays/production
+          kustomize edit set image agrobridge/*=${{ env.IMAGE_PREFIX }}-*:${{ github.sha }}
+
+      - name: Deploy to production
+        run: |
+          kubectl apply -k backend/kubernetes/overlays/production
+          
+      - name: Monitor rollout
+        run: |
+          for deployment in $(kubectl get deployments -n agrobridge -o name); do
+            echo "Monitoring $deployment..."
+            kubectl rollout status $deployment -n agrobridge --timeout=15m
+          done
+
+      - name: Run health checks
+        run: |
+          chmod +x backend/tests/health-checks.sh
+          ./backend/tests/health-checks.sh https://api.agrobridge.com
+
+      - name: Run smoke tests
+        run: |
+          chmod +x backend/tests/smoke-tests.sh
+          ./backend/tests/smoke-tests.sh https://api.agrobridge.com
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "Deployment failed, rolling back..."
+          kubectl rollout undo deployment -n agrobridge
+          kubectl rollout status deployment -n agrobridge --timeout=10m
+
+      - name: Notify deployment success
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: '🚀 Production deployment completed successfully!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Notify deployment failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          text: '❌ Production deployment failed and was rolled back'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+  # Job 4: Database Migrations
+  database-migrations:
+    name: Run Database Migrations
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > $HOME/.kube/config
+
+      - name: Run migrations
+        run: |
+          kubectl exec -n agrobridge deployment/authentication -- python manage.py migrate
+          kubectl exec -n agrobridge deployment/users -- python manage.py migrate
+          kubectl exec -n agrobridge deployment/farms -- python manage.py migrate
+          # Add more services as needed
+
+  # Job 5: Post-Deployment Tests
+  post-deployment-tests:
+    name: Post-Deployment Tests
+    runs-on: ubuntu-latest
+    needs: [deploy-production, database-migrations]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install test dependencies
+        run: |
+          pip install pytest requests
+
+      - name: Run API tests
+        run: |
+          pytest backend/tests/api/ --base-url=https://api.agrobridge.com
+
+      - name: Run end-to-end tests
+        run: |
+          pytest backend/tests/e2e/ --base-url=https://api.agrobridge.com
+
+      - name: Performance tests
+        run: |
+          chmod +x backend/tests/performance-tests.sh
+          ./backend/tests/performance-tests.sh https://api.agrobridge.com
+
+  # Job 6: Update Deployment Status
+  update-status:
+    name: Update Deployment Status
+    runs-on: ubuntu-latest
+    needs: [post-deployment-tests]
+    if: always()
+    steps:
+      - name: Create deployment record
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: 'production',
+              auto_merge: false,
+              required_contexts: []
+            });
+            
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.data.id,
+              state: '${{ job.status }}',
+              environment_url: 'https://api.agrobridge.com'
+            });

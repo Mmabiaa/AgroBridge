@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics
+  namespace: agrobridge
+  labels:
+    app: analytics
+    version: v1
+    tier: backend
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: analytics
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: analytics
+        version: v1
+        tier: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8013"
+    spec:
+      serviceAccountName: agrobridge-service-account
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: analytics
+        image: agrobridge/analytics:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8013
+          protocol: TCP
+        env:
+        - name: SERVICE_NAME
+          value: "analytics"
+        - name: SERVICE_PORT
+          value: "8013"
+        - name: DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: database-config
+              key: postgresql-host
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgresql-password
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: cache-config
+              key: redis-host
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: ENVIRONMENT
+          value: "production"
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          failureThreshold: 30
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+        - name: logs
+          mountPath: /app/logs
+      volumes:
+      - name: config
+        configMap:
+          name: analytics-config
+      - name: logs
+        emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - analytics
+              topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analytics
+  namespace: agrobridge
+  labels:
+    app: analytics
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8013
+    targetPort: http
+    protocol: TCP
+  selector:
+    app: analytics
