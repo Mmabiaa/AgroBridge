@@ -20,6 +20,10 @@ import Analytics from "./pages/Analytics";
 import Marketplace from "./pages/Marketplace";
 import MyOrders from "./pages/MyOrders";
 import MySales from "./pages/MySales";
+import Farms from "./pages/Farms";
+import FarmDetails from "./pages/FarmDetails";
+import CreateFarm from "./pages/CreateFarm";
+import EditFarm from "./pages/EditFarm";
 import Learning from "./pages/Learning";
 import Community from "./pages/Community";
 import Settings from "./pages/Settings";
@@ -148,6 +152,36 @@ const App = () => (
                           <ProtectedRoute requiredPermission="view_analytics">
                             <ErrorBoundary>
                               <Analytics />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        
+                        {/* Farm Management */}
+                        <Route path="/farms" element={
+                          <ProtectedRoute requiredPermission="view_farms">
+                            <ErrorBoundary>
+                              <Farms />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/farms/new" element={
+                          <ProtectedRoute requiredPermission="view_farms">
+                            <ErrorBoundary>
+                              <CreateFarm />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/farms/:id" element={
+                          <ProtectedRoute requiredPermission="view_farms">
+                            <ErrorBoundary>
+                              <FarmDetails />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/farms/:id/edit" element={
+                          <ProtectedRoute requiredPermission="view_farms">
+                            <ErrorBoundary>
+                              <EditFarm />
                             </ErrorBoundary>
                           </ProtectedRoute>
                         } />
