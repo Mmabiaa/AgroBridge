@@ -122,6 +122,9 @@ class ExportDocumentViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         """Filter documents for current user."""
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return ExportDocument.objects.none()
         queryset = super().get_queryset()
         
         # Non-admin users can only see their own documents

@@ -3,7 +3,6 @@
 import uuid
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.fields import ArrayField
 
 User = get_user_model()
 
@@ -49,8 +48,8 @@ class EmergencyAlert(models.Model):
     
     # Geographic targeting
     country = models.CharField(max_length=3, default='GHA')
-    regions = ArrayField(models.CharField(max_length=100), default=list, blank=True)
-    districts = ArrayField(models.CharField(max_length=100), default=list, blank=True)
+    regions = models.JSONField(default=list, blank=True, help_text="List of region names")
+    districts = models.JSONField(default=list, blank=True, help_text="List of district names")
     coordinates = models.JSONField(null=True, blank=True, help_text="GeoJSON polygon for affected area")
     
     # Guidelines and actions
@@ -133,7 +132,7 @@ class IncidentReport(models.Model):
     district = models.CharField(max_length=100, blank=True)
     
     # Evidence
-    photos = ArrayField(models.URLField(), default=list, blank=True)
+    photos = models.JSONField(default=list, blank=True, help_text="List of photo URLs")
     additional_data = models.JSONField(default=dict, blank=True)
     
     # Status and response
@@ -218,7 +217,7 @@ class EmergencyGuideline(models.Model):
     support_services = models.JSONField(default=list, blank=True)
     
     # Geographic relevance
-    applicable_regions = ArrayField(models.CharField(max_length=100), default=list, blank=True)
+    applicable_regions = models.JSONField(default=list, blank=True, help_text="List of applicable region names")
     
     # Metadata
     is_active = models.BooleanField(default=True)

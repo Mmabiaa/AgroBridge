@@ -236,6 +236,9 @@ class ReportViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         """Get reports for current user"""
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Report.objects.none()
         return Report.objects.filter(user=self.request.user)
     
     def get_serializer_class(self):
@@ -310,6 +313,9 @@ class InsightViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         """Get insights for current user"""
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Insight.objects.none()
         queryset = Insight.objects.filter(user=self.request.user)
         
         # Filter by read status

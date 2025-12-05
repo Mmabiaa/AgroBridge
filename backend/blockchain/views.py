@@ -30,6 +30,9 @@ class CertificateViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         """Get certificates for current user or all if admin."""
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Certificate.objects.none()
         user = self.request.user
         if user.is_staff:
             return Certificate.objects.all()
@@ -216,6 +219,9 @@ class SupplyChainEventViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         """Get supply chain events."""
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return SupplyChainEvent.objects.none()
         user = self.request.user
         if user.is_staff:
             return SupplyChainEvent.objects.all()

@@ -2,20 +2,26 @@
 Pytest configuration and shared fixtures for AgroBridge testing.
 """
 import os
+import sys
 import pytest
+from pathlib import Path
 
-# Try to import Django-related modules, but don't fail if they're not available
+# Add backend directory to Python path
+backend_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(backend_dir))
+
+# Configure Django settings before any imports
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'agrobridge_backend.settings')
+
+# Try to import Django-related modules
 try:
     import django
+    django.setup()
+    
     from django.conf import settings
     from django.test import Client
     from rest_framework.test import APIClient
     from faker import Faker
-    
-    # Configure Django settings only if not already configured
-    if not settings.configured:
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'agrobridge_backend.settings')
-        django.setup()
     
     fake = Faker()
     DJANGO_AVAILABLE = True

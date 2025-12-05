@@ -177,6 +177,7 @@ class CertificateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Certificate
+        ref_name = 'LearningCertificate'
         fields = [
             'id', 'enrollment', 'certificate_number', 'user_name', 'course_title',
             'issued_at', 'pdf_url', 'verification_url', 'final_score', 'completion_time_hours'

@@ -230,6 +230,9 @@ class IncidentReportViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         """Filter reports based on query parameters and permissions."""
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return IncidentReport.objects.none()
         queryset = super().get_queryset()
         
         # Non-staff users can only see their own reports

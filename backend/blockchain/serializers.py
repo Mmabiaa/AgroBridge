@@ -16,6 +16,7 @@ class CertificateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Certificate
+        ref_name = 'BlockchainCertificate'
         fields = [
             'id', 'certificate_number', 'certificate_type', 'owner', 'owner_name',
             'issuer', 'issuer_id', 'title', 'description', 'product_name',

@@ -220,7 +220,7 @@ class PlatformMetrics(models.Model):
 
 class UserActivity(models.Model):
     """Track user activity for analytics"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activities')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='admin_activities')
     activity_type = models.CharField(max_length=100, db_index=True)
     details = models.JSONField(default=dict)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
