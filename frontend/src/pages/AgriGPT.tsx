@@ -5,8 +5,10 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Bot, Send, Loader2, User, Sparkles, Trash2 } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { VoiceInput } from '@/components/agrigpt/VoiceInput';
+import { RecommendationsPanel } from '@/components/agrigpt/RecommendationsPanel';
+import { ConversationManagement, ConversationSearch } from '@/components/agrigpt/ConversationManagement';
 
 // Import React Query hooks
 import { 
@@ -28,7 +30,7 @@ interface Message {
   processing_time_ms?: number;
   confidence_score?: number;
   model_used?: string;
-  metadata?: Record<string, string>;
+  metadata?: Record<string, unknown>;
 }
 
 interface Conversation {
@@ -44,22 +46,24 @@ interface Conversation {
   created_at: string;
   updated_at: string;
   last_activity: string;
+  is_archived?: boolean;
 }
 
 export default function AgriGPT() {
-  const { user } = useAuth();
   const { toast } = useToast();
   const [inputMessage, setInputMessage] = useState('');
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
   const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showArchived, setShowArchived] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // React Query hooks
   const { data: conversationsData, isLoading: conversationsLoading } = useConversations({ 
     page_size: 20 
   });
-  const { data: messagesData, isLoading: messagesLoading, refetch: refetchMessages } = useConversationMessages(
+  const { data: messagesData, refetch: refetchMessages } = useConversationMessages(
     currentConversationId || '',
     !!currentConversationId
   );
@@ -68,9 +72,17 @@ export default function AgriGPT() {
   const deleteConversationMutation = useDeleteConversation();
 
   // Safely extract conversations array from PaginatedResponse
-  const conversations = Array.isArray(conversationsData) 
+  const allConversations = Array.isArray(conversationsData) 
     ? conversationsData 
     : conversationsData?.results || [];
+
+  // Filter conversations based on search and archive status
+  const conversations = allConversations.filter((conv: Conversation) => {
+    const matchesSearch = !searchQuery || 
+      conv.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesArchiveFilter = showArchived ? true : !conv.is_archived;
+    return matchesSearch && matchesArchiveFilter;
+  });
 
   const messages = messagesData || [];
 
@@ -295,8 +307,8 @@ export default function AgriGPT() {
   });
 
   return (
-    <div className="container mx-auto p-4 max-w-6xl h-[calc(100vh-100px)]">
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
+    <div className="container mx-auto p-4 max-w-7xl h-[calc(100vh-100px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 h-full">
         {/* Sidebar - Conversations */}
         <div className="lg:col-span-1">
           <Card className="h-full">
@@ -321,6 +333,29 @@ export default function AgriGPT() {
                     + New Chat
                   </Button>
 
+                  <div className="mb-4">
+                    <ConversationSearch onSearch={setSearchQuery} />
+                  </div>
+
+                  <div className="flex items-center gap-2 mb-4">
+                    <Button
+                      variant={!showArchived ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setShowArchived(false)}
+                      className="flex-1 text-xs"
+                    >
+                      Active
+                    </Button>
+                    <Button
+                      variant={showArchived ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setShowArchived(true)}
+                      className="flex-1 text-xs"
+                    >
+                      Archived
+                    </Button>
+                  </div>
+
                   {conversations.length === 0 && !conversationsLoading ? (
                     <div className="text-center py-8 text-muted-foreground">
                       No conversations yet
@@ -337,26 +372,32 @@ export default function AgriGPT() {
                               : 'hover:bg-muted/50'
                           }`}
                         >
-                          <div className="font-medium text-sm truncate pr-8">
+                          <div className="font-medium text-sm truncate pr-16">
                             {conv.title}
                           </div>
                           <div className="text-xs text-muted-foreground mt-1">
                             {new Date(conv.created_at).toLocaleDateString()} • {conv.message_count || 0} messages
                           </div>
                           
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-6 w-6 absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={(e) => handleDeleteConversation(conv.id, e)}
-                            disabled={deleteConversationMutation.isPending || isSending}
-                          >
-                            {deleteConversationMutation.isPending ? (
-                              <Loader2 className="h-3 w-3 animate-spin" />
-                            ) : (
-                              <Trash2 className="h-3 w-3" />
-                            )}
-                          </Button>
+                          <div className="absolute right-2 top-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <ConversationManagement
+                              conversationId={conv.id}
+                              isArchived={conv.is_archived}
+                            />
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-6 w-6"
+                              onClick={(e) => handleDeleteConversation(conv.id, e)}
+                              disabled={deleteConversationMutation.isPending || isSending}
+                            >
+                              {deleteConversationMutation.isPending ? (
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-3 w-3" />
+                              )}
+                            </Button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -559,6 +600,10 @@ export default function AgriGPT() {
             {/* Input Area */}
             <div className="border-t p-4 bg-muted/30">
               <div className="flex gap-2 max-w-4xl mx-auto">
+                <VoiceInput
+                  onTranscript={(text) => setInputMessage(text)}
+                  disabled={isLoading}
+                />
                 <Input
                   placeholder="Ask about crops, soil, pests, weather, market prices..."
                   value={inputMessage}
@@ -582,13 +627,18 @@ export default function AgriGPT() {
                 </Button>
               </div>
               <div className="text-xs text-muted-foreground text-center mt-2">
-                Powered by OpenAI GPT-4 • Real-time agricultural expertise
+                Powered by OpenAI GPT-4 • Real-time agricultural expertise • Voice input enabled
                 {(isSending || sendMessageMutation.isPending) && (
                   <span className="ml-2 text-primary">• Generating response...</span>
                 )}
               </div>
             </div>
           </Card>
+        </div>
+
+        {/* Recommendations Panel */}
+        <div className="lg:col-span-1 hidden lg:block">
+          <RecommendationsPanel />
         </div>
       </div>
     </div>

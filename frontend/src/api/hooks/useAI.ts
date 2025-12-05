@@ -1,11 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import aiService from '../services/aiService';
 import type {
-  Conversation,
   ConversationCreateData,
   Message,
-  SendMessageData,
-  PaginatedResponse,
   ConversationListParams,
   SendMessageResponse
 } from '../../types/ai';
@@ -47,7 +44,7 @@ export const useCreateConversation = () => {
   return useMutation({
     mutationFn: (conversationData: ConversationCreateData) => 
       aiService.createConversation(conversationData),
-    onSuccess: (newConversation) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ 
         queryKey: queryKeys.ai.conversations.lists() 
       });
@@ -127,7 +124,7 @@ export const useSendMessage = () => {
         queryKey: queryKeys.ai.conversations.lists() 
       });
     },
-    onError: (error: Error, { conversationId }, context) => {
+    onError: (_error: Error, { conversationId }, context) => {
       if (context?.previousMessages) {
         queryClient.setQueryData(
           queryKeys.ai.conversations.messages(conversationId), 
@@ -148,5 +145,47 @@ export const useDeleteConversation = () => {
         queryKey: queryKeys.ai.conversations.lists() 
       });
     },
+  });
+};
+
+export const useArchiveConversation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => aiService.archiveConversation(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ 
+        queryKey: queryKeys.ai.conversations.lists() 
+      });
+    },
+  });
+};
+
+export const useUnarchiveConversation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => aiService.unarchiveConversation(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ 
+        queryKey: queryKeys.ai.conversations.lists() 
+      });
+    },
+  });
+};
+
+export const useSearchConversations = (query: string) => {
+  return useQuery({
+    queryKey: ['ai', 'conversations', 'search', query],
+    queryFn: () => aiService.searchConversations(query),
+    enabled: query.length > 0,
+    staleTime: 30 * 1000,
+  });
+};
+
+export const useExportConversation = () => {
+  return useMutation({
+    mutationFn: ({ conversationId, format }: { conversationId: string; format: 'json' | 'txt' | 'pdf' }) =>
+      aiService.exportConversation(conversationId, format),
   });
 };
