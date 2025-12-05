@@ -328,19 +328,24 @@ This implementation plan breaks down the frontend development into discrete, man
   - Integrate with /api/v1/farms/{id}/crops endpoints
   - _Requirements: 3.3_
 
-- [ ] 6. Marketplace Module
+- [-] 6. Marketplace Module
+
+
   - Build complete marketplace with product browsing and ordering
   - Integrate with marketplace API endpoints
   - Implement shopping cart and checkout flow
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 6.1 Create Marketplace product listing page
+- [x] 6.1 Create Marketplace product listing page
+
+
   - Update Marketplace page to fetch from /api/v1/marketplace/products
   - Implement product grid with responsive layout
   - Add search functionality with /api/v1/marketplace/products/search
   - Implement category and price filters
   - Add sorting options (price, date, popularity)
   - _Requirements: 4.1, 4.2_
+
 
 - [ ] 6.2 Create Product details page
   - Build product details view with image gallery

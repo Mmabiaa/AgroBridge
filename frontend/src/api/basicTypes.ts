@@ -80,7 +80,7 @@ export interface Product {
   is_featured?: boolean;
   tags?: string[];
   quality_grade?: string;
-  location?: string;
+  location?: string | { city?: string; address?: string; [key: string]: any };
   delivery_available?: boolean;
   pickup_available?: boolean;
   organic?: boolean;

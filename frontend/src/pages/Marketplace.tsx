@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +23,8 @@ import {
   RefreshCw,
   Filter,
   Trash2,
-  Edit
+  Edit,
+  DollarSign
 } from 'lucide-react';
 import {
   AlertDialog,
@@ -39,108 +40,70 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { CreateProductModal } from '@/components/marketplace/CreateProductModal';
 import { OrderButton } from '@/components/marketplace/OrderButton';
-import apiClient from '@/api/axiosClient';
+import { 
+  useProducts, 
+  useUserProducts, 
+  useUserOrders, 
+  useDeleteProduct,
+  useCategories 
+} from '@/api/hooks/useMarketplace';
+import type { Product, ProductListParams } from '@/types/basicTypes';
 
-// API helpers (legacy fetches kept minimal)
+// API base URL for image normalization
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
-const fetchProducts = async (search = '', category = '', token = null) => {
-  try {
-    const params = new URLSearchParams();
-    if (search) params.append('search', search);
-    if (category && category !== 'all') params.append('category', category);
-    const headers = {};
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-    const response = await fetch(`${API_BASE_URL}/marketplace/products/?${params}`, {
-      headers,
-    });
-    if (!response.ok) throw new Error('Failed to fetch products');
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    throw error;
-  }
-};
+// Sort options for products
+const SORT_OPTIONS = [
+  { label: 'Newest First', value: '-created_at' },
+  { label: 'Oldest First', value: 'created_at' },
+  { label: 'Price: Low to High', value: 'price_per_unit' },
+  { label: 'Price: High to Low', value: '-price_per_unit' },
+  { label: 'Most Popular', value: '-view_count' },
+  { label: 'Name: A-Z', value: 'name' },
+  { label: 'Name: Z-A', value: '-name' },
+];
 
-const fetchUserProducts = async (token) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/marketplace/products/my-products/`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) throw new Error('Failed to fetch user products');
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching user products:', error);
-    throw error;
-  }
-};
+// Product Grid Component with React Query
+interface ProductGridProps {
+  searchTerm?: string;
+  category?: string;
+  sortBy?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  onDeleteProduct: (product: Product) => void;
+}
 
-const fetchUserOrders = async (token) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/marketplace/orders/myorders/`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) throw new Error('Failed to fetch user orders');
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching user orders:', error);
-    throw error;
-  }
-};
-
-const deleteProduct = async (productId, token) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/marketplace/products/${productId}/`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-    if (!response.ok) throw new Error('Failed to delete product');
-    return true;
-  } catch (error) {
-    console.error('Error deleting product:', error);
-    throw error;
-  }
-};
-
-// Product Grid Component
-const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshKey = 0 }) => {
+const ProductGrid = ({ 
+  searchTerm = '', 
+  category = '', 
+  sortBy = '-created_at',
+  minPrice,
+  maxPrice,
+  onDeleteProduct 
+}: ProductGridProps) => {
   const { user } = useAuth();
-  const [viewMode, setViewMode] = useState('grid');
-  const [localSearch, setLocalSearch] = useState(searchTerm);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  const loadProducts = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      // Public listing does not require auth token
-      const data = await fetchProducts(localSearch, category, null);
-      setProducts(data.results || data || []);
-    } catch (err) {
-      setError('Failed to load products');
-      toast.error('Failed to load products');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Build query params
+  const queryParams: ProductListParams = useMemo(() => {
+    const params: ProductListParams = {
+      available_only: true,
+    };
+    
+    if (searchTerm) params.search = searchTerm;
+    if (category && category !== 'all') params.category = category;
+    if (sortBy) params.sort = sortBy;
+    if (minPrice !== undefined) params.min_price = minPrice;
+    if (maxPrice !== undefined) params.max_price = maxPrice;
+    
+    return params;
+  }, [searchTerm, category, sortBy, minPrice, maxPrice]);
 
-  useEffect(() => {
-    loadProducts();
-  }, [localSearch, category, refreshKey]);
+  // Fetch products using React Query
+  const { data, isLoading, isError, error, refetch } = useProducts(queryParams);
 
-  const getProductImageUrl = (product) => {
+  // Helper functions
+  const getProductImageUrl = (product: Product): string | null => {
     if (!product.images || product.images.length === 0) {
       return null;
     }
@@ -162,9 +125,9 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
     return null;
   };
 
-  const normalizeImageUrl = (url) => {
+  const normalizeImageUrl = (url: string): string | null => {
     if (!url) return null;
-    // If backend returns relative path, prefix with server origin (strip trailing slash)
+    // If backend returns relative path, prefix with server origin
     if (url.startsWith('/')) {
       const base = API_BASE_URL.replace(/\/api\/?v?1?\/?$/, '').replace(/\/$/, '');
       return `${base}${url}`;
@@ -172,35 +135,29 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
     return url;
   };
 
-  const isProductOwner = (product) => {
+  const isProductOwner = (product: Product): boolean => {
     return product.seller && product.seller.id === user?.id;
   };
 
-  const getSellerName = (product) => {
+  const getSellerName = (product: Product): string => {
     if (isProductOwner(product)) {
       return 'You';
     }
     return product.seller?.business_name || product.seller?.username || 'Seller';
   };
 
-  const formatPrice = (price) => {
+  const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('en-GH', {
       style: 'currency',
       currency: 'GHS',
     }).format(price);
   };
 
-  const filteredProducts = products.filter(product => {
-    // Exclude user's own products from Browse tab
-    if (isProductOwner(product)) {
-      return false;
-    }
-    // Apply search filter
-    return product.name.toLowerCase().includes(localSearch.toLowerCase()) ||
-           product.description.toLowerCase().includes(localSearch.toLowerCase());
-  });
+  // Filter out user's own products from browse view
+  const products = data?.results || [];
+  const filteredProducts = products.filter(product => !isProductOwner(product));
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {[...Array(8)].map((_, i) => (
@@ -217,13 +174,15 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div className="text-center py-12">
         <AlertCircle className="h-12 w-12 mx-auto mb-4 text-red-500" />
         <h3 className="text-lg font-semibold mb-2">Failed to load products</h3>
-        <p className="text-muted-foreground mb-4">{error}</p>
-        <Button onClick={loadProducts}>
+        <p className="text-muted-foreground mb-4">
+          {error instanceof Error ? error.message : 'An error occurred while loading products'}
+        </p>
+        <Button onClick={() => refetch()}>
           <RefreshCw className="h-4 w-4 mr-2" />
           Try Again
         </Button>
@@ -233,18 +192,14 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
 
   return (
     <div className="space-y-6">
-      {/* Search and View Controls */}
+      {/* View Controls and Results Count */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div className="flex-1 max-w-md">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search products..."
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+        <div className="text-sm text-muted-foreground">
+          {data?.count !== undefined && (
+            <span>
+              Showing {filteredProducts.length} of {data.count} products
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -311,7 +266,7 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
                 )}
 
                 {/* Organic Badge */}
-                {product.organic_certified && (
+                {product.organic && (
                   <div className="absolute top-2 right-2">
                     <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
                       Organic
@@ -337,7 +292,13 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
 
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <MapPin className="h-3 w-3" />
-                  <span>{product.location?.city || 'Unknown'}</span>
+                  <span>
+                    {typeof product.location === 'string' 
+                      ? product.location 
+                      : (product.location && typeof product.location === 'object' && 'city' in product.location)
+                        ? product.location.city || 'Unknown'
+                        : 'Unknown'}
+                  </span>
                   <span>•</span>
                   <span className={isOwner ? "text-blue-600 font-medium" : ""}>
                     {getSellerName(product)}
@@ -408,8 +369,8 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
                       availableQuantity={product.quantity_available}
                       onOrderSuccess={(order) => {
                         console.log('Order placed successfully:', order);
-                        // Optionally refresh products
-                        loadProducts();
+                        // Refetch products to update quantities
+                        refetch();
                       }}
                       onOrderError={(error) => {
                         console.error('Order failed:', error);
@@ -423,7 +384,7 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
         })}
       </div>
 
-      {filteredProducts.length === 0 && !loading && (
+      {filteredProducts.length === 0 && !isLoading && (
         <div className="text-center py-12">
           <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
           <h3 className="text-lg font-semibold mb-2">No products found</h3>
@@ -436,139 +397,65 @@ const ProductGrid = ({ searchTerm = '', category = '', onDeleteProduct, refreshK
   );
 };
 
-const MyOrders = ({ token }) => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await fetchUserOrders(token);
-        setOrders(response);
-      } catch (err) {
-        setError('Failed to fetch orders.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOrders();
-  }, [token]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-
-  return (
-    <div>
-      <h2>My Orders</h2>
-      <ul>
-        {orders.map(order => (
-          <li key={order.id}>
-            <h3>Order ID: {order.id}</h3>
-            <p>Product Name: {order.product_name}</p>
-            <p>Date: {new Date(order.created_at).toLocaleDateString()}</p>
-            <p>Status: {order.status}</p>
-            <p>Total Price: ${order.total_price}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+// This component is no longer needed as orders are handled in the main component
 
 // Main Marketplace Component
 export default function Marketplace() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('browse');
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [productToDelete, setProductToDelete] = useState(null);
-  const [userProducts, setUserProducts] = useState([]);
-  const [userOrders, setUserOrders] = useState([]);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [loading, setLoading] = useState({
-    products: false,
-    orders: false
-  });
-  const [error, setError] = useState({
-    products: null,
-    orders: null
-  });
+  const [selectedSort, setSelectedSort] = useState('-created_at');
+  const [minPrice, setMinPrice] = useState<number | undefined>();
+  const [maxPrice, setMaxPrice] = useState<number | undefined>();
+  const [showFilters, setShowFilters] = useState(false);
 
-  const categories = [
-    { label: 'All Categories', value: 'all' },
-    { label: 'Vegetables', value: 'vegetables' },
-    { label: 'Fruits', value: 'fruits' },
-    { label: 'Grains', value: 'grains' },
-    { label: 'Legumes', value: 'legumes' },
-    { label: 'Herbs & Spices', value: 'herbs-spices' },
-    { label: 'Livestock', value: 'livestock' },
-    { label: 'Dairy', value: 'dairy' },
-    { label: 'Poultry', value: 'poultry' }
-  ];
-
-  const loadUserProducts = async () => {
-    const token = apiClient.getAccessToken();
-    if (!user || !token) return;
-
-    try {
-      setLoading(prev => ({ ...prev, products: true }));
-      setError(prev => ({ ...prev, products: null }));
-      const data = await fetchUserProducts(token);
-      setUserProducts(data.results || data || []);
-    } catch (err) {
-      setError(prev => ({ ...prev, products: 'Failed to load your products' }));
-      toast.error('Failed to load your products');
-    } finally {
-      setLoading(prev => ({ ...prev, products: false }));
+  // Fetch categories from API
+  const { data: categoriesData } = useCategories();
+  const categories = useMemo(() => {
+    const cats = [{ id: 0, name: 'All Categories', value: 'all' }];
+    if (categoriesData && Array.isArray(categoriesData)) {
+      cats.push(...categoriesData.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        value: cat.id.toString()
+      })));
     }
-  };
+    return cats;
+  }, [categoriesData]);
 
-  const loadUserOrders = async () => {
-    const token = apiClient.getAccessToken();
-    if (!user || !token) return;
+  // Fetch user products and orders using React Query
+  const { 
+    data: userProductsData, 
+    isLoading: loadingProducts, 
+    isError: errorProducts,
+    refetch: refetchUserProducts 
+  } = useUserProducts();
+  
+  const { 
+    data: userOrdersData, 
+    isLoading: loadingOrders, 
+    isError: errorOrders,
+    refetch: refetchUserOrders 
+  } = useUserOrders();
 
-    try {
-      setLoading(prev => ({ ...prev, orders: true }));
-      setError(prev => ({ ...prev, orders: null }));
-      const data = await fetchUserOrders(token);
-      setUserOrders(data.results || data || []);
-    } catch (err) {
-      setError(prev => ({ ...prev, orders: 'Failed to load your orders' }));
-      toast.error('Failed to load your orders');
-    } finally {
-      setLoading(prev => ({ ...prev, orders: false }));
-    }
-  };
+  // Delete product mutation
+  const deleteProductMutation = useDeleteProduct();
 
-  useEffect(() => {
-    if (activeTab === 'my-products') {
-      loadUserProducts();
-    } else if (activeTab === 'orders') {
-      loadUserOrders();
-    }
-  }, [activeTab, user]);
+  const userProducts = userProductsData?.results || [];
+  const userOrders = userOrdersData?.results || [];
 
-  const handleDeleteProduct = (product) => {
+  const handleDeleteProduct = (product: Product) => {
     setProductToDelete(product);
   };
 
   const confirmDelete = async () => {
     if (!productToDelete) return;
-    const token = apiClient.getAccessToken();
-    if (!token) {
-      toast.error('Please sign in to delete your product.');
-      return;
-    }
+    
     try {
-      await deleteProduct(productToDelete.id, token);
-
-      // Update local state
-      setUserProducts(prev => prev.filter(p => p.id !== productToDelete.id));
-      // Refresh browse list
-      setRefreshKey(prev => prev + 1);
-
+      await deleteProductMutation.mutateAsync(productToDelete.id);
       toast.success('Product deleted successfully!');
       setProductToDelete(null);
     } catch (err) {
@@ -581,7 +468,7 @@ export default function Marketplace() {
     user.permissions?.includes('create_product')
   );
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string): string => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'confirmed': return 'bg-blue-100 text-blue-800';
@@ -592,7 +479,7 @@ export default function Marketplace() {
     }
   };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string): JSX.Element => {
     switch (status) {
       case 'pending': return <Clock className="h-3 w-3" />;
       case 'confirmed': return <CheckCircle className="h-3 w-3" />;
@@ -601,6 +488,21 @@ export default function Marketplace() {
       case 'cancelled': return <AlertCircle className="h-3 w-3" />;
       default: return <Clock className="h-3 w-3" />;
     }
+  };
+
+  const formatPrice = (price: number): string => {
+    return new Intl.NumberFormat('en-GH', {
+      style: 'currency',
+      currency: 'GHS',
+    }).format(price);
+  };
+
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setSelectedCategory('all');
+    setSelectedSort('-created_at');
+    setMinPrice(undefined);
+    setMaxPrice(undefined);
   };
 
   return (
@@ -625,36 +527,98 @@ export default function Marketplace() {
       {/* Search and Filters */}
       <Card>
         <CardContent className="p-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search products, farmers, or locations..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
+          <div className="space-y-4">
+            {/* Main search and controls row */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search products, farmers, or locations..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
               </div>
+
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-full sm:w-48">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category.value} value={category.value}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedSort} onValueChange={setSelectedSort}>
+                <SelectTrigger className="w-full sm:w-48">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  {SORT_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Button 
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <Filter className="h-4 w-4 mr-2" />
+                {showFilters ? 'Hide' : 'Show'} Filters
+              </Button>
             </div>
 
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category.value} value={category.value}>
-                    {category.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Advanced filters (collapsible) */}
+            {showFilters && (
+              <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t">
+                <div className="flex-1">
+                  <label className="text-sm font-medium mb-2 block">Min Price (GHS)</label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      value={minPrice || ''}
+                      onChange={(e) => setMinPrice(e.target.value ? Number(e.target.value) : undefined)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
 
-            <Button variant="outline">
-              <Filter className="h-4 w-4 mr-2" />
-              Filters
-            </Button>
+                <div className="flex-1">
+                  <label className="text-sm font-medium mb-2 block">Max Price (GHS)</label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="number"
+                      placeholder="Any"
+                      value={maxPrice || ''}
+                      onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : undefined)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-end">
+                  <Button 
+                    variant="ghost" 
+                    onClick={handleClearFilters}
+                    className="w-full sm:w-auto"
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -671,11 +635,12 @@ export default function Marketplace() {
         {/* Browse Products */}
         <TabsContent value="browse" className="space-y-6">
           <ProductGrid
-            key={refreshKey}
             searchTerm={searchTerm}
             category={selectedCategory}
+            sortBy={selectedSort}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
             onDeleteProduct={handleDeleteProduct}
-            refreshKey={refreshKey}
           />
         </TabsContent>
 
@@ -686,7 +651,7 @@ export default function Marketplace() {
               <CardTitle className="flex items-center gap-2">
                 <Package className="h-5 w-5" />
                 My Products
-                {error.products && (
+                {errorProducts && (
                   <Badge variant="outline" className="text-yellow-600 border-yellow-300">
                     Error
                   </Badge>
@@ -694,7 +659,7 @@ export default function Marketplace() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {loading.products ? (
+              {loadingProducts ? (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {[...Array(6)].map((_, i) => (
                     <div key={i} className="animate-pulse">
@@ -716,10 +681,10 @@ export default function Marketplace() {
                 <div className="text-center py-12">
                   <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <h3 className="text-lg font-semibold mb-2">
-                    {error.products ? 'Unable to load products' : 'No products listed'}
+                    {errorProducts ? 'Unable to load products' : 'No products listed'}
                   </h3>
                   <p className="text-muted-foreground mb-4">
-                    {error.products
+                    {errorProducts
                       ? 'There was an issue loading your products.'
                       : 'Start selling by listing your first product'
                     }
@@ -731,8 +696,8 @@ export default function Marketplace() {
                         List Product
                       </Button>
                     )}
-                    {error.products && (
-                      <Button variant="outline" onClick={loadUserProducts}>
+                    {errorProducts && (
+                      <Button variant="outline" onClick={() => refetchUserProducts()}>
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Retry
                       </Button>
@@ -756,7 +721,7 @@ export default function Marketplace() {
                         <div className="flex items-center justify-between mb-3">
                           <div>
                             <span className="font-bold text-primary">
-                              GHS {product.price_per_unit}
+                              {formatPrice(product.price_per_unit)}
                             </span>
                             <span className="text-sm text-muted-foreground">
                               /{product.unit_type}
@@ -797,7 +762,7 @@ export default function Marketplace() {
               <CardTitle className="flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5" />
                 My Orders
-                {error.orders && (
+                {errorOrders && (
                   <Badge variant="outline" className="text-yellow-600 border-yellow-300">
                     Error
                   </Badge>
@@ -805,7 +770,7 @@ export default function Marketplace() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {loading.orders ? (
+              {loadingOrders ? (
                 <div className="space-y-4">
                   {[...Array(5)].map((_, i) => (
                     <div key={i} className="animate-pulse flex items-center space-x-4 p-4 border rounded-lg">
@@ -830,10 +795,10 @@ export default function Marketplace() {
                 <div className="text-center py-12">
                   <ShoppingCart className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <h3 className="text-lg font-semibold mb-2">
-                    {error.orders ? 'Unable to load orders' : 'No orders yet'}
+                    {errorOrders ? 'Unable to load orders' : 'No orders yet'}
                   </h3>
                   <p className="text-muted-foreground mb-4">
-                    {error.orders
+                    {errorOrders
                       ? 'There was an issue loading your orders.'
                       : 'Browse products to place your first order'
                     }
@@ -842,8 +807,8 @@ export default function Marketplace() {
                     <Button onClick={() => setActiveTab('browse')}>
                       Browse Products
                     </Button>
-                    {error.orders && (
-                      <Button variant="outline" onClick={loadUserOrders}>
+                    {errorOrders && (
+                      <Button variant="outline" onClick={() => refetchUserOrders()}>
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Retry
                       </Button>
@@ -967,10 +932,6 @@ export default function Marketplace() {
           </div>
         </TabsContent>
 
-        {/* My Orders Tab */}
-        <TabsContent value="my-orders" className="space-y-6">
-          <MyOrders token={apiClient.getAccessToken()} />
-        </TabsContent>
       </Tabs>
 
       {/* Delete Confirmation Dialog */}
@@ -999,13 +960,10 @@ export default function Marketplace() {
         isOpen={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         onSuccess={() => {
-          // Close modal, switch to browse, and refresh product grid so new product + image show
-          setActiveTab('browse');
-          setRefreshKey(prev => prev + 1);
-          // Also refresh "My Products" if currently on that tab
-          if (activeTab === 'my-products') {
-            loadUserProducts();
-          }
+          // Close modal and refresh products
+          setCreateModalOpen(false);
+          setActiveTab('my-products');
+          // React Query will automatically refetch
         }}
       />
     </div>
