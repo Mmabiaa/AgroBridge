@@ -48,6 +48,7 @@ import DevDashboard from "./pages/DevDashboard";
 import { VoiceFab } from '@/components/VoiceFab';
 import { FeatureFlagsProvider } from '@/contexts/FeatureFlagsContext';
 import { FeatureFlaggedVoiceFab } from '@/components/FeatureFlaggedVoiceFab';
+import { AuthSessionManager } from '@/components/AuthSessionManager';
 
 // Fallback component for when errors occur
 const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) => (
@@ -83,11 +84,12 @@ const App = () => (
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <FeatureFlagsProvider>
           <AuthProvider>
-            <NotificationProvider>
-              <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
+            <AuthSessionManager>
+              <NotificationProvider>
+                <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
                 <Routes>
                   {/* Public routes without navigation */}
                   <Route path="/" element={<Home />} />
@@ -330,8 +332,9 @@ const App = () => (
                   } />
                 </Routes>
               </BrowserRouter>
-            </TooltipProvider>
-            </NotificationProvider>
+                </TooltipProvider>
+              </NotificationProvider>
+            </AuthSessionManager>
           </AuthProvider>
         </FeatureFlagsProvider>
       </ThemeProvider>

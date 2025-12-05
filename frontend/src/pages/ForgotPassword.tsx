@@ -6,6 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Wheat, ArrowLeft, Mail, CheckCircle } from 'lucide-react';
+import { z } from 'zod';
+
+// Zod validation schema
+const emailSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+});
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -18,14 +24,14 @@ export default function ForgotPassword() {
     e.preventDefault();
     setError('');
     
-    if (!email.trim()) {
-      setError('Please enter your email address');
-      return;
-    }
-    
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Please enter a valid email address');
-      return;
+    // Validate with Zod
+    try {
+      emailSchema.parse({ email });
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setError(err.errors[0]?.message || 'Please enter a valid email address');
+        return;
+      }
     }
     
     try {

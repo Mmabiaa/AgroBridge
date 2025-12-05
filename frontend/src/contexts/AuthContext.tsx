@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useCurrentUser, useLogin, useRegister, useLogout, useUpdateProfile } from '../api/hooks/useAuth';
 import { realTimeSync } from '../api/realTimeSync';
 import apiClient from '../api/axiosClient';
+import { sessionManager, enableActivityTracking } from '../utils/sessionManager';
+import TokenEncryption from '../utils/tokenEncryption';
 
 export type UserRole = 'farmer' | 'buyer' | 'poultry_keeper' | 'expert' | 'ngo' | 'admin';
 
@@ -60,7 +62,7 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   register: (userData: RegisterUserData) => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
@@ -69,6 +71,10 @@ interface AuthContextType {
   updateUserProfile: (profileData: Partial<User>) => Promise<void>;
   refreshToken: () => Promise<void>;
   isAuthenticated: boolean;
+  sessionTimeRemaining: number;
+  showSessionWarning: boolean;
+  extendSession: () => void;
+  isRememberMeEnabled: boolean;
 }
 
 interface RegisterUserData {
@@ -212,6 +218,8 @@ const getDefaultRoutes = (role: UserRole): string[] => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [sessionTimeRemaining, setSessionTimeRemaining] = useState<number>(0);
+  const [showSessionWarning, setShowSessionWarning] = useState<boolean>(false);
   
   // Use API hooks
   const { data: currentUser, isLoading: userLoading, error: userError, refetch: refetchUser } = useCurrentUser();
@@ -222,12 +230,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const isLoading = userLoading || loginMutation.isPending || registerMutation.isPending || updateProfileMutation.isPending;
   const isAuthenticated = apiClient.isAuthenticated() && !!user;
+  const isRememberMeEnabled = sessionManager.isRememberMeEnabled();
 
   const clearAuthData = (): void => {
     // Clear tokens from localStorage
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
+    
+    // Clear session
+    sessionManager.clearSession();
+    
+    // Clear encryption key
+    if (TokenEncryption.isSupported()) {
+      TokenEncryption.clearKey();
+    }
     
     // Type-safe apiClient access
     const client = apiClient as unknown as ApiClient;
@@ -238,11 +255,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Session management callbacks
+  const handleSessionTimeout = useCallback(() => {
+    console.log('Session timed out');
+    setShowSessionWarning(false);
+    logout();
+  }, []);
+
+  const handleSessionWarning = useCallback((remainingTime: number) => {
+    console.log('Session warning:', remainingTime);
+    setSessionTimeRemaining(remainingTime);
+    setShowSessionWarning(true);
+  }, []);
+
+  const extendSession = useCallback(() => {
+    sessionManager.updateActivity();
+    setShowSessionWarning(false);
+  }, []);
+
   // Effect to handle user authentication state
   useEffect(() => {
     if (currentUser) {
       const mappedUser = mapApiUserToUser(currentUser as ApiUser, true);
       setUser(mappedUser);
+      
+      // Initialize session management
+      if (sessionManager.isSessionValid()) {
+        sessionManager.updateActivity();
+      }
       
       // DISABLED: realTimeSync WebSocket - using NotificationContext instead
       // realTimeSync.startConnection();
@@ -253,6 +293,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // realTimeSync.stopConnection();
     }
   }, [currentUser, userError]);
+
+  // Setup session management
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      // Enable activity tracking
+      enableActivityTracking();
+      
+      // Setup session callbacks
+      sessionManager.onTimeout(handleSessionTimeout);
+      sessionManager.onWarning(handleSessionWarning);
+      
+      // Update session time remaining periodically
+      const interval = setInterval(() => {
+        const remaining = sessionManager.getRemainingTime();
+        setSessionTimeRemaining(remaining);
+        
+        // Auto-hide warning if session was extended
+        if (remaining > 5 * 60 * 1000 && showSessionWarning) {
+          setShowSessionWarning(false);
+        }
+      }, 1000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated, user, handleSessionTimeout, handleSessionWarning, showSessionWarning]);
 
   // Check for existing authentication on app startup
   useEffect(() => {
@@ -287,7 +352,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user, userLoading, refetchUser]);
 
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (email: string, password: string, rememberMe: boolean = false): Promise<void> => {
     // Clear any existing expired tokens before login
     clearAuthData();
     
@@ -295,6 +360,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     const mappedUser = mapApiUserToUser(result.user, true);
     setUser(mappedUser);
+    
+    // Initialize session with remember me option
+    sessionManager.initSession({
+      rememberMe,
+      timeout: 30 * 60 * 1000, // 30 minutes
+      rememberMeDuration: 30 * 24 * 60 * 60 * 1000, // 30 days
+    });
     
     // DISABLED: realTimeSync WebSocket - using NotificationContext instead
     // realTimeSync.startConnection();
@@ -304,7 +376,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await registerMutation.mutateAsync(userData);
     
     // After successful registration, login automatically
-    await login(userData.email, userData.password);
+    await login(userData.email, userData.password, false);
   };
 
   const logout = async (): Promise<void> => {
@@ -378,7 +450,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     canAccessRoute,
     updateUserProfile,
     refreshToken,
-    isAuthenticated
+    isAuthenticated,
+    sessionTimeRemaining,
+    showSessionWarning,
+    extendSession,
+    isRememberMeEnabled,
   };
 
   return (
