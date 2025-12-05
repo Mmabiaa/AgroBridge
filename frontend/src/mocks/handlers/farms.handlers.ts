@@ -38,6 +38,6 @@ export const farmsHandlers = [
 
   http.post(`${BASE_URL}/farms/`, async ({ request }) => {
     const body = await request.json();
-    return HttpResponse.json({ id: '3', ...body }, { status: 201 });
+    return HttpResponse.json({ id: '3', body }, { status: 201 });
   }),
 ];
