@@ -3,17 +3,26 @@ Pytest configuration and shared fixtures for AgroBridge testing.
 """
 import os
 import pytest
-import django
-from django.conf import settings
-from django.test import Client
-from rest_framework.test import APIClient
-from faker import Faker
 
-# Configure Django settings
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
-django.setup()
-
-fake = Faker()
+# Try to import Django-related modules, but don't fail if they're not available
+try:
+    import django
+    from django.conf import settings
+    from django.test import Client
+    from rest_framework.test import APIClient
+    from faker import Faker
+    
+    # Configure Django settings only if not already configured
+    if not settings.configured:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'agrobridge_backend.settings')
+        django.setup()
+    
+    fake = Faker()
+    DJANGO_AVAILABLE = True
+except (ImportError, Exception) as e:
+    DJANGO_AVAILABLE = False
+    fake = None
+    print(f"Django not available for testing: {e}")
 
 
 @pytest.fixture(scope='session')
@@ -29,80 +38,81 @@ def django_db_setup():
     }
 
 
-@pytest.fixture
-def api_client():
-    """Provide DRF API client for testing."""
-    return APIClient()
+if DJANGO_AVAILABLE:
+    @pytest.fixture
+    def api_client():
+        """Provide DRF API client for testing."""
+        return APIClient()
 
 
-@pytest.fixture
-def authenticated_client(api_client, test_user):
-    """Provide authenticated API client."""
-    from rest_framework_simplejwt.tokens import RefreshToken
-    
-    refresh = RefreshToken.for_user(test_user)
-    api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
-    return api_client
+    @pytest.fixture
+    def authenticated_client(api_client, test_user):
+        """Provide authenticated API client."""
+        from rest_framework_simplejwt.tokens import RefreshToken
+        
+        refresh = RefreshToken.for_user(test_user)
+        api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
+        return api_client
 
 
-@pytest.fixture
-def test_user(db):
-    """Create a test user."""
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-    
-    user = User.objects.create_user(
-        username=fake.user_name(),
-        email=fake.email(),
-        password='testpass123',
-        first_name=fake.first_name(),
-        last_name=fake.last_name()
-    )
-    return user
+    @pytest.fixture
+    def test_user(db):
+        """Create a test user."""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        user = User.objects.create_user(
+            username=fake.user_name(),
+            email=fake.email(),
+            password='testpass123',
+            first_name=fake.first_name(),
+            last_name=fake.last_name()
+        )
+        return user
 
 
-@pytest.fixture
-def test_farmer(db):
-    """Create a test farmer user."""
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-    
-    user = User.objects.create_user(
-        username=f'farmer_{fake.user_name()}',
-        email=fake.email(),
-        password='testpass123',
-        role='farmer'
-    )
-    return user
+    @pytest.fixture
+    def test_farmer(db):
+        """Create a test farmer user."""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        user = User.objects.create_user(
+            username=f'farmer_{fake.user_name()}',
+            email=fake.email(),
+            password='testpass123',
+            role='farmer'
+        )
+        return user
 
 
-@pytest.fixture
-def test_buyer(db):
-    """Create a test buyer user."""
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-    
-    user = User.objects.create_user(
-        username=f'buyer_{fake.user_name()}',
-        email=fake.email(),
-        password='testpass123',
-        role='buyer'
-    )
-    return user
+    @pytest.fixture
+    def test_buyer(db):
+        """Create a test buyer user."""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        user = User.objects.create_user(
+            username=f'buyer_{fake.user_name()}',
+            email=fake.email(),
+            password='testpass123',
+            role='buyer'
+        )
+        return user
 
 
-@pytest.fixture
-def test_admin(db):
-    """Create a test admin user."""
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-    
-    user = User.objects.create_superuser(
-        username='admin',
-        email='admin@test.com',
-        password='adminpass123'
-    )
-    return user
+    @pytest.fixture
+    def test_admin(db):
+        """Create a test admin user."""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        user = User.objects.create_superuser(
+            username='admin',
+            email='admin@test.com',
+            password='adminpass123'
+        )
+        return user
 
 
 @pytest.fixture
