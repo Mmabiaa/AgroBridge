@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'analytics',
     'payment',
     'blockchain',
+    'export_docs',
 ]
 
 MIDDLEWARE = [
