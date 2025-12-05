@@ -108,7 +108,7 @@ groups:
           description: "Redis cache is not responding."
 
       # Redis High Memory
-        - alert: RedisHighMemory
+      - alert: RedisHighMemory
         expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 90
         for: 5m
         labels:

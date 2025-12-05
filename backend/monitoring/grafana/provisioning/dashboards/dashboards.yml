@@ -1,4 +1,4 @@
-# Grafana Dashboards Provisioning for AgroBridge
+# Grafana Dashboard Provisioning Configuration
 
 apiVersion: 1
 
@@ -12,4 +12,3 @@ providers:
     allowUiUpdates: true
     options:
       path: /etc/grafana/provisioning/dashboards/json
-      foldersFromFilesStructure: true

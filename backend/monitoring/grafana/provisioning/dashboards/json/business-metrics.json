@@ -1,0 +1,104 @@
+{
+  "dashboard": {
+    "title": "AgroBridge - Business Metrics",
+    "tags": ["agrobridge", "business", "kpi"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "1m",
+    "panels": [
+      {
+        "id": 1,
+        "title": "User Registrations (24h)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "increase(user_registrations_total[24h])"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Active Users",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "active_users_total"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Orders Created (24h)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "increase(orders_created_total[24h])"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 6, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Revenue (24h)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "increase(payment_amount_total[24h])"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 5,
+        "title": "Marketplace Activity",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(marketplace_views_total[5m])) by (product_category)",
+            "legendFormat": "{{product_category}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6}
+      },
+      {
+        "id": 6,
+        "title": "AI Assistant Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(ai_queries_total[5m])) by (query_type)",
+            "legendFormat": "{{query_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6}
+      },
+      {
+        "id": 7,
+        "title": "IoT Sensor Readings",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(iot_readings_total[5m])) by (sensor_type)",
+            "legendFormat": "{{sensor_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14}
+      },
+      {
+        "id": 8,
+        "title": "Crop Disease Detections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(disease_detections_total[5m])) by (disease_type)",
+            "legendFormat": "{{disease_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14}
+      }
+    ]
+  }
+}
