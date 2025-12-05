@@ -1,0 +1,71 @@
+# Testing Dependencies for AgroBridge
+
+# Core Testing Framework
+pytest==7.4.3
+pytest-django==4.7.0
+pytest-cov==4.1.0
+pytest-xdist==3.5.0  # Parallel test execution
+pytest-timeout==2.2.0
+pytest-mock==3.12.0
+pytest-asyncio==0.21.1
+
+# Code Coverage
+coverage==7.3.2
+codecov==2.1.13
+
+# Load Testing
+locust==2.19.1
+
+# API Testing
+requests==2.31.0
+requests-mock==1.11.0
+
+# Fake Data Generation
+Faker==20.1.0
+factory-boy==3.3.0
+
+# Code Quality
+flake8==6.1.0
+pylint==3.0.3
+black==23.12.1
+isort==5.13.2
+mypy==1.7.1
+
+# Security Testing
+bandit==1.7.5
+safety==2.3.5
+
+# Performance Testing
+pytest-benchmark==4.0.0
+memory-profiler==0.61.0
+
+# Database Testing
+pytest-postgresql==5.0.0
+pytest-redis==3.0.2
+
+# Mocking and Fixtures
+responses==0.24.1
+freezegun==1.4.0  # Time mocking
+vcr-py==5.1.0  # HTTP interaction recording
+
+# Reporting
+pytest-html==4.1.1
+pytest-json-report==1.5.0
+allure-pytest==2.13.2
+
+# Chaos Engineering
+chaos-toolkit==1.17.0
+chaostoolkit-kubernetes==0.28.0
+
+# Contract Testing
+pact-python==2.1.1
+
+# Browser Testing (for E2E)
+selenium==4.16.0
+playwright==1.40.0
+
+# API Documentation Testing
+dredd==5.1.0
+
+# Monitoring and Observability
+pytest-monitor==1.6.6
