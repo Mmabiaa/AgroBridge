@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-config
+  namespace: agrobridge
+data:
+  postgresql-host: "postgresql.agrobridge.svc.cluster.local"
+  postgresql-port: "5432"
+  mongodb-host: "mongodb.agrobridge.svc.cluster.local"
+  mongodb-port: "27017"
+  timescaledb-host: "timescaledb.agrobridge.svc.cluster.local"
+  timescaledb-port: "5432"

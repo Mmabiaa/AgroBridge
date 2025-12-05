@@ -1,0 +1,235 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication
+  namespace: agrobridge
+  labels:
+    app: authentication
+    version: v1
+    tier: backend
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: authentication
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: authentication
+        version: v1
+        tier: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: agrobridge-service-account
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: authentication
+        image: agrobridge/authentication:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8001
+          protocol: TCP
+        - name: metrics
+          containerPort: 9090
+          protocol: TCP
+        env:
+        - name: SERVICE_NAME
+          value: "authentication"
+        - name: SERVICE_PORT
+          value: "8001"
+        - name: DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: database-config
+              key: postgresql-host
+        - name: DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: database-config
+              key: postgresql-port
+        - name: DATABASE_NAME
+          value: "authentication_db"
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgresql-username
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgresql-password
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: cache-config
+              key: redis-host
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: cache-config
+              key: redis-port
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secret
+              key: secret-key
+        - name: JWT_ALGORITHM
+          value: "HS256"
+        - name: JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+          value: "15"
+        - name: JWT_REFRESH_TOKEN_EXPIRE_DAYS
+          value: "7"
+        - name: RABBITMQ_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: messaging-config
+              key: rabbitmq-host
+        - name: RABBITMQ_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: messaging-config
+              key: rabbitmq-port
+        - name: RABBITMQ_USER
+          valueFrom:
+            secretKeyRef:
+              name: messaging-credentials
+              key: rabbitmq-username
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: messaging-credentials
+              key: rabbitmq-password
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: ENVIRONMENT
+          value: "production"
+        - name: CONSUL_HOST
+          value: "consul.agrobridge.svc.cluster.local"
+        - name: CONSUL_PORT
+          value: "8500"
+        - name: JAEGER_AGENT_HOST
+          value: "jaeger-agent.agrobridge.svc.cluster.local"
+        - name: JAEGER_AGENT_PORT
+          value: "6831"
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 30
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+        - name: secrets
+          mountPath: /app/secrets
+          readOnly: true
+        - name: logs
+          mountPath: /app/logs
+        - name: tls-certs
+          mountPath: /certs
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: authentication-config
+      - name: secrets
+        secret:
+          secretName: authentication-secrets
+      - name: logs
+        emptyDir: {}
+      - name: tls-certs
+        secret:
+          secretName: tls-certificates
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - authentication
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 300
+      - key: "node.kubernetes.io/unreachable"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 300
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication
+  namespace: agrobridge
+  labels:
+    app: authentication
+    service: authentication
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8001
+    targetPort: http
+    protocol: TCP
+  - name: metrics
+    port: 9090
+    targetPort: metrics
+    protocol: TCP
+  selector:
+    app: authentication
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: agrobridge-service-account
+  namespace: agrobridge

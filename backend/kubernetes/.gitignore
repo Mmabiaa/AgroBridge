@@ -1,0 +1,60 @@
+# Kubernetes - Git Ignore
+
+# Secrets (never commit)
+base/secrets/
+*-secret.yaml
+*-secrets.yaml
+*.secret
+secrets/
+
+# Generated files
+kustomization-generated.yaml
+*.generated.yaml
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Kubeconfig files
+kubeconfig
+*.kubeconfig
+config
+
+# Helm charts (if using)
+charts/
+*.tgz
+
+# Terraform state (if using)
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+*.backup
+
+# Keep example files
+!*.example
+!*.sample
+!*.template
+
+# Keep documentation
+!*.md
+!README*
+!QUICK_START*

@@ -1,0 +1,83 @@
+# Kustomization file for AgroBridge Kubernetes deployment
+# Use with: kubectl apply -k .
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: agrobridge
+
+resources:
+  # Base
+  - base/namespace.yaml
+  
+  # Deployments (sample - add all services)
+  - deployments/authentication.yaml
+  
+  # Auto-scaling
+  - autoscaling/authentication-hpa.yaml
+  
+  # Istio
+  - istio/gateway.yaml
+
+commonLabels:
+  app.kubernetes.io/name: agrobridge
+  app.kubernetes.io/managed-by: kustomize
+
+commonAnnotations:
+  app.kubernetes.io/version: "1.0.0"
+
+images:
+  - name: agrobridge/authentication
+    newTag: latest
+  - name: agrobridge/users
+    newTag: latest
+  - name: agrobridge/farms
+    newTag: latest
+
+configMapGenerator:
+  - name: database-config
+    literals:
+      - postgresql-host=postgresql.agrobridge.svc.cluster.local
+      - postgresql-port=5432
+      - mongodb-host=mongodb.agrobridge.svc.cluster.local
+      - mongodb-port=27017
+  
+  - name: cache-config
+    literals:
+      - redis-host=redis.agrobridge.svc.cluster.local
+      - redis-port=6379
+  
+  - name: messaging-config
+    literals:
+      - rabbitmq-host=rabbitmq.agrobridge.svc.cluster.local
+      - rabbitmq-port=5672
+
+secretGenerator:
+  - name: database-credentials
+    literals:
+      - postgresql-username=agrobridge
+      - postgresql-password=changeme
+      - mongodb-username=agrobridge
+      - mongodb-password=changeme
+  
+  - name: messaging-credentials
+    literals:
+      - rabbitmq-username=agrobridge
+      - rabbitmq-password=changeme
+  
+  - name: jwt-secret
+    literals:
+      - secret-key=your-secret-key-here-change-in-production
+
+replicas:
+  - name: authentication
+    count: 3
+
+patches:
+  - target:
+      kind: Deployment
+      name: authentication
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 3
