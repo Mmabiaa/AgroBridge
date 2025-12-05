@@ -113,6 +113,15 @@ export const queryKeys = {
     profile: () => ['auth', 'profile'] as const,
   },
   
+  // Users
+  users: {
+    all: () => ['users'] as const,
+    list: (params?: any) => ['users', 'list', params] as const,
+    detail: (id: string) => ['users', 'detail', id] as const,
+    profile: () => ['users', 'profile'] as const,
+    preferences: () => ['users', 'preferences'] as const,
+  },
+  
   // Farms
   farms: {
     all: () => ['farms'] as const,
@@ -156,6 +165,10 @@ export const queryKeys = {
       detail: (id: string) => ['ai', 'conversations', 'detail', id] as const,
       messages: (conversationId: string) => ['ai', 'conversations', conversationId, 'messages'] as const,
     },
+    recommendations: {
+      all: () => ['ai', 'recommendations'] as const,
+      active: () => ['ai', 'recommendations', 'active'] as const,
+    },
   },
   
   // Crop Detection
@@ -176,16 +189,128 @@ export const queryKeys = {
       detail: (id: string) => ['crop-detection', 'scans', 'detail', id] as const,
     },
   },
+  
+  // IoT
+  iot: {
+    all: () => ['iot'] as const,
+    devices: (params?: any) => ['iot', 'devices', params] as const,
+    device: (id: string) => ['iot', 'device', id] as const,
+    sensorData: (id: string, params?: any) => ['iot', 'sensor-data', id, params] as const,
+  },
+  
+  // Notifications
+  notifications: {
+    all: () => ['notifications'] as const,
+    list: (params?: any) => ['notifications', 'list', params] as const,
+    unreadCount: () => ['notifications', 'unread-count'] as const,
+    preferences: () => ['notifications', 'preferences'] as const,
+  },
+  
+  // Financial
+  financial: {
+    all: () => ['financial'] as const,
+    records: (params?: any) => ['financial', 'records', params] as const,
+    budgets: () => ['financial', 'budgets'] as const,
+    reports: (type: string, params?: any) => ['financial', 'reports', type, params] as const,
+  },
+  
+  // Learning
+  learning: {
+    all: () => ['learning'] as const,
+    courses: (params?: any) => ['learning', 'courses', params] as const,
+    enrollments: () => ['learning', 'enrollments'] as const,
+    lessons: (courseId: string) => ['learning', 'lessons', courseId] as const,
+    certificates: () => ['learning', 'certificates'] as const,
+  },
+  
+  // Community
+  community: {
+    all: () => ['community'] as const,
+    feed: (params?: any) => ['community', 'feed', params] as const,
+    posts: (params?: any) => ['community', 'posts', params] as const,
+    post: (id: string) => ['community', 'post', id] as const,
+    messages: () => ['community', 'messages'] as const,
+  },
+  
+  // Scheduling
+  scheduling: {
+    all: () => ['scheduling'] as const,
+    tasks: (params?: any) => ['scheduling', 'tasks', params] as const,
+    calendar: (params?: any) => ['scheduling', 'calendar', params] as const,
+    suggestions: () => ['scheduling', 'suggestions'] as const,
+  },
+  
+  // Analytics
+  analytics: {
+    all: () => ['analytics'] as const,
+    dashboard: () => ['analytics', 'dashboard'] as const,
+    farmPerformance: (params?: any) => ['analytics', 'farm-performance', params] as const,
+    yieldPredictions: (params?: any) => ['analytics', 'yield-predictions', params] as const,
+    weather: (params?: any) => ['analytics', 'weather', params] as const,
+  },
+  
+  // Payment
+  payment: {
+    all: () => ['payment'] as const,
+    transactions: (params?: any) => ['payment', 'transactions', params] as const,
+    methods: () => ['payment', 'methods'] as const,
+    balance: () => ['payment', 'balance'] as const,
+  },
+  
+  // Blockchain
+  blockchain: {
+    all: () => ['blockchain'] as const,
+    certificates: (params?: any) => ['blockchain', 'certificates', params] as const,
+    supplyChain: (productId: string) => ['blockchain', 'supply-chain', productId] as const,
+    transactions: (params?: any) => ['blockchain', 'transactions', params] as const,
+  },
+  
+  // Export Docs
+  exportDocs: {
+    all: () => ['export-docs'] as const,
+    documents: (params?: any) => ['export-docs', 'documents', params] as const,
+    templates: () => ['export-docs', 'templates'] as const,
+  },
+  
+  // Emergency
+  emergency: {
+    all: () => ['emergency'] as const,
+    alerts: (params?: any) => ['emergency', 'alerts', params] as const,
+    incidents: (params?: any) => ['emergency', 'incidents', params] as const,
+    resources: (params?: any) => ['emergency', 'resources', params] as const,
+  },
+  
+  // Admin
+  admin: {
+    all: () => ['admin'] as const,
+    users: (params?: any) => ['admin', 'users', params] as const,
+    systemHealth: () => ['admin', 'system', 'health'] as const,
+    systemMetrics: (params?: any) => ['admin', 'system', 'metrics', params] as const,
+    auditTrail: (params?: any) => ['admin', 'audit-trail', params] as const,
+  },
 };
 
 // Cache invalidation utilities
 export const cacheUtils = {
   // Invalidate all queries for a specific resource
   invalidateAuth: () => queryClient.invalidateQueries({ queryKey: queryKeys.auth.user() }),
+  invalidateUsers: () => queryClient.invalidateQueries({ queryKey: queryKeys.users.all() }),
   invalidateFarms: () => queryClient.invalidateQueries({ queryKey: queryKeys.farms.all() }),
   invalidateMarketplace: () => queryClient.invalidateQueries({ queryKey: queryKeys.marketplace.all() }),
   invalidateAI: () => queryClient.invalidateQueries({ queryKey: queryKeys.ai.all() }),
   invalidateCropDetection: () => queryClient.invalidateQueries({ queryKey: queryKeys.cropDetection.all() }),
+  invalidateIoT: () => queryClient.invalidateQueries({ queryKey: queryKeys.iot.all() }),
+  invalidateNotifications: () => queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() }),
+  invalidateFinancial: () => queryClient.invalidateQueries({ queryKey: queryKeys.financial.all() }),
+  invalidateLearning: () => queryClient.invalidateQueries({ queryKey: queryKeys.learning.all() }),
+  invalidateCommunity: () => queryClient.invalidateQueries({ queryKey: queryKeys.community.all() }),
+  invalidateScheduling: () => queryClient.invalidateQueries({ queryKey: queryKeys.scheduling.all() }),
+  invalidateAnalytics: () => queryClient.invalidateQueries({ queryKey: queryKeys.analytics.all() }),
+  invalidatePayment: () => queryClient.invalidateQueries({ queryKey: queryKeys.payment.all() }),
+  invalidateBlockchain: () => queryClient.invalidateQueries({ queryKey: queryKeys.blockchain.all() }),
+  invalidateExportDocs: () => queryClient.invalidateQueries({ queryKey: queryKeys.exportDocs.all() }),
+  invalidateEmergency: () => queryClient.invalidateQueries({ queryKey: queryKeys.emergency.all() }),
+  invalidateAdmin: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.all() }),
   
   // Invalidate specific query
   invalidateQuery: (queryKey: any[]) => {
