@@ -328,7 +328,8 @@ This implementation plan breaks down the frontend development into discrete, man
   - Integrate with /api/v1/farms/{id}/crops endpoints
   - _Requirements: 3.3_
 
-- [-] 6. Marketplace Module
+- [x] 6. Marketplace Module
+
 
 
   - Build complete marketplace with product browsing and ordering
