@@ -47,6 +47,7 @@ schema_view = get_schema_view(
             path('scheduling/', include('scheduling.urls')),
             path('analytics/', include('analytics.urls')),
             path('payment/', include('payment.urls')),
+            path('blockchain/', include('blockchain.urls')),
         ])),
     ],
 )

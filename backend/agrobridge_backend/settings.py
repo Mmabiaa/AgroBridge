@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'scheduling',
     'analytics',
     'payment',
+    'blockchain',
 ]
 
 MIDDLEWARE = [
