@@ -1,253 +1,81 @@
-# AgroBridge 🌾
+# AgroBridge Documentation 📚
 
-An AI-powered agricultural hub that connects farmers, buyers, NGOs, and government organizations in a unified ecosystem to modernize farming practices and improve agricultural outcomes across Africa.
+Welcome to the comprehensive documentation for AgroBridge - an AI-powered agricultural hub connecting farmers, buyers, NGOs, and government organizations across Africa.
 
-## 🚀 Project Overview
+## 📋 Documentation Structure
 
-AgroBridge is a comprehensive "super app" for agriculture that combines IoT, AI, blockchain, and social networking to create a complete ecosystem for modern farming. The platform is designed with mobile-first optimization and local language support, recognizing that most users will access it via smartphones.
+This documentation is organized into the following sections:
 
-## ✨ Core Features & Capabilities
+### 🎯 [User Roles & Features](./docs/users/)
+- **Farmers** - Complete farming toolkit and marketplace access
+- **Poultry Keepers** - Specialized poultry management features
+- **Buyers** - Product sourcing and trading capabilities
+- **NGOs/Government** - Administrative and oversight tools
 
-### 🤖 AI-Powered Assistant (AgriGPT)
-- **Multi-language support** - English, Twi, Hausa, and more
-- **Voice commands** - Speech-to-text functionality for hands-free operation
-- **Crop disease detection** - Camera-based analysis for instant diagnosis
-- **Real-time farming advice** - Contextual recommendations based on local conditions
-- **Expert consultation** - Direct access to agricultural specialists
+### 🏗️ [Current Features](./docs/current_features/)
+- **AI-Powered Assistant (AgriGPT)** - Voice commands, multi-language support
+- **Smart Farm Management** - IoT sensors, satellite monitoring, drones
+- **Marketplace & Trading** - Live marketplace, blockchain certificates
+- **Analytics & Insights** - Predictive analytics, performance metrics
+- **Community & Learning** - Social learning, expert networks
+- **Financial Tools** - Planning, scheduling, emergency response
 
-### 🌱 Smart Farm Management
-- **IoT sensor network** - Real-time monitoring of farm conditions
-- **Satellite monitoring** - Advanced aerial analysis and mapping
-- **Drone integration** - Automated aerial monitoring capabilities
-- **Weather forecasting** - Hyperlocal weather predictions
-- **Soil & crop tracking** - Moisture levels and health monitoring
-- **Pest & disease alerts** - Early warning systems
+### 🚀 [Backend Architecture](./docs/backend/)
+- **API Endpoints** - RESTful services and data models
+- **Database Schema** - SQLite database structure
+- **Authentication** - User management and security
+- **Crop Detection API** - YOLOv5-based disease detection
 
-### 🛒 Marketplace & Trading
-- **Live marketplace** - Direct farmer-to-buyer connections
-- **Advanced search** - Filtering by location, crop type, quality
-- **Product listings** - Image upload and detailed descriptions
-- **Price tracking** - Market trends and historical data
-- **Blockchain certificates** - Authenticity verification
-- **Export documentation** - Streamlined international trade
+### 🎨 [Frontend Implementation](./docs/frontend/)
+- **React Components** - UI components and layouts
+- **State Management** - Context API and React Query
+- **Routing** - Page navigation and protected routes
+- **Voice Integration** - Speech-to-text and text-to-speech
 
-### 📊 Analytics & Insights
-- **Predictive analytics** - Data-driven farming decisions
-- **Performance metrics** - Farm efficiency tracking
-- **Market predictions** - Price forecasting algorithms
-- **Weather analysis** - Pattern recognition and planning
-- **Yield optimization** - Personalized recommendations
+### 📈 [Scalability & Future Enhancements](./docs/scalabiltiy%20and%20future%20enhancements/)
+- **Performance Optimization** - Caching, lazy loading, PWA
+- **Microservices Architecture** - Service decomposition
+- **Advanced AI Features** - Machine learning enhancements
+- **Blockchain Integration** - Smart contracts and DeFi
 
-### 👥 Community & Learning
-- **Social learning** - Peer-to-peer knowledge sharing
-- **Community forums** - Discussion boards and Q&A
-- **Expert networks** - Professional guidance access
-- **Local events** - Coordination and scheduling
-- **Support systems** - Farmer assistance programs
+### 💼 [Marketability & Business](./docs/marketability/)
+- **Target Markets** - African agriculture focus
+- **Revenue Models** - Subscription, transaction fees, premium features
+- **Competitive Analysis** - Market positioning and differentiation
+- **Go-to-Market Strategy** - Launch and expansion plans
 
-### 💰 Financial & Planning Tools
-- **Financial planning** - Budget and investment guidance
-- **Smart scheduling** - Activity planning and reminders
-- **Emergency response** - Crisis management systems
-- **Insurance tools** - Risk assessment and coverage
+## 🚀 Quick Start
 
-## 👥 User Roles & Access Levels
+1. **For Developers**: Start with [Backend](./docs/backend/) and [Frontend](./docs/frontend/) documentation
+2. **For Users**: Begin with [User Roles](./docs/users/) to understand available features
+3. **For Stakeholders**: Review [Marketability](./docs/marketability/) for business insights
+4. **For Future Planning**: Explore [Scalability](./docs/scalabiltiy%20and%20future%20enhancements/)
 
-| Role | Access Level | Primary Features |
-|------|-------------|------------------|
-| **Farmers** | Full Access | Complete farming toolkit, marketplace, community |
-| **Poultry Keepers** | Specialized | Poultry-specific features and management tools |
-| **Buyers** | Marketplace | Product sourcing, supplier verification, trading |
-| **NGO/Government** | Administrative | Program monitoring, oversight, policy implementation |
+## 🔧 Technology Stack
 
-## 🛠️ Technology Stack
+- **Frontend**: React 18, TypeScript, Tailwind CSS, Shadcn/ui
+- **Backend**: Python FastAPI, SQLite, YOLOv5
+- **AI/ML**: Crop disease detection, voice recognition, predictive analytics
+- **Infrastructure**: IoT sensors, blockchain, satellite integration
 
-### Frontend
-- **React 18** - Modern React with hooks and concurrent features
-- **TypeScript** - Type-safe development environment
-- **Tailwind CSS** - Utility-first styling with custom agricultural theme
-- **Shadcn/ui** - High-quality component library
-- **Vite** - Fast build tool and development server
+## 📞 Support
 
-### State Management & Routing
-- **TanStack React Query** - Server state management
-- **React Router v6** - Client-side routing
-- **Context API** - Authentication and global state
+- **Documentation Issues**: Create a GitHub issue
+- **Technical Support**: Contact the development team [Tech-By-Mmabiaa](mmaabiaa@gmail.com)
+- **Feature Requests**: Submit through the community forum
 
-### UI & Visualization
-- **Lucide React** - Consistent iconography
-- **Recharts** - Interactive data visualization
-- **Responsive Design** - Mobile-first approach
-
-### Advanced Integrations
-- **IoT Sensors** - Real-time data collection
-- **Blockchain** - Supply chain transparency
-- **AI/ML** - Predictive analytics and recommendations
-- **AR/VR** - Immersive planning and visualization
-
-## 🎨 Design System
-
-### Color Palette
-- **Forest Greens** - Primary brand colors representing growth
-- **Earth Browns** - Secondary colors for grounding
-- **Harvest Golds** - Accent colors for prosperity
-- **Sky Blues** - Supporting colors for clarity
-
-### Design Principles
-- **Mobile-first** - Optimized for smartphone usage
-- **Touch-friendly** - Large, accessible interactive elements
-- **Multi-language** - Seamless language switching
-- **Accessibility** - WCAG compliant interface design
-
-## 📱 Key Pages & Functionality
-
-### Dashboard
-Central command center featuring:
-- Farm health scores and metrics
-- Real-time weather conditions
-- Critical alerts and notifications
-- Quick access to key features
-
-### Monitoring
-Comprehensive farm oversight:
-- Live sensor data visualization
-- Historical trend analysis
-- Automated alert systems
-- Performance benchmarking
-
-### Marketplace
-Trading and commerce hub:
-- Product catalog browsing
-- Advanced search and filtering
-- Secure transaction processing
-- Supplier verification systems
-
-### Learning & Community
-Knowledge sharing platform:
-- Educational resources and tutorials
-- Expert-led webinars and courses
-- Community forums and discussions
-- Local event coordination
-
-### Analytics
-Data-driven insights:
-- Predictive modeling dashboards
-- Market trend analysis
-- Performance optimization recommendations
-- Custom report generation
-
-## 📱 Mobile Optimization
-
-Recognizing that most users access the platform via smartphones, AgroBridge includes:
-
-- **Responsive typography** - Dynamic scaling for all screen sizes
-- **Touch-friendly interfaces** - Minimum 44px touch targets
-- **Swipe gestures** - Intuitive navigation patterns
-- **Offline functionality** - Essential features work without internet
-- **Progressive Web App** - App-like experience in browsers
-
-## 🔧 Project Structure
-
+---
+## License & Copyright
 ```
-agrobridge/
-├── src/
-│   ├── components/          # Reusable UI components
-│   ├── pages/              # Application pages
-│   ├── contexts/           # React contexts for state management
-│   ├── hooks/              # Custom React hooks
-│   ├── services/           # API and external service integrations
-│   ├── utils/              # Utility functions and helpers
-│   ├── types/              # TypeScript type definitions
-│   └── assets/             # Static assets and images
-├── public/                 # Public assets
-├── docs/                   # Documentation files
-└── tests/                  # Test suites
+AgroBridge is proprietary software. Copyright (c) Boateng Prince Agyenim / Tech-By-Mmabiaa. All rights reserved.
+
+This repository is not open-source. Reuse, distribution, or claiming ownership of
+these materials without prior written permission is prohibited. For permission
+requests or licensing, contact: mmaabiaa@gmail.com
 ```
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+ and npm/yarn
-- Modern web browser
-- Internet connection for real-time features
-
-### Installation
-```bash
-# Clone the repository
-git clone https://github.com/mmabiaa/agrobridge.git
-
-# Navigate to project directory
-cd agrobridge
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Environment Setup
-```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Configure required variables
-VITE_API_URL=your_api_endpoint
-VITE_BLOCKCHAIN_NETWORK=your_blockchain_config
-VITE_WEATHER_API_KEY=your_weather_api_key
-```
-
-## 🌟 Advanced Features
-
-### Blockchain Integration
-- **Supply chain transparency** - Track products from farm to table
-- **Smart contracts** - Automated transaction processing
-- **Digital certificates** - Tamper-proof quality assurance
-
-### AI & Machine Learning
-- **Crop disease recognition** - Computer vision analysis
-- **Yield prediction** - Historical and real-time data modeling
-- **Market forecasting** - Price prediction algorithms
-
-### IoT & Sensors
-- **Real-time monitoring** - Soil, weather, and crop conditions
-- **Automated alerts** - Threshold-based notifications
-- **Data visualization** - Interactive charts and graphs
-
-### Emergency Response
-- **Crisis management** - Natural disaster coordination
-- **Resource allocation** - Emergency supply distribution
-- **Communication systems** - Mass notification capabilities
-
-## 🤝 Contributing
-
-We welcome contributions from the agricultural technology community. Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct and development process.
-
-### Development Workflow
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Write/update tests
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Agricultural experts and farmers who provided domain knowledge
-- Open source community for foundational technologies
-- NGOs and government organizations supporting digital agriculture
-- Local communities testing and providing feedback
-
-## 📞 Support & Contact
-
-- **Documentation**: [docs.agrobridge.com](https://docs.agrobridge.com)
-- **Community Forum**: [community.agrobridge.com](https://community.agrobridge.com)
-- **Support Email**: support@agrobridge.com
-- **Bug Reports**: [GitHub Issues](https://github.com/your-org/agrobridge/issues)
 
 ---
 
-**AgroBridge** - Empowering African Agriculture Through Technology 🌍
+**Last Updated**: September 2025  
+**Version**: 1.2.0  
+**Maintainer**: Tech-By-Mmabiaa

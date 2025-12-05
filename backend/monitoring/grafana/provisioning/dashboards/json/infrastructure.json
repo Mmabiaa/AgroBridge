@@ -1,0 +1,100 @@
+{
+  "dashboard": {
+    "title": "AgroBridge - Infrastructure Metrics",
+    "tags": ["agrobridge", "infrastructure", "system"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "PostgreSQL Connections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "pg_stat_database_numbackends"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "MongoDB Operations",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(mongodb_op_counters_total[5m])"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Redis Hit Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(redis_keyspace_hits_total[5m]) / (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m]))"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "RabbitMQ Queue Depth",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rabbitmq_queue_messages"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Kong API Gateway Requests",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(kong_http_requests_total[5m])) by (service)"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Consul Services Health",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "consul_health_service_status"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 16}
+      },
+      {
+        "id": 7,
+        "title": "Vault Sealed Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "vault_core_unsealed"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 16}
+      },
+      {
+        "id": 8,
+        "title": "Elasticsearch Cluster Health",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "elasticsearch_cluster_health_status"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 16}
+      }
+    ]
+  }
+}

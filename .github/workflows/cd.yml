@@ -1,0 +1,303 @@
+# CD Pipeline for AgroBridge Microservices
+# Deploys to staging and production environments
+
+name: Continuous Deployment
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*.*.*' ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}/agrobridge
+
+jobs:
+  # Build and Push Docker Images
+  build-and-push:
+    name: Build and Push Images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    strategy:
+      matrix:
+        service:
+          - authentication
+          - user
+          - marketplace
+          - farm_management
+          - ai_assistant
+          - crop_detection
+          - iot
+          - notification
+          - financial
+          - learning
+          - community
+          - scheduling
+          - analytics
+          - payment
+          - admin
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ matrix.service }}-service
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+      
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/${{ matrix.service }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            SERVICE_NAME=${{ matrix.service }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+
+  # Deploy to Staging
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-and-push]
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+    environment:
+      name: staging
+      url: https://staging.agrobridge.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG_STAGING }}
+      
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/staging/
+          kubectl rollout status deployment/authentication-service -n agrobridge-staging
+          kubectl rollout status deployment/marketplace-service -n agrobridge-staging
+      
+      - name: Run smoke tests
+        run: |
+          chmod +x scripts/smoke-tests.sh
+          ./scripts/smoke-tests.sh staging
+      
+      - name: Notify Slack
+        uses: slackapi/slack-github-action@v1
+        if: always()
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          payload: |
+            {
+              "text": "Staging deployment ${{ job.status }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Staging deployment *${{ job.status }}*\nCommit: ${{ github.sha }}\nAuthor: ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+
+  # Deploy to Production
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-and-push, deploy-staging]
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://agrobridge.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG_PRODUCTION }}
+      
+      - name: Create backup
+        run: |
+          kubectl create job backup-$(date +%Y%m%d-%H%M%S) \
+            --from=cronjob/database-backup \
+            -n agrobridge-production
+      
+      - name: Deploy with blue-green strategy
+        run: |
+          # Deploy to green environment
+          kubectl apply -f k8s/production/ --selector=color=green
+          
+          # Wait for green to be ready
+          kubectl wait --for=condition=available --timeout=600s \
+            deployment -l color=green -n agrobridge-production
+          
+          # Run health checks
+          chmod +x scripts/health-check.sh
+          ./scripts/health-check.sh production green
+          
+          # Switch traffic to green
+          kubectl patch service api-gateway \
+            -n agrobridge-production \
+            -p '{"spec":{"selector":{"color":"green"}}}'
+          
+          # Wait and monitor
+          sleep 60
+          
+          # If successful, scale down blue
+          kubectl scale deployment -l color=blue --replicas=0 \
+            -n agrobridge-production
+      
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          # Switch traffic back to blue
+          kubectl patch service api-gateway \
+            -n agrobridge-production \
+            -p '{"spec":{"selector":{"color":"blue"}}}'
+          
+          # Scale down green
+          kubectl scale deployment -l color=green --replicas=0 \
+            -n agrobridge-production
+      
+      - name: Run smoke tests
+        run: |
+          chmod +x scripts/smoke-tests.sh
+          ./scripts/smoke-tests.sh production
+      
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ## Changes in this Release
+            - Automated deployment to production
+            - All tests passed
+            - Blue-green deployment successful
+          draft: false
+          prerelease: false
+      
+      - name: Notify Slack
+        uses: slackapi/slack-github-action@v1
+        if: always()
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          payload: |
+            {
+              "text": "Production deployment ${{ job.status }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "🚀 Production deployment *${{ job.status }}*\nVersion: ${{ github.ref }}\nAuthor: ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+      
+      - name: Notify PagerDuty on failure
+        if: failure()
+        uses: Entle/action-pagerduty-alert@0.2.0
+        with:
+          pagerduty-integration-key: ${{ secrets.PAGERDUTY_INTEGRATION_KEY }}
+          pagerduty-dedup-key: production-deployment-${{ github.sha }}
+
+  # Database Migrations
+  run-migrations:
+    name: Run Database Migrations
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG_PRODUCTION }}
+      
+      - name: Run migrations
+        run: |
+          kubectl create job migration-$(date +%Y%m%d-%H%M%S) \
+            --from=cronjob/database-migration \
+            -n agrobridge-production
+          
+          # Wait for migration to complete
+          kubectl wait --for=condition=complete --timeout=600s \
+            job -l app=migration -n agrobridge-production
+
+  # Post-Deployment Tests
+  post-deployment-tests:
+    name: Post-Deployment Tests
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run API tests
+        run: |
+          npm install -g newman
+          newman run tests/postman/agrobridge-api.json \
+            --environment tests/postman/production.json \
+            --reporters cli,json \
+            --reporter-json-export newman-report.json
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: api-test-results
+          path: newman-report.json

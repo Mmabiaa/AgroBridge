@@ -1,0 +1,621 @@
+version: '3.8'
+
+services:
+  # PostgreSQL - Primary relational database
+  postgres:
+    image: postgres:16-alpine
+    container_name: agrobridge-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-agrobridge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agrobridge_password}
+      POSTGRES_DB: agrobridge_default
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.UTF-8"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agrobridge}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # TimescaleDB - Time-series database for IoT sensor data
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: agrobridge-timescaledb
+    environment:
+      POSTGRES_USER: ${TIMESCALE_USER:-agrobridge}
+      POSTGRES_PASSWORD: ${TIMESCALE_PASSWORD:-agrobridge_password}
+      POSTGRES_DB: agrobridge_iot_timeseries
+    ports:
+      - "${TIMESCALE_PORT:-5433}:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${TIMESCALE_USER:-agrobridge}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # MongoDB - Document database for AI conversations and logs
+  mongodb:
+    image: mongo:7
+    container_name: agrobridge-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER:-agrobridge}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:-agrobridge_password}
+      MONGO_INITDB_DATABASE: agrobridge_default
+    ports:
+      - "${MONGODB_PORT:-27017}:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    command: mongod --auth
+
+  # Redis - Caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: agrobridge-redis
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:-agrobridge_redis}
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+      --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis Sentinel - High availability for Redis
+  redis-sentinel:
+    image: redis:7-alpine
+    container_name: agrobridge-redis-sentinel
+    command: >
+      redis-sentinel /etc/redis/sentinel.conf
+    ports:
+      - "${REDIS_SENTINEL_PORT:-26379}:26379"
+    volumes:
+      - ./config/redis-sentinel.conf:/etc/redis/sentinel.conf
+      - redis_sentinel_data:/data
+    networks:
+      - agrobridge-network
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  # Elasticsearch - Search engine for products, courses, and logs
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: agrobridge-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    ports:
+      - "${ELASTICSEARCH_PORT:-9200}:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Kibana - Elasticsearch visualization (optional, for development)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: agrobridge-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "${KIBANA_PORT:-5601}:5601"
+    networks:
+      - agrobridge-network
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+    profiles:
+      - dev
+
+  # PgAdmin - PostgreSQL management tool (optional, for development)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: agrobridge-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@agrobridge.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - agrobridge-network
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    profiles:
+      - dev
+
+  # Mongo Express - MongoDB management tool (optional, for development)
+  mongo-express:
+    image: mongo-express:latest
+    container_name: agrobridge-mongo-express
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_USER:-agrobridge}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASSWORD:-agrobridge_password}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGODB_USER:-agrobridge}:${MONGODB_PASSWORD:-agrobridge_password}@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD:-admin}
+    ports:
+      - "${MONGO_EXPRESS_PORT:-8081}:8081"
+    networks:
+      - agrobridge-network
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    profiles:
+      - dev
+
+  # Redis Commander - Redis management tool (optional, for development)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: agrobridge-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:${REDIS_PASSWORD:-agrobridge_redis}
+    ports:
+      - "${REDIS_COMMANDER_PORT:-8082}:8081"
+    networks:
+      - agrobridge-network
+    depends_on:
+      - redis
+    restart: unless-stopped
+    profiles:
+      - dev
+
+  # RabbitMQ - Message broker for async tasks and event-driven communication
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: agrobridge-rabbitmq
+    hostname: agrobridge-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-agrobridge}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-agrobridge_password}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-agrobridge}
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: -rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"      # AMQP port
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"  # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./config/rabbitmq-definitions.json:/etc/rabbitmq/definitions.json:ro
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Kong Database - PostgreSQL for Kong Gateway
+  kong-database:
+    image: postgres:16-alpine
+    container_name: agrobridge-kong-db
+    environment:
+      POSTGRES_USER: ${KONG_PG_USER:-kong}
+      POSTGRES_PASSWORD: ${KONG_PG_PASSWORD:-kong_password}
+      POSTGRES_DB: ${KONG_PG_DATABASE:-kong}
+    ports:
+      - "${KONG_PG_PORT:-5434}:5432"
+    volumes:
+      - kong_data:/var/lib/postgresql/data
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${KONG_PG_USER:-kong}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Kong Migration - Initialize Kong database
+  kong-migration:
+    image: kong:3.5-alpine
+    container_name: agrobridge-kong-migration
+    command: kong migrations bootstrap
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_PORT: 5432
+      KONG_PG_USER: ${KONG_PG_USER:-kong}
+      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD:-kong_password}
+      KONG_PG_DATABASE: ${KONG_PG_DATABASE:-kong}
+    networks:
+      - agrobridge-network
+    depends_on:
+      kong-database:
+        condition: service_healthy
+    restart: on-failure
+
+  # Kong Gateway - API Gateway
+  kong:
+    image: kong:3.5-alpine
+    container_name: agrobridge-kong
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_PORT: 5432
+      KONG_PG_USER: ${KONG_PG_USER:-kong}
+      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD:-kong_password}
+      KONG_PG_DATABASE: ${KONG_PG_DATABASE:-kong}
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_ADMIN_GUI_URL: http://localhost:8002
+      KONG_PROXY_LISTEN: 0.0.0.0:8000, 0.0.0.0:8443 ssl
+    ports:
+      - "${KONG_PROXY_PORT:-8000}:8000"      # HTTP proxy
+      - "${KONG_PROXY_SSL_PORT:-8443}:8443"  # HTTPS proxy
+      - "${KONG_ADMIN_PORT:-8001}:8001"      # Admin API
+      - "${KONG_ADMIN_GUI_PORT:-8002}:8002"  # Admin GUI
+    networks:
+      - agrobridge-network
+    depends_on:
+      kong-database:
+        condition: service_healthy
+      kong-migration:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Deck - Kong declarative configuration tool
+  deck:
+    image: kong/deck:latest
+    container_name: agrobridge-deck
+    command: sync --kong-addr http://kong:8001 --state /kong/kong.yml
+    volumes:
+      - ./api_gateway:/kong
+    networks:
+      - agrobridge-network
+    depends_on:
+      kong:
+        condition: service_healthy
+    restart: on-failure
+    profiles:
+      - sync
+
+  # Consul - Service discovery and configuration
+  consul:
+    image: hashicorp/consul:1.17
+    container_name: agrobridge-consul
+    command: agent -server -ui -bootstrap-expect=1 -client=0.0.0.0 -config-file=/consul/config/consul-config.json
+    environment:
+      CONSUL_BIND_INTERFACE: eth0
+      CONSUL_CLIENT_INTERFACE: eth0
+    ports:
+      - "${CONSUL_HTTP_PORT:-8500}:8500"    # HTTP API and UI
+      - "${CONSUL_DNS_PORT:-8600}:8600/tcp" # DNS TCP
+      - "${CONSUL_DNS_PORT:-8600}:8600/udp" # DNS UDP
+      - "8301:8301"                          # Serf LAN
+      - "8302:8302"                          # Serf WAN
+      - "8300:8300"                          # Server RPC
+      - "8502:8502"                          # gRPC
+    volumes:
+      - consul_data:/consul/data
+      - ./service_discovery/consul-config.json:/consul/config/consul-config.json:ro
+      - ./service_discovery/service-defaults.hcl:/consul/config/service-defaults.hcl:ro
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Vault - Secrets management
+  vault:
+    image: hashicorp/vault:1.15
+    container_name: agrobridge-vault
+    command: server
+    environment:
+      VAULT_ADDR: http://0.0.0.0:8200
+      VAULT_API_ADDR: http://vault:8200
+      VAULT_LOCAL_CONFIG: '{"backend": {"file": {"path": "/vault/data"}}, "listener": {"tcp": {"address": "0.0.0.0:8200", "tls_disable": 1}}, "ui": true, "disable_mlock": true}'
+    ports:
+      - "${VAULT_PORT:-8200}:8200"          # HTTP API and UI
+    volumes:
+      - vault_data:/vault/data
+      - vault_logs:/vault/logs
+      - ./secrets_management/vault-config.hcl:/vault/config/vault-config.hcl:ro
+    networks:
+      - agrobridge-network
+    cap_add:
+      - IPC_LOCK
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8200/v1/sys/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Prometheus - Metrics collection
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: agrobridge-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_data:/prometheus
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Grafana - Metrics visualization
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: agrobridge-grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    networks:
+      - agrobridge-network
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Alertmanager - Alert management
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: agrobridge-alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    ports:
+      - "${ALERTMANAGER_PORT:-9093}:9093"
+    volumes:
+      - ./monitoring/alertmanager:/etc/alertmanager:ro
+      - alertmanager_data:/alertmanager
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:9093/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Node Exporter - System metrics
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: agrobridge-node-exporter
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    networks:
+      - agrobridge-network
+    restart: unless-stopped
+
+  # Logstash - Log processing
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: agrobridge-logstash
+    environment:
+      - "LS_JAVA_OPTS=-Xmx512m -Xms512m"
+    ports:
+      - "5044:5044"  # Beats input
+      - "5000:5000"  # TCP input
+      - "9600:9600"  # Monitoring API
+    volumes:
+      - ./monitoring/logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - logstash_data:/usr/share/logstash/data
+    networks:
+      - agrobridge-network
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9600"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Filebeat - Log shipping
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.11.0
+    container_name: agrobridge-filebeat
+    user: root
+    command: filebeat -e -strict.perms=false
+    volumes:
+      - ./monitoring/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - filebeat_data:/usr/share/filebeat/data
+    networks:
+      - agrobridge-network
+    depends_on:
+      - logstash
+    restart: unless-stopped
+
+  # Jaeger - Distributed tracing
+  jaeger:
+    image: jaegertracing/all-in-one:1.51
+    container_name: agrobridge-jaeger
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+      - COLLECTOR_OTLP_ENABLED=true
+      - SPAN_STORAGE_TYPE=elasticsearch
+      - ES_SERVER_URLS=http://elasticsearch:9200
+    ports:
+      - "5775:5775/udp"  # Zipkin compact
+      - "6831:6831/udp"  # Jaeger compact
+      - "6832:6832/udp"  # Jaeger binary
+      - "5778:5778"      # Agent config
+      - "16686:16686"    # UI
+      - "14268:14268"    # Collector HTTP
+      - "14250:14250"    # Collector gRPC
+      - "9411:9411"      # Zipkin
+    networks:
+      - agrobridge-network
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:14269/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Loki - Log aggregation
+  loki:
+    image: grafana/loki:2.9.3
+    container_name: agrobridge-loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki_data:/loki
+    networks:
+      - agrobridge-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:3100/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Promtail - Log collector for Loki
+  promtail:
+    image: grafana/promtail:2.9.3
+    container_name: agrobridge-promtail
+    volumes:
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./monitoring/promtail:/etc/promtail:ro
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - agrobridge-network
+    depends_on:
+      - loki
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  timescale_data:
+    driver: local
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+  redis_data:
+    driver: local
+  redis_sentinel_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  kong_data:
+    driver: local
+  consul_data:
+    driver: local
+  vault_data:
+    driver: local
+  vault_logs:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  alertmanager_data:
+    driver: local
+  logstash_data:
+    driver: local
+  filebeat_data:
+    driver: local
+  loki_data:
+    driver: local
+
+networks:
+  agrobridge-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

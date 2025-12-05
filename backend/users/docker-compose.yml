@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  user-service:
+    build: .
+    container_name: agrobridge-user-service
+    ports:
+      - "8001:8001"
+    environment:
+      - DEBUG=False
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///db.sqlite3}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/1}
+      - CONSUL_URL=${CONSUL_URL:-http://consul:8500}
+      - USER_SERVICE_HOST=user-service
+      - USER_SERVICE_PORT=8001
+      - REGISTER_SERVICES=true
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+    volumes:
+      - user_media:/app/media
+      - user_logs:/app/logs
+    depends_on:
+      - db
+      - redis
+      - consul
+    networks:
+      - agrobridge-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/users/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    image: postgres:15-alpine
+    container_name: agrobridge-user-db
+    environment:
+      - POSTGRES_DB=agrobridge_users
+      - POSTGRES_USER=agrobridge
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-agrobridge123}
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+    networks:
+      - agrobridge-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: agrobridge-user-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - user_redis_data:/data
+    networks:
+      - agrobridge-network
+    restart: unless-stopped
+
+  consul:
+    image: consul:1.15
+    container_name: agrobridge-consul
+    ports:
+      - "8500:8500"
+    command: >
+      consul agent -server -bootstrap-expect=1 -ui -bind=0.0.0.0 
+      -client=0.0.0.0 -datacenter=dc1 -data-dir=/consul/data
+    volumes:
+      - consul_data:/consul/data
+    networks:
+      - agrobridge-network
+    restart: unless-stopped
+
+volumes:
+  user_media:
+  user_logs:
+  user_db_data:
+  user_redis_data:
+  consul_data:
+
+networks:
+  agrobridge-network:
+    driver: bridge

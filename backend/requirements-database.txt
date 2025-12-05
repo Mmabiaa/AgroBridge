@@ -1,0 +1,28 @@
+# Database Infrastructure Requirements
+# Install with: pip install -r requirements-database.txt
+
+# PostgreSQL
+psycopg2-binary==2.9.9
+django-postgres-extra==2.0.8
+
+# MongoDB
+pymongo==4.6.1
+djongo==1.3.6
+
+# Redis
+redis==5.0.1
+django-redis==5.4.0
+hiredis==2.3.2
+
+# Elasticsearch
+elasticsearch==8.11.0
+elasticsearch-dsl==8.11.0
+
+# TimescaleDB (uses PostgreSQL driver)
+# No additional package needed, uses psycopg2
+
+# Connection pooling
+psycogreen==1.0.2
+
+# Database utilities
+sqlparse==0.4.4

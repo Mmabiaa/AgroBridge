@@ -1,0 +1,260 @@
+# Backup Monitoring Alert Rules for Prometheus
+
+groups:
+  - name: backup_alerts
+    interval: 60s
+    rules:
+      # Backup Failure Alerts
+      - alert: BackupFailed
+        expr: backup_failure_total > 0
+        for: 5m
+        labels:
+          severity: critical
+          category: backup
+        annotations:
+          summary: "Backup failed for {{ $labels.service }}"
+          description: "Backup for {{ $labels.service }} has failed. Check backup logs immediately."
+          runbook: "https://docs.agrobridge.com/runbooks/backup-failure"
+
+      - alert: BackupTooOld
+        expr: (time() - backup_timestamp) > 86400
+        for: 1h
+        labels:
+          severity: warning
+          category: backup
+        annotations:
+          summary: "Backup is older than 24 hours for {{ $labels.service }}"
+          description: "Last successful backup for {{ $labels.service }} was {{ $value | humanizeDuration }} ago."
+          runbook: "https://docs.agrobridge.com/runbooks/backup-old"
+
+      - alert: BackupDurationHigh
+        expr: backup_duration_seconds > 3600
+        for: 5m
+        labels:
+          severity: warning
+          category: backup
+        annotations:
+          summary: "Backup taking too long for {{ $labels.service }}"
+          description: "Backup for {{ $labels.service }} took {{ $value | humanizeDuration }}. Expected < 1 hour."
+          runbook: "https://docs.agrobridge.com/runbooks/backup-slow"
+
+      - alert: BackupSizeUnusual
+        expr: |
+          abs(backup_size_bytes - avg_over_time(backup_size_bytes[7d])) / 
+          avg_over_time(backup_size_bytes[7d]) > 0.5
+        for: 15m
+        labels:
+          severity: warning
+          category: backup
+        annotations:
+          summary: "Unusual backup size for {{ $labels.service }}"
+          description: "Backup size for {{ $labels.service }} is {{ $value | humanizePercentage }} different from 7-day average."
+          runbook: "https://docs.agrobridge.com/runbooks/backup-size"
+
+      # Replication Alerts
+      - alert: ReplicationLagHigh
+        expr: replication_lag_seconds > 60
+        for: 5m
+        labels:
+          severity: warning
+          category: replication
+        annotations:
+          summary: "Replication lag is high for {{ $labels.service }}"
+          description: "Replication lag for {{ $labels.service }} is {{ $value }}s. Expected < 60s."
+          runbook: "https://docs.agrobridge.com/runbooks/replication-lag"
+
+      - alert: ReplicationBroken
+        expr: replication_status == 0
+        for: 2m
+        labels:
+          severity: critical
+          category: replication
+        annotations:
+          summary: "Replication is broken for {{ $labels.service }}"
+          description: "Replication for {{ $labels.service }} is not working. Immediate action required."
+          runbook: "https://docs.agrobridge.com/runbooks/replication-broken"
+
+      - alert: ReplicationSlotLagHigh
+        expr: pg_replication_slot_lag_bytes > 1073741824
+        for: 10m
+        labels:
+          severity: warning
+          category: replication
+        annotations:
+          summary: "PostgreSQL replication slot lag is high"
+          description: "Replication slot {{ $labels.slot_name }} has {{ $value | humanizeBytes }} of lag."
+          runbook: "https://docs.agrobridge.com/runbooks/replication-slot-lag"
+
+      # Storage Alerts
+      - alert: BackupStorageFull
+        expr: backup_storage_used_percent > 90
+        for: 15m
+        labels:
+          severity: critical
+          category: storage
+        annotations:
+          summary: "Backup storage is almost full"
+          description: "Backup storage is {{ $value }}% full. Clean up old backups or increase storage."
+          runbook: "https://docs.agrobridge.com/runbooks/storage-full"
+
+      - alert: BackupStorageHighUsage
+        expr: backup_storage_used_percent > 80
+        for: 30m
+        labels:
+          severity: warning
+          category: storage
+        annotations:
+          summary: "Backup storage usage is high"
+          description: "Backup storage is {{ $value }}% full. Consider cleanup or expansion."
+          runbook: "https://docs.agrobridge.com/runbooks/storage-high"
+
+      # WAL Archive Alerts (PostgreSQL)
+      - alert: WALArchiveFailing
+        expr: pg_wal_archive_failed_count > 0
+        for: 5m
+        labels:
+          severity: critical
+          category: wal
+        annotations:
+          summary: "PostgreSQL WAL archiving is failing"
+          description: "{{ $value }} WAL files failed to archive. PITR may not be possible."
+          runbook: "https://docs.agrobridge.com/runbooks/wal-archive-fail"
+
+      - alert: WALArchiveLag
+        expr: pg_wal_archive_lag_seconds > 300
+        for: 10m
+        labels:
+          severity: warning
+          category: wal
+        annotations:
+          summary: "PostgreSQL WAL archive lag is high"
+          description: "WAL archive lag is {{ $value }}s. Expected < 300s."
+          runbook: "https://docs.agrobridge.com/runbooks/wal-archive-lag"
+
+      # Verification Alerts
+      - alert: BackupVerificationFailed
+        expr: backup_verification_failed_total > 0
+        for: 5m
+        labels:
+          severity: critical
+          category: verification
+        annotations:
+          summary: "Backup verification failed for {{ $labels.service }}"
+          description: "Backup verification for {{ $labels.service }} has failed. Backup may be corrupted."
+          runbook: "https://docs.agrobridge.com/runbooks/backup-verification"
+
+      - alert: BackupNotVerified
+        expr: (time() - backup_last_verification_timestamp) > 604800
+        for: 1h
+        labels:
+          severity: warning
+          category: verification
+        annotations:
+          summary: "Backup not verified in 7 days for {{ $labels.service }}"
+          description: "Last backup verification for {{ $labels.service }} was {{ $value | humanizeDuration }} ago."
+          runbook: "https://docs.agrobridge.com/runbooks/backup-not-verified"
+
+      # Restore Test Alerts
+      - alert: RestoreTestOverdue
+        expr: (time() - backup_last_restore_test_timestamp) > 2592000
+        for: 1h
+        labels:
+          severity: warning
+          category: testing
+        annotations:
+          summary: "Restore test overdue for {{ $labels.service }}"
+          description: "Last restore test for {{ $labels.service }} was {{ $value | humanizeDuration }} ago. Monthly testing required."
+          runbook: "https://docs.agrobridge.com/runbooks/restore-test"
+
+      - alert: RestoreTestFailed
+        expr: backup_restore_test_failed_total > 0
+        for: 5m
+        labels:
+          severity: critical
+          category: testing
+        annotations:
+          summary: "Restore test failed for {{ $labels.service }}"
+          description: "Restore test for {{ $labels.service }} has failed. Backups may not be restorable."
+          runbook: "https://docs.agrobridge.com/runbooks/restore-test-failed"
+
+      # Retention Policy Alerts
+      - alert: BackupRetentionViolation
+        expr: backup_retention_violation_total > 0
+        for: 1h
+        labels:
+          severity: warning
+          category: retention
+        annotations:
+          summary: "Backup retention policy violated for {{ $labels.service }}"
+          description: "{{ $value }} backups violate retention policy for {{ $labels.service }}."
+          runbook: "https://docs.agrobridge.com/runbooks/retention-violation"
+
+      # Multi-Region Alerts
+      - alert: CrossRegionReplicationFailed
+        expr: cross_region_replication_status == 0
+        for: 5m
+        labels:
+          severity: critical
+          category: replication
+        annotations:
+          summary: "Cross-region replication failed for {{ $labels.service }}"
+          description: "Cross-region replication from {{ $labels.source_region }} to {{ $labels.target_region }} has failed."
+          runbook: "https://docs.agrobridge.com/runbooks/cross-region-replication"
+
+      - alert: CrossRegionReplicationLag
+        expr: cross_region_replication_lag_seconds > 300
+        for: 10m
+        labels:
+          severity: warning
+          category: replication
+        annotations:
+          summary: "Cross-region replication lag is high"
+          description: "Replication lag from {{ $labels.source_region }} to {{ $labels.target_region }} is {{ $value }}s."
+          runbook: "https://docs.agrobridge.com/runbooks/cross-region-lag"
+
+      # Encryption Alerts
+      - alert: BackupEncryptionFailed
+        expr: backup_encryption_failed_total > 0
+        for: 5m
+        labels:
+          severity: critical
+          category: security
+        annotations:
+          summary: "Backup encryption failed for {{ $labels.service }}"
+          description: "Backup encryption for {{ $labels.service }} has failed. Unencrypted backup may exist."
+          runbook: "https://docs.agrobridge.com/runbooks/encryption-failed"
+
+      - alert: EncryptionKeyRotationOverdue
+        expr: (time() - backup_encryption_key_rotation_timestamp) > 7776000
+        for: 1d
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "Encryption key rotation overdue"
+          description: "Encryption key for backups has not been rotated in {{ $value | humanizeDuration }}. 90-day rotation required."
+          runbook: "https://docs.agrobridge.com/runbooks/key-rotation"
+
+      # Compliance Alerts
+      - alert: BackupComplianceViolation
+        expr: backup_compliance_violation_total > 0
+        for: 1h
+        labels:
+          severity: critical
+          category: compliance
+        annotations:
+          summary: "Backup compliance violation detected"
+          description: "{{ $value }} compliance violations detected in backup system."
+          runbook: "https://docs.agrobridge.com/runbooks/compliance-violation"
+
+      # Performance Alerts
+      - alert: BackupImpactingPerformance
+        expr: backup_io_wait_percent > 50
+        for: 15m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "Backup is impacting system performance"
+          description: "Backup operations causing {{ $value }}% I/O wait. Consider throttling or scheduling changes."
+          runbook: "https://docs.agrobridge.com/runbooks/backup-performance"

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Authentication Tokens - AgroBridge</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #c0392b;
+        }
+
+        button.success {
+            background: #27ae60;
+        }
+
+        button.success:hover {
+            background: #229954;
+        }
+
+        .info {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .token-info {
+            font-family: monospace;
+            font-size: 12px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔐 Clear Authentication Tokens</h1>
+        <p class="subtitle">Fix authentication issues by clearing stored tokens</p>
+
+        <div class="info">
+            <strong>When to use this:</strong>
+            <ul>
+                <li>Getting "Token is invalid" errors</li>
+                <li>WebSocket connection failures</li>
+                <li>401 Unauthorized errors on login</li>
+                <li>Can't login after being logged out</li>
+            </ul>
+        </div>
+
+        <div id="tokenStatus"></div>
+
+        <button onclick="checkTokens()">Check Current Tokens</button>
+        <button onclick="clearExpiredTokens()">Clear Expired Tokens</button>
+        <button onclick="clearAllTokens()">Clear All Tokens</button>
+        <button class="success" onclick="window.location.href='/'">Go to Login</button>
+
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        function isTokenExpired(token) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const currentTime = Date.now() / 1000;
+                return payload.exp < currentTime;
+            } catch {
+                return true;
+            }
+        }
+
+        function getTokenExpiry(token) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return new Date(payload.exp * 1000).toLocaleString();
+            } catch {
+                return 'Invalid';
+            }
+        }
+
+        function checkTokens() {
+            const accessToken = localStorage.getItem('access_token');
+            const refreshToken = localStorage.getItem('refresh_token');
+
+            let html = '<h3>Current Token Status:</h3>';
+
+            if (accessToken) {
+                const expired = isTokenExpired(accessToken);
+                const expiry = getTokenExpiry(accessToken);
+                html += `<div class="token-info">
+                    <strong>Access Token:</strong> ${expired ? '❌ EXPIRED' : '✅ Valid'}<br>
+                    <strong>Expires:</strong> ${expiry}<br>
+                    <strong>Token:</strong> ${accessToken.substring(0, 50)}...
+                </div>`;
+            } else {
+                html += '<div class="token-info">❌ No access token found</div>';
+            }
+
+            if (refreshToken) {
+                const expired = isTokenExpired(refreshToken);
+                const expiry = getTokenExpiry(refreshToken);
+                html += `<div class="token-info">
+                    <strong>Refresh Token:</strong> ${expired ? '❌ EXPIRED' : '✅ Valid'}<br>
+                    <strong>Expires:</strong> ${expiry}<br>
+                    <strong>Token:</strong> ${refreshToken.substring(0, 50)}...
+                </div>`;
+            } else {
+                html += '<div class="token-info">❌ No refresh token found</div>';
+            }
+
+            document.getElementById('tokenStatus').innerHTML = html;
+        }
+
+        function clearExpiredTokens() {
+            const accessToken = localStorage.getItem('access_token');
+            const refreshToken = localStorage.getItem('refresh_token');
+            let cleared = [];
+
+            if (accessToken && isTokenExpired(accessToken)) {
+                localStorage.removeItem('access_token');
+                cleared.push('access token');
+            }
+
+            if (refreshToken && isTokenExpired(refreshToken)) {
+                localStorage.removeItem('refresh_token');
+                cleared.push('refresh token');
+            }
+
+            const status = document.getElementById('status');
+            if (cleared.length > 0) {
+                status.className = 'status success';
+                status.textContent = `✅ Cleared expired ${cleared.join(' and ')}. You can now login again.`;
+            } else {
+                status.className = 'status error';
+                status.textContent = '⚠️ No expired tokens found. Tokens are either valid or don\'t exist.';
+            }
+
+            checkTokens();
+        }
+
+        function clearAllTokens() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('user');
+
+            const status = document.getElementById('status');
+            status.className = 'status success';
+            status.textContent = '✅ All authentication tokens cleared successfully! You can now login again.';
+
+            checkTokens();
+        }
+
+        // Check tokens on page load
+        window.onload = checkTokens;
+    </script>
+</body>
+
+</html>

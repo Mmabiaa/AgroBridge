@@ -1,0 +1,132 @@
+# AgroBridge Docker Ignore File
+# Files and directories to exclude from Docker build context
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# Documentation
+docs/_build/
+*.md
+!README.md
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Media files (exclude from build, mount as volume)
+media/
+staticfiles/
+static/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Secrets
+secrets/
+*.pem
+*.key
+*.crt
+vault-keys.json
+approle-*.json
+
+# Monitoring
+monitoring/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Scripts
+scripts/
+*.sh
+!entrypoint.sh
+
+# Node modules (if any)
+node_modules/
+
+# Backup files
+*.bak
+*.backup

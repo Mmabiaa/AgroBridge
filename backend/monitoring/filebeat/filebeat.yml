@@ -1,0 +1,74 @@
+# Filebeat Configuration for AgroBridge
+# Collects logs from all microservices and ships to Logstash
+
+filebeat.inputs:
+  # Docker container logs
+  - type: container
+    enabled: true
+    paths:
+      - '/var/lib/docker/containers/*/*.log'
+    processors:
+      - add_docker_metadata:
+          host: "unix:///var/run/docker.sock"
+      - decode_json_fields:
+          fields: ["message"]
+          target: "json"
+          overwrite_keys: true
+
+  # Application logs
+  - type: log
+    enabled: true
+    paths:
+      - '/var/log/agrobridge/*.log'
+    fields:
+      log_type: application
+    multiline:
+      pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+      negate: true
+      match: after
+
+  # Nginx/Kong logs
+  - type: log
+    enabled: true
+    paths:
+      - '/var/log/nginx/*.log'
+      - '/var/log/kong/*.log'
+    fields:
+      log_type: gateway
+
+  # Database logs
+  - type: log
+    enabled: true
+    paths:
+      - '/var/log/postgresql/*.log'
+      - '/var/log/mongodb/*.log'
+    fields:
+      log_type: database
+
+# Processors
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+
+# Output to Logstash
+output.logstash:
+  hosts: ["logstash:5044"]
+  compression_level: 3
+  loadbalance: true
+
+# Logging
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+
+# Monitoring
+monitoring.enabled: true
+monitoring.elasticsearch:
+  hosts: ["elasticsearch:9200"]

@@ -1,0 +1,90 @@
+# AgroBridge Security - Git Ignore
+# Prevent committing sensitive security files
+
+# mTLS Certificates and Keys
+mtls/certs/
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# Private keys
+*-key.pem
+*-key.key
+ca-key.*
+
+# Certificate backups
+*/backup/
+
+# WAF Logs
+waf/logs/
+*.log
+
+# DDoS Logs
+ddos/logs/
+
+# SIEM Logs
+siem/logs/
+
+# Security Test Reports
+testing/reports/
+*.html
+*.xml
+*.json
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Docker volumes
+volumes/
+
+# Secrets
+*.secret
+*.password
+secrets.txt
+credentials.txt
+
+# Backup files
+*.bak
+*.backup
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Keep example files
+!*.example
+!*.sample
+
+# Keep documentation
+!*.md
+!README*
+!QUICK_START*
+!IMPLEMENTATION_SUMMARY*
+
+# Keep configuration templates
+!*.conf.example
+!*.yml.example
+!*.json.example

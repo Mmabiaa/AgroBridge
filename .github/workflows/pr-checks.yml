@@ -1,0 +1,165 @@
+# Pull Request Checks
+# Additional checks for pull requests
+
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  # PR Title Check
+  pr-title-check:
+    name: PR Title Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check PR title format
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+          requireScope: false
+
+  # Code Coverage Check
+  coverage-check:
+    name: Coverage Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          pip install pytest pytest-cov
+      
+      - name: Run tests with coverage
+        run: |
+          cd backend
+          pytest --cov=. --cov-report=xml --cov-report=term
+      
+      - name: Check coverage threshold
+        run: |
+          cd backend
+          coverage report --fail-under=80
+      
+      - name: Comment PR with coverage
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
+          MINIMUM_GREEN: 80
+          MINIMUM_ORANGE: 60
+
+  # Dependency Review
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v3
+        with:
+          fail-on-severity: moderate
+
+  # Size Check
+  size-check:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check Docker image size
+        run: |
+          docker build -t test-image -f backend/docker/Dockerfile.base backend/
+          SIZE=$(docker images test-image --format "{{.Size}}")
+          echo "Image size: $SIZE"
+          
+          # Fail if image is larger than 300MB
+          SIZE_MB=$(docker images test-image --format "{{.Size}}" | sed 's/MB//')
+          if [ "$SIZE_MB" -gt 300 ]; then
+            echo "Error: Image size exceeds 300MB"
+            exit 1
+          fi
+
+  # Documentation Check
+  docs-check:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check for README updates
+        run: |
+          if git diff --name-only origin/main | grep -q "^backend/.*\.py$"; then
+            if ! git diff --name-only origin/main | grep -q "README.md"; then
+              echo "Warning: Python files changed but README not updated"
+            fi
+          fi
+      
+      - name: Check documentation links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          config-file: '.github/markdown-link-check-config.json'
+
+  # License Check
+  license-check:
+    name: License Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check license headers
+        run: |
+          find backend -name "*.py" -type f | while read file; do
+            if ! head -n 5 "$file" | grep -q "Copyright"; then
+              echo "Missing license header in $file"
+            fi
+          done
+
+  # Changelog Check
+  changelog-check:
+    name: Changelog Check
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check CHANGELOG.md updated
+        run: |
+          if ! git diff --name-only origin/main | grep -q "CHANGELOG.md"; then
+            echo "::warning::CHANGELOG.md not updated"
+          fi

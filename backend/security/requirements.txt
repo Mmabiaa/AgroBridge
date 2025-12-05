@@ -1,0 +1,54 @@
+# AgroBridge Security Testing Requirements
+# Install with: pip install -r requirements.txt
+
+# OWASP ZAP Integration
+python-owasp-zap-v2.4==0.0.21
+
+# HTTP Requests
+requests==2.31.0
+urllib3==2.1.0
+
+# Dependency Security Scanning
+safety==2.3.5
+bandit==1.7.5
+
+# Code Quality
+pylint==3.0.3
+flake8==6.1.0
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+
+# Cryptography
+cryptography==41.0.7
+pyOpenSSL==23.3.0
+
+# Certificate Management
+certifi==2023.11.17
+
+# JSON/YAML Processing
+PyYAML==6.0.1
+
+# Reporting
+jinja2==3.1.2
+markdown==3.5.1
+
+# Logging
+colorlog==6.8.0
+
+# Date/Time
+python-dateutil==2.8.2
+
+# CLI Tools
+click==8.1.7
+rich==13.7.0
+
+# Network Testing
+scapy==2.5.0
+
+# Performance Testing
+locust==2.20.0
+
+# API Testing
+httpx==0.25.2

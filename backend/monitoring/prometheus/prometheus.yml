@@ -1,0 +1,182 @@
+# Prometheus Configuration for AgroBridge
+# Collects metrics from all microservices and infrastructure components
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'agrobridge'
+    environment: 'development'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - '/etc/prometheus/rules/*.yml'
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Node Exporter - System metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  # PostgreSQL Exporter
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+
+  # MongoDB Exporter
+  - job_name: 'mongodb'
+    static_configs:
+      - targets: ['mongodb-exporter:9216']
+
+  # Redis Exporter
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+
+  # RabbitMQ
+  - job_name: 'rabbitmq'
+    static_configs:
+      - targets: ['rabbitmq:15692']
+
+  # Kong API Gateway
+  - job_name: 'kong'
+    static_configs:
+      - targets: ['kong:8001']
+    metrics_path: '/metrics'
+
+  # Consul
+  - job_name: 'consul'
+    static_configs:
+      - targets: ['consul:8500']
+    metrics_path: '/v1/agent/metrics'
+    params:
+      format: ['prometheus']
+
+  # Vault
+  - job_name: 'vault'
+    static_configs:
+      - targets: ['vault:8200']
+    metrics_path: '/v1/sys/metrics'
+    params:
+      format: ['prometheus']
+
+  # Elasticsearch
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch-exporter:9114']
+
+  # Microservices - Dynamic discovery via Consul
+  - job_name: 'microservices'
+    consul_sd_configs:
+      - server: 'consul:8500'
+        services: []
+    relabel_configs:
+      - source_labels: [__meta_consul_service]
+        target_label: service
+      - source_labels: [__meta_consul_tags]
+        target_label: tags
+      - source_labels: [__meta_consul_node]
+        target_label: node
+
+  # Authentication Service
+  - job_name: 'authentication-service'
+    static_configs:
+      - targets: ['authentication-service:8001']
+    metrics_path: '/metrics'
+
+  # User Service
+  - job_name: 'user-service'
+    static_configs:
+      - targets: ['user-service:8002']
+    metrics_path: '/metrics'
+
+  # Farm Management Service
+  - job_name: 'farm-management-service'
+    static_configs:
+      - targets: ['farm-management-service:8003']
+    metrics_path: '/metrics'
+
+  # Marketplace Service
+  - job_name: 'marketplace-service'
+    static_configs:
+      - targets: ['marketplace-service:8004']
+    metrics_path: '/metrics'
+
+  # AI Assistant Service
+  - job_name: 'ai-assistant-service'
+    static_configs:
+      - targets: ['ai-assistant-service:8005']
+    metrics_path: '/metrics'
+
+  # Crop Detection Service
+  - job_name: 'crop-detection-service'
+    static_configs:
+      - targets: ['crop-detection-service:8006']
+    metrics_path: '/metrics'
+
+  # IoT Service
+  - job_name: 'iot-service'
+    static_configs:
+      - targets: ['iot-service:8007']
+    metrics_path: '/metrics'
+
+  # Notification Service
+  - job_name: 'notification-service'
+    static_configs:
+      - targets: ['notification-service:8008']
+    metrics_path: '/metrics'
+
+  # Financial Service
+  - job_name: 'financial-service'
+    static_configs:
+      - targets: ['financial-service:8009']
+    metrics_path: '/metrics'
+
+  # Learning Service
+  - job_name: 'learning-service'
+    static_configs:
+      - targets: ['learning-service:8010']
+    metrics_path: '/metrics'
+
+  # Community Service
+  - job_name: 'community-service'
+    static_configs:
+      - targets: ['community-service:8011']
+    metrics_path: '/metrics'
+
+  # Scheduling Service
+  - job_name: 'scheduling-service'
+    static_configs:
+      - targets: ['scheduling-service:8012']
+    metrics_path: '/metrics'
+
+  # Analytics Service
+  - job_name: 'analytics-service'
+    static_configs:
+      - targets: ['analytics-service:8013']
+    metrics_path: '/metrics'
+
+  # Payment Service
+  - job_name: 'payment-service'
+    static_configs:
+      - targets: ['payment-service:8014']
+    metrics_path: '/metrics'
+
+  # Admin Service
+  - job_name: 'admin-service'
+    static_configs:
+      - targets: ['admin-service:8015']
+    metrics_path: '/metrics'
