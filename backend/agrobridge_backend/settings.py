@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'export_docs',
     'emergency_response',
     'file_storage',
+    'admin_service',
 ]
 
 MIDDLEWARE = [
