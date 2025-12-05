@@ -49,6 +49,7 @@ schema_view = get_schema_view(
             path('payment/', include('payment.urls')),
             path('blockchain/', include('blockchain.urls')),
             path('export-docs/', include('export_docs.urls')),
+            path('emergency/', include('emergency_response.urls')),
         ])),
     ],
 )
@@ -72,6 +73,7 @@ urlpatterns = [
     path('api/v1/analytics/', include('analytics.urls')),
     path('api/v1/payment/', include('payment.urls')),
     path('api/v1/export-docs/', include('export_docs.urls')),
+    path('api/v1/emergency/', include('emergency_response.urls')),
     
     # API Documentation
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'payment',
     'blockchain',
     'export_docs',
+    'emergency_response',
 ]
 
 MIDDLEWARE = [
