@@ -19,6 +19,7 @@ import Monitoring from "./pages/Monitoring";
 import Analytics from "./pages/Analytics";
 import Marketplace from "./pages/Marketplace";
 import ProductDetails from "./pages/ProductDetails";
+import EditProduct from "./pages/EditProduct";
 import MyOrders from "./pages/MyOrders";
 import MySales from "./pages/MySales";
 import Farms from "./pages/Farms";
@@ -200,6 +201,14 @@ const App = () => (
                           <ProtectedRoute requiredPermission="view_marketplace">
                             <ErrorBoundary>
                               <ProductDetails />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        
+                        <Route path="/marketplace/products/:id/edit" element={
+                          <ProtectedRoute requiredPermission="view_marketplace">
+                            <ErrorBoundary>
+                              <EditProduct />
                             </ErrorBoundary>
                           </ProtectedRoute>
                         } />
