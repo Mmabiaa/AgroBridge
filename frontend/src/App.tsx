@@ -18,8 +18,14 @@ import AgriGPT from "./pages/AgriGPT";
 import Monitoring from "./pages/Monitoring";
 import Analytics from "./pages/Analytics";
 import Marketplace from "./pages/Marketplace";
+import ProductDetails from "./pages/ProductDetails";
+import EditProduct from "./pages/EditProduct";
 import MyOrders from "./pages/MyOrders";
 import MySales from "./pages/MySales";
+import Farms from "./pages/Farms";
+import FarmDetails from "./pages/FarmDetails";
+import CreateFarm from "./pages/CreateFarm";
+import EditFarm from "./pages/EditFarm";
 import Learning from "./pages/Learning";
 import Community from "./pages/Community";
 import Settings from "./pages/Settings";
@@ -48,6 +54,7 @@ import DevDashboard from "./pages/DevDashboard";
 import { VoiceFab } from '@/components/VoiceFab';
 import { FeatureFlagsProvider } from '@/contexts/FeatureFlagsContext';
 import { FeatureFlaggedVoiceFab } from '@/components/FeatureFlaggedVoiceFab';
+import { AuthSessionManager } from '@/components/AuthSessionManager';
 
 // Fallback component for when errors occur
 const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) => (
@@ -83,11 +90,12 @@ const App = () => (
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <FeatureFlagsProvider>
           <AuthProvider>
-            <NotificationProvider>
-              <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
+            <AuthSessionManager>
+              <NotificationProvider>
+                <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
                 <Routes>
                   {/* Public routes without navigation */}
                   <Route path="/" element={<Home />} />
@@ -150,11 +158,57 @@ const App = () => (
                           </ProtectedRoute>
                         } />
                         
+                        {/* Farm Management */}
+                        <Route path="/farms" element={
+                          <ProtectedRoute requiredPermission="view_farms">
+                            <ErrorBoundary>
+                              <Farms />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/farms/new" element={
+                          <ProtectedRoute requiredPermission="view_farms">
+                            <ErrorBoundary>
+                              <CreateFarm />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/farms/:id" element={
+                          <ProtectedRoute requiredPermission="view_farms">
+                            <ErrorBoundary>
+                              <FarmDetails />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/farms/:id/edit" element={
+                          <ProtectedRoute requiredPermission="view_farms">
+                            <ErrorBoundary>
+                              <EditFarm />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        
                         {/* Marketplace and Commerce */}
                         <Route path="/marketplace" element={
                           <ProtectedRoute requiredPermission="view_marketplace">
                             <ErrorBoundary>
                               <Marketplace />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        
+                        <Route path="/marketplace/products/:id" element={
+                          <ProtectedRoute requiredPermission="view_marketplace">
+                            <ErrorBoundary>
+                              <ProductDetails />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        
+                        <Route path="/marketplace/products/:id/edit" element={
+                          <ProtectedRoute requiredPermission="view_marketplace">
+                            <ErrorBoundary>
+                              <EditProduct />
                             </ErrorBoundary>
                           </ProtectedRoute>
                         } />
@@ -330,8 +384,9 @@ const App = () => (
                   } />
                 </Routes>
               </BrowserRouter>
-            </TooltipProvider>
-            </NotificationProvider>
+                </TooltipProvider>
+              </NotificationProvider>
+            </AuthSessionManager>
           </AuthProvider>
         </FeatureFlagsProvider>
       </ThemeProvider>

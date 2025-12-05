@@ -88,6 +88,62 @@ export interface FarmAnalytics {
   }>;
 }
 
+export interface Field {
+  id: string;
+  farm: string;
+  name: string;
+  size_hectares: number;
+  soil_type?: string;
+  irrigation_type?: string;
+  coordinates?: Array<{ latitude: number; longitude: number }>;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateFieldRequest {
+  name: string;
+  size_hectares: number;
+  soil_type?: string;
+  irrigation_type?: string;
+  coordinates?: Array<{ latitude: number; longitude: number }>;
+}
+
+export interface UpdateFieldRequest extends Partial<CreateFieldRequest> {}
+
+export interface Crop {
+  id: string;
+  field: string;
+  crop_type: string;
+  variety?: string;
+  planting_date: string;
+  expected_harvest_date?: string;
+  actual_harvest_date?: string;
+  status: 'planted' | 'growing' | 'harvested' | 'failed';
+  quantity_planted?: number;
+  quantity_harvested?: number;
+  unit?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateCropRequest {
+  crop_type: string;
+  variety?: string;
+  planting_date: string;
+  expected_harvest_date?: string;
+  quantity_planted?: number;
+  unit?: string;
+  notes?: string;
+}
+
+export interface UpdateCropRequest extends Partial<CreateCropRequest> {
+  status?: 'planted' | 'growing' | 'harvested' | 'failed';
+  actual_harvest_date?: string;
+  quantity_harvested?: number;
+}
+
 export interface FarmListParams {
   page?: number;
   page_size?: number;
@@ -299,6 +355,102 @@ class FarmsService {
     }>;
   }> {
     return apiClient.get(`${this.baseUrl}/statistics/`);
+  }
+
+  /**
+   * Get fields for a farm
+   */
+  async getFields(farmId: string): Promise<Field[]> {
+    return apiClient.get<Field[]>(`${this.baseUrl}/${farmId}/fields/`);
+  }
+
+  /**
+   * Get field by ID
+   */
+  async getField(farmId: string, fieldId: string): Promise<Field> {
+    return apiClient.get<Field>(`${this.baseUrl}/${farmId}/fields/${fieldId}/`);
+  }
+
+  /**
+   * Create new field
+   */
+  async createField(farmId: string, fieldData: CreateFieldRequest): Promise<Field> {
+    return apiClient.post<Field>(`${this.baseUrl}/${farmId}/fields/`, fieldData);
+  }
+
+  /**
+   * Update field
+   */
+  async updateField(farmId: string, fieldId: string, fieldData: UpdateFieldRequest): Promise<Field> {
+    return apiClient.patch<Field>(`${this.baseUrl}/${farmId}/fields/${fieldId}/`, fieldData);
+  }
+
+  /**
+   * Delete field
+   */
+  async deleteField(farmId: string, fieldId: string): Promise<void> {
+    return apiClient.delete(`${this.baseUrl}/${farmId}/fields/${fieldId}/`);
+  }
+
+  /**
+   * Get crops for a field
+   */
+  async getCrops(farmId: string, fieldId: string): Promise<Crop[]> {
+    return apiClient.get<Crop[]>(`${this.baseUrl}/${farmId}/fields/${fieldId}/crops/`);
+  }
+
+  /**
+   * Get all crops for a farm
+   */
+  async getFarmCrops(farmId: string): Promise<Crop[]> {
+    return apiClient.get<Crop[]>(`${this.baseUrl}/${farmId}/crops/`);
+  }
+
+  /**
+   * Get crop by ID
+   */
+  async getCrop(farmId: string, fieldId: string, cropId: string): Promise<Crop> {
+    return apiClient.get<Crop>(`${this.baseUrl}/${farmId}/fields/${fieldId}/crops/${cropId}/`);
+  }
+
+  /**
+   * Plant new crop
+   */
+  async plantCrop(farmId: string, fieldId: string, cropData: CreateCropRequest): Promise<Crop> {
+    return apiClient.post<Crop>(`${this.baseUrl}/${farmId}/fields/${fieldId}/crops/`, cropData);
+  }
+
+  /**
+   * Update crop
+   */
+  async updateCrop(farmId: string, fieldId: string, cropId: string, cropData: UpdateCropRequest): Promise<Crop> {
+    return apiClient.patch<Crop>(`${this.baseUrl}/${farmId}/fields/${fieldId}/crops/${cropId}/`, cropData);
+  }
+
+  /**
+   * Delete crop
+   */
+  async deleteCrop(farmId: string, fieldId: string, cropId: string): Promise<void> {
+    return apiClient.delete(`${this.baseUrl}/${farmId}/fields/${fieldId}/crops/${cropId}/`);
+  }
+
+  /**
+   * Record harvest
+   */
+  async recordHarvest(
+    farmId: string,
+    fieldId: string,
+    cropId: string,
+    harvestData: {
+      actual_harvest_date: string;
+      quantity_harvested: number;
+      notes?: string;
+    }
+  ): Promise<Crop> {
+    return apiClient.post<Crop>(
+      `${this.baseUrl}/${farmId}/fields/${fieldId}/crops/${cropId}/harvest/`,
+      harvestData
+    );
   }
 }
 

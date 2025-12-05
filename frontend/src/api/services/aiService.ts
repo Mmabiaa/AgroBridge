@@ -45,6 +45,51 @@ class AIService {
 
     return response;
   }
+
+  async transcribeVoice(audioBlob: Blob): Promise<{ text: string; language?: string; confidence?: number }> {
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.webm');
+
+    return apiClient.post<{ text: string; language?: string; confidence?: number }>(
+      `${this.baseUrl}/voice/transcribe/`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+  }
+
+  async getActiveRecommendations(): Promise<any[]> {
+    return apiClient.get<any[]>(`${this.baseUrl}/recommendations/active/`);
+  }
+
+  async provideRecommendationFeedback(recommendationId: string, feedback: { rating: number; comment?: string }): Promise<void> {
+    return apiClient.post(`${this.baseUrl}/recommendations/${recommendationId}/provide_feedback/`, feedback);
+  }
+
+  async archiveConversation(conversationId: string): Promise<void> {
+    return apiClient.post(`${this.baseUrl}/conversations/${conversationId}/archive/`);
+  }
+
+  async unarchiveConversation(conversationId: string): Promise<void> {
+    return apiClient.post(`${this.baseUrl}/conversations/${conversationId}/unarchive/`);
+  }
+
+  async searchConversations(query: string): Promise<Conversation[]> {
+    return apiClient.get<Conversation[]>(`${this.baseUrl}/conversations/search/`, {
+      params: { q: query },
+    });
+  }
+
+  async exportConversation(conversationId: string, format: 'json' | 'txt' | 'pdf' = 'json'): Promise<Blob> {
+    const response = await apiClient.get(`${this.baseUrl}/conversations/${conversationId}/export/`, {
+      params: { format },
+      responseType: 'blob',
+    });
+    return response as unknown as Blob;
+  }
 }
 
 export default new AIService();

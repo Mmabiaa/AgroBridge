@@ -7,6 +7,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Wheat, Eye, EyeOff, ArrowLeft, User, Shield } from 'lucide-react';
 import { RoleSelection } from '@/components/RoleSelection';
+import { z } from 'zod';
+
+// Zod validation schema
+const registerSchema = z.object({
+  username: z.string().min(3, 'Username must be at least 3 characters'),
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string(),
+  phone: z.string().optional(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -32,31 +47,20 @@ export default function Register() {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     
-    // Minimal validation matching backend requirements
-     if (!formData.firstName.trim()) {
-      errors.firstName = 'Firstname is required';
-    }
-     if (!formData.lastName.trim()) {
-      errors.lastName = 'Lastname is required';
-    }
-    if (!formData.username.trim()) {
-      errors.username = 'Username is required';
-    }
-    
-    if (!formData.email.trim()) {
-      errors.email = 'Email is required';
+    // Validate with Zod
+    try {
+      registerSchema.parse(formData);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        err.errors.forEach((error) => {
+          if (error.path[0]) {
+            errors[error.path[0].toString()] = error.message;
+          }
+        });
+      }
     }
     
-    if (!formData.password) {
-      errors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      errors.password = 'Password must be at least 8 characters';
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      errors.password_confirm = 'Passwords do not match';
-    }
-    
+    // Check role selection
     if (!selectedRole) {
       errors.role = 'Please select a role';
     }
@@ -224,7 +228,7 @@ export default function Register() {
 
           <RoleSelection 
             onRoleSelect={handleRoleSelect}
-            selectedRole={selectedRole}
+            selectedRole={selectedRole || undefined}
             showDescription={true}
           />
         </div>

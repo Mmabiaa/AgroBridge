@@ -6,7 +6,7 @@ import axios, {
     AxiosError,
     InternalAxiosRequestConfig
 } from 'axios';
-import { defaultErrorHandler, defaultRetryInterceptor, ApiError as ErrorHandlerApiError } from './errorHandler';
+import { defaultErrorHandler, defaultRetryInterceptor } from './errorHandler';
 import { notificationService } from './notificationService';
 
 // Types for API responses
@@ -234,7 +234,45 @@ axiosClient.interceptors.request.use(
     }
 );
 
-// Response interceptor - UPDATED VERSION
+// Retry logic with exponential backoff
+class RetryHandler {
+    private static readonly MAX_RETRIES = 3;
+    private static readonly INITIAL_DELAY = 1000; // 1 second
+    private static readonly MAX_DELAY = 30000; // 30 seconds
+
+    static shouldRetry(error: AxiosError, retryCount: number): boolean {
+        if (retryCount >= this.MAX_RETRIES) return false;
+
+        const status = error.response?.status;
+        
+        // Don't retry client errors (4xx) except for specific cases
+        if (status && status >= 400 && status < 500) {
+            // Retry on 408 (timeout), 429 (rate limit), and 503 (service unavailable)
+            return status === 408 || status === 429 || status === 503;
+        }
+
+        // Retry on network errors and 5xx server errors
+        return !error.response || (!!status && status >= 500);
+    }
+
+    static getRetryDelay(retryCount: number): number {
+        // Exponential backoff: 1s, 2s, 4s, 8s, etc., capped at MAX_DELAY
+        const delay = Math.min(
+            this.INITIAL_DELAY * Math.pow(2, retryCount),
+            this.MAX_DELAY
+        );
+        
+        // Add jitter to prevent thundering herd
+        const jitter = Math.random() * 0.3 * delay;
+        return delay + jitter;
+    }
+
+    static async delay(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+}
+
+// Response interceptor - UPDATED VERSION with enhanced retry logic
 axiosClient.interceptors.response.use(
     (response: AxiosResponse) => {
         // Calculate request duration
@@ -251,13 +289,19 @@ axiosClient.interceptors.response.use(
         return response;
     },
     async (error: AxiosError) => {
-        const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+        const originalRequest = error.config as ExtendedAxiosRequestConfig & { _retry?: boolean; _retryCount?: number };
+
+        // Initialize retry count
+        if (!originalRequest._retryCount) {
+            originalRequest._retryCount = 0;
+        }
 
         // Handle token refresh for 401 errors ONLY if it's not a login/register request
         if (error.response?.status === 401 && !originalRequest._retry) {
             // Skip token refresh for auth endpoints
             const isAuthEndpoint = originalRequest.url?.includes('/auth/login') || 
-                                  originalRequest.url?.includes('/auth/register');
+                                  originalRequest.url?.includes('/auth/register') ||
+                                  originalRequest.url?.includes('/auth/refresh');
             
             if (!isAuthEndpoint) {
                 originalRequest._retry = true;
@@ -282,6 +326,7 @@ axiosClient.interceptors.response.use(
                         if (window.location.pathname !== '/login') {
                             window.location.href = '/login';
                         }
+                        return Promise.reject(error);
                     }
                 }
             }
@@ -294,7 +339,34 @@ axiosClient.interceptors.response.use(
             return Promise.reject(error);
         }
 
-        // Try retry interceptor for other errors
+        // Implement retry logic with exponential backoff
+        if (RetryHandler.shouldRetry(error, originalRequest._retryCount)) {
+            originalRequest._retryCount++;
+            
+            const delay = RetryHandler.getRetryDelay(originalRequest._retryCount - 1);
+            
+            if (import.meta.env.DEV) {
+                console.log(
+                    `🔄 Retrying request (attempt ${originalRequest._retryCount}/${RetryHandler['MAX_RETRIES']}) ` +
+                    `after ${Math.round(delay)}ms: ${originalRequest.url}`
+                );
+            }
+
+            await RetryHandler.delay(delay);
+
+            // Update metadata for retry
+            if (originalRequest.metadata) {
+                originalRequest.metadata.retryCount = originalRequest._retryCount;
+                originalRequest.metadata.startTime = Date.now();
+            }
+
+            return axiosClient(originalRequest);
+        }
+
+        // If retry limit reached or error is not retryable, handle error
+        ApiLogger.logError(error);
+        
+        // Try default error handler
         try {
             return await defaultRetryInterceptor.createInterceptor()(error);
         } catch (retryError) {

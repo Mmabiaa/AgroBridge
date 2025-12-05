@@ -1,0 +1,150 @@
+/**
+ * AgroBridge Theme System
+ * 
+ * This file provides theme switching functionality and theme-specific overrides.
+ */
+
+/* Import design tokens */
+@import './tokens.css';
+
+/* Theme utilities */
+@layer utilities {
+  /* Theme transition for smooth switching */
+  .theme-transition {
+    transition: background-color var(--transition-duration-base) var(--transition-timing-smooth),
+                color var(--transition-duration-base) var(--transition-timing-smooth),
+                border-color var(--transition-duration-base) var(--transition-timing-smooth);
+  }
+  
+  /* Disable transitions during theme switch to prevent flash */
+  .theme-switching * {
+    transition: none !important;
+  }
+}
+
+/* Light theme (default) */
+[data-theme="light"],
+:root:not([data-theme="dark"]) {
+  color-scheme: light;
+  
+  /* Map tokens to CSS variables used by components */
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+  --card: var(--color-card);
+  --card-foreground: var(--color-card-foreground);
+  --popover: var(--color-popover);
+  --popover-foreground: var(--color-popover-foreground);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+  --primary-glow: var(--color-primary-glow);
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-secondary-foreground);
+  --muted: var(--color-muted);
+  --muted-foreground: var(--color-muted-foreground);
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-accent-foreground);
+  --destructive: var(--color-destructive);
+  --destructive-foreground: var(--color-destructive-foreground);
+  --border: var(--color-border);
+  --input: var(--color-input);
+  --ring: var(--color-ring);
+  
+  /* Agricultural colors */
+  --harvest-gold: var(--color-harvest-gold);
+  --earth-brown: var(--color-earth-brown);
+  --leaf-green: var(--color-leaf-green);
+  --sky-blue: var(--color-sky-blue);
+  --warning-orange: var(--color-warning);
+  
+  /* Gradients */
+  --gradient-primary: var(--gradient-primary);
+  --gradient-earth: var(--gradient-earth);
+  --gradient-sky: var(--gradient-sky);
+  --gradient-hero: var(--gradient-hero);
+  
+  /* Shadows */
+  --shadow-soft: var(--shadow-soft);
+  --shadow-strong: var(--shadow-strong);
+  --shadow-glow: var(--shadow-glow);
+  
+  /* Transitions */
+  --transition-smooth: var(--transition-all);
+  --transition-bounce: all var(--transition-duration-base) var(--transition-timing-bounce);
+}
+
+/* Dark theme */
+[data-theme="dark"],
+.dark {
+  color-scheme: dark;
+  
+  /* Map dark mode tokens */
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+  --card: var(--color-card);
+  --card-foreground: var(--color-card-foreground);
+  --popover: var(--color-popover);
+  --popover-foreground: var(--color-popover-foreground);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+  --primary-glow: var(--color-primary-glow);
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-secondary-foreground);
+  --muted: var(--color-muted);
+  --muted-foreground: var(--color-muted-foreground);
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-accent-foreground);
+  --destructive: var(--color-destructive);
+  --destructive-foreground: var(--color-destructive-foreground);
+  --border: var(--color-border);
+  --input: var(--color-input);
+  --ring: var(--color-ring);
+  
+  /* Adjust agricultural colors for dark mode */
+  --harvest-gold: 45 85% 65%;
+  --earth-brown: 30 40% 55%;
+  --leaf-green: 140 60% 35%;
+  --sky-blue: 210 80% 65%;
+  --warning-orange: 25 95% 70%;
+}
+
+/* High contrast theme (accessibility) */
+[data-theme="high-contrast"] {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+  --primary: 0 0% 0%;
+  --primary-foreground: 0 0% 100%;
+  --border: 0 0% 0%;
+  --ring: 0 0% 0%;
+  
+  /* Increase contrast for all interactive elements */
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 10%;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
+  }
+  
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}

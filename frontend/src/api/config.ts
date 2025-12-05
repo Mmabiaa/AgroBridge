@@ -1,13 +1,17 @@
+import { env } from '@/lib/env';
+
 /**
  * API Configuration
  */
 
-// Environment variables with defaults
+// Environment variables with validation
 export const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000',
-  TIMEOUT: parseInt(import.meta.env.VITE_API_TIMEOUT || '30000', 10),
-  RETRY_ATTEMPTS: parseInt(import.meta.env.VITE_API_RETRY_ATTEMPTS || '3', 10),
-  RETRY_DELAY: parseInt(import.meta.env.VITE_API_RETRY_DELAY || '1000', 10),
+  BASE_URL: env.VITE_API_URL,
+  TIMEOUT: env.VITE_API_TIMEOUT,
+  RETRY_ATTEMPTS: env.VITE_API_RETRY_ATTEMPTS,
+  RETRY_DELAY: env.VITE_API_RETRY_DELAY,
+  WEBSOCKET_URL: env.VITE_WEBSOCKET_URL,
+  WS_URL: env.VITE_WS_URL,
 } as const;
 
 // API Endpoints

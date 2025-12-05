@@ -1,0 +1,338 @@
+/**
+ * AgroBridge Design Tokens
+ * 
+ * This file contains all design tokens for the AgroBridge application.
+ * Tokens are organized by category: colors, spacing, typography, shadows, etc.
+ * All color values MUST be in HSL format for theme switching support.
+ */
+
+@layer tokens {
+  :root {
+    /* ========================================
+       COLOR TOKENS
+       ======================================== */
+    
+    /* Base Colors */
+    --color-background: 120 20% 98%;
+    --color-foreground: 120 10% 15%;
+    --color-surface: 120 30% 97%;
+    --color-surface-foreground: 120 10% 15%;
+    
+    /* Primary Colors - Forest Green */
+    --color-primary-50: 140 60% 95%;
+    --color-primary-100: 140 60% 90%;
+    --color-primary-200: 140 60% 80%;
+    --color-primary-300: 140 60% 70%;
+    --color-primary-400: 140 60% 50%;
+    --color-primary-500: 140 60% 25%;
+    --color-primary-600: 140 60% 20%;
+    --color-primary-700: 140 60% 15%;
+    --color-primary-800: 140 60% 10%;
+    --color-primary-900: 140 60% 5%;
+    --color-primary: var(--color-primary-500);
+    --color-primary-foreground: 120 20% 98%;
+    --color-primary-glow: 140 50% 45%;
+    
+    /* Secondary Colors - Earth Brown */
+    --color-secondary-50: 30 40% 95%;
+    --color-secondary-100: 30 40% 90%;
+    --color-secondary-200: 30 40% 85%;
+    --color-secondary-300: 30 40% 75%;
+    --color-secondary-400: 30 40% 60%;
+    --color-secondary-500: 30 40% 45%;
+    --color-secondary-600: 30 40% 35%;
+    --color-secondary-700: 30 40% 25%;
+    --color-secondary-800: 30 40% 15%;
+    --color-secondary-900: 30 40% 10%;
+    --color-secondary: var(--color-secondary-200);
+    --color-secondary-foreground: 30 30% 20%;
+    
+    /* Accent Colors - Golden Harvest */
+    --color-accent-50: 45 85% 95%;
+    --color-accent-100: 45 85% 90%;
+    --color-accent-200: 45 85% 85%;
+    --color-accent-300: 45 85% 80%;
+    --color-accent-400: 45 85% 75%;
+    --color-accent-500: 45 85% 70%;
+    --color-accent-600: 45 85% 60%;
+    --color-accent-700: 45 85% 50%;
+    --color-accent-800: 45 85% 40%;
+    --color-accent-900: 45 85% 30%;
+    --color-accent: var(--color-accent-500);
+    --color-accent-foreground: 30 30% 20%;
+    
+    /* Muted Colors - Sage Green */
+    --color-muted-50: 120 20% 98%;
+    --color-muted-100: 120 20% 95%;
+    --color-muted-200: 120 20% 90%;
+    --color-muted-300: 120 20% 85%;
+    --color-muted-400: 120 20% 70%;
+    --color-muted-500: 120 20% 60%;
+    --color-muted-600: 120 15% 45%;
+    --color-muted-700: 120 15% 35%;
+    --color-muted-800: 120 15% 25%;
+    --color-muted-900: 120 15% 15%;
+    --color-muted: var(--color-muted-200);
+    --color-muted-foreground: var(--color-muted-600);
+    
+    /* Semantic Colors */
+    --color-success: 140 60% 45%;
+    --color-success-foreground: 120 20% 98%;
+    --color-warning: 25 95% 65%;
+    --color-warning-foreground: 30 30% 20%;
+    --color-error: 0 84% 60%;
+    --color-error-foreground: 120 20% 98%;
+    --color-info: 210 80% 60%;
+    --color-info-foreground: 120 20% 98%;
+    
+    /* Agricultural Theme Colors */
+    --color-harvest-gold: 45 85% 70%;
+    --color-earth-brown: 30 40% 45%;
+    --color-leaf-green: 140 60% 25%;
+    --color-sky-blue: 210 80% 60%;
+    --color-soil-dark: 30 30% 20%;
+    --color-wheat-yellow: 48 90% 75%;
+    --color-water-blue: 200 70% 55%;
+    
+    /* Border & Input */
+    --color-border: 120 25% 85%;
+    --color-border-hover: 120 25% 75%;
+    --color-border-focus: var(--color-primary);
+    --color-input: 120 25% 85%;
+    --color-ring: var(--color-primary);
+    
+    /* Card & Popover */
+    --color-card: 120 30% 97%;
+    --color-card-foreground: 120 10% 15%;
+    --color-popover: 120 30% 97%;
+    --color-popover-foreground: 120 10% 15%;
+    
+    /* Destructive */
+    --color-destructive: 0 84% 60%;
+    --color-destructive-foreground: 120 20% 98%;
+    
+    /* ========================================
+       SPACING TOKENS
+       ======================================== */
+    
+    --spacing-0: 0;
+    --spacing-1: 0.25rem;    /* 4px */
+    --spacing-2: 0.5rem;     /* 8px */
+    --spacing-3: 0.75rem;    /* 12px */
+    --spacing-4: 1rem;       /* 16px */
+    --spacing-5: 1.25rem;    /* 20px */
+    --spacing-6: 1.5rem;     /* 24px */
+    --spacing-8: 2rem;       /* 32px */
+    --spacing-10: 2.5rem;    /* 40px */
+    --spacing-12: 3rem;      /* 48px */
+    --spacing-16: 4rem;      /* 64px */
+    --spacing-20: 5rem;      /* 80px */
+    --spacing-24: 6rem;      /* 96px */
+    --spacing-32: 8rem;      /* 128px */
+    
+    /* ========================================
+       TYPOGRAPHY TOKENS
+       ======================================== */
+    
+    /* Font Families */
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "Fira Code", "Courier New", monospace;
+    
+    /* Font Sizes */
+    --font-size-xs: 0.75rem;      /* 12px */
+    --font-size-sm: 0.875rem;     /* 14px */
+    --font-size-base: 1rem;       /* 16px */
+    --font-size-lg: 1.125rem;     /* 18px */
+    --font-size-xl: 1.25rem;      /* 20px */
+    --font-size-2xl: 1.5rem;      /* 24px */
+    --font-size-3xl: 1.875rem;    /* 30px */
+    --font-size-4xl: 2.25rem;     /* 36px */
+    --font-size-5xl: 3rem;        /* 48px */
+    --font-size-6xl: 3.75rem;     /* 60px */
+    
+    /* Font Weights */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    
+    /* Line Heights */
+    --line-height-none: 1;
+    --line-height-tight: 1.25;
+    --line-height-snug: 1.375;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.625;
+    --line-height-loose: 2;
+    
+    /* Letter Spacing */
+    --letter-spacing-tighter: -0.05em;
+    --letter-spacing-tight: -0.025em;
+    --letter-spacing-normal: 0;
+    --letter-spacing-wide: 0.025em;
+    --letter-spacing-wider: 0.05em;
+    --letter-spacing-widest: 0.1em;
+    
+    /* ========================================
+       BORDER RADIUS TOKENS
+       ======================================== */
+    
+    --radius-none: 0;
+    --radius-sm: 0.25rem;     /* 4px */
+    --radius-base: 0.5rem;    /* 8px */
+    --radius-md: 0.75rem;     /* 12px */
+    --radius-lg: 1rem;        /* 16px */
+    --radius-xl: 1.5rem;      /* 24px */
+    --radius-2xl: 2rem;       /* 32px */
+    --radius-full: 9999px;
+    --radius: var(--radius-md);
+    
+    /* ========================================
+       SHADOW TOKENS
+       ======================================== */
+    
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-base: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    --shadow-2xl: 0 35px 60px -15px rgb(0 0 0 / 0.3);
+    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+    
+    /* Agricultural themed shadows */
+    --shadow-soft: 0 4px 20px -8px hsl(var(--color-primary) / 0.2);
+    --shadow-strong: 0 10px 40px -15px hsl(var(--color-primary) / 0.3);
+    --shadow-glow: 0 0 30px hsl(var(--color-harvest-gold) / 0.4);
+    --shadow-earth: 0 8px 24px -4px hsl(var(--color-earth-brown) / 0.25);
+    
+    /* ========================================
+       Z-INDEX TOKENS
+       ======================================== */
+    
+    --z-index-base: 0;
+    --z-index-dropdown: 1000;
+    --z-index-sticky: 1020;
+    --z-index-fixed: 1030;
+    --z-index-modal-backdrop: 1040;
+    --z-index-modal: 1050;
+    --z-index-popover: 1060;
+    --z-index-tooltip: 1070;
+    --z-index-notification: 1080;
+    
+    /* ========================================
+       TRANSITION TOKENS
+       ======================================== */
+    
+    --transition-duration-fast: 150ms;
+    --transition-duration-base: 200ms;
+    --transition-duration-slow: 300ms;
+    --transition-duration-slower: 500ms;
+    
+    --transition-timing-linear: linear;
+    --transition-timing-ease: ease;
+    --transition-timing-ease-in: ease-in;
+    --transition-timing-ease-out: ease-out;
+    --transition-timing-ease-in-out: ease-in-out;
+    --transition-timing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Preset transitions */
+    --transition-all: all var(--transition-duration-base) var(--transition-timing-smooth);
+    --transition-colors: color, background-color, border-color var(--transition-duration-base) var(--transition-timing-smooth);
+    --transition-transform: transform var(--transition-duration-base) var(--transition-timing-smooth);
+    --transition-opacity: opacity var(--transition-duration-base) var(--transition-timing-smooth);
+    
+    /* ========================================
+       GRADIENT TOKENS
+       ======================================== */
+    
+    --gradient-primary: linear-gradient(135deg, hsl(var(--color-primary)), hsl(var(--color-primary-glow)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--color-secondary-500)), hsl(var(--color-secondary-300)));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--color-accent-600)), hsl(var(--color-accent-400)));
+    --gradient-earth: linear-gradient(180deg, hsl(var(--color-harvest-gold)), hsl(var(--color-earth-brown)));
+    --gradient-sky: linear-gradient(180deg, hsl(var(--color-sky-blue)), hsl(var(--color-primary-glow)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--color-primary)) 0%, hsl(var(--color-harvest-gold)) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(var(--color-warning)) 0%, hsl(var(--color-accent)) 100%);
+    
+    /* ========================================
+       BREAKPOINT TOKENS (for reference)
+       ======================================== */
+    
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-2xl: 1536px;
+    
+    /* ========================================
+       COMPONENT-SPECIFIC TOKENS
+       ======================================== */
+    
+    /* Button */
+    --button-height-sm: 2rem;      /* 32px */
+    --button-height-md: 2.5rem;    /* 40px */
+    --button-height-lg: 3rem;      /* 48px */
+    --button-padding-x-sm: var(--spacing-3);
+    --button-padding-x-md: var(--spacing-4);
+    --button-padding-x-lg: var(--spacing-6);
+    
+    /* Input */
+    --input-height-sm: 2rem;       /* 32px */
+    --input-height-md: 2.5rem;     /* 40px */
+    --input-height-lg: 3rem;       /* 48px */
+    --input-padding-x: var(--spacing-3);
+    
+    /* Card */
+    --card-padding: var(--spacing-6);
+    --card-radius: var(--radius-lg);
+    
+    /* Container */
+    --container-max-width: 1280px;
+    --container-padding: var(--spacing-4);
+  }
+  
+  /* ========================================
+     DARK MODE TOKENS
+     ======================================== */
+  
+  .dark {
+    --color-background: 222 84% 5%;
+    --color-foreground: 210 40% 98%;
+    --color-surface: 222 84% 5%;
+    --color-surface-foreground: 210 40% 98%;
+    
+    --color-primary: 210 40% 98%;
+    --color-primary-foreground: 222 47% 11%;
+    --color-primary-glow: 140 50% 60%;
+    
+    --color-secondary: 217 33% 18%;
+    --color-secondary-foreground: 210 40% 98%;
+    
+    --color-accent: 217 33% 18%;
+    --color-accent-foreground: 210 40% 98%;
+    
+    --color-muted: 217 33% 18%;
+    --color-muted-foreground: 215 20% 65%;
+    
+    --color-card: 222 84% 5%;
+    --color-card-foreground: 210 40% 98%;
+    
+    --color-popover: 222 84% 5%;
+    --color-popover-foreground: 210 40% 98%;
+    
+    --color-border: 217 33% 18%;
+    --color-border-hover: 217 33% 25%;
+    --color-input: 217 33% 18%;
+    --color-ring: 212 27% 84%;
+    
+    --color-destructive: 0 63% 31%;
+    --color-destructive-foreground: 210 40% 98%;
+    
+    /* Adjust shadows for dark mode */
+    --shadow-soft: 0 4px 20px -8px hsl(0 0% 0% / 0.4);
+    --shadow-strong: 0 10px 40px -15px hsl(0 0% 0% / 0.6);
+    --shadow-glow: 0 0 30px hsl(var(--color-harvest-gold) / 0.3);
+  }
+}

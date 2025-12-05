@@ -23,6 +23,9 @@ class TransactionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Transaction.objects.none()
         user = self.request.user
         return Transaction.objects.filter(
             models.Q(user=user) | models.Q(recipient=user)
@@ -98,6 +101,9 @@ class EscrowViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Escrow.objects.none()
         user = self.request.user
         return Escrow.objects.filter(
             models.Q(buyer=user) | models.Q(seller=user)
@@ -184,6 +190,9 @@ class DisputeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Dispute.objects.none()
         user = self.request.user
         return Dispute.objects.filter(
             models.Q(raised_by=user) | models.Q(against=user)

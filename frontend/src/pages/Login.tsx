@@ -6,12 +6,21 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Wheat, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { z } from 'zod';
+
+// Zod validation schema
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -20,14 +29,33 @@ export default function Login() {
   const from = location.state?.from?.pathname || '/dashboard';
 
   const [error, setError] = useState<string>('');
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setValidationErrors({});
+    
+    // Validate form with Zod
+    try {
+      loginSchema.parse({ email, password });
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const errors: Record<string, string> = {};
+        err.errors.forEach((error) => {
+          if (error.path[0]) {
+            errors[error.path[0].toString()] = error.message;
+          }
+        });
+        setValidationErrors(errors);
+        return;
+      }
+    }
+    
     setIsLoading(true);
     
     try {
-      await login(email, password);
+      await login(email, password, rememberMe);
       navigate(from, { replace: true });
     } catch (error: any) {
       console.error('Login failed:', error);
@@ -74,10 +102,20 @@ export default function Login() {
                   type="email" 
                   placeholder="Enter your email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (validationErrors.email) {
+                      setValidationErrors({ ...validationErrors, email: '' });
+                    }
+                  }}
                   required
-                  className="transition-all duration-200 focus:ring-2 focus:ring-primary/20 h-12 md:h-10 text-base md:text-sm"
+                  className={`transition-all duration-200 focus:ring-2 focus:ring-primary/20 h-12 md:h-10 text-base md:text-sm ${
+                    validationErrors.email ? 'border-destructive' : ''
+                  }`}
                 />
+                {validationErrors.email && (
+                  <p className="text-xs text-destructive">{validationErrors.email}</p>
+                )}
               </div>
               
               <div className="space-y-2">
@@ -88,9 +126,16 @@ export default function Login() {
                     type={showPassword ? "text" : "password"} 
                     placeholder="Enter your password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (validationErrors.password) {
+                        setValidationErrors({ ...validationErrors, password: '' });
+                      }
+                    }}
                     required
-                    className="pr-12 transition-all duration-200 focus:ring-2 focus:ring-primary/20 h-12 md:h-10 text-base md:text-sm"
+                    className={`pr-12 transition-all duration-200 focus:ring-2 focus:ring-primary/20 h-12 md:h-10 text-base md:text-sm ${
+                      validationErrors.password ? 'border-destructive' : ''
+                    }`}
                   />
                   <Button
                     type="button"
@@ -106,6 +151,24 @@ export default function Login() {
                     )}
                   </Button>
                 </div>
+                {validationErrors.password && (
+                  <p className="text-xs text-destructive">{validationErrors.password}</p>
+                )}
+              </div>
+
+              {/* Remember Me Checkbox */}
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="rememberMe" 
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                />
+                <Label 
+                  htmlFor="rememberMe" 
+                  className="text-sm font-normal cursor-pointer"
+                >
+                  Remember me for 30 days
+                </Label>
               </div>
 
               {/* Error Message */}

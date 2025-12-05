@@ -3,7 +3,7 @@ import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { usePermissions } from '@/hooks/usePermissions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, ArrowLeft, Home } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Home, Shield } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -14,6 +14,7 @@ interface ProtectedRouteProps {
   requiredRoute?: string;
   fallbackPath?: string;
   showAccessDenied?: boolean;
+  adminOnly?: boolean;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
@@ -25,9 +26,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredRoute,
   fallbackPath = '/dashboard',
   showAccessDenied = true,
+  adminOnly = false,
 }) => {
   const { user, isLoading, isAuthenticated } = useAuth();
-  const { checkRole, checkPermission, checkMultiplePermissions, checkRoute } = usePermissions();
+  const { checkRole, checkPermission, checkMultiplePermissions, checkRoute, isAdmin } = usePermissions();
   const location = useLocation();
 
   // Loading state
@@ -47,10 +49,18 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  // Check admin-only access
+  if (adminOnly && !isAdmin()) {
+    if (showAccessDenied) {
+      return <AccessDeniedPage reason="admin" fallbackPath={fallbackPath} />;
+    }
+    return <Navigate to={fallbackPath} replace />;
+  }
+
   // Check role-based access 
   if (requiredRole && !checkRole(requiredRole)) {
     if (showAccessDenied) {
-      return <AccessDeniedPage reason="role" fallbackPath={fallbackPath} />;
+      return <AccessDeniedPage reason="role" fallbackPath={fallbackPath} requiredRole={requiredRole} />;
     }
     return <Navigate to={fallbackPath} replace />;
   }
@@ -58,7 +68,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // Check single permission
   if (requiredPermission && !checkPermission(requiredPermission)) {
     if (showAccessDenied) {
-      return <AccessDeniedPage reason="permission" fallbackPath={fallbackPath} />;
+      return <AccessDeniedPage reason="permission" fallbackPath={fallbackPath} requiredPermission={requiredPermission} />;
     }
     return <Navigate to={fallbackPath} replace />;
   }
@@ -66,7 +76,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // Check multiple permissions
   if (requiredPermissions && !checkMultiplePermissions(requiredPermissions, requireAllPermissions)) {
     if (showAccessDenied) {
-      return <AccessDeniedPage reason="permissions" fallbackPath={fallbackPath} />;
+      return <AccessDeniedPage reason="permissions" fallbackPath={fallbackPath} requiredPermissions={requiredPermissions} />;
     }
     return <Navigate to={fallbackPath} replace />;
   }
@@ -84,21 +94,35 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
 // Access Denied Component
 interface AccessDeniedPageProps {
-  reason: 'role' | 'permission' | 'permissions' | 'route';
+  reason: 'role' | 'permission' | 'permissions' | 'route' | 'admin';
   fallbackPath: string;
+  requiredRole?: UserRole | UserRole[];
+  requiredPermission?: string;
+  requiredPermissions?: string[];
 }
 
-const AccessDeniedPage: React.FC<AccessDeniedPageProps> = ({ reason, fallbackPath }) => {
+const AccessDeniedPage: React.FC<AccessDeniedPageProps> = ({ 
+  reason, 
+  fallbackPath,
+  requiredRole,
+  requiredPermission,
+  requiredPermissions,
+}) => {
   const { user } = useAuth();
 
   const getReasonMessage = () => {
     switch (reason) {
+      case 'admin':
+        return "This page is only accessible to administrators.";
       case 'role':
-        return `Your current role (${user?.role}) doesn't have access to this page.`;
+        const roleText = Array.isArray(requiredRole) 
+          ? requiredRole.map(r => r.replace('_', ' ')).join(', ')
+          : requiredRole?.replace('_', ' ');
+        return `This page requires ${roleText} role. Your current role is ${user?.role?.replace('_', ' ')}.`;
       case 'permission':
-        return "You don't have the required permission to access this page.";
+        return `You don't have the required permission (${requiredPermission}) to access this page.`;
       case 'permissions':
-        return "You don't have the required permissions to access this page.";
+        return `You don't have the required permissions (${requiredPermissions?.join(', ')}) to access this page.`;
       case 'route':
         return "This page is not available for your account type.";
       default:
@@ -111,7 +135,11 @@ const AccessDeniedPage: React.FC<AccessDeniedPageProps> = ({ reason, fallbackPat
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 p-3 rounded-full bg-destructive/10">
-            <AlertTriangle className="h-8 w-8 text-destructive" />
+            {reason === 'admin' ? (
+              <Shield className="h-8 w-8 text-destructive" />
+            ) : (
+              <AlertTriangle className="h-8 w-8 text-destructive" />
+            )}
           </div>
           <CardTitle className="text-xl">Access Denied</CardTitle>
         </CardHeader>
@@ -142,7 +170,7 @@ const AccessDeniedPage: React.FC<AccessDeniedPageProps> = ({ reason, fallbackPat
           {user?.role && (
             <div className="pt-4 border-t">
               <p className="text-xs text-muted-foreground">
-                Current role: <span className="font-medium capitalize">{user.role}</span>
+                Current role: <span className="font-medium capitalize">{user.role.replace('_', ' ')}</span>
               </p>
             </div>
           )}

@@ -38,6 +38,10 @@ class TaskViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         """Get tasks for current user"""
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Task.objects.none()
+        
         user = self.request.user
         
         # Users can see tasks they created or are assigned to
@@ -231,6 +235,10 @@ class TaskTemplateViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         """Get templates for current user and public templates"""
+        # Short-circuit for schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return TaskTemplate.objects.none()
+        
         user = self.request.user
         return TaskTemplate.objects.filter(
             Q(user=user) | Q(is_public=True)

@@ -6,6 +6,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Wheat, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
+import { z } from 'zod';
+
+// Zod validation schema
+const resetPasswordSchema = z.object({
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
 export default function ResetPassword() {
   const { token } = useParams<{ token: string }>();
@@ -31,14 +41,17 @@ export default function ResetPassword() {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     
-    if (!formData.password) {
-      errors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      errors.password = 'Password must be at least 8 characters long';
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
+    // Validate with Zod
+    try {
+      resetPasswordSchema.parse(formData);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        err.errors.forEach((error) => {
+          if (error.path[0]) {
+            errors[error.path[0].toString()] = error.message;
+          }
+        });
+      }
     }
     
     return errors;
