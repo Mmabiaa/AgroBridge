@@ -10,10 +10,19 @@ import socket
 import logging
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
-import consul
-from consul.base import ConsulException
 
 logger = logging.getLogger(__name__)
+
+# Try to import consul, but don't fail if it's not available
+try:
+    import consul
+    from consul.base import ConsulException
+    CONSUL_AVAILABLE = True
+except ImportError:
+    CONSUL_AVAILABLE = False
+    consul = None
+    ConsulException = Exception
+    logger.warning("python-consul package not installed. Service discovery will be disabled.")
 
 
 @dataclass
@@ -58,6 +67,11 @@ class ConsulClient:
             token: Consul ACL token (optional)
             scheme: Connection scheme ('http' or 'https')
         """
+        if not CONSUL_AVAILABLE:
+            logger.warning("Consul client not available, service discovery disabled")
+            self.client = None
+            return
+        
         self.host = host or os.getenv('CONSUL_HOST', 'localhost')
         self.port = port or int(os.getenv('CONSUL_PORT', '8500'))
         self.token = token or os.getenv('CONSUL_TOKEN')
@@ -72,8 +86,8 @@ class ConsulClient:
             )
             logger.info(f"Consul client initialized: {self.scheme}://{self.host}:{self.port}")
         except Exception as e:
-            logger.error(f"Failed to initialize Consul client: {e}")
-            raise
+            logger.warning(f"Failed to initialize Consul client: {e}. Service discovery disabled.")
+            self.client = None
     
     def register_service(self, config: ServiceConfig) -> bool:
         """
@@ -85,6 +99,10 @@ class ConsulClient:
         Returns:
             True if registration successful, False otherwise
         """
+        if not self.client:
+            logger.debug(f"Consul not available, skipping registration for {config.service_id}")
+            return False
+        
         try:
             # Prepare health check configuration
             check = consul.Check.http(
@@ -95,13 +113,13 @@ class ConsulClient:
             )
             
             # Register the service
+            # Note: python-consul 1.1.0 doesn't support 'meta' parameter
             self.client.agent.service.register(
                 name=config.name,
                 service_id=config.service_id,
                 address=config.host,
                 port=config.port,
                 tags=config.tags,
-                meta=config.meta,
                 check=check
             )
             
