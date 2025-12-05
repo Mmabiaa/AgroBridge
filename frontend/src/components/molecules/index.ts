@@ -17,6 +17,8 @@ export type { EmptyStateProps } from './EmptyState';
 export { ErrorState } from './ErrorState';
 export type { ErrorStateProps } from './ErrorState';
 
+export { Pagination as SimplePagination } from './Pagination';
+
 // Re-export Card components from UI (already molecular in nature)
 export {
   Card,
