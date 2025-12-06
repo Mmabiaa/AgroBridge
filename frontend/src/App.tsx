@@ -37,6 +37,7 @@ import ResetPassword from "./pages/ResetPassword";
 import CropDiseaseDetection from "./pages/CropDiseaseDetection";
 import VoiceCommandsPage from "./pages/VoiceCommands";
 import Notifications from "./pages/Notifications";
+import NotificationSettings from "./pages/NotificationSettings";
 import SmartScheduling from "./pages/SmartScheduling";
 import BlockchainCertificates from "./pages/BlockchainCertificates";
 import ARVisualization from "./pages/ARVisualization";
@@ -316,6 +317,11 @@ const App = () => (
                         <Route path="/settings" element={
                           <ErrorBoundary>
                             <Settings />
+                          </ErrorBoundary>
+                        } />
+                        <Route path="/settings/notifications" element={
+                          <ErrorBoundary>
+                            <NotificationSettings />
                           </ErrorBoundary>
                         } />
                         <Route path="/notifications" element={
