@@ -319,7 +319,7 @@ export function ReportsSection() {
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {expenseBreakdownData.map((entry, index) => (
+                    {expenseBreakdownData.map((_, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}
@@ -367,7 +367,7 @@ export function ReportsSection() {
                       fill="#8884d8"
                       dataKey="value"
                     >
-                      {incomeBreakdownData.map((entry, index) => (
+                      {incomeBreakdownData.map((_, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}

@@ -8,12 +8,7 @@ import {
   DollarSign, 
   TrendingUp, 
   Calculator, 
-  PieChart, 
-  CreditCard,
-  Target,
   Calendar,
-  AlertTriangle,
-  CheckCircle,
   Plus,
   Download,
   RefreshCw
@@ -30,15 +25,6 @@ import { ReportsSection } from '@/components/financial/ReportsSection';
 import { ExportDataDialog } from '@/components/financial/ExportDataDialog';
 import { Budget } from '@/api/services/financial.service';
 import { toast } from 'sonner';
-
-const budgetCategories = [
-  { name: 'Seeds & Planting', budgeted: 5000, spent: 4200, percentage: 84 },
-  { name: 'Fertilizers', budgeted: 3000, spent: 2800, percentage: 93 },
-  { name: 'Equipment Maintenance', budgeted: 2500, spent: 1950, percentage: 78 },
-  { name: 'Labor Costs', budgeted: 8000, spent: 7500, percentage: 94 },
-  { name: 'Irrigation & Utilities', budgeted: 1800, spent: 1650, percentage: 92 },
-  { name: 'Insurance', budgeted: 1200, spent: 1200, percentage: 100 }
-];
 
 const investments = [
   {
@@ -152,10 +138,6 @@ export default function FinancialPlanning() {
   const records = recordsData?.results || [];
   const budgets = budgetsData || [];
 
-  const totalBudget = budgets.reduce((sum, budget) => sum + budget.total_amount, 0);
-  const totalSpent = budgets.reduce((sum, budget) => sum + budget.spent_amount, 0);
-  const budgetUtilization = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
-
   const getROIColor = (roi: string) => {
     switch (roi) {
       case 'High': return 'text-green-600 bg-green-50';
@@ -257,7 +239,7 @@ export default function FinancialPlanning() {
                 ) : (
                   <FinancialRecordsTable
                     records={records}
-                    onEdit={(record) => {
+                    onEdit={() => {
                       toast.info('Edit functionality coming soon');
                     }}
                     onDelete={async (recordId) => {
@@ -269,7 +251,7 @@ export default function FinancialPlanning() {
                         toast.error('Failed to delete record');
                       }
                     }}
-                    onView={(record) => {
+                    onView={() => {
                       toast.info('View details functionality coming soon');
                     }}
                   />
