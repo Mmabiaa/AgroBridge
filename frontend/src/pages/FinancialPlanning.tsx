@@ -1,9 +1,9 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -15,8 +15,21 @@ import {
   AlertTriangle,
   CheckCircle,
   Plus,
-  Download
+  Download,
+  RefreshCw
 } from 'lucide-react';
+import { useRecords, useBudgets } from '@/api/hooks/useFinancial';
+import financialService from '@/api/services/financial.service';
+import { FinancialRecordsTable } from '@/components/financial/FinancialRecordsTable';
+import { FinancialSummary } from '@/components/financial/FinancialSummary';
+import { FinancialFilters, FilterValues } from '@/components/financial/FinancialFilters';
+import { FinancialRecordForm } from '@/components/financial/FinancialRecordForm';
+import { BudgetManager } from '@/components/financial/BudgetManager';
+import { BudgetForm } from '@/components/financial/BudgetForm';
+import { ReportsSection } from '@/components/financial/ReportsSection';
+import { ExportDataDialog } from '@/components/financial/ExportDataDialog';
+import { Budget } from '@/api/services/financial.service';
+import { toast } from 'sonner';
 
 const budgetCategories = [
   { name: 'Seeds & Planting', budgeted: 5000, spent: 4200, percentage: 84 },
@@ -89,11 +102,59 @@ const revenueProjections = [
 ];
 
 export default function FinancialPlanning() {
-  const [activeTab, setActiveTab] = useState('budget');
+  const [activeTab, setActiveTab] = useState('records');
+  const [filters, setFilters] = useState<FilterValues>({});
+  const [categories, setCategories] = useState<string[]>([]);
+  const [showRecordForm, setShowRecordForm] = useState(false);
+  const [showBudgetForm, setShowBudgetForm] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [editingBudget, setEditingBudget] = useState<Budget | undefined>();
+  const [summary, setSummary] = useState({
+    total_income: 0,
+    total_expenses: 0,
+    net_profit: 0,
+    profit_margin: 0,
+  });
 
-  const totalBudget = budgetCategories.reduce((sum, cat) => sum + cat.budgeted, 0);
-  const totalSpent = budgetCategories.reduce((sum, cat) => sum + cat.spent, 0);
-  const budgetUtilization = (totalSpent / totalBudget) * 100;
+  // Fetch records with filters
+  const { data: recordsData, isLoading: recordsLoading, refetch: refetchRecords } = useRecords(filters);
+  const { data: budgetsData, isLoading: budgetsLoading, refetch: refetchBudgets } = useBudgets();
+
+  // Fetch categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await financialService.getCategories();
+        setCategories([...data.income_categories, ...data.expense_categories]);
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch summary when filters change
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const data = await financialService.getSummary({
+          start_date: filters.startDate,
+          end_date: filters.endDate,
+        });
+        setSummary(data);
+      } catch (error) {
+        console.error('Failed to fetch summary:', error);
+      }
+    };
+    fetchSummary();
+  }, [filters.startDate, filters.endDate]);
+
+  const records = recordsData?.results || [];
+  const budgets = budgetsData || [];
+
+  const totalBudget = budgets.reduce((sum, budget) => sum + budget.total_amount, 0);
+  const totalSpent = budgets.reduce((sum, budget) => sum + budget.spent_amount, 0);
+  const budgetUtilization = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
 
   const getROIColor = (roi: string) => {
     switch (roi) {
@@ -107,51 +168,40 @@ export default function FinancialPlanning() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 md:py-8 px-0 overflow-x-hidden">
       <div className="container mx-auto w-full max-w-full space-y-6 md:space-y-8 px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-4">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold flex items-center justify-center gap-2 md:gap-3">
-            <DollarSign className="h-6 w-6 md:h-8 md:w-8 text-primary" />
-            Agricultural Financial Planning
-          </h1>
-          <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
-            Comprehensive financial management tools for sustainable farm operations
-          </p>
+        <div className="flex items-center justify-between">
+          <div className="text-center flex-1 space-y-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold flex items-center justify-center gap-2 md:gap-3">
+              <DollarSign className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+              Agricultural Financial Planning
+            </h1>
+            <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
+              Comprehensive financial management tools for sustainable farm operations
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowExportDialog(true)}
+            className="hidden md:flex"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export Data
+          </Button>
         </div>
 
-        {/* Financial Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <Card className="shadow-soft">
-            <CardContent className="p-4 md:p-6 text-center">
-              <DollarSign className="h-6 w-6 md:h-8 md:w-8 text-primary mx-auto mb-2" />
-              <div className="text-xl md:text-2xl font-bold">₦{totalBudget.toLocaleString()}</div>
-              <p className="text-xs md:text-sm text-muted-foreground">Annual Budget</p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-soft">
-            <CardContent className="p-4 md:p-6 text-center">
-              <TrendingUp className="h-6 w-6 md:h-8 md:w-8 text-green-500 mx-auto mb-2" />
-              <div className="text-xl md:text-2xl font-bold">₦{totalSpent.toLocaleString()}</div>
-              <p className="text-xs md:text-sm text-muted-foreground">Spent to Date</p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-soft">
-            <CardContent className="p-4 md:p-6 text-center">
-              <Target className="h-6 w-6 md:h-8 md:w-8 text-blue-500 mx-auto mb-2" />
-              <div className="text-xl md:text-2xl font-bold">{budgetUtilization.toFixed(1)}%</div>
-              <p className="text-xs md:text-sm text-muted-foreground">Budget Utilized</p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-soft">
-            <CardContent className="p-4 md:p-6 text-center">
-              <PieChart className="h-6 w-6 md:h-8 md:w-8 text-purple-500 mx-auto mb-2" />
-              <div className="text-xl md:text-2xl font-bold">₦37,440</div>
-              <p className="text-xs md:text-sm text-muted-foreground">Projected Revenue</p>
-            </CardContent>
-          </Card>
-        </div>
+
+
+        {/* Financial Summary */}
+        <FinancialSummary
+          totalIncome={summary.total_income}
+          totalExpenses={summary.total_expenses}
+          netProfit={summary.net_profit}
+          profitMargin={summary.profit_margin}
+        />
 
         {/* Navigation Tabs */}
         <div className="flex flex-wrap gap-2 border-b">
-          {['budget', 'investments', 'loans', 'projections'].map((tab) => (
+          {['records', 'budget', 'reports', 'investments', 'loans', 'projections'].map((tab) => (
             <Button
               key={tab}
               variant={activeTab === tab ? "default" : "ghost"}
@@ -163,49 +213,133 @@ export default function FinancialPlanning() {
           ))}
         </div>
 
-        {/* Budget Tracking */}
-        {activeTab === 'budget' && (
+        {/* Financial Records */}
+        {activeTab === 'records' && (
           <div className="space-y-6">
             <Card className="shadow-soft">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Budget Categories</CardTitle>
-                    <CardDescription>Track spending across different farm operations</CardDescription>
+                    <CardTitle>Financial Records</CardTitle>
+                    <CardDescription>Track all income and expense transactions</CardDescription>
                   </div>
-                  <Button size="sm">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Category
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => refetchRecords()}
+                      disabled={recordsLoading}
+                    >
+                      <RefreshCw className={`h-4 w-4 mr-2 ${recordsLoading ? 'animate-spin' : ''}`} />
+                      Refresh
+                    </Button>
+                    <Button size="sm" onClick={() => setShowRecordForm(true)}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Record
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                {budgetCategories.map((category, idx) => (
-                  <div key={idx} className="space-y-3 p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-semibold">{category.name}</h3>
-                      <div className={`px-2 py-1 rounded text-xs ${
-                        category.percentage > 95 ? 'bg-red-100 text-red-800' :
-                        category.percentage > 85 ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
-                        {category.percentage}% Used
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>₦{category.spent.toLocaleString()} / ₦{category.budgeted.toLocaleString()}</span>
-                        <span>₦{(category.budgeted - category.spent).toLocaleString()} remaining</span>
-                      </div>
-                      <Progress value={category.percentage} className="h-2" />
+                {/* Filters */}
+                <FinancialFilters
+                  onFilterChange={setFilters}
+                  categories={categories}
+                />
+
+                {/* Records Table */}
+                {recordsLoading ? (
+                  <div className="space-y-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Skeleton key={i} className="h-16 w-full" />
+                    ))}
+                  </div>
+                ) : (
+                  <FinancialRecordsTable
+                    records={records}
+                    onEdit={(record) => {
+                      toast.info('Edit functionality coming soon');
+                    }}
+                    onDelete={async (recordId) => {
+                      try {
+                        await financialService.deleteRecord(recordId);
+                        toast.success('Record deleted successfully');
+                        refetchRecords();
+                      } catch (error) {
+                        toast.error('Failed to delete record');
+                      }
+                    }}
+                    onView={(record) => {
+                      toast.info('View details functionality coming soon');
+                    }}
+                  />
+                )}
+
+                {/* Pagination */}
+                {recordsData && recordsData.count > 10 && (
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">
+                      Showing {records.length} of {recordsData.count} records
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={!recordsData.previous}
+                      >
+                        Previous
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={!recordsData.next}
+                      >
+                        Next
+                      </Button>
                     </div>
                   </div>
-                ))}
+                )}
               </CardContent>
             </Card>
           </div>
         )}
+
+        {/* Budget Tracking */}
+        {activeTab === 'budget' && (
+          <div className="space-y-6">
+            {budgetsLoading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <Skeleton key={i} className="h-64 w-full" />
+                ))}
+              </div>
+            ) : (
+              <BudgetManager
+                budgets={budgets}
+                onCreateBudget={() => {
+                  setEditingBudget(undefined);
+                  setShowBudgetForm(true);
+                }}
+                onEditBudget={(budget) => {
+                  setEditingBudget(budget);
+                  setShowBudgetForm(true);
+                }}
+                onDeleteBudget={async (budgetId) => {
+                  try {
+                    await financialService.deleteBudget(budgetId);
+                    toast.success('Budget deleted successfully');
+                    refetchBudgets();
+                  } catch (error) {
+                    toast.error('Failed to delete budget');
+                  }
+                }}
+              />
+            )}
+          </div>
+        )}
+
+        {/* Financial Reports */}
+        {activeTab === 'reports' && <ReportsSection />}
 
         {/* Investment Planning */}
         {activeTab === 'investments' && (
@@ -396,6 +530,48 @@ export default function FinancialPlanning() {
           </div>
         )}
       </div>
+
+      {/* Financial Record Form Dialog */}
+      <FinancialRecordForm
+        open={showRecordForm}
+        onOpenChange={setShowRecordForm}
+        onSuccess={() => {
+          refetchRecords();
+          // Refetch summary
+          const fetchSummary = async () => {
+            try {
+              const data = await financialService.getSummary({
+                start_date: filters.startDate,
+                end_date: filters.endDate,
+              });
+              setSummary(data);
+            } catch (error) {
+              console.error('Failed to fetch summary:', error);
+            }
+          };
+          fetchSummary();
+        }}
+      />
+
+      {/* Budget Form Dialog */}
+      <BudgetForm
+        open={showBudgetForm}
+        onOpenChange={(open) => {
+          setShowBudgetForm(open);
+          if (!open) setEditingBudget(undefined);
+        }}
+        budget={editingBudget}
+        onSuccess={() => {
+          refetchBudgets();
+        }}
+      />
+
+      {/* Export Data Dialog */}
+      <ExportDataDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        categories={categories}
+      />
     </div>
   );
 }
