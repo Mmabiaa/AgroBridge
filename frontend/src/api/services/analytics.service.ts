@@ -119,7 +119,7 @@ class AnalyticsService {
    * Get dashboard metrics
    */
   async getDashboard(): Promise<DashboardMetrics> {
-    return apiClient.get<DashboardMetrics>(`${this.baseUrl}/dashboard`);
+    return apiClient.get<DashboardMetrics>(`${this.baseUrl}/dashboard/overview/`);
   }
 
   /**
@@ -130,7 +130,7 @@ class AnalyticsService {
     start_date?: string;
     end_date?: string;
   }): Promise<FarmPerformance> {
-    return apiClient.get<FarmPerformance>(`${this.baseUrl}/farm-performance`, { params });
+    return apiClient.get<FarmPerformance>(`${this.baseUrl}/dashboard/farm-performance/`, { params });
   }
 
   /**
@@ -140,7 +140,7 @@ class AnalyticsService {
     farm_id?: string;
     crop?: string;
   }): Promise<YieldPrediction[]> {
-    return apiClient.get<YieldPrediction[]>(`${this.baseUrl}/yield-predictions`, { params });
+    return apiClient.get<YieldPrediction[]>(`${this.baseUrl}/yield-predictions/`, { params });
   }
 
   /**
@@ -151,7 +151,7 @@ class AnalyticsService {
     latitude?: number;
     longitude?: number;
   }): Promise<WeatherForecast> {
-    return apiClient.get<WeatherForecast>(`${this.baseUrl}/weather-forecast`, { params });
+    return apiClient.get<WeatherForecast>(`${this.baseUrl}/weather-forecast/`, { params });
   }
 
   /**

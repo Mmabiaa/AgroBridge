@@ -208,6 +208,46 @@ class TaskViewSet(viewsets.ModelViewSet):
         })
     
     @action(detail=False, methods=['get'])
+    def suggestions(self, request):
+        """Get AI-powered task suggestions based on user's farm data"""
+        user = request.user
+        
+        # For now, return empty list - can be enhanced with AI later
+        # This would analyze user's crops, season, weather, etc. to suggest tasks
+        suggestions = []
+        
+        # Example suggestion structure:
+        # {
+        #     'id': 'suggestion-1',
+        #     'title': 'Apply Fertilizer to Maize Field',
+        #     'description': 'Based on growth stage, it\'s time to apply nitrogen fertilizer',
+        #     'suggested_date': '2025-12-10',
+        #     'priority': 'high',
+        #     'category': 'fertilization',
+        #     'reason': 'Maize is at V6 stage and requires nitrogen boost',
+        #     'confidence': 0.85
+        # }
+        
+        return Response(suggestions)
+    
+    @action(detail=False, methods=['get'])
+    def categories(self, request):
+        """Get list of available task categories"""
+        categories = [
+            'planting',
+            'irrigation',
+            'fertilization',
+            'pest_control',
+            'weeding',
+            'harvesting',
+            'maintenance',
+            'monitoring',
+            'marketing',
+            'general'
+        ]
+        return Response(categories)
+    
+    @action(detail=False, methods=['get'])
     def by_category(self, request):
         """Get tasks grouped by category"""
         user = request.user

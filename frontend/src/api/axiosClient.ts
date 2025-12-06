@@ -196,6 +196,11 @@ const axiosClient: AxiosInstance = axios.create({
     },
 });
 
+// Ensure baseURL is always set
+if (!axiosClient.defaults.baseURL) {
+    axiosClient.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+}
+
 // Request interceptor
 axiosClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
@@ -309,8 +314,9 @@ axiosClient.interceptors.response.use(
                 const refreshToken = TokenManager.getRefreshToken();
                 if (refreshToken && !TokenManager.isTokenExpired(refreshToken)) {
                     try {
+                        const baseURL = axiosClient.defaults.baseURL || import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
                         const response = await axios.post(
-                            `${axiosClient.defaults.baseURL}/auth/refresh/`,
+                            `${baseURL}/auth/refresh/`,
                             { refresh: refreshToken }
                         );
 

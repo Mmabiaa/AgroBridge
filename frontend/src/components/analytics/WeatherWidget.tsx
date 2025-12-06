@@ -87,7 +87,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
                             <div className="bg-gray-200 h-8 w-24 rounded"></div>
                             <div className="bg-gray-200 h-4 w-32 rounded"></div>
                         </div>
-                    ) : weatherData ? (
+                    ) : weatherData?.current ? (
                         <div className="space-y-3">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -194,10 +194,10 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
                                     <CardTitle>Current Weather</CardTitle>
                                     <CardDescription className="flex items-center gap-1 mt-1">
                                         <MapPin className="h-3 w-3" />
-                                        {weatherData.location.city}
+                                        {weatherData.location?.city || weatherData.location?.name || 'Unknown Location'}
                                     </CardDescription>
                                 </div>
-                                {React.createElement(getWeatherIcon(weatherData.current.icon), {
+                                {weatherData.current?.icon && React.createElement(getWeatherIcon(weatherData.current.icon), {
                                     className: 'h-16 w-16 text-blue-600'
                                 })}
                             </div>
@@ -264,7 +264,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-                                {weatherData.forecast.slice(0, 7).map((day, index) => {
+                                {(weatherData.forecast || []).slice(0, 7).map((day, index) => {
                                     const WeatherIcon = getWeatherIcon(day.icon);
 
                                     return (
@@ -275,13 +275,13 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
                                                     <WeatherIcon className="h-10 w-10 mx-auto text-blue-600" />
                                                     <p className="text-sm text-muted-foreground capitalize">{day.description}</p>
                                                     <div className="flex items-center justify-center gap-2">
-                                                        <span className="text-lg font-bold">{Math.round(day.temperature_high)}°</span>
-                                                        <span className="text-sm text-muted-foreground">{Math.round(day.temperature_low)}°</span>
+                                                        <span className="text-lg font-bold">{Math.round(day.temperature_high ?? day.max_temp ?? day.temperature)}°</span>
+                                                        <span className="text-sm text-muted-foreground">{Math.round(day.temperature_low ?? day.min_temp ?? day.temperature - 5)}°</span>
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-2 text-xs">
                                                         <div className="flex items-center justify-center gap-1">
                                                             <Droplets className="h-3 w-3 text-blue-600" />
-                                                            <span>{day.precipitation_chance}%</span>
+                                                            <span>{day.precipitation_chance ?? 0}%</span>
                                                         </div>
                                                         <div className="flex items-center justify-center gap-1">
                                                             <Wind className="h-3 w-3 text-gray-600" />
@@ -305,7 +305,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-3">
-                                {weatherData.forecast.slice(0, 7).map((day, index) => (
+                                {(weatherData.forecast || []).slice(0, 7).map((day, index) => (
                                     <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                                         <div className="flex items-center gap-3">
                                             <div className="text-center min-w-[80px]">

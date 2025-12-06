@@ -97,6 +97,55 @@ class DashboardViewSet(viewsets.ViewSet):
         data = dashboard_service.get_financial_summary(days)
         
         return Response(data)
+    
+    @action(detail=False, methods=['get'])
+    def weather_forecast(self, request):
+        """Get weather forecast data"""
+        farm_id = request.query_params.get('farm_id')
+        
+        # Mock weather data structure matching frontend expectations
+        from datetime import datetime, timedelta
+        from django.utils import timezone
+        
+        current_time = timezone.now()
+        
+        # Generate forecast for next 7 days
+        forecast = []
+        for i in range(7):
+            date = current_time + timedelta(days=i)
+            forecast.append({
+                'date': date.isoformat(),
+                'temperature': 25 + (i % 3) - 1,  # Vary between 24-26
+                'temperature_high': 30 + (i % 2),
+                'temperature_low': 20 + (i % 2),
+                'humidity': 60 + (i % 10),
+                'precipitation': 0 if i < 3 else (i % 3) * 5,
+                'precipitation_chance': 0 if i < 3 else (i % 3) * 20,
+                'wind_speed': 10 + (i % 5),
+                'description': 'Partly cloudy' if i % 2 == 0 else 'Sunny',
+                'icon': 'partly-cloudy-day' if i % 2 == 0 else 'clear-day'
+            })
+        
+        return Response({
+            'current': {
+                'temperature': 25,
+                'min_temp': 20,
+                'max_temp': 30,
+                'humidity': 65,
+                'precipitation': 0,
+                'wind_speed': 12,
+                'description': 'Partly cloudy',
+                'icon': 'partly-cloudy-day',
+                'feels_like': 26
+            },
+            'forecast': forecast,
+            'location': {
+                'name': 'Farm Location',
+                'city': 'Farm Location',
+                'coordinates': {'lat': 0.0, 'lon': 0.0}
+            },
+            'alerts': []
+        })
 
 
 class PredictiveAnalyticsViewSet(viewsets.ViewSet):

@@ -19,5 +19,9 @@ router.register(r'bookmarks', BookmarkViewSet, basename='bookmark')
 router.register(r'reports', ContentReportViewSet, basename='report')
 
 urlpatterns = [
+    # Feed endpoint (must be before router to avoid conflicts)
+    path('feed/', PostViewSet.as_view({'get': 'feed'}), name='feed'),
+    
+    # Router endpoints
     path('', include(router.urls)),
 ]

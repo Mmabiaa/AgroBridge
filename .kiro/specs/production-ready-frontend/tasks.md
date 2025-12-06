@@ -974,7 +974,9 @@ This implementation plan breaks down the frontend development into discrete, man
   - _Requirements: 14.5_
 
 
-- [ ] 17. Blockchain Certificates Module
+- [x] 17. Blockchain Certificates Module
+
+
 
 
   - Build blockchain certificate interface

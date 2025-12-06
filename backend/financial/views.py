@@ -85,6 +85,48 @@ class FinancialRecordViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
+    def categories(self, request):
+        """Get list of available financial categories"""
+        # Define standard categories
+        income_categories = [
+            'Crop Sales',
+            'Livestock Sales',
+            'Product Sales',
+            'Government Subsidies',
+            'Grants',
+            'Loans',
+            'Investments',
+            'Services',
+            'Other Income'
+        ]
+        
+        expense_categories = [
+            'Seeds & Planting Materials',
+            'Fertilizers',
+            'Pesticides & Herbicides',
+            'Irrigation',
+            'Equipment Purchase',
+            'Equipment Maintenance',
+            'Fuel & Energy',
+            'Labor & Wages',
+            'Feed (Livestock)',
+            'Veterinary Services',
+            'Transportation',
+            'Storage',
+            'Marketing',
+            'Insurance',
+            'Taxes',
+            'Loan Repayment',
+            'Utilities',
+            'Other Expenses'
+        ]
+        
+        return Response({
+            'income_categories': income_categories,
+            'expense_categories': expense_categories
+        })
+    
+    @action(detail=False, methods=['get'])
     def by_category(self, request):
         """Get financial records grouped by category"""
         record_type = request.query_params.get('type', 'expense')

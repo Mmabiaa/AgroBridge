@@ -199,7 +199,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
     def unread_count(self, request):
         """Get unread notification count"""
         count = self.get_queryset().filter(is_read=False).count()
-        return Response({'unread_count': count})
+        return Response({'count': count})
 
 
 class NotificationDeliveryViewSet(viewsets.ReadOnlyModelViewSet):

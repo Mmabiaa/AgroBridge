@@ -72,7 +72,17 @@ export default function Learning() {
   const { data: categoriesData } = useCategories();
   
   // Fetch enrollments to show progress
-  const { data: enrollments } = useEnrollments();
+  const { data: enrollmentsData } = useEnrollments();
+  
+  // Extract categories array from response
+  const categories = Array.isArray(categoriesData) 
+    ? categoriesData 
+    : categoriesData?.results || [];
+  
+  // Extract enrollments array from response
+  const enrollments = Array.isArray(enrollmentsData)
+    ? enrollmentsData
+    : enrollmentsData?.results || [];
 
   // Build query params
   const queryParams = useMemo(() => {
@@ -179,7 +189,7 @@ export default function Learning() {
                     >
                       All
                     </Button>
-                    {categoriesData?.map((category) => (
+                    {categories.map((category) => (
                       <Button
                         key={category}
                         variant={selectedCategory === category ? "default" : "outline"}

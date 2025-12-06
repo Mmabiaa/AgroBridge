@@ -50,10 +50,10 @@ export function FinancialSummary({
     },
     {
       title: 'Profit Margin',
-      value: `${profitMargin.toFixed(1)}%`,
+      value: `${(profitMargin ?? 0).toFixed(1)}%`,
       icon: PieChart,
-      color: profitMargin >= 0 ? 'text-purple-600' : 'text-red-600',
-      bgColor: profitMargin >= 0 ? 'bg-purple-50 dark:bg-purple-900/20' : 'bg-red-50 dark:bg-red-900/20',
+      color: (profitMargin ?? 0) >= 0 ? 'text-purple-600' : 'text-red-600',
+      bgColor: (profitMargin ?? 0) >= 0 ? 'bg-purple-50 dark:bg-purple-900/20' : 'bg-red-50 dark:bg-red-900/20',
     },
   ];
 

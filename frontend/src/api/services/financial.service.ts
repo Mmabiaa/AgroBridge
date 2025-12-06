@@ -124,14 +124,14 @@ class FinancialService {
    * Get list of financial records
    */
   async getRecords(params?: RecordListParams): Promise<PaginatedResponse<FinancialRecord>> {
-    return apiClient.getPaginated<FinancialRecord>(`${this.baseUrl}/records`, params);
+    return apiClient.getPaginated<FinancialRecord>(`${this.baseUrl}/records/`, params);
   }
 
   /**
    * Get financial record by ID
    */
   async getRecord(recordId: string): Promise<FinancialRecord> {
-    return apiClient.get<FinancialRecord>(`${this.baseUrl}/records/${recordId}`);
+    return apiClient.get<FinancialRecord>(`${this.baseUrl}/records/${recordId}/`);
   }
 
   /**
@@ -151,61 +151,61 @@ class FinancialService {
         }
       });
 
-      return apiClient.post<FinancialRecord>(`${this.baseUrl}/records`, formData, {
+      return apiClient.post<FinancialRecord>(`${this.baseUrl}/records/`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     }
 
-    return apiClient.post<FinancialRecord>(`${this.baseUrl}/records`, data);
+    return apiClient.post<FinancialRecord>(`${this.baseUrl}/records/`, data);
   }
 
   /**
    * Update financial record
    */
   async updateRecord(recordId: string, data: Partial<CreateRecordRequest>): Promise<FinancialRecord> {
-    return apiClient.patch<FinancialRecord>(`${this.baseUrl}/records/${recordId}`, data);
+    return apiClient.patch<FinancialRecord>(`${this.baseUrl}/records/${recordId}/`, data);
   }
 
   /**
    * Delete financial record
    */
   async deleteRecord(recordId: string): Promise<void> {
-    return apiClient.delete(`${this.baseUrl}/records/${recordId}`);
+    return apiClient.delete(`${this.baseUrl}/records/${recordId}/`);
   }
 
   /**
    * Get list of budgets
    */
   async getBudgets(): Promise<Budget[]> {
-    return apiClient.get<Budget[]>(`${this.baseUrl}/budgets`);
+    return apiClient.get<Budget[]>(`${this.baseUrl}/budgets/`);
   }
 
   /**
    * Get budget by ID
    */
   async getBudget(budgetId: string): Promise<Budget> {
-    return apiClient.get<Budget>(`${this.baseUrl}/budgets/${budgetId}`);
+    return apiClient.get<Budget>(`${this.baseUrl}/budgets/${budgetId}/`);
   }
 
   /**
    * Create budget
    */
   async createBudget(data: CreateBudgetRequest): Promise<Budget> {
-    return apiClient.post<Budget>(`${this.baseUrl}/budgets`, data);
+    return apiClient.post<Budget>(`${this.baseUrl}/budgets/`, data);
   }
 
   /**
    * Update budget
    */
   async updateBudget(budgetId: string, data: Partial<CreateBudgetRequest>): Promise<Budget> {
-    return apiClient.patch<Budget>(`${this.baseUrl}/budgets/${budgetId}`, data);
+    return apiClient.patch<Budget>(`${this.baseUrl}/budgets/${budgetId}/`, data);
   }
 
   /**
    * Delete budget
    */
   async deleteBudget(budgetId: string): Promise<void> {
-    return apiClient.delete(`${this.baseUrl}/budgets/${budgetId}`);
+    return apiClient.delete(`${this.baseUrl}/budgets/${budgetId}/`);
   }
 
   /**
@@ -275,7 +275,7 @@ class FinancialService {
     income_categories: string[];
     expense_categories: string[];
   }> {
-    return apiClient.get(`${this.baseUrl}/categories`);
+    return apiClient.get(`${this.baseUrl}/categories/`);
   }
 
   /**
@@ -294,7 +294,7 @@ class FinancialService {
     top_expense_categories: Array<{ category: string; amount: number }>;
     top_income_sources: Array<{ category: string; amount: number }>;
   }> {
-    return apiClient.get(`${this.baseUrl}/summary`, { params });
+    return apiClient.get(`${this.baseUrl}/summary/`, { params });
   }
 }
 

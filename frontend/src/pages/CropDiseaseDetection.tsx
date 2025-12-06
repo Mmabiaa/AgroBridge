@@ -67,6 +67,15 @@ export default function CropDiseaseDetection() {
     }
   };
 
+  // Handle camera capture
+  const handleCameraCapture = () => {
+    if (fileInputRef.current) {
+      // Set accept attribute to allow camera
+      fileInputRef.current.setAttribute('capture', 'environment');
+      fileInputRef.current.click();
+    }
+  };
+
   // Process image file
   const processImageFile = (file: File) => {
     setSelectedImage(file);
@@ -121,7 +130,7 @@ export default function CropDiseaseDetection() {
       const result = await analyzeImageMutation.mutateAsync({
         data: {
           image: selectedImage,
-          crop_type: 'auto-detect',
+          // Don't send crop_type if auto-detect - let backend handle it
         },
         onUploadProgress: (progressEvent: any) => {
           const percentCompleted = Math.round(
@@ -166,11 +175,7 @@ export default function CropDiseaseDetection() {
     }
   };
 
-  // Handle camera capture
-  const handleCameraCapture = () => {
-    // In a real app, this would open camera
-    fileInputRef.current?.click();
-  };
+
 
   // Clear selected image
   const handleClearImage = () => {
@@ -323,6 +328,7 @@ export default function CropDiseaseDetection() {
                   ref={fileInputRef}
                   type="file"
                   accept="image/jpeg,image/jpg,image/png,image/webp"
+                  capture="environment"
                   onChange={handleImageSelect}
                   className="hidden"
                 />

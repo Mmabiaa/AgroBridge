@@ -14,13 +14,17 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'agrobridge_backend.settings')
 django_asgi_app = get_asgi_application()
 
 # Import routing after Django is initialized
-from marketplace.routing import websocket_urlpatterns
+from agrobridge_backend.routing import websocket_urlpatterns as main_websocket_urlpatterns
+from marketplace.routing import websocket_urlpatterns as marketplace_websocket_urlpatterns
+
+# Combine all WebSocket URL patterns
+all_websocket_urlpatterns = main_websocket_urlpatterns + marketplace_websocket_urlpatterns
 
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
     "websocket": AllowedHostsOriginValidator(
         AuthMiddlewareStack(
-            URLRouter(websocket_urlpatterns)
+            URLRouter(all_websocket_urlpatterns)
         )
     ),
 })

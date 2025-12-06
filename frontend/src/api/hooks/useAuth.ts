@@ -17,7 +17,7 @@ import type {
 export const useCurrentUser = () => {
   return useQuery({
     queryKey: queryKeys.auth.user(),
-    queryFn: authService.getCurrentUser,
+    queryFn: () => authService.getCurrentUser(),
     enabled: authService.isAuthenticated(),
     staleTime: 10 * 60 * 1000, // 10 minutes
     retry: (failureCount, error: any) => {
@@ -173,7 +173,7 @@ export const useAuthPrefetch = () => {
     if (authService.isAuthenticated()) {
       queryClient.prefetchQuery({
         queryKey: queryKeys.auth.user(),
-        queryFn: authService.getCurrentUser,
+        queryFn: () => authService.getCurrentUser(),
         staleTime: 10 * 60 * 1000,
       });
     }

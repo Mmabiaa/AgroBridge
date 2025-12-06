@@ -27,15 +27,16 @@ import {
   Settings,
   Plus
 } from 'lucide-react';
-import { useFarms, useFarmAnalytics } from '@/api/hooks/useFarms';
+import { useUserFarms, useFarmAnalytics } from '@/api/hooks/useFarms';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Monitoring() {
   useAuth(); // Keep auth context active
+  const navigate = useNavigate();
   const [selectedFarmId, setSelectedFarmId] = useState<string>('');
 
-  // API hooks
-  const { data: farmsData, isLoading: farmsLoading } = useFarms();
+  // API hooks - use useUserFarms to get user's farms instead of all farms
+  const { data: farmsData, isLoading: farmsLoading } = useUserFarms();
   const { data: analyticsData, isLoading: analyticsLoading } = useFarmAnalytics(selectedFarmId);
 
   // Use analyticsData directly without type assertion
@@ -164,7 +165,7 @@ export default function Monitoring() {
             ) : farms.length === 0 ? (
               <div>
                 <p className="text-muted-foreground mb-4">No farms found</p>
-                <Button>
+                <Button onClick={() => navigate('/farms/new')}>
                   <Plus className="h-4 w-4 mr-2" />
                   Add Your First Farm
                 </Button>

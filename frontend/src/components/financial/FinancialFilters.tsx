@@ -36,8 +36,8 @@ export function FinancialFilters({
     categories = [],
 }: FinancialFiltersProps) {
     const [filters, setFilters] = useState<FilterValues>({
-        type: '',
-        category: '',
+        type: 'all' as any,
+        category: 'all',
         startDate: '',
         endDate: '',
     });
@@ -54,13 +54,19 @@ export function FinancialFilters({
     }, [startDate, endDate]);
 
     const handleApplyFilters = () => {
-        onFilterChange(filters);
+        // Convert 'all' to empty string for API
+        const apiFilters = {
+            ...filters,
+            type: filters.type === 'all' ? '' : filters.type,
+            category: filters.category === 'all' ? '' : filters.category,
+        };
+        onFilterChange(apiFilters);
     };
 
     const handleClearFilters = () => {
         const clearedFilters: FilterValues = {
-            type: '',
-            category: '',
+            type: 'all' as any,
+            category: 'all',
             startDate: '',
             endDate: '',
         };
@@ -70,7 +76,7 @@ export function FinancialFilters({
         onFilterChange(clearedFilters);
     };
 
-    const hasActiveFilters = Object.values(filters).some((value) => value !== '');
+    const hasActiveFilters = filters.type !== 'all' || filters.category !== 'all' || filters.startDate !== '' || filters.endDate !== '';
 
     return (
         <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
@@ -106,7 +112,7 @@ export function FinancialFilters({
                             <SelectValue placeholder="All types" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">All types</SelectItem>
+                            <SelectItem value="all">All types</SelectItem>
                             <SelectItem value="income">Income</SelectItem>
                             <SelectItem value="expense">Expense</SelectItem>
                         </SelectContent>
@@ -126,7 +132,7 @@ export function FinancialFilters({
                             <SelectValue placeholder="All categories" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">All categories</SelectItem>
+                            <SelectItem value="all">All categories</SelectItem>
                             {categories.map((category) => (
                                 <SelectItem key={category} value={category}>
                                     {category}
