@@ -47,6 +47,7 @@ export interface User {
   name: string;
   role: UserRole;
   phone?: string;
+  profile_picture?: string;
   is_verified: boolean;
   email_verified: boolean;
   phone_verified: boolean;

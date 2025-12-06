@@ -31,6 +31,8 @@ import CourseDetails from "./pages/CourseDetails";
 import LessonViewer from "./pages/LessonViewer";
 import Certificates from "./pages/Certificates";
 import Community from "./pages/Community";
+import { UserProfile } from "./components/community/UserProfile";
+import Messages from "./pages/Messages";
 import Settings from "./pages/Settings";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -289,6 +291,20 @@ const App = () => (
                           <ProtectedRoute requiredPermission="view_community">
                             <ErrorBoundary>
                               <Community />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/community/users/:userId" element={
+                          <ProtectedRoute requiredPermission="view_community">
+                            <ErrorBoundary>
+                              <UserProfile />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/messages" element={
+                          <ProtectedRoute requiredPermission="view_community">
+                            <ErrorBoundary>
+                              <Messages />
                             </ErrorBoundary>
                           </ProtectedRoute>
                         } />
