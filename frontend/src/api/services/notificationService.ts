@@ -30,7 +30,7 @@ export const getNotifications = async (params?: {
     page?: number;
     page_size?: number;
 }): Promise<NotificationsResponse> => {
-    const response = await apiClient.get('/marketplace/notifications/', { params });
+    const response = await apiClient.get('/notifications/api/v1/notifications/', { params });
     return response.data;
 };
 
@@ -38,7 +38,7 @@ export const getNotifications = async (params?: {
  * Mark notification as read
  */
 export const markNotificationAsRead = async (notificationId: number): Promise<Notification> => {
-    const response = await apiClient.patch(`/marketplace/notifications/${notificationId}/`, {
+    const response = await apiClient.patch(`/notifications/api/v1/notifications/${notificationId}/`, {
         is_read: true,
     });
     return response.data;
@@ -48,6 +48,6 @@ export const markNotificationAsRead = async (notificationId: number): Promise<No
  * Mark all notifications as read
  */
 export const markAllNotificationsAsRead = async (): Promise<{ message: string; updated_count: number }> => {
-    const response = await apiClient.post('/marketplace/notifications/mark_all_read/');
+    const response = await apiClient.post('/notifications/api/v1/notifications/mark_all_read/');
     return response.data;
 };

@@ -57,7 +57,6 @@ import Support from "./pages/Support";
 import CropCalendar from "./pages/CropCalendar";
 import FarmerStories from "./pages/FarmerStories";
 import DevDashboard from "./pages/DevDashboard";
-import { VoiceFab } from '@/components/VoiceFab';
 import { FeatureFlagsProvider } from '@/contexts/FeatureFlagsContext';
 import { FeatureFlaggedVoiceFab } from '@/components/FeatureFlaggedVoiceFab';
 import { AuthSessionManager } from '@/components/AuthSessionManager';
