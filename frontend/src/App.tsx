@@ -27,6 +27,9 @@ import FarmDetails from "./pages/FarmDetails";
 import CreateFarm from "./pages/CreateFarm";
 import EditFarm from "./pages/EditFarm";
 import Learning from "./pages/Learning";
+import CourseDetails from "./pages/CourseDetails";
+import LessonViewer from "./pages/LessonViewer";
+import Certificates from "./pages/Certificates";
 import Community from "./pages/Community";
 import Settings from "./pages/Settings";
 import Admin from "./pages/Admin";
@@ -258,6 +261,27 @@ const App = () => (
                           <ProtectedRoute requiredPermission="view_learning">
                             <ErrorBoundary>
                               <Learning />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/learning/courses/:courseId" element={
+                          <ProtectedRoute requiredPermission="view_learning">
+                            <ErrorBoundary>
+                              <CourseDetails />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/learning/lessons/:lessonId" element={
+                          <ProtectedRoute requiredPermission="view_learning">
+                            <ErrorBoundary>
+                              <LessonViewer />
+                            </ErrorBoundary>
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/learning/certificates" element={
+                          <ProtectedRoute requiredPermission="view_learning">
+                            <ErrorBoundary>
+                              <Certificates />
                             </ErrorBoundary>
                           </ProtectedRoute>
                         } />
