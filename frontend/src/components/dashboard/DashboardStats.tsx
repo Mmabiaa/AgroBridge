@@ -1,5 +1,5 @@
 /**
- * Dashboard Statistics Component using API hooks
+ * Dashboard Statistics Component using Analytics API
  */
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,77 +12,92 @@ import {
   AlertTriangle,
   CheckCircle,
   Users,
-  DollarSign
+  DollarSign,
+  Wifi,
+  Bell,
+  Calendar
 } from 'lucide-react';
-import { useFarms } from '@/api/hooks/useFarms';
-import { useProducts } from '@/api/hooks/useMarketplace';
-import { useConversations } from '@/api/hooks/useAI';
+import { useDashboard } from '@/api/hooks/useAnalytics';
 import { useAuth } from '@/contexts/AuthContext';
 
 export const DashboardStats: React.FC = () => {
   const { user } = useAuth();
   
-  // Fetch data using API hooks
-  const { data: farmsData, isLoading: farmsLoading } = useFarms();
-  const { data: productsData, isLoading: productsLoading } = useProducts();
-  const { data: conversationsData, isLoading: conversationsLoading } = useConversations();
-
-  const farms = farmsData?.results || [];
-  const products = productsData?.results || [];
-  const conversations = conversationsData?.results || [];
-
-  // Calculate statistics
-  const totalFarms = farms.length;
-  const activeFarms = farms.filter(farm => farm.is_active).length;
-  const totalProducts = products.length;
-  const activeProducts = products.filter(product => product.is_active).length;
-  const totalConversations = conversations.length;
-  const recentConversations = conversations.filter(conv => {
-    const lastActivity = new Date(conv.last_activity);
-    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    return lastActivity > dayAgo;
-  }).length;
+  // Fetch dashboard metrics from analytics API
+  const { data: dashboardData, isLoading } = useDashboard();
 
   const statsCards = [
     {
       title: 'My Farms',
-      value: totalFarms,
-      description: `${activeFarms} active farms`,
+      value: dashboardData?.total_farms || 0,
+      description: 'Total farms managed',
       icon: Sprout,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
-      progress: totalFarms > 0 ? (activeFarms / totalFarms) * 100 : 0,
-      loading: farmsLoading,
+      progress: 85,
+      loading: isLoading,
     },
     {
       title: 'Products Listed',
-      value: totalProducts,
-      description: `${activeProducts} available`,
+      value: dashboardData?.total_products || 0,
+      description: 'Available in marketplace',
       icon: ShoppingCart,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
-      progress: totalProducts > 0 ? (activeProducts / totalProducts) * 100 : 0,
-      loading: productsLoading,
+      progress: 70,
+      loading: isLoading,
     },
     {
-      title: 'AI Conversations',
-      value: totalConversations,
-      description: `${recentConversations} in last 24h`,
-      icon: Users,
+      title: 'Total Orders',
+      value: dashboardData?.total_orders || 0,
+      description: 'Orders processed',
+      icon: TrendingUp,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
-      progress: totalConversations > 0 ? (recentConversations / totalConversations) * 100 : 0,
-      loading: conversationsLoading,
+      progress: 90,
+      loading: isLoading,
     },
     {
-      title: 'Revenue This Month',
-      value: '$2,450',
-      description: '+12% from last month',
+      title: 'Revenue',
+      value: dashboardData?.total_revenue 
+        ? `$${dashboardData.total_revenue.toLocaleString()}` 
+        : '$0',
+      description: 'Total revenue earned',
       icon: DollarSign,
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-50',
       progress: 75,
-      loading: false,
+      loading: isLoading,
+    },
+    {
+      title: 'IoT Devices',
+      value: dashboardData?.active_iot_devices || 0,
+      description: 'Active sensors',
+      icon: Wifi,
+      color: 'text-cyan-600',
+      bgColor: 'bg-cyan-50',
+      progress: 95,
+      loading: isLoading,
+    },
+    {
+      title: 'Pending Tasks',
+      value: dashboardData?.pending_tasks || 0,
+      description: 'Tasks to complete',
+      icon: Calendar,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50',
+      progress: 60,
+      loading: isLoading,
+    },
+    {
+      title: 'Notifications',
+      value: dashboardData?.unread_notifications || 0,
+      description: 'Unread messages',
+      icon: Bell,
+      color: 'text-red-600',
+      bgColor: 'bg-red-50',
+      progress: 40,
+      loading: isLoading,
     },
   ];
 

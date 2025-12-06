@@ -36,6 +36,7 @@ import { NotificationCenter } from '@/components/notifications/NotificationCente
 import { RoleBasedDashboard } from '@/components/RoleBasedDashboard';
 import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { RecentActivity } from '@/components/dashboard/RecentActivity';
+import { QuickActions } from '@/components/dashboard/QuickActions';
 import { useAuth } from '@/contexts/AuthContext';
 
 const weatherData = {
@@ -256,15 +257,28 @@ export default function Dashboard() {
   if (user && hasPermission('view_dashboard')) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
-        <div className="container mx-auto w-full max-w-full space-y-6 md:space-y-8 px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto w-full max-w-full space-y-6 md:space-y-8 px-4 sm:px-6 lg:px-8 py-6">
+          {/* Welcome Header */}
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight">
+              Welcome back, {user.name || user.username}!
+            </h1>
+            <p className="text-muted-foreground">
+              Here's what's happening with your {user.role === 'farmer' ? 'farm' : user.role === 'buyer' ? 'purchases' : user.role === 'ngo' ? 'community' : 'system'} today.
+            </p>
+          </div>
+
           {/* API-Integrated Dashboard Stats */}
           <DashboardStats />
           
-          {/* Role-Based Dashboard Content */}
-          <RoleBasedDashboard />
+          {/* Quick Actions */}
+          <QuickActions />
           
           {/* Recent Activity */}
           <RecentActivity />
+          
+          {/* Role-Based Dashboard Content */}
+          <RoleBasedDashboard />
         </div>
       </div>
     );
