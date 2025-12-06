@@ -31,7 +31,8 @@ export function useFeed() {
   return useInfiniteQuery({
     queryKey: communityKeys.feed(),
     queryFn: ({ pageParam = 1 }) =>
-      communityService.getFeed({ page: pageParam, page_size: 10 }),
+      communityService.getFeed({ page: pageParam as number, page_size: 10 }),
+    initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (lastPage.next) {
         const url = new URL(lastPage.next);

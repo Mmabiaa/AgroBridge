@@ -120,7 +120,7 @@ export function PostForm({ onSuccess, onCancel }: PostFormProps) {
         {/* User Info */}
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={user?.avatar} alt={user?.username} />
+            <AvatarImage src={user?.profile_picture} alt={user?.username} />
             <AvatarFallback>{user?.username?.[0]?.toUpperCase()}</AvatarFallback>
           </Avatar>
           <div>
