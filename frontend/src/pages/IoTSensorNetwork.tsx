@@ -1,112 +1,83 @@
-
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  Thermometer, 
-  Droplets, 
-  Zap, 
-  Wifi, 
   Battery, 
   AlertTriangle,
   CheckCircle,
   Radio,
-  Settings,
   Plus,
   Activity,
-  MapPin
+  MapPin,
+  Loader2,
+  Filter,
+  Search
 } from 'lucide-react';
-
-const sensors = [
-  {
-    id: 'SOIL-001',
-    name: 'Field A - Soil Monitor',
-    type: 'Soil Moisture & pH',
-    location: 'North Field Section 1',
-    status: 'online',
-    battery: 87,
-    signal: 'strong',
-    lastUpdate: '2 min ago',
-    readings: {
-      moisture: 68,
-      temperature: 24.5,
-      ph: 6.8,
-      nitrogen: 45
-    }
-  },
-  {
-    id: 'TEMP-002',
-    name: 'Greenhouse Temperature',
-    type: 'Climate Monitor',
-    location: 'Greenhouse A',
-    status: 'online',
-    battery: 92,
-    signal: 'excellent',
-    lastUpdate: '1 min ago',
-    readings: {
-      temperature: 28.2,
-      humidity: 75,
-      co2: 420,
-      light: 65000
-    }
-  },
-  {
-    id: 'WATER-003',
-    name: 'Irrigation Flow Sensor',
-    type: 'Water Management',
-    location: 'Main Water Line',
-    status: 'warning',
-    battery: 34,
-    signal: 'weak',
-    lastUpdate: '15 min ago',
-    readings: {
-      flow: 12.5,
-      pressure: 2.3,
-      totalVolume: 1247,
-      efficiency: 89
-    }
-  },
-  {
-    id: 'PEST-004',
-    name: 'Pest Detection Camera',
-    type: 'AI Vision Sensor',
-    location: 'South Field Perimeter',
-    status: 'offline',
-    battery: 0,
-    signal: 'none',
-    lastUpdate: '2 hours ago',
-    readings: {
-      detections: 3,
-      confidence: 92,
-      alerts: 1,
-      images: 47
-    }
-  }
-];
-
-const networkStats = [
-  { label: 'Active Sensors', value: 3, total: 4, unit: 'devices' },
-  { label: 'Data Points Today', value: 2847, total: 3000, unit: 'readings' },
-  { label: 'Network Uptime', value: 98.7, total: 100, unit: '%' },
-  { label: 'Battery Average', value: 68, total: 100, unit: '%' }
-];
-
-const recentAlerts = [
-  { time: '10 min ago', sensor: 'WATER-003', message: 'Low battery warning', priority: 'medium' },
-  { time: '2 hours ago', sensor: 'PEST-004', message: 'Sensor offline', priority: 'high' },
-  { time: '4 hours ago', sensor: 'SOIL-001', message: 'Soil moisture below threshold', priority: 'low' },
-  { time: '1 day ago', sensor: 'TEMP-002', message: 'Temperature spike detected', priority: 'medium' }
-];
+import { useDevices } from '@/api/hooks/useIoT';
+import { formatDistanceToNow } from 'date-fns';
+import type { IoTDevice } from '@/api/services/iot.service';
+import DeviceRegistrationForm from '@/components/iot/DeviceRegistrationForm';
+import SensorDataChart from '@/components/iot/SensorDataChart';
+import AlertsList from '@/components/iot/AlertsList';
+import DeviceManagementActions from '@/components/iot/DeviceManagementActions';
 
 export default function IoTSensorNetwork() {
-  const [selectedSensor, setSelectedSensor] = useState(sensors[0]);
+  const [selectedDevice, setSelectedDevice] = useState<IoTDevice | null>(null);
+  const [deviceTypeFilter, setDeviceTypeFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [showSensorData, setShowSensorData] = useState(false);
+  const [showAlerts, setShowAlerts] = useState(false);
+
+  // Fetch devices from API
+  const { data: devicesData, isLoading, isError, error } = useDevices({
+    device_type: deviceTypeFilter !== 'all' ? deviceTypeFilter : undefined,
+    status: statusFilter !== 'all' ? statusFilter : undefined,
+  });
+
+  const devices = devicesData?.results || [];
+
+  // Filter devices by search query
+  const filteredDevices = useMemo(() => {
+    if (!searchQuery) return devices;
+    const query = searchQuery.toLowerCase();
+    return devices.filter(device => 
+      device.name.toLowerCase().includes(query) ||
+      device.id.toLowerCase().includes(query)
+    );
+  }, [devices, searchQuery]);
+
+  // Calculate network statistics
+  const networkStats = useMemo(() => {
+    const totalDevices = devices.length;
+    const activeDevices = devices.filter(d => d.status === 'online').length;
+    const avgBattery = devices.length > 0
+      ? devices.reduce((sum, d) => sum + (d.battery_level || 0), 0) / devices.length
+      : 0;
+    
+    return [
+      { label: 'Active Sensors', value: activeDevices, total: totalDevices, unit: 'devices' },
+      { label: 'Total Devices', value: totalDevices, total: totalDevices, unit: 'devices' },
+      { label: 'Network Uptime', value: 98.7, total: 100, unit: '%' },
+      { label: 'Battery Average', value: Math.round(avgBattery), total: 100, unit: '%' }
+    ];
+  }, [devices]);
+
+  // Set first device as selected when data loads
+  useState(() => {
+    if (devices.length > 0 && !selectedDevice) {
+      setSelectedDevice(devices[0]);
+    }
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'online': return 'text-green-600 bg-green-50';
-      case 'warning': return 'text-yellow-600 bg-yellow-50';
+      case 'error': return 'text-yellow-600 bg-yellow-50';
       case 'offline': return 'text-red-600 bg-red-50';
       default: return 'text-gray-600 bg-gray-50';
     }
@@ -115,27 +86,68 @@ export default function IoTSensorNetwork() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'online': return <CheckCircle className="h-4 w-4" />;
-      case 'warning': return <AlertTriangle className="h-4 w-4" />;
+      case 'error': return <AlertTriangle className="h-4 w-4" />;
       case 'offline': return <Radio className="h-4 w-4" />;
       default: return <Radio className="h-4 w-4" />;
     }
   };
 
-  const getSignalIcon = (signal: string) => {
-    const strength = signal === 'excellent' ? 4 : signal === 'strong' ? 3 : signal === 'weak' ? 2 : 1;
+  const getBatteryColor = (level: number) => {
+    if (level > 60) return 'text-green-600';
+    if (level > 30) return 'text-yellow-600';
+    return 'text-red-600';
+  };
+
+  const formatLastSeen = (lastSeen: string) => {
+    try {
+      return formatDistanceToNow(new Date(lastSeen), { addSuffix: true });
+    } catch {
+      return 'Unknown';
+    }
+  };
+
+  const getDeviceTypeLabel = (type: string) => {
+    switch (type) {
+      case 'sensor': return 'Sensor';
+      case 'actuator': return 'Actuator';
+      case 'camera': return 'Camera';
+      default: return type;
+    }
+  };
+
+  if (isLoading) {
     return (
-      <div className="flex items-center gap-1">
-        {[1, 2, 3, 4].map((bar) => (
-          <div
-            key={bar}
-            className={`w-1 rounded ${
-              bar <= strength ? 'bg-green-500 h-3' : 'bg-gray-300 h-2'
-            }`}
-          />
-        ))}
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-4">
+        <div className="container mx-auto flex items-center justify-center min-h-[400px]">
+          <div className="text-center space-y-4">
+            <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
+            <p className="text-muted-foreground">Loading IoT devices...</p>
+          </div>
+        </div>
       </div>
     );
-  };
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-4">
+        <div className="container mx-auto">
+          <Card className="max-w-2xl mx-auto">
+            <CardContent className="p-8 text-center space-y-4">
+              <AlertTriangle className="h-12 w-12 text-destructive mx-auto" />
+              <h2 className="text-2xl font-bold">Error Loading Devices</h2>
+              <p className="text-muted-foreground">
+                {error instanceof Error ? error.message : 'Failed to load IoT devices'}
+              </p>
+              <Button onClick={() => window.location.reload()}>
+                Retry
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-8 px-4">
@@ -163,154 +175,237 @@ export default function IoTSensorNetwork() {
           ))}
         </div>
 
+        {/* Filters */}
+        <Card className="shadow-soft">
+          <CardContent className="p-4">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search devices..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Select value={deviceTypeFilter} onValueChange={setDeviceTypeFilter}>
+                <SelectTrigger className="w-full md:w-[180px]">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Device Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="sensor">Sensor</SelectItem>
+                  <SelectItem value="actuator">Actuator</SelectItem>
+                  <SelectItem value="camera">Camera</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-full md:w-[180px]">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="online">Online</SelectItem>
+                  <SelectItem value="offline">Offline</SelectItem>
+                  <SelectItem value="error">Error</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Sensor List */}
+          {/* Device List */}
           <div className="lg:col-span-2 space-y-6">
             <Card className="shadow-soft">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Sensor Network Status</CardTitle>
-                    <CardDescription>Real-time monitoring devices across your farm</CardDescription>
+                    <CardTitle>Device Network Status</CardTitle>
+                    <CardDescription>
+                      {filteredDevices.length} device{filteredDevices.length !== 1 ? 's' : ''} found
+                    </CardDescription>
                   </div>
-                  <Button size="sm">
+                  <Button size="sm" onClick={() => setShowRegistrationForm(true)}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Sensor
+                    Add Device
                   </Button>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                {sensors.map((sensor) => (
-                  <div 
-                    key={sensor.id} 
-                    className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                      selectedSensor.id === sensor.id ? 'border-primary bg-primary/5' : 'hover:bg-muted/50'
-                    }`}
-                    onClick={() => setSelectedSensor(sensor)}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-sm md:text-base">{sensor.name}</h3>
-                        <p className="text-xs text-muted-foreground">{sensor.type} • {sensor.location}</p>
-                      </div>
-                      <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${getStatusColor(sensor.status)}`}>
-                        {getStatusIcon(sensor.status)}
-                        <span className="capitalize">{sensor.status}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs mb-3">
-                      <div className="flex items-center gap-2">
-                        <Battery className="h-3 w-3" />
-                        <span>{sensor.battery}%</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Wifi className="h-3 w-3" />
-                        {getSignalIcon(sensor.signal)}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Activity className="h-3 w-3" />
-                        <span>{sensor.lastUpdate}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-3 w-3" />
-                        <span>ID: {sensor.id}</span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                      {Object.entries(sensor.readings).slice(0, 4).map(([key, value], idx) => (
-                        <div key={idx} className="text-center p-2 bg-muted/30 rounded">
-                          <p className="text-xs text-muted-foreground capitalize">{key}</p>
-                          <p className="text-sm font-bold">{value}{key === 'temperature' ? '°C' : key === 'ph' ? '' : key === 'moisture' ? '%' : ''}</p>
-                        </div>
-                      ))}
-                    </div>
+                {filteredDevices.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Radio className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">No devices found</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {searchQuery || deviceTypeFilter !== 'all' || statusFilter !== 'all'
+                        ? 'Try adjusting your filters'
+                        : 'Add your first IoT device to get started'}
+                    </p>
                   </div>
-                ))}
+                ) : (
+                  filteredDevices.map((device) => (
+                    <div 
+                      key={device.id} 
+                      className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                        selectedDevice?.id === device.id ? 'border-primary bg-primary/5' : 'hover:bg-muted/50'
+                      }`}
+                      onClick={() => setSelectedDevice(device)}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-sm md:text-base">{device.name}</h3>
+                          <p className="text-xs text-muted-foreground">
+                            {getDeviceTypeLabel(device.device_type)}
+                            {device.location && ` • ${device.location.latitude.toFixed(4)}, ${device.location.longitude.toFixed(4)}`}
+                          </p>
+                        </div>
+                        <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${getStatusColor(device.status)}`}>
+                          {getStatusIcon(device.status)}
+                          <span className="capitalize">{device.status}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs">
+                        {device.battery_level !== undefined && device.battery_level !== null && (
+                          <div className="flex items-center gap-2">
+                            <Battery className={`h-3 w-3 ${getBatteryColor(device.battery_level)}`} />
+                            <span>{device.battery_level}%</span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <Activity className="h-3 w-3" />
+                          <span>{formatLastSeen(device.last_seen)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-3 w-3" />
+                          <span className="truncate">ID: {device.id.slice(0, 8)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
               </CardContent>
             </Card>
 
-            {/* Real-time Data Visualization */}
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5" />
-                  Real-time Sensor Data
-                </CardTitle>
-                <CardDescription>Live readings from {selectedSensor.name}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {Object.entries(selectedSensor.readings).map(([key, value], idx) => (
-                    <div key={idx} className="text-center p-4 bg-muted/50 rounded-lg">
-                      <div className="flex items-center justify-center mb-2">
-                        {key === 'temperature' && <Thermometer className="h-6 w-6 text-red-500" />}
-                        {key === 'moisture' && <Droplets className="h-6 w-6 text-blue-500" />}
-                        {key === 'flow' && <Activity className="h-6 w-6 text-green-500" />}
-                        {!['temperature', 'moisture', 'flow'].includes(key) && <Zap className="h-6 w-6 text-primary" />}
+            {/* Device Details */}
+            {selectedDevice && !showSensorData && !showAlerts && (
+              <Card className="shadow-soft">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="h-5 w-5" />
+                    Device Details
+                  </CardTitle>
+                  <CardDescription>{selectedDevice.name}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Device ID</p>
+                        <p className="font-medium">{selectedDevice.id}</p>
                       </div>
-                      <div className="text-2xl font-bold mb-1">
-                        {value}{key === 'temperature' ? '°C' : key === 'ph' ? '' : key.includes('moisture') || key.includes('humidity') ? '%' : ''}
+                      <div>
+                        <p className="text-muted-foreground">Type</p>
+                        <p className="font-medium capitalize">{selectedDevice.device_type}</p>
                       </div>
-                      <p className="text-xs text-muted-foreground capitalize">{key.replace(/([A-Z])/g, ' $1')}</p>
+                      <div>
+                        <p className="text-muted-foreground">Status</p>
+                        <p className="font-medium capitalize">{selectedDevice.status}</p>
+                      </div>
+                      {selectedDevice.battery_level !== undefined && (
+                        <div>
+                          <p className="text-muted-foreground">Battery</p>
+                          <p className="font-medium">{selectedDevice.battery_level}%</p>
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-muted-foreground">Last Seen</p>
+                        <p className="font-medium">{formatLastSeen(selectedDevice.last_seen)}</p>
+                      </div>
+                      {selectedDevice.location && (
+                        <div>
+                          <p className="text-muted-foreground">Location</p>
+                          <p className="font-medium text-xs">
+                            {selectedDevice.location.latitude.toFixed(4)}, {selectedDevice.location.longitude.toFixed(4)}
+                          </p>
+                        </div>
+                      )}
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    {selectedDevice.metadata && Object.keys(selectedDevice.metadata).length > 0 && (
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-2">Metadata</p>
+                        <div className="bg-muted/50 rounded-lg p-3 text-xs">
+                          <pre className="whitespace-pre-wrap">
+                            {JSON.stringify(selectedDevice.metadata, null, 2)}
+                          </pre>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Sensor Data Chart */}
+            {selectedDevice && showSensorData && !showAlerts && (
+              <SensorDataChart
+                deviceId={selectedDevice.id}
+                deviceName={selectedDevice.name}
+              />
+            )}
+
+            {/* Alerts List */}
+            {selectedDevice && showAlerts && !showSensorData && (
+              <AlertsList
+                deviceId={selectedDevice.id}
+                deviceName={selectedDevice.name}
+              />
+            )}
           </div>
 
-          {/* Alerts & Controls */}
+          {/* Controls & Info */}
           <div className="space-y-6">
             <Card className="shadow-soft">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5" />
-                  Recent Alerts
-                </CardTitle>
+                <CardTitle>Device Controls</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {recentAlerts.map((alert, idx) => (
-                  <div key={idx} className="flex gap-3 p-3 bg-muted/50 rounded-lg">
-                    <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                      alert.priority === 'high' ? 'bg-red-500' : 
-                      alert.priority === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
-                    }`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">{alert.message}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {alert.sensor} • {alert.time}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+              <CardContent className="space-y-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start" 
+                  size="sm"
+                  disabled={!selectedDevice}
+                  onClick={() => {
+                    setShowSensorData(!showSensorData);
+                    setShowAlerts(false);
+                  }}
+                >
+                  <Activity className="h-4 w-4 mr-2" />
+                  {showSensorData ? 'Hide' : 'View'} Sensor Data
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start" 
+                  size="sm"
+                  disabled={!selectedDevice}
+                  onClick={() => {
+                    setShowAlerts(!showAlerts);
+                    setShowSensorData(false);
+                  }}
+                >
+                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  {showAlerts ? 'Hide' : 'View'} Alerts
+                </Button>
               </CardContent>
             </Card>
 
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle>Sensor Controls</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button variant="outline" className="w-full justify-start" size="sm">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Configure Alerts
-                </Button>
-                <Button variant="outline" className="w-full justify-start" size="sm">
-                  <Activity className="h-4 w-4 mr-2" />
-                  Calibrate Sensors
-                </Button>
-                <Button variant="outline" className="w-full justify-start" size="sm">
-                  <Battery className="h-4 w-4 mr-2" />
-                  Battery Status
-                </Button>
-                <Button variant="outline" className="w-full justify-start" size="sm">
-                  <Wifi className="h-4 w-4 mr-2" />
-                  Network Health
-                </Button>
-              </CardContent>
-            </Card>
+            {/* Device Management Actions */}
+            {selectedDevice && (
+              <DeviceManagementActions device={selectedDevice} />
+            )}
 
             <Card className="shadow-soft">
               <CardHeader>
@@ -323,27 +418,48 @@ export default function IoTSensorNetwork() {
                 </div>
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
-                    <span>Data Collection Rate</span>
-                    <span>Every 5 minutes</span>
+                    <span>Total Devices</span>
+                    <span>{devices.length}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Storage Used</span>
-                    <span>1.2 GB / 10 GB</span>
+                    <span>Online Devices</span>
+                    <span>{devices.filter(d => d.status === 'online').length}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Average Response</span>
-                    <span>0.8 seconds</span>
+                    <span>Offline Devices</span>
+                    <span>{devices.filter(d => d.status === 'offline').length}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Maintenance Due</span>
-                    <span>12 days</span>
+                    <span>Error Devices</span>
+                    <span>{devices.filter(d => d.status === 'error').length}</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
+
+            {devices.length === 0 && (
+              <Card className="shadow-soft">
+                <CardHeader>
+                  <CardTitle>Getting Started</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                  <p>Add your first IoT device to start monitoring your farm in real-time.</p>
+                  <Button className="w-full" onClick={() => setShowRegistrationForm(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Register Device
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Device Registration Form */}
+      <DeviceRegistrationForm
+        open={showRegistrationForm}
+        onOpenChange={setShowRegistrationForm}
+      />
     </div>
   );
 }
