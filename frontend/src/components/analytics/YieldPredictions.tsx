@@ -3,7 +3,6 @@
  */
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { 
@@ -12,7 +11,6 @@ import {
   Calendar,
   Target,
   AlertCircle,
-  CheckCircle,
   Info
 } from 'lucide-react';
 import { useYieldPredictions } from '@/api/hooks/useAnalytics';
@@ -27,7 +25,6 @@ import {
 import {
   LineChart,
   Line,
-  BarChart,
   Bar,
   XAxis,
   YAxis,
@@ -35,8 +32,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Area,
-  AreaChart,
   ComposedChart,
 } from 'recharts';
 import {

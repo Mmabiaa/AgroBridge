@@ -2,26 +2,20 @@
  * Dashboard Statistics Component using Analytics API
  */
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { 
   Sprout, 
   ShoppingCart, 
   TrendingUp, 
-  AlertTriangle,
-  CheckCircle,
-  Users,
   DollarSign,
   Wifi,
   Bell,
   Calendar
 } from 'lucide-react';
 import { useDashboard } from '@/api/hooks/useAnalytics';
-import { useAuth } from '@/contexts/AuthContext';
 
 export const DashboardStats: React.FC = () => {
-  const { user } = useAuth();
   
   // Fetch dashboard metrics from analytics API
   const { data: dashboardData, isLoading } = useDashboard();

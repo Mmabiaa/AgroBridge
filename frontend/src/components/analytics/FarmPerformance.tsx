@@ -3,7 +3,6 @@
  */
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   TrendingUp, 
@@ -11,9 +10,7 @@ import {
   Minus,
   Sprout,
   Droplets,
-  Zap,
-  Users,
-  Calendar
+  Users
 } from 'lucide-react';
 import { useFarmPerformance } from '@/api/hooks/useAnalytics';
 import { useFarms } from '@/api/hooks/useFarms';
@@ -25,8 +22,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  LineChart,
-  Line,
   BarChart,
   Bar,
   XAxis,
@@ -35,9 +30,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from 'recharts';
 
 interface FarmPerformanceProps {

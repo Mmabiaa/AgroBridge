@@ -3,11 +3,6 @@
  */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import analyticsService, {
-  DashboardMetrics,
-  FarmPerformance,
-  YieldPrediction,
-  WeatherForecast,
-  CustomReport,
   ReportParams,
 } from '../services/analytics.service';
 

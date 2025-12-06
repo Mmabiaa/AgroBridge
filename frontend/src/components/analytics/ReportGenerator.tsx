@@ -12,10 +12,7 @@ import {
   Download,
   Trash2,
   Calendar,
-  Filter,
   Plus,
-  Eye,
-  Clock,
   CheckCircle
 } from 'lucide-react';
 import { useGenerateReport, useReports, useDeleteReport } from '@/api/hooks/useAnalytics';
