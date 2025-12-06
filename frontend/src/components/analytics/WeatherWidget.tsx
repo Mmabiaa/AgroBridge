@@ -11,7 +11,8 @@ import {
     Thermometer,
     AlertTriangle,
     MapPin,
-    Calendar
+    Calendar,
+    Sun
 } from 'lucide-react';
 import { useWeatherForecast } from '@/api/hooks/useAnalytics';
 import { useFarms } from '@/api/hooks/useFarms';
