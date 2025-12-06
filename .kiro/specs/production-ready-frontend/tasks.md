@@ -975,35 +975,47 @@ This implementation plan breaks down the frontend development into discrete, man
 
 
 - [ ] 17. Blockchain Certificates Module
+
+
   - Build blockchain certificate interface
   - Integrate with blockchain API endpoints
   - Implement certificate issuance and verification
   - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
 
-- [ ] 17.1 Create certificate issuance form
+- [x] 17.1 Create certificate issuance form
+
+
   - Update BlockchainCertificates page with issuance form
   - Integrate with /api/v1/blockchain/certificates POST endpoint
   - Add product metadata input
   - Implement certificate preview
   - _Requirements: 15.1_
 
+
+
 - [ ] 17.2 Build certificates list page
   - Display user's certificates
   - Fetch from /api/v1/blockchain/certificates
   - Show certificate status and details
   - Add search and filtering
+
+
   - _Requirements: 15.1_
 
 - [ ] 17.3 Implement certificate viewer
   - Create CertificateViewer component
   - Fetch certificate from /api/v1/blockchain/certificates/{id}
   - Display certificate with QR code
+
+
   - Add download as PDF functionality
   - Show blockchain transaction details
   - _Requirements: 15.2_
 
 - [ ] 17.4 Build certificate verification
   - Create CertificateVerification component
+
+
   - Integrate with /api/v1/blockchain/certificates/{id}/verify
   - Add QR code scanner
   - Display verification results
