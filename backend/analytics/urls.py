@@ -32,6 +32,9 @@ urlpatterns = [
     path('time-series/crop-health/', TimeSeriesViewSet.as_view({'get': 'crop_health_trends'}), name='crop-health-trends'),
     path('time-series/financial/', TimeSeriesViewSet.as_view({'get': 'financial_trends'}), name='financial-trends'),
     
+    # Weather forecast endpoint
+    path('weather-forecast/', DashboardViewSet.as_view({'get': 'weather_forecast'}), name='weather-forecast'),
+    
     # Router URLs
     path('', include(router.urls)),
 ]

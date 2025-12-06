@@ -84,49 +84,49 @@ class SchedulingService {
    * Get list of tasks
    */
   async getTasks(params?: TaskListParams): Promise<PaginatedResponse<Task>> {
-    return apiClient.getPaginated<Task>(`${this.baseUrl}/tasks`, params);
+    return apiClient.getPaginated<Task>(`${this.baseUrl}/tasks/`, params);
   }
 
   /**
    * Get task by ID
    */
   async getTask(taskId: string): Promise<Task> {
-    return apiClient.get<Task>(`${this.baseUrl}/tasks/${taskId}`);
+    return apiClient.get<Task>(`${this.baseUrl}/tasks/${taskId}/`);
   }
 
   /**
    * Create task
    */
   async createTask(data: CreateTaskRequest): Promise<Task> {
-    return apiClient.post<Task>(`${this.baseUrl}/tasks`, data);
+    return apiClient.post<Task>(`${this.baseUrl}/tasks/`, data);
   }
 
   /**
    * Update task
    */
   async updateTask(taskId: string, data: Partial<CreateTaskRequest>): Promise<Task> {
-    return apiClient.patch<Task>(`${this.baseUrl}/tasks/${taskId}`, data);
+    return apiClient.patch<Task>(`${this.baseUrl}/tasks/${taskId}/`, data);
   }
 
   /**
    * Delete task
    */
   async deleteTask(taskId: string): Promise<void> {
-    return apiClient.delete(`${this.baseUrl}/tasks/${taskId}`);
+    return apiClient.delete(`${this.baseUrl}/tasks/${taskId}/`);
   }
 
   /**
    * Mark task as complete
    */
   async completeTask(taskId: string): Promise<Task> {
-    return apiClient.post<Task>(`${this.baseUrl}/tasks/${taskId}/complete`);
+    return apiClient.post<Task>(`${this.baseUrl}/tasks/${taskId}/complete/`);
   }
 
   /**
    * Snooze task
    */
   async snoozeTask(taskId: string, snooze_until: string): Promise<Task> {
-    return apiClient.post<Task>(`${this.baseUrl}/tasks/${taskId}/snooze`, { snooze_until });
+    return apiClient.post<Task>(`${this.baseUrl}/tasks/${taskId}/snooze/`, { snooze_until });
   }
 
   /**
@@ -137,21 +137,21 @@ class SchedulingService {
     end_date?: string;
     view?: 'month' | 'week' | 'day';
   }): Promise<CalendarEvent[]> {
-    return apiClient.get<CalendarEvent[]>(`${this.baseUrl}/calendar`, { params });
+    return apiClient.get<CalendarEvent[]>(`${this.baseUrl}/calendar/`, { params });
   }
 
   /**
    * Get AI task suggestions
    */
   async getSuggestions(): Promise<TaskSuggestion[]> {
-    return apiClient.get<TaskSuggestion[]>(`${this.baseUrl}/suggestions`);
+    return apiClient.get<TaskSuggestion[]>(`${this.baseUrl}/suggestions/`);
   }
 
   /**
    * Accept task suggestion
    */
   async acceptSuggestion(suggestionId: string): Promise<Task> {
-    return apiClient.post<Task>(`${this.baseUrl}/suggestions/${suggestionId}/accept`);
+    return apiClient.post<Task>(`${this.baseUrl}/suggestions/${suggestionId}/accept/`);
   }
 
   /**
@@ -159,7 +159,7 @@ class SchedulingService {
    */
   async dismissSuggestion(suggestionId: string): Promise<{ message: string }> {
     return apiClient.post<{ message: string }>(
-      `${this.baseUrl}/suggestions/${suggestionId}/dismiss`
+      `${this.baseUrl}/suggestions/${suggestionId}/dismiss/`
     );
   }
 
@@ -167,14 +167,14 @@ class SchedulingService {
    * Get task categories
    */
   async getCategories(): Promise<string[]> {
-    return apiClient.get<string[]>(`${this.baseUrl}/categories`);
+    return apiClient.get<string[]>(`${this.baseUrl}/categories/`);
   }
 
   /**
    * Get upcoming tasks
    */
   async getUpcomingTasks(days?: number): Promise<Task[]> {
-    return apiClient.get<Task[]>(`${this.baseUrl}/tasks/upcoming`, {
+    return apiClient.get<Task[]>(`${this.baseUrl}/tasks/upcoming/`, {
       params: { days: days || 7 },
     });
   }
@@ -183,7 +183,7 @@ class SchedulingService {
    * Get overdue tasks
    */
   async getOverdueTasks(): Promise<Task[]> {
-    return apiClient.get<Task[]>(`${this.baseUrl}/tasks/overdue`);
+    return apiClient.get<Task[]>(`${this.baseUrl}/tasks/overdue/`);
   }
 
   /**
@@ -198,7 +198,7 @@ class SchedulingService {
     tasks_by_priority: Record<string, number>;
     tasks_by_category: Record<string, number>;
   }> {
-    return apiClient.get(`${this.baseUrl}/statistics`);
+    return apiClient.get(`${this.baseUrl}/statistics/`);
   }
 }
 

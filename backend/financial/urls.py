@@ -14,4 +14,8 @@ app_name = 'financial'
 
 urlpatterns = [
     path('', include(router.urls)),
+    
+    # Additional endpoints for convenience (aliases to viewset actions)
+    path('summary/', FinancialRecordViewSet.as_view({'get': 'summary'}), name='financial-summary'),
+    path('categories/', FinancialRecordViewSet.as_view({'get': 'categories'}), name='financial-categories'),
 ]

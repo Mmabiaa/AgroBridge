@@ -40,3 +40,4 @@ export * from './useUsers';
 export * from './useIoT';
 export * from './useNotifications';
 export * from './useFinancial';
+export * from './usePayment';

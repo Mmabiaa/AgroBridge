@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   GraduationCap, 
   Play, 
@@ -18,69 +20,11 @@ import {
   Star,
   Download,
   CheckCircle,
-  Bot
+  Bot,
+  AlertCircle
 } from 'lucide-react';
-
-const categories = ['All', 'Crop Management', 'Poultry Care', 'Soil Health', 'Pest Control', 'Equipment'];
-
-const courses = [
-  {
-    id: 1,
-    title: 'Tomato Farming Masterclass',
-    instructor: 'Dr. Samuel Osei',
-    duration: '2 hours',
-    level: 'Beginner',
-    rating: 4.8,
-    students: 1247,
-    price: 0,
-    category: 'Crop Management',
-    description: 'Complete guide to growing healthy, profitable tomatoes',
-    progress: 0,
-    thumbnail: 'https://i.pinimg.com/736x/3c/52/e6/3c52e6f41397773f6bea4dd6366a5c19.jpg'
-  },
-  {
-    id: 2,
-    title: 'Poultry Disease Prevention',
-    instructor: 'Dr. Grace Asante',
-    duration: '1.5 hours',
-    level: 'Intermediate',
-    rating: 4.9,
-    students: 892,
-    price: 0,
-    category: 'Poultry Care',
-    description: 'Learn to identify and prevent common poultry diseases',
-    progress: 60,
-    thumbnail: '/placeholder.svg'
-  },
-  {
-    id: 3,
-    title: 'Soil Testing & Analysis',
-    instructor: 'Prof. James Kwame',
-    duration: '3 hours',
-    level: 'Advanced',
-    rating: 4.7,
-    students: 534,
-    price: 0,
-    category: 'Soil Health',
-    description: 'Master soil testing techniques for optimal crop growth',
-    progress: 100,
-    thumbnail: '/placeholder.svg'
-  },
-  {
-    id: 4,
-    title: 'Organic Pest Control Methods',
-    instructor: 'Mary Adjei',
-    duration: '2.5 hours',
-    level: 'Intermediate',
-    rating: 4.8,
-    students: 678,
-    price: 0,
-    category: 'Pest Control',
-    description: 'Natural and safe pest control techniques',
-    progress: 25,
-    thumbnail: '/placeholder.svg'
-  }
-];
+import { useCourses, useCategories, useEnrollments } from '@/api/hooks/useLearning';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const guides = [
   {
@@ -118,7 +62,68 @@ const achievements = [
 
 export default function Learning() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Debounce search term to avoid excessive API calls
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // Fetch categories
+  const { data: categoriesData } = useCategories();
+  
+  // Fetch enrollments to show progress
+  const { data: enrollmentsData } = useEnrollments();
+  
+  // Extract categories array from response
+  const categories = Array.isArray(categoriesData) 
+    ? categoriesData 
+    : categoriesData?.results || [];
+  
+  // Extract enrollments array from response
+  const enrollments = Array.isArray(enrollmentsData)
+    ? enrollmentsData
+    : enrollmentsData?.results || [];
+
+  // Build query params
+  const queryParams = useMemo(() => {
+    const params: any = {
+      page: currentPage,
+      page_size: 12,
+    };
+    
+    if (debouncedSearchTerm) {
+      params.search = debouncedSearchTerm;
+    }
+    
+    if (selectedCategory) {
+      params.category = selectedCategory;
+    }
+    
+    return params;
+  }, [debouncedSearchTerm, selectedCategory, currentPage]);
+
+  // Fetch courses with filters
+  const { data: coursesData, isLoading, isError, error } = useCourses(queryParams);
+
+  // Create enrollment map for quick lookup
+  const enrollmentMap = useMemo(() => {
+    if (!enrollments) return new Map();
+    return new Map(enrollments.map(e => [e.course, e]));
+  }, [enrollments]);
+
+  // Get course progress
+  const getCourseProgress = (courseId: string) => {
+    const enrollment = enrollmentMap.get(courseId);
+    return enrollment?.progress || 0;
+  };
+
+  // Format duration
+  const formatDuration = (hours: number) => {
+    if (hours < 1) {
+      return `${Math.round(hours * 60)} minutes`;
+    }
+    return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 py-4 md:py-8 px-0 overflow-x-hidden">
@@ -165,17 +170,34 @@ export default function Learning() {
                     <Input
                       placeholder="Search courses..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1); // Reset to first page on search
+                      }}
                       className="pl-10 h-12 md:h-10"
                     />
                   </div>
                   <div className="flex gap-2 overflow-x-auto pb-2">
+                    <Button
+                      variant={!selectedCategory ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => {
+                        setSelectedCategory('');
+                        setCurrentPage(1);
+                      }}
+                      className="flex-shrink-0 text-xs md:text-sm"
+                    >
+                      All
+                    </Button>
                     {categories.map((category) => (
                       <Button
                         key={category}
                         variant={selectedCategory === category ? "default" : "outline"}
                         size="sm"
-                        onClick={() => setSelectedCategory(category)}
+                        onClick={() => {
+                          setSelectedCategory(category);
+                          setCurrentPage(1);
+                        }}
                         className="flex-shrink-0 text-xs md:text-sm"
                       >
                         {category}
@@ -186,70 +208,182 @@ export default function Learning() {
               </CardContent>
             </Card>
 
-            {/* Course Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-0 md:px-1">
-              {courses.map((course) => (
-                <Card key={course.id} className="shadow-soft hover:shadow-strong transition-all duration-300 touch-manipulation">
-                  <div className="relative">
-                    <div className="w-full h-32 md:h-48 bg-muted rounded-t-lg flex items-center justify-center">
-                      <Play className="h-8 w-8 md:h-12 md:w-12 text-muted-foreground" />
-                    </div>
-                    <div className="absolute top-2 md:top-4 left-2 md:left-4">
-                      <Badge variant="secondary" className="text-xs">{course.category}</Badge>
-                    </div>
-                    <div className="absolute top-2 md:top-4 right-2 md:right-4">
-                      <Badge variant="outline" className="bg-white/90 text-xs">
-                        {course.level}
-                      </Badge>
-                    </div>
-                  </div>
+            {/* Loading State */}
+            {isLoading && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-0 md:px-1">
+                {[...Array(6)].map((_, i) => (
+                  <Card key={i} className="shadow-soft">
+                    <Skeleton className="w-full h-32 md:h-48 rounded-t-lg" />
+                    <CardHeader className="p-4 md:p-6">
+                      <Skeleton className="h-6 w-3/4 mb-2" />
+                      <Skeleton className="h-4 w-full" />
+                    </CardHeader>
+                    <CardContent className="space-y-3 p-4 md:p-6 pt-0">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-2/3" />
+                      <Skeleton className="h-10 w-full" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
 
-                  <CardHeader className="p-4 md:p-6 pb-2 md:pb-4">
-                    <CardTitle className="text-base md:text-lg line-clamp-2">{course.title}</CardTitle>
-                    <CardDescription className="text-xs md:text-sm line-clamp-2">
-                      {course.description}
-                    </CardDescription>
-                  </CardHeader>
+            {/* Error State */}
+            {isError && (
+              <Alert variant="destructive" className="mx-1">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Failed to load courses. {error?.message || 'Please try again later.'}
+                </AlertDescription>
+              </Alert>
+            )}
 
-                  <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6 pt-0">
-                    {/* Course Info */}
-                    <div className="flex justify-between text-xs md:text-sm text-muted-foreground">
-                      <span className="truncate mr-2">By {course.instructor}</span>
-                      <span className="flex-shrink-0">{course.duration}</span>
-                    </div>
-
-                    {/* Rating and Students */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-3 w-3 md:h-4 md:w-4 text-warning fill-current" />
-                        <span className="text-xs md:text-sm font-medium">{course.rating}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
-                        <span className="text-xs md:text-sm">{course.students} students</span>
-                      </div>
-                    </div>
-
-                    {/* Progress */}
-                    {course.progress > 0 && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-xs md:text-sm">
-                          <span>Progress</span>
-                          <span>{course.progress}%</span>
-                        </div>
-                        <Progress value={course.progress} className="h-2" />
-                      </div>
-                    )}
-
-                    {/* Action Button */}
-                    <Button variant="farmer" className="w-full text-sm md:text-base py-2 md:py-3">
-                      {course.progress === 0 ? 'Start Course' : 
-                       course.progress === 100 ? 'Review' : 'Continue Learning'}
+            {/* Empty State */}
+            {!isLoading && !isError && coursesData?.results.length === 0 && (
+              <Card className="shadow-soft mx-1">
+                <CardContent className="p-8 md:p-12 text-center">
+                  <Book className="h-12 w-12 md:h-16 md:w-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg md:text-xl font-semibold mb-2">No courses found</h3>
+                  <p className="text-sm md:text-base text-muted-foreground mb-4">
+                    {searchTerm || selectedCategory
+                      ? 'Try adjusting your search or filters'
+                      : 'No courses are available at the moment'}
+                  </p>
+                  {(searchTerm || selectedCategory) && (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSearchTerm('');
+                        setSelectedCategory('');
+                        setCurrentPage(1);
+                      }}
+                    >
+                      Clear Filters
                     </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Course Grid */}
+            {!isLoading && !isError && coursesData && coursesData.results.length > 0 && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-0 md:px-1">
+                  {coursesData.results.map((course) => {
+                    const progress = getCourseProgress(course.id);
+                    const isEnrolled = progress > 0;
+
+                    return (
+                      <Card key={course.id} className="shadow-soft hover:shadow-strong transition-all duration-300 touch-manipulation">
+                        <div className="relative">
+                          {course.thumbnail ? (
+                            <img
+                              src={course.thumbnail}
+                              alt={course.title}
+                              className="w-full h-32 md:h-48 object-cover rounded-t-lg"
+                            />
+                          ) : (
+                            <div className="w-full h-32 md:h-48 bg-muted rounded-t-lg flex items-center justify-center">
+                              <Play className="h-8 w-8 md:h-12 md:w-12 text-muted-foreground" />
+                            </div>
+                          )}
+                          <div className="absolute top-2 md:top-4 left-2 md:left-4">
+                            <Badge variant="secondary" className="text-xs">{course.category}</Badge>
+                          </div>
+                          <div className="absolute top-2 md:top-4 right-2 md:right-4">
+                            <Badge variant="outline" className="bg-white/90 text-xs capitalize">
+                              {course.level}
+                            </Badge>
+                          </div>
+                          {!course.is_free && (
+                            <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4">
+                              <Badge className="bg-primary text-primary-foreground text-xs">
+                                {course.currency} {course.price}
+                              </Badge>
+                            </div>
+                          )}
+                        </div>
+
+                        <CardHeader className="p-4 md:p-6 pb-2 md:pb-4">
+                          <CardTitle className="text-base md:text-lg line-clamp-2">{course.title}</CardTitle>
+                          <CardDescription className="text-xs md:text-sm line-clamp-2">
+                            {course.description}
+                          </CardDescription>
+                        </CardHeader>
+
+                        <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6 pt-0">
+                          {/* Course Info */}
+                          <div className="flex justify-between text-xs md:text-sm text-muted-foreground">
+                            <span className="truncate mr-2">By {course.instructor.name}</span>
+                            <span className="flex-shrink-0 flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {formatDuration(course.duration_hours)}
+                            </span>
+                          </div>
+
+                          {/* Rating and Students */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1">
+                              <Star className="h-3 w-3 md:h-4 md:w-4 text-warning fill-current" />
+                              <span className="text-xs md:text-sm font-medium">{course.rating.toFixed(1)}</span>
+                              <span className="text-xs text-muted-foreground">({course.reviews_count})</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Users className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
+                              <span className="text-xs md:text-sm">{course.enrolled_count} students</span>
+                            </div>
+                          </div>
+
+                          {/* Progress */}
+                          {isEnrolled && (
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-xs md:text-sm">
+                                <span>Progress</span>
+                                <span>{Math.round(progress)}%</span>
+                              </div>
+                              <Progress value={progress} className="h-2" />
+                            </div>
+                          )}
+
+                          {/* Action Button */}
+                          <Link to={`/learning/courses/${course.id}`}>
+                            <Button variant="farmer" className="w-full text-sm md:text-base py-2 md:py-3">
+                              {!isEnrolled ? 'View Course' : 
+                               progress === 100 ? 'Review' : 'Continue Learning'}
+                            </Button>
+                          </Link>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+
+                {/* Pagination */}
+                {coursesData.count > queryParams.page_size && (
+                  <div className="flex justify-center items-center gap-2 mt-6">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={!coursesData.previous}
+                    >
+                      Previous
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                      Page {currentPage} of {Math.ceil(coursesData.count / queryParams.page_size)}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(p => p + 1)}
+                      disabled={!coursesData.next}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
           </TabsContent>
 
           {/* PDF Guides Tab */}

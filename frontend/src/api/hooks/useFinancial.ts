@@ -48,6 +48,22 @@ export const useProfitLossReport = (params?: any) => {
   });
 };
 
+export const useCashFlowReport = (params?: any) => {
+  return useQuery({
+    queryKey: ['financial', 'reports', 'cash-flow', params],
+    queryFn: () => financialService.getCashFlowReport(params),
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const useExpenseBreakdown = (params?: any) => {
+  return useQuery({
+    queryKey: ['financial', 'reports', 'expense-breakdown', params],
+    queryFn: () => financialService.getExpenseBreakdown(params),
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
 // Learning hooks
 export const useCourses = (params?: any) => {
   return useQuery({

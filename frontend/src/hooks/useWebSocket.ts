@@ -203,8 +203,9 @@ export const useWebSocket = (options: UseWebSocketOptions = {}): UseWebSocketRet
         clearReconnectTimeout();
 
         try {
-            // Construct WebSocket URL with token
-            const wsUrl = `${WS_BASE_URL}/ws/notifications/?token=${token}`;
+            // Construct WebSocket URL with token - ensure no duplicate /ws/ prefix
+            const baseUrl = WS_BASE_URL.replace(/\/ws\/?$/, ''); // Remove trailing /ws or /ws/
+            const wsUrl = `${baseUrl}/ws/notifications/?token=${token}`;
             console.log('Connecting to WebSocket:', wsUrl.replace(token, '***'));
 
             const ws = new WebSocket(wsUrl);

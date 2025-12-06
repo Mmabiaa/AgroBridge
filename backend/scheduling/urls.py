@@ -12,4 +12,9 @@ router.register(r'crop-calendars', views.CropCalendarViewSet, basename='cropcale
 
 urlpatterns = [
     path('', include(router.urls)),
+    
+    # Additional endpoints for convenience (aliases to viewset actions)
+    path('statistics/', views.TaskViewSet.as_view({'get': 'statistics'}), name='task-statistics'),
+    path('suggestions/', views.TaskViewSet.as_view({'get': 'suggestions'}), name='task-suggestions'),
+    path('categories/', views.TaskViewSet.as_view({'get': 'categories'}), name='task-categories'),
 ]

@@ -1,7 +1,8 @@
 /**
  * Crop Disease Detection Page - Production Ready with API Integration
+ * Task 8.1: Enhanced upload interface with drag-and-drop and progress tracking
  */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,91 +12,179 @@ import {
   Camera, 
   Upload, 
   Scan, 
-  AlertTriangle, 
   CheckCircle, 
-  Info,
-  History,
-  BookOpen,
   Loader2,
-  Download,
-  Share,
-  Eye
+  X,
+  ImageIcon
 } from 'lucide-react';
-import { useAnalyzeImage, useDiseases, useScans } from '@/api/hooks/useCropDetection';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAnalyzeImage, useCreateScan } from '@/api/hooks/useCropDetection';
+import { toast } from 'sonner';
+import { ResultsDisplay } from '@/components/crop-detection/ResultsDisplay';
+import { ScanHistory } from '@/components/crop-detection/ScanHistory';
+import { DiseaseCatalog } from '@/components/crop-detection/DiseaseCatalog';
 
 export default function CropDiseaseDetection() {
-  const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // State
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   
   // API hooks
   const analyzeImageMutation = useAnalyzeImage();
-  const { data: diseasesData, isLoading: diseasesLoading } = useDiseases();
-  const { data: scansData, isLoading: scansLoading } = useScans();
+  const createScanMutation = useCreateScan();
 
-  const diseases = diseasesData?.results || [];
-  const scans = scansData?.results || [];
+  // Validate image file
+  const validateImageFile = (file: File): boolean => {
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+
+    if (!validTypes.includes(file.type)) {
+      toast.error('Invalid file type', {
+        description: 'Please upload a JPEG, PNG, or WebP image',
+      });
+      return false;
+    }
+
+    if (file.size > maxSize) {
+      toast.error('File too large', {
+        description: 'Please upload an image smaller than 10MB',
+      });
+      return false;
+    }
+
+    return true;
+  };
 
   // Handle image selection
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-      setAnalysisResult(null);
-    }
-  };
-
-  // Handle image analysis
-  const handleAnalyze = async () => {
-    if (!selectedImage) return;
-
-    try {
-      const result = await analyzeImageMutation.mutateAsync({
-        data: {
-          image: selectedImage,
-          crop_type: 'auto-detect',
-        },
-      });
-      setAnalysisResult(result);
-    } catch (error) {
-      console.error('Analysis failed:', error);
+    if (file && validateImageFile(file)) {
+      processImageFile(file);
     }
   };
 
   // Handle camera capture
   const handleCameraCapture = () => {
-    // In a real app, this would open camera
-    fileInputRef.current?.click();
-  };
-
-  // Get severity color
-  const getSeverityColor = (severity: string) => {
-    switch (severity.toLowerCase()) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+    if (fileInputRef.current) {
+      // Set accept attribute to allow camera
+      fileInputRef.current.setAttribute('capture', 'environment');
+      fileInputRef.current.click();
     }
   };
 
-  const getSeverityIcon = (severity: string) => {
-    switch (severity.toLowerCase()) {
-      case 'low': return <CheckCircle className="h-4 w-4" />;
-      case 'medium': return <Info className="h-4 w-4" />;
-      case 'high': 
-      case 'critical': return <AlertTriangle className="h-4 w-4" />;
-      default: return <Info className="h-4 w-4" />;
+  // Process image file
+  const processImageFile = (file: File) => {
+    setSelectedImage(file);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImagePreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+    setAnalysisResult(null);
+    setUploadProgress(0);
+  };
+
+  // Handle drag and drop
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (validateImageFile(file)) {
+        processImageFile(file);
+      }
+    }
+  }, []);
+
+  // Handle image analysis with progress tracking
+  const handleAnalyze = async () => {
+    if (!selectedImage) return;
+
+    try {
+      setUploadProgress(0);
+      
+      const result = await analyzeImageMutation.mutateAsync({
+        data: {
+          image: selectedImage,
+          // Don't send crop_type if auto-detect - let backend handle it
+        },
+        onUploadProgress: (progressEvent: any) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress(percentCompleted);
+        },
+      });
+      
+      setAnalysisResult(result);
+      toast.success('Analysis complete', {
+        description: 'Your crop image has been analyzed successfully',
+      });
+    } catch (error: any) {
+      console.error('Analysis failed:', error);
+      toast.error('Analysis failed', {
+        description: error?.message || 'Failed to analyze image. Please try again.',
+      });
+    }
+  };
+
+  // Handle saving scan to history
+  const handleSaveScan = async () => {
+    if (!selectedImage || !analysisResult) return;
+
+    try {
+      await createScanMutation.mutateAsync({
+        data: {
+          image: selectedImage,
+          crop_type: analysisResult.crop_type,
+        },
+      });
+      
+      toast.success('Scan saved', {
+        description: 'Your scan has been saved to history',
+      });
+    } catch (error: any) {
+      console.error('Save failed:', error);
+      toast.error('Save failed', {
+        description: error?.message || 'Failed to save scan. Please try again.',
+      });
+    }
+  };
+
+
+
+  // Clear selected image
+  const handleClearImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    setAnalysisResult(null);
+    setUploadProgress(0);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -140,24 +229,55 @@ export default function CropDiseaseDetection() {
                       className="w-full h-64 object-cover rounded-lg border"
                     />
                     <Button
-                      variant="outline"
-                      size="sm"
+                      variant="destructive"
+                      size="icon"
                       className="absolute top-2 right-2"
-                      onClick={() => {
-                        setSelectedImage(null);
-                        setImagePreview(null);
-                        setAnalysisResult(null);
-                      }}
+                      onClick={handleClearImage}
                     >
-                      Remove
+                      <X className="h-4 w-4" />
                     </Button>
+                    {selectedImage && (
+                      <div className="absolute bottom-2 left-2 right-2 bg-black/70 text-white text-xs p-2 rounded">
+                        <div className="flex items-center justify-between">
+                          <span className="truncate">{selectedImage.name}</span>
+                          <span>{(selectedImage.size / 1024).toFixed(1)} KB</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
-                  <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-12 text-center">
-                    <Camera className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground mb-4">
-                      Take a photo or upload an image of your crop
+                  <div 
+                    className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
+                      isDragging 
+                        ? 'border-primary bg-primary/5' 
+                        : 'border-muted-foreground/25 hover:border-muted-foreground/50'
+                    }`}
+                    onDragEnter={handleDragEnter}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                  >
+                    <ImageIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground mb-2 font-medium">
+                      {isDragging ? 'Drop image here' : 'Drag and drop your crop image'}
                     </p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      or click below to browse
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Supports: JPEG, PNG, WebP (max 10MB)
+                    </p>
+                  </div>
+                )}
+
+                {/* Upload Progress */}
+                {analyzeImageMutation.isPending && uploadProgress > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Uploading...</span>
+                      <span className="font-medium">{uploadProgress}%</span>
+                    </div>
+                    <Progress value={uploadProgress} className="h-2" />
                   </div>
                 )}
 
@@ -166,6 +286,7 @@ export default function CropDiseaseDetection() {
                   <Button 
                     variant="outline" 
                     onClick={handleCameraCapture}
+                    disabled={analyzeImageMutation.isPending}
                     className="flex items-center gap-2"
                   >
                     <Camera className="h-4 w-4" />
@@ -174,15 +295,16 @@ export default function CropDiseaseDetection() {
                   <Button 
                     variant="outline"
                     onClick={() => fileInputRef.current?.click()}
+                    disabled={analyzeImageMutation.isPending}
                     className="flex items-center gap-2"
                   >
                     <Upload className="h-4 w-4" />
-                    Upload
+                    Browse
                   </Button>
                 </div>
 
                 {/* Analyze Button */}
-                {selectedImage && (
+                {selectedImage && !analysisResult && (
                   <Button 
                     onClick={handleAnalyze}
                     disabled={analyzeImageMutation.isPending}
@@ -191,7 +313,7 @@ export default function CropDiseaseDetection() {
                     {analyzeImageMutation.isPending ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Analyzing...
+                        {uploadProgress < 100 ? 'Uploading...' : 'Analyzing...'}
                       </>
                     ) : (
                       <>
@@ -205,7 +327,8 @@ export default function CropDiseaseDetection() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  capture="environment"
                   onChange={handleImageSelect}
                   className="hidden"
                 />
@@ -213,227 +336,26 @@ export default function CropDiseaseDetection() {
             </Card>
 
             {/* Analysis Results */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Scan className="h-5 w-5" />
-                  Analysis Results
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {!analysisResult ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <Scan className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Upload an image to see analysis results</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    
-                    {/* Health Score */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium">Health Score</span>
-                        <span className="text-2xl font-bold text-primary">
-                          {analysisResult.health_score}%
-                        </span>
-                      </div>
-                      <Progress value={analysisResult.health_score} className="h-2" />
-                    </div>
-
-                    {/* Detected Crop */}
-                    <div>
-                      <span className="font-medium">Detected Crop:</span>
-                      <Badge variant="outline" className="ml-2 capitalize">
-                        {analysisResult.crop_type}
-                      </Badge>
-                    </div>
-
-                    {/* Detected Diseases */}
-                    {analysisResult.detected_diseases?.length > 0 && (
-                      <div>
-                        <h4 className="font-medium mb-2">Detected Issues:</h4>
-                        <div className="space-y-2">
-                          {analysisResult.detected_diseases.map((disease: any, index: number) => (
-                            <div key={index} className="p-3 border rounded-lg">
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="font-medium">{disease.disease_name}</span>
-                                <Badge className={getSeverityColor(disease.severity)}>
-                                  <div className="flex items-center gap-1">
-                                    {getSeverityIcon(disease.severity)}
-                                    {disease.severity}
-                                  </div>
-                                </Badge>
-                              </div>
-                              <div className="text-sm text-muted-foreground">
-                                Confidence: {(disease.confidence * 100).toFixed(1)}%
-                              </div>
-                              <div className="text-sm text-muted-foreground">
-                                Affected area: {disease.affected_area_percentage}%
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Recommendations */}
-                    {analysisResult.recommendations?.length > 0 && (
-                      <div>
-                        <h4 className="font-medium mb-2">Recommendations:</h4>
-                        <div className="space-y-2">
-                          {analysisResult.recommendations.map((rec: any, index: number) => (
-                            <div key={index} className="p-3 bg-muted rounded-lg">
-                              <div className="flex items-center gap-2 mb-1">
-                                <Badge variant="outline" className="capitalize">
-                                  {rec.type}
-                                </Badge>
-                                <Badge variant={rec.priority === 'high' ? 'destructive' : 'secondary'}>
-                                  {rec.priority} priority
-                                </Badge>
-                              </div>
-                              <p className="text-sm">{rec.description}</p>
-                              {rec.estimated_cost && (
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  Estimated cost: GHS {rec.estimated_cost}
-                                </p>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 pt-4">
-                      <Button variant="outline" size="sm">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download Report
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Share className="h-4 w-4 mr-2" />
-                        Share Results
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <ResultsDisplay
+              result={analysisResult}
+              isLoading={analyzeImageMutation.isPending}
+              onSave={handleSaveScan}
+              isSaving={createScanMutation.isPending}
+            />
           </div>
         </TabsContent>
 
         {/* History Tab */}
         <TabsContent value="history" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <History className="h-5 w-5" />
-                Scan History
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {scansLoading ? (
-                <div className="space-y-4">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="animate-pulse flex items-center space-x-4 p-4 border rounded-lg">
-                      <div className="h-16 w-16 bg-gray-200 rounded"></div>
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : scans.length === 0 ? (
-                <div className="text-center py-12">
-                  <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <h3 className="text-lg font-semibold mb-2">No scans yet</h3>
-                  <p className="text-muted-foreground">Your scan history will appear here</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {scans.map((scan: any) => (
-                    <div key={scan.id} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <img 
-                        src={scan.image_url} 
-                        alt="Scanned crop"
-                        className="h-16 w-16 object-cover rounded"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium capitalize">{scan.crop_type}</span>
-                          <Badge variant="outline">
-                            {scan.health_score}% health
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {scan.detected_diseases?.length || 0} issues detected
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(scan.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <ScanHistory onViewScan={(scan) => {
+            // TODO: Implement scan detail view
+            console.log('View scan:', scan);
+          }} />
         </TabsContent>
 
         {/* Diseases Tab */}
         <TabsContent value="diseases" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
-                Disease Database
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {diseasesLoading ? (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="animate-pulse p-4 border rounded-lg">
-                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-full"></div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {diseases.map((disease: any) => (
-                    <Card key={disease.id} className="hover:shadow-md transition-shadow">
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <h4 className="font-semibold line-clamp-1">{disease.name}</h4>
-                          <Badge className={getSeverityColor(disease.typical_severity)}>
-                            {disease.typical_severity}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                          {disease.description}
-                        </p>
-                        <div className="space-y-1">
-                          <div className="text-xs">
-                            <span className="font-medium">Affects:</span>
-                            <span className="ml-1">{disease.affected_crops?.join(', ')}</span>
-                          </div>
-                          <div className="text-xs">
-                            <span className="font-medium">Category:</span>
-                            <span className="ml-1 capitalize">{disease.category}</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <DiseaseCatalog />
         </TabsContent>
 
         {/* Guide Tab */}

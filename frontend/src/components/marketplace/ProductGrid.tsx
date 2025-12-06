@@ -78,27 +78,35 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ searchTerm, category }
         return `${Math.floor(Math.random() * 50) + 1} km away`;
     };
 
-    // Function to get the correct image URL
+    // Import image utilities at the top of the file if not already imported
+    // For now, inline the function with normalization
     const getProductImageUrl = (product: Product) => {
         if (!product.images || product.images.length === 0) {
             return null;
         }
 
-        // Handle different image data structures
         const firstImage = product.images[0];
+        let imageUrl: string | null = null;
 
         if (typeof firstImage === 'string') {
-            // If it's a direct URL string
-            return firstImage;
+            imageUrl = firstImage;
         } else if (firstImage?.image) {
-            // If it's an object with image property
-            return firstImage.image;
+            imageUrl = firstImage.image;
         } else if (firstImage?.url) {
-            // If it's an object with url property
-            return firstImage.url;
+            imageUrl = firstImage.url;
         }
 
-        return null;
+        // Normalize URL
+        if (imageUrl && !imageUrl.startsWith('http')) {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            if (imageUrl.startsWith('/')) {
+                imageUrl = `${apiUrl}${imageUrl}`;
+            } else {
+                imageUrl = `${apiUrl}/${imageUrl}`;
+            }
+        }
+
+        return imageUrl;
     };
 
     // Get seller display name

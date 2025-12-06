@@ -1,64 +1,162 @@
 /**
  * React Query hooks for notifications service
  */
-import { useMutation, useQuery, useQueryClient } from '@tantml:function_calls>
-<invoke name="fsWrite">
-<parameter name="path">frontend/src/api/hooks/useFinancial.ts**
- * React Query hooks for financial service
- */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import financialService from '../services/financial.service';
-import type { CreateRecordRequest, CreateBudgetRequest, RecordListParams } from '../services/financial.service';
+import notificationsService from '../services/notifications.service';
+import type { NotificationListParams, NotificationPreferences, PushSubscription } from '../services/notifications.service';
 
-export const financialKeys = {
-  all: ['financial'] as const,
-  records: (params?: RecordListParams) => [...financialKeys.all, 'records', params] as const,
-  record: (id: string) => [...financialKeys.all, 'record', id] as const,
-  budgets: () => [...financialKeys.all, 'budgets'] as const,
-  budget: (id: string) => [...financialKeys.all, 'budget', id] as const,
-  reports: (type: string, params?: any) => [...financialKeys.all, 'reports', type, params] as const,
+export const notificationKeys = {
+  all: ['notifications'] as const,
+  lists: () => [...notificationKeys.all, 'list'] as const,
+  list: (params?: NotificationListParams) => [...notificationKeys.lists(), params] as const,
+  detail: (id: string) => [...notificationKeys.all, 'detail', id] as const,
+  unreadCount: () => [...notificationKeys.all, 'unread-count'] as const,
+  preferences: () => [...notificationKeys.all, 'preferences'] as const,
 };
 
-export const useRecords = (params?: RecordListParams) => {
+/**
+ * Get list of notifications
+ */
+export const useNotifications = (params?: NotificationListParams) => {
   return useQuery({
-    queryKey: financialKeys.records(params),
-    queryFn: () => financialService.getRecords(params),
-    staleTime: 5 * 60 * 1000,
+    queryKey: notificationKeys.list(params),
+    queryFn: () => notificationsService.getNotifications(params),
+    staleTime: 30 * 1000, // 30 seconds
   });
 };
 
-export const useBudgets = () => {
+/**
+ * Get notification by ID
+ */
+export const useNotification = (notificationId: string) => {
   return useQuery({
-    queryKey: financialKeys.budgets(),
-    queryFn: financialService.getBudgets,
-    staleTime: 10 * 60 * 1000,
+    queryKey: notificationKeys.detail(notificationId),
+    queryFn: () => notificationsService.getNotification(notificationId),
+    enabled: !!notificationId,
   });
 };
 
-export const useCreateRecord = () => {
+/**
+ * Get unread count
+ */
+export const useUnreadCount = () => {
+  return useQuery({
+    queryKey: notificationKeys.unreadCount(),
+    queryFn: () => notificationsService.getUnreadCount(),
+    staleTime: 10 * 1000, // 10 seconds
+    refetchInterval: 30 * 1000, // Refetch every 30 seconds
+  });
+};
+
+/**
+ * Mark notification as read
+ */
+export const useMarkAsRead = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: (data: CreateRecordRequest) => financialService.createRecord(data),
+    mutationFn: (notificationId: string) => notificationsService.markAsRead(notificationId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: financialKeys.all });
+      // Invalidate notifications list and unread count
+      queryClient.invalidateQueries({ queryKey: notificationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.unreadCount() });
     },
   });
 };
 
-export const useCreateBudget = () => {
+/**
+ * Mark all notifications as read
+ */
+export const useMarkAllAsRead = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: (data: CreateBudgetRequest) => financialService.createBudget(data),
+    mutationFn: () => notificationsService.markAllAsRead(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: financialKeys.budgets() });
+      // Invalidate all notification queries
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
     },
   });
 };
 
-export const useProfitLossReport = (params?: any) => {
+/**
+ * Delete notification
+ */
+export const useDeleteNotification = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (notificationId: string) => notificationsService.deleteNotification(notificationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: notificationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.unreadCount() });
+    },
+  });
+};
+
+/**
+ * Delete all read notifications
+ */
+export const useDeleteAllRead = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => notificationsService.deleteAllRead(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: notificationKeys.lists() });
+    },
+  });
+};
+
+/**
+ * Get notification preferences
+ */
+export const useNotificationPreferences = () => {
   return useQuery({
-    queryKey: financialKeys.reports('profit-loss', params),
-    queryFn: () => financialService.getProfitLossReport(params),
-    staleTime: 10 * 60 * 1000,
+    queryKey: notificationKeys.preferences(),
+    queryFn: () => notificationsService.getPreferences(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+/**
+ * Update notification preferences
+ */
+export const useUpdatePreferences = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (preferences: Partial<NotificationPreferences>) =>
+      notificationsService.updatePreferences(preferences),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: notificationKeys.preferences() });
+    },
+  });
+};
+
+/**
+ * Register device for push notifications
+ */
+export const useRegisterDevice = () => {
+  return useMutation({
+    mutationFn: (subscription: PushSubscription) => notificationsService.registerDevice(subscription),
+  });
+};
+
+/**
+ * Unregister device from push notifications
+ */
+export const useUnregisterDevice = () => {
+  return useMutation({
+    mutationFn: (deviceId: string) => notificationsService.unregisterDevice(deviceId),
+  });
+};
+
+/**
+ * Send test notification
+ */
+export const useSendTestNotification = () => {
+  return useMutation({
+    mutationFn: () => notificationsService.sendTestNotification(),
   });
 };
